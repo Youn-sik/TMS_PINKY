@@ -4,16 +4,26 @@
   "description": "",
   "main": "login.js",
   "dependencies": {
+    "async": "^3.2.0",
+    "axios": "^0.19.2",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-graphql": "^0.9.0",
     "graphql": "^14.6.0",
     "graphql-tools": "^4.0.7",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.7",
+    "nodemon": "^2.0.2",
     "vue": "^2.6.11"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-3": "^6.24.1"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon --exec babel-node login.js"
   },
   "author": "",
   "license": "ISC"
