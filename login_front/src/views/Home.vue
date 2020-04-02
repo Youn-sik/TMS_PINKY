@@ -5,23 +5,13 @@
         비밀번호 : <input v-model="password" type="password" name="password">
         <input type="submit" value="login">
     </form>
-    {{result}}
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-import gql from "graphql-tag";
 export default {
   name: "Home",
-  apollo: {
-    result: gql`query{
-      allUser {
-        id
-        password
-      }
-    }`
-  },
   data(){
     return{
       id: '',
