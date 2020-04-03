@@ -1,12 +1,13 @@
 <template>
   <div class="home">
-      welcome 페이지
+      {{userId}}님 환영합니다.
   </div>
 </template>
 
 <script>
 export default {
   name: "Welcome",
+  props:["userId"],
 }
 </script>
 

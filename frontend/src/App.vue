@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Header v-bind:isLogin = "isLogin" v-on:logout="updateIsLogin"></Header>
-    <router-view v-bind:isLogin = "isLogin" v-on:login="updateIsLogin"/>
+    <router-view v-bind:userId = "userId" v-bind:isLogin = "isLogin" v-on:login="updateIsLogin"/>
   </div>
 </template>
 <script>
@@ -13,6 +13,7 @@ export default {
   },
   data () {
     return {
+      userId : '',
       isLogin : false
     }
   },
@@ -21,6 +22,7 @@ export default {
       if(tokenValue){
         let decoded = jwt.verify(tokenValue[2],'jjh')//jjh는 시크릿 키 배포시 가려야함
         if(decoded){
+          this.userId = decoded.id;
           this.isLogin = true;
         } else {
           this.isLogin = false;
