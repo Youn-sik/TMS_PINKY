@@ -15,7 +15,7 @@
           required
           :type="'password'"
         ></v-text-field>
-        <v-btn @click="login">LOGIN</v-btn>
+        <v-btn type="submit">LOGIN</v-btn>
       </v-form>
     </v-row>
   </div>
@@ -25,12 +25,12 @@
 import gql from 'graphql-tag';
 export default {
   name: "Home",
+  props:["isLogin"],
   data(){
     return{
       id: "",
       password: "",
       userData : '',
-      isLogin : false,
       token : '',
     }
   },
@@ -55,7 +55,9 @@ export default {
       },
       result(ApolloQueryResult){
         this.token = ApolloQueryResult.data.getUser.id;
-        document.cookie = 'token=' + this.token
+        this.$emit('login',true);
+        document.cookie = 'token=' + this.token;
+        this.$router.push('/welcome');
       },
       error(){
         this.$apollo.queries.getUser.skip = true;
@@ -74,6 +76,9 @@ export default {
 
 <style>
   .loginForm{
+    padding: 10px 20px;
     margin:0 auto;
+    border-radius:3px;
+    box-shadow:3px 3px 3px 3px #999;
   }
 </style>
