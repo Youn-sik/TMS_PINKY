@@ -6,6 +6,7 @@
 </template>
 <script>
 import Header from './components/Header.vue'
+import jwt from 'jsonwebtoken';
 export default {
   components: {
     'Header' : Header
@@ -16,9 +17,16 @@ export default {
     }
   },
   created () {
-      let value = document.cookie.match('(^|;) ?' + "token" + '=([^;]*)(;|$)');
-      if(value){
-        this.isLogin = true;
+      let tokenValue = document.cookie.match('(^|;) ?' + "token" + '=([^;]*)(;|$)');
+      if(tokenValue){
+        let decoded = jwt.verify(tokenValue[2],'jjh')//jjh는 시크릿 키 배포시 가려야함
+        if(decoded){
+          this.isLogin = true;
+        } else {
+          this.isLogin = false;
+        }
+      } else {
+        this.isLogin = false;
       }
   },
   methods : {

@@ -58,9 +58,9 @@ let resolvers = {
                     let token = jwt.sign({
                         id:result.id
                         },
-                        'jjh',
+                        'jjh',//시크릿 키 배포시 가려야 함
                         {
-                            expiresIn:'5m'
+                            expiresIn:'5h'
                         }
                     )
                     return {"id":token}
