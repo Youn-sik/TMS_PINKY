@@ -180,8 +180,8 @@
           text: 'Personnel Management',
           model: false,
           children: [
-            { text: 'Employee Management', to: '/employeemanagement' },
-            { text: 'Employee Group Management', to: '/Device/Device' },
+            { text: 'Employee Management', to: '/employee' },
+            { text: 'Employee Group Management', to: '/employeegroup' },
             { text: 'Visitor Management', to: '/Device/Device' },
             { text: 'Visitor Group Management', to: '/Device/Device' },
             { text: 'Blakclist Management', to: '/Device/Device' },

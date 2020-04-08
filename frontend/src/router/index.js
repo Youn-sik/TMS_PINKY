@@ -20,9 +20,19 @@ const routes = [
         component:() => import('@/views/Device/Device'),
       },
       {
-        name:'Group',
-        path:'employeemanagement',
-        component:() => import('@/views/Group/Group'),
+        name:'Employee',
+        path:'employee',
+        component:() => import('@/views/Person/Employee'),
+      },
+      {
+        name:'AddEmployee',
+        path:'addemployee',
+        component:() => import('@/views/Person/AddEmployee'),
+      },
+      {
+        name:'EmployeeGroup',
+        path:'employeegroup',
+        component:() => import('@/views/Person/EmployeeGroup'),
       },
       {
         name:'Statistics',

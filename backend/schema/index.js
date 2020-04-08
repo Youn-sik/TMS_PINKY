@@ -98,18 +98,19 @@ const api_v3_device_cameraType = new GraphQLObjectType({
 		camera_id			: { type: GraphQLString },
 		id					: { type: GraphQLString },
 		name				: { type: GraphQLString },
+		groups				: { type: GraphQLString },
 		description			: { type: GraphQLString },
 		direction			: { type: GraphQLInt },
-		employee_group		: { type: GraphQLList },
-		visitor_group		: { type: GraphQLList },
-		blacklist_group		: { type: GraphQLList },
+		employee_group		: { type: GraphQLString },
+		visitor_group		: { type: GraphQLString },
+		blacklist_group		: { type: GraphQLString },
 		ldid				: { type: GraphQLString },
 		type_id				: { type: GraphQLInt },
 		type_name			: { type: GraphQLString },
 		update_at			: { type: GraphQLString },
 		create_at			: { type: GraphQLString },
 		last_offline_time	: { type: GraphQLString },
-		config_data			: { type: GraphQLList },
+		config_data			: { type: GraphQLString },
 	})
 })
 

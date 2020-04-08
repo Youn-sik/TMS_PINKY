@@ -25,18 +25,18 @@ const api_v3_device_camera_Schema = new mongoose.Schema({
     name: String,
     description: String,
     direction: Number,
-    groups: Array,
+    groups: String,
     group_count: Number,
-    employee_group : Array,
-    visitor_group : Array,
-    blacklist_group : Array,
+    employee_group : String,
+    visitor_group : String,
+    blacklist_group : String,
     ldid: String,
     type_id: Number,
     type_name: String,
     update_at: String,
     create_at: String,
     last_offline_time: String,
-    config_data: Array
+    config_data: String
 })
 
 module.exports = mongoose.model('api_v3_device_camera', api_v3_device_camera_Schema)
