@@ -5,23 +5,29 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "apollo-boost": "^0.4.7",
+    "chai": "^4.2.0",
     "core-js": "^3.6.4",
     "graphql": "^14.6.0",
     "jsonwebtoken": "^8.5.1",
+    "material-design-icons-iconfont": "^5.0.1",
     "vue": "^2.6.11",
     "vue-apollo": "^3.0.3",
+    "vue-google-charts": "^0.3.2",
     "vue-router": "^3.1.5",
-    "vuetify": "^2.2.11"
+    "vuetify": "^2.2.20"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.2.0",
     "@vue/cli-plugin-eslint": "~4.2.0",
     "@vue/cli-plugin-router": "~4.2.0",
+    "@vue/cli-plugin-unit-jest": "^4.2.3",
     "@vue/cli-service": "~4.2.0",
+    "@vue/test-utils": "1.0.0-beta.31",
     "babel-eslint": "^10.0.3",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.1.2",
@@ -45,7 +51,36 @@
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {}
+    "rules": {},
+    "overrides": [
+      {
+        "files": [
+          "**/__tests__/*.{j,t}s?(x)",
+          "**/tests/unit/**/*.spec.{j,t}s?(x)"
+        ],
+        "env": {
+          "jest": true
+        }
+      },
+      {
+        "files": [
+          "**/__tests__/*.{j,t}s?(x)",
+          "**/tests/unit/**/*.spec.{j,t}s?(x)"
+        ],
+        "env": {
+          "jest": true
+        }
+      },
+      {
+        "files": [
+          "**/__tests__/*.{j,t}s?(x)",
+          "**/tests/unit/**/*.spec.{j,t}s?(x)"
+        ],
+        "env": {
+          "jest": true
+        }
+      }
+    ]
   },
   "browserslist": [
     "> 1%",

@@ -1,16 +1,11 @@
 <template>
   <div id="app">
-    <Header v-bind:isLogin = "isLogin" v-on:logout="updateIsLogin"></Header>
     <router-view v-bind:userId = "userId" v-bind:isLogin = "isLogin" v-on:login="updateIsLogin"/>
   </div>
 </template>
 <script>
-import Header from './components/Header.vue'
 import jwt from 'jsonwebtoken';
 export default {
-  components: {
-    'Header' : Header
-  },
   data () {
     return {
       userId : '',
@@ -31,6 +26,11 @@ export default {
         this.isLogin = false;
       }
   },
+  beforeMount () {
+    if(!this.isLogin){
+      this.$router.push('/');
+    }
+  },
   methods : {
     updateIsLogin (isLogin) {
       if(isLogin){
@@ -43,10 +43,4 @@ export default {
 }
 </script>
 <style>
-  #app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-  }
 </style>
