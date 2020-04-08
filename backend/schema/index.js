@@ -198,8 +198,6 @@ const api_v1_person_userType = new GraphQLObjectType({
 	})
 })
 
-//여기부터 짤것 
-
 
 // TODO: 제거
 // Define Object Types
@@ -323,6 +321,22 @@ const RootQuery = new GraphQLObjectType({
 				return await api_v2_device_alarmController.getapi_v2_device_alarms()
 			}
 		},
+
+		//Sense Link Person API
+		api_v1_person_user: {
+			type: api_v1_person_userType,
+			args: { id: { type: GraphQLID } },
+			async resolve(parent, args) {
+				return await api_v1_person_userController.getSingleapi_v1_person_user(args)
+			}
+		},
+		api_v1_person_users: {
+			type: new GraphQLList(api_v1_person_userType),
+			async resolve(parent, args) {
+				return await api_v1_person_userController.getapi_v1_person_users()
+			}
+		},
+
 
 		// TODO: 제거
 		authorized_access: {
@@ -672,6 +686,97 @@ const Mutations = new GraphQLObjectType({
 			},
 			async resolve(parent, args) {
 				const data = await api_v2_device_alarmController.deleteapi_v2_device_alarm(args)
+				return data
+			}
+		},
+
+		//Person API
+		addapi_v1_person_user: {
+			type: api_v1_person_userType,
+			args: {
+				app_key: 		{ type: new GraphQLNonNull(GraphQLString) },
+				sign: 			{ type: new GraphQLNonNull(GraphQLString) },
+				timestamp: 		{ type: new GraphQLNonNull(GraphQLString) },
+				avatar_file: 	{ type: new GraphQLNonNull(GraphQLString) },
+				groups: 		{ type: GraphQLList },
+				ic_number: 		{ type: GraphQLString },
+				job_number: 	{ type: GraphQLString },
+				id_number: 		{ type: GraphQLString },
+				mobile: 		{ type: GraphQLString },
+				name: 			{ type: GraphQLString },
+				remark: 		{ type: GraphQLString },
+				force: 			{ type: GraphQLInt },
+				company_id: 	{ type: GraphQLString },
+				department_id: 	{ type: GraphQLString },
+				area_code: 		{ type: GraphQLString },
+				birthday: 		{ type: GraphQLString },
+				entry_time: 	{ type: GraphQLString },
+				mail: 			{ type: GraphQLString },
+				position: 		{ type: GraphQLString },
+				location: 		{ type: GraphQLString },
+				reception_user_id: { type: GraphQLID },
+				guest_company: 	{ type: GraphQLString },
+				guest_purpose: 	{ type: GraphQLString },
+				level: 			{ type: GraphQLString },
+				gender: 		{ type: GraphQLInt },
+				prompt: 		{ type: GraphQLString },
+				type: 			{ type: GraphQLInt },
+				last_type: 		{ type: GraphQLInt },
+				created_at: 	{ type: GraphQLString },
+				updated_at: 	{ type: GraphQLString }
+			},
+			async resolve(parent, args) {
+				const data = await api_v1_person_userController.addapi_v1_person_user(args)
+				return data
+			}
+		},
+		editapi_v1_person_user: {
+			type: api_v1_person_userType,
+			args: {
+				id: 			{ type: new GraphQLNonNull(GraphQLID) },
+				app_key: 		{ type: new GraphQLNonNull(GraphQLString) },
+				sign: 			{ type: new GraphQLNonNull(GraphQLString) },
+				timestamp: 		{ type: new GraphQLNonNull(GraphQLString) },
+				avatar_file: 	{ type: new GraphQLNonNull(GraphQLString) },
+				groups: 		{ type: GraphQLList },
+				ic_number: 		{ type: GraphQLString },
+				job_number: 	{ type: GraphQLString },
+				id_number: 		{ type: GraphQLString },
+				mobile: 		{ type: GraphQLString },
+				name: 			{ type: GraphQLString },
+				remark: 		{ type: GraphQLString },
+				force: 			{ type: GraphQLInt },
+				company_id: 	{ type: GraphQLString },
+				department_id: 	{ type: GraphQLString },
+				area_code: 		{ type: GraphQLString },
+				birthday: 		{ type: GraphQLString },
+				entry_time: 	{ type: GraphQLString },
+				mail: 			{ type: GraphQLString },
+				position: 		{ type: GraphQLString },
+				location: 		{ type: GraphQLString },
+				reception_user_id: { type: GraphQLID },
+				guest_company: 	{ type: GraphQLString },
+				guest_purpose: 	{ type: GraphQLString },
+				level: 			{ type: GraphQLString },
+				gender: 		{ type: GraphQLInt },
+				prompt: 		{ type: GraphQLString },
+				type: 			{ type: GraphQLInt },
+				last_type: 		{ type: GraphQLInt },
+				created_at: 	{ type: GraphQLString },
+				updated_at: 	{ type: GraphQLString }
+			},
+			async resolve(parent, args) {
+				const data = await api_v1_person_userController.updateapi_v1_person_user(args)
+				return data
+			}
+		},
+		deleteapi_v1_person_user: {
+			type: api_v1_person_userType,
+			args: {
+				id: 			{ type: new GraphQLNonNull(GraphQLID) }
+			},
+			async resolve(parent, args) {
+				const data = await api_v1_person_userController.deleteapi_v1_person_user(args)
 				return data
 			}
 		}
