@@ -10,6 +10,8 @@ const api_v1_person_user_Schema = new mongoose.Schema({
     ic_number: String,
     job_number: String,
     id_number: String,
+    id: String,
+	password: String,
     mobile: String,
     name: String,
     remark: String,

@@ -5,6 +5,7 @@ const fastify = require('fastify')({
 
 // Require external modules
 const mongoose = require('mongoose')
+const config = require("./config/config");
 
 // Connect to DB
 mongoose

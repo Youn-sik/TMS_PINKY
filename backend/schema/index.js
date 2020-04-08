@@ -167,6 +167,8 @@ const api_v1_person_userType = new GraphQLObjectType({
 		ic_number			: { type: GraphQLString },
 		job_number			: { type: GraphQLString },
 		id_number			: { type: GraphQLString },
+		id					: { type: GraphQLString },
+		password			: { type: GraphQLString },
 		mobile				: { type: GraphQLString },
 		name				: { type: GraphQLString },
 		remark				: { type: GraphQLString },
@@ -702,6 +704,8 @@ const Mutations = new GraphQLObjectType({
 				ic_number: 		{ type: GraphQLString },
 				job_number: 	{ type: GraphQLString },
 				id_number: 		{ type: GraphQLString },
+				id:				{ type: GraphQLString },
+				password:		{ type: GraphQLString },
 				mobile: 		{ type: GraphQLString },
 				name: 			{ type: GraphQLString },
 				remark: 		{ type: GraphQLString },
@@ -726,6 +730,7 @@ const Mutations = new GraphQLObjectType({
 				updated_at: 	{ type: GraphQLString }
 			},
 			async resolve(parent, args) {
+				//TODO: 인증절차
 				const data = await api_v1_person_userController.addapi_v1_person_user(args)
 				return data
 			}
@@ -742,6 +747,8 @@ const Mutations = new GraphQLObjectType({
 				ic_number: 		{ type: GraphQLString },
 				job_number: 	{ type: GraphQLString },
 				id_number: 		{ type: GraphQLString },
+				id:				{ type: GraphQLString },
+				password:		{ type: GraphQLString },
 				mobile: 		{ type: GraphQLString },
 				name: 			{ type: GraphQLString },
 				remark: 		{ type: GraphQLString },
