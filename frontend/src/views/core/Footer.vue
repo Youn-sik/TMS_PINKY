@@ -1,7 +1,7 @@
 <template>
-    <v-footer
+<v-footer
       app
-      color="blue"
+      color="primary"
       class="white--text"
     >
       <span>Vuetify</span>

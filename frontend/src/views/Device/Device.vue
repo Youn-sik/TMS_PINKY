@@ -51,6 +51,7 @@
               <!-- More info about {{ item.name }} -->
               <v-tabs
                 v-model="tab"
+                background-color="#f9f6f7"
               >
                 <v-tab
                   v-for="i in tabs"
@@ -58,17 +59,80 @@
                 >
                   {{i}}
                 </v-tab>
+                <v-col class="text-right">
+                  <v-btn small class="mr-2">Add sub device</v-btn>
+                  <v-btn small>Refresh</v-btn>
+                </v-col>
               </v-tabs>
               <v-tabs-items v-model="tab">
                 <v-tab-item
                   v-for="i in tabs"
                   :key="i"
                 >
-                  <v-card flat>
-                    <v-card-text>
-                      {{ i }}
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                  <v-card flat color="#f9f6f7">
+                    <v-card-text v-if="i === 'Device information'">
+                      <v-col class="d-flex">
+                        Basic information
+                      </v-col>
+                      <v-row justify="center">
+                        <v-col cols="8">
+                          <p>LDID:</p>
+                          <p>Type:</p>
+                          <p>Device IP:</p>
+                          <p>Device name:</p>
+                          <p>Location:</p>
+                          <p>Description:</p>
+                          <p>First online time:</p>
+                          <p>Last offline time:</p>
+                          <p>Last update time:</p>
+                        </v-col>
+                      </v-row>
+                      <v-divider></v-divider>
+                      <v-col class="d-flex">
+                        Status Info
+                      </v-col>
+                      <v-row justify="center">
+                        <v-col cols="8">
+                          <p>Door Status:</p>
+                          <p>Thermal Image Status:</p>
+                        </v-col>
+                      </v-row>
+                      <v-divider></v-divider>
+                      <v-col class="d-flex">
+                        App Information
+                      </v-col>
+                      <v-row justify="center">
+                        <v-col cols="8">
+                          <p>App package name:</p>
+                          <p>App version name:</p>
+                          <p>App version code:</p>
+                        </v-col>
+                      </v-row>
+                      <v-divider></v-divider>
+                      <v-col class="d-flex">
+                        Firmware Information
+                      </v-col>
+                      <v-row justify="center">
+                        <v-col cols="8">
+                          <p>Product model:</p>
+                          <p>Product Serial Number:</p>
+                          <p>Firmware version:</p>
+                          <p>Manufacturer:</p>
+                          <p>Hardware version code:</p>
+                        </v-col>
+                      </v-row>
+                    </v-card-text>
+                    <v-card-text v-else-if="i === 'Device Settings'">
+                      디바이스 세팅
+                    </v-card-text>
+                    <v-card-text v-else-if="i === 'Access Settings'">
+                      엑세스 세팅
+                    </v-card-text>
+                    <v-card-text v-else-if="i === 'Attendance Settings'">
+                      어텐던스 세팅
+                    </v-card-text>
+                    <v-card-text v-else>
+                      인물 정보
                     </v-card-text>
                   </v-card>
                 </v-tab-item>
@@ -83,8 +147,6 @@
         <v-dialog v-model="addUserModal" persistent max-width="600px">
           <template v-slot:activator="{ on }">
             <v-btn class="ma-2" color="primary" dark v-on="on"><v-icon dark left>mdi-plus</v-icon>Device Add</v-btn>
-            <v-btn class="ma-2" color="error"><v-icon dark left>mdi-sync</v-icon>Reboot All</v-btn>
-            <v-btn class="ma-2" color="primary" dark v-on="on"><v-icon dark left>settings</v-icon>Batch setting</v-btn>
           </template>
           <v-card>
             <v-card-title>
@@ -136,7 +198,39 @@
               <v-btn color="blue darken-1" text @click="addUserModal = false">Save</v-btn>
             </v-card-actions>
           </v-card>
-        </v-dialog>   
+        </v-dialog>
+        <v-dialog v-model="batchSettingModal" persistent max-width="80%">
+          <template v-slot:activator="{ on }">
+            <v-btn class="ma-2" color="primary" dark v-on="on"><v-icon dark left>settings</v-icon>Batch setting</v-btn>
+          </template>
+          <v-card>
+           
+            <v-card-text>
+              <v-container>
+                <v-row>
+                  <v-col cols="12">
+                    <v-select v-model="color" :items="colors" label="Select Devices"></v-select>
+                     <v-card-sub-title class="subtitle-2 pa">Applied devices</v-card-sub-title>
+                    <v-data-table
+                      v-model="selected"
+                      :headers="headers"
+                      :items="desserts"
+                      item-key="name"
+                      show-select
+                      class="elevation-1"
+                    ></v-data-table>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="batchSettingModal = false">Close</v-btn>
+              <v-btn color="blue darken-1" text @click="batchSettingModal = false">Save</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>  
+        <v-btn class="ma-2" color="error"><v-icon dark left>mdi-sync</v-icon>Reboot All</v-btn>    
       </div>
     </v-col>
   </v-row>
@@ -147,6 +241,7 @@
     data () {
       return {
         search: '',
+        selected: [],
         tab:null,
         tabs: [
           "Device information",
@@ -173,6 +268,7 @@
           { text: '', value: 'data-table-expand' },
         ],
         addUserModal : false,
+        batchSettingModal : false,
         desserts: [
           {
             name: 'Frozen Yogurt',

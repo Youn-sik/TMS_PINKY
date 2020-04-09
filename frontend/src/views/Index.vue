@@ -114,20 +114,10 @@
         </template>
       </v-list>
     </v-navigation-drawer>
-
-    <v-navigation-drawer
-      fixed
-      temporary
-    />
     
-      <v-content>
-          <router-view></router-view>
-      </v-content>
-
-    <v-navigation-drawer
-      fixed
-      temporary
-    />
+    <v-content>
+        <router-view></router-view>
+    </v-content>
 
     <v-footer
       app
@@ -205,9 +195,9 @@
           text: 'Attendance Management',
           model: false,
           children: [
-            { text: 'Attendance Rules' },
+            { text: 'Attendance Rules', to:"/attendancerules" },
             { text: 'Attendance Area' },
-            { text: 'Attendance Records' },
+            { text: 'Attendance Records', to:'/attendancerecords' },
             { text: 'Attendance Statistics' },
           ],
         },

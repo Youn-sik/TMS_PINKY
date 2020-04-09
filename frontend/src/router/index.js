@@ -35,9 +35,14 @@ const routes = [
         component:() => import('@/views/Person/EmployeeGroup'),
       },
       {
-        name:'Statistics',
-        path:'statistics',
-        component:() => import('@/views/Statistics'),
+        name:'AttendanceRules',
+        path:'attendancerules',
+        component:() => import('@/views/Attendance/AttendanceRules'),
+      },
+      {
+        name:'AttendanceRecords',
+        path:'attendancerecords',
+        component:() => import('@/views/Attendance/AttendanceRecords'),
       },
       {
         name:'Setting update',
@@ -52,7 +57,7 @@ const routes = [
       {
         name:"Dashboard",
         path:'dashboard',
-        component:() => import('@/views/Dashboard.vue'),
+        component:() => import('@/views/Dashboard'),
       }
     ]
   },

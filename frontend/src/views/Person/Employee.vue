@@ -14,13 +14,15 @@
             append-icon="search"
           ></v-text-field>
         </v-card-title>
+        {{active}} 선택됨
         <v-card-text>
           <v-treeview
             :items="items"
+            :active.sync="active"
             :search="search"
             :filter="filter"
+            activatable
             :open.sync="open"
-            open-on-click
           >
             <template v-slot:prepend="{ item }">
               <v-icon
@@ -45,7 +47,7 @@
           <div>
             <v-btn color="error" class="ml-2 mr-2 mt-4">Delete</v-btn>
             <v-btn color="primary" class="mt-4 mr-2">Export</v-btn>
-            <v-btn color="primary" class="mt-4">Add to Group</v-btn>
+            <v-btn color="primary" class="mt-4" :to="{path : 'addemployee'}">Add to Group</v-btn>
           </div>
         </v-card-title>
         <v-data-table
@@ -62,13 +64,14 @@
 <script>
   export default {
     data: () => ({
+      active:[],
       items: [
         {
-          id: 1,
+          id: 'Vuetify Human Resources',
           name: 'Vuetify Human Resources',
           children: [
             {
-              id: 2,
+              id: "Core team",
               name: 'Core team',
               children: [
                 {
@@ -94,7 +97,7 @@
               ],
             },
             {
-              id: 3,
+              id: "Administrators",
               name: 'Administrators',
               children: [
                 {
@@ -108,7 +111,7 @@
               ],
             },
             {
-              id: 4,
+              id: "Contributors",
               name: 'Contributors',
               children: [
                 {

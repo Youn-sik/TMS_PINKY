@@ -6,7 +6,7 @@ const api_v1_person_user_Schema = new mongoose.Schema({
     sign: String,
     timestamp: String,
     avatar_file: String,
-    groups: Array,
+    groups: String,
     ic_number: String,
     job_number: String,
     id_number: String,
