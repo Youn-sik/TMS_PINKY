@@ -1,0 +1,9 @@
+
+mutation ($id:ID!,$name:String!,$company:String!,$data:String!){
+    editauthorized_access(id:$id,name:$name,company:$company,data:$data) {
+        _id
+        name
+        company
+        data
+    }
+}

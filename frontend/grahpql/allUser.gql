@@ -1,0 +1,8 @@
+query authorized_accesss{
+     authorized_accesss{
+        _id
+        company
+        name
+        data
+    }
+}

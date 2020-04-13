@@ -1,0 +1,7 @@
+mutation ($name:String!,$company:String!,$data:String!){
+    addauthorized_access(name:$name,company:$company,data:$data) {
+        name
+        company
+        data
+    }
+}

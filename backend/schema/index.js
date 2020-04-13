@@ -30,6 +30,8 @@ const api_v2_device_alarmController = require('../controller/api/v2/device/alarm
 //Sense Link Person API
 const api_v1_person_userController = require('../controller/api/v1/person/user')
 
+const api_v1_person_accessController = require('../controller/api/v1/person/access')
+
 //Define Object Types Sense Link Basics API
 const api_v1_server_versionType = new GraphQLObjectType({
 	name: 'api_v1_server_version',
@@ -101,16 +103,16 @@ const api_v3_device_cameraType = new GraphQLObjectType({
 		groups				: { type: GraphQLString },
 		description			: { type: GraphQLString },
 		direction			: { type: GraphQLInt },
-		employee_group		: { type: new GraphQLList(api_group_dummyType) },
-		visitor_group		: { type: new GraphQLList(api_group_dummyType) },
-		blacklist_group		: { type: new GraphQLList(api_group_dummyType) },
+		employee_group		: { type: new GraphQLList(GraphQLString) },
+		visitor_group		: { type: new GraphQLList(GraphQLString) },
+		blacklist_group		: { type: new GraphQLList(GraphQLString) },
 		ldid				: { type: GraphQLString },
 		type_id				: { type: GraphQLInt },
 		type_name			: { type: GraphQLString },
 		update_at			: { type: GraphQLString },
 		create_at			: { type: GraphQLString },
 		last_offline_time	: { type: GraphQLString },
-		config_data			: { type: new GraphQLList(api_group_dummyType) },
+		config_data			: { type: new GraphQLList(GraphQLString) },
 	})
 })
 
@@ -164,7 +166,7 @@ const api_v1_person_userType = new GraphQLObjectType({
 		sign				: { type: GraphQLString },
 		timestamp			: { type: GraphQLString },
 		avatar_file			: { type: GraphQLString },
-		groups				: { type: new GraphQLList(api_group_dummyType) },
+		groups				: { type: new GraphQLList(GraphQLString) },
 		ic_number			: { type: GraphQLString },
 		job_number			: { type: GraphQLString },
 		id_number			: { type: GraphQLString },
@@ -201,6 +203,45 @@ const api_v1_person_userType = new GraphQLObjectType({
 	})
 })
 
+const api_v1_person_accessType = new GraphQLObjectType({
+	name: 'api_v1_person_access',
+	fields: () => ({
+		_id					: { type: GraphQLID },
+		type				: { type: GraphQLInt },
+		last_type				: { type: GraphQLInt },
+		group_list			: { type: new GraphQLList(GraphQLString) },
+		name			: { type: GraphQLString },
+		avatar_file				: { type: GraphQLString },
+		mobile			: { type: GraphQLString },
+		ic_number			: { type: GraphQLString },
+		id_number			: { type: GraphQLString },
+		job_number					: { type: GraphQLString },
+		id			: { type: GraphQLString },
+		birthday				: { type: GraphQLString },
+		mail				: { type: GraphQLString },
+		gender				: { type: GraphQLString },
+		prompt				: { type: GraphQLString },
+		remark			: { type: GraphQLString },
+		position		: { type: GraphQLString },
+		location			: { type: GraphQLString },
+		company_id			: { type: GraphQLString },
+		department_id			: { type: GraphQLString },
+		area_code				: { type: GraphQLString },
+		entry_time			: { type: GraphQLString },
+		reception_user_id	: { type: GraphQLID },
+		reception_user_data	: {
+			type: api_v1_person_accessType,
+			async resolve(parent, args) {
+				return await api_v1_person_accessController.getapi_v1_person_access_depend_on_user({ id: parent.reception_user_id })
+			}
+		},
+		guest_company		: { type: GraphQLString },
+		guest_purpose		: { type: GraphQLString },
+		guest_level				: { type: GraphQLString },
+		create_at			: { type: GraphQLString },
+		update_at			: { type: GraphQLString },
+	})
+})
 
 // TODO: 제거
 // Define Object Types
@@ -337,6 +378,20 @@ const RootQuery = new GraphQLObjectType({
 			type: new GraphQLList(api_v1_person_userType),
 			async resolve(parent, args) {
 				return await api_v1_person_userController.getapi_v1_person_users()
+			}
+		},
+
+		api_v1_person_access : {
+			type : api_v1_person_accessType,
+			args : { id: { type: GraphQLID } },
+			async resolve(parent, args) {
+				return await api_v1_person_accessController.getSingleapi_v1_person_access(args)
+			}
+		},
+		api_v1_person_accesss : {
+			type: new GraphQLList(api_v1_person_accessType),
+			async resolve(parent, args) {
+				return await api_v1_person_accessController.getapi_v1_person_access()
 			}
 		},
 
@@ -787,7 +842,91 @@ const Mutations = new GraphQLObjectType({
 				const data = await api_v1_person_userController.deleteapi_v1_person_user(args)
 				return data
 			}
-		}
+		},
+
+		addapi_v1_person_access: {
+			type: api_v1_person_accessType,
+			args: {
+				type				: { type: GraphQLInt },
+				last_type			: { type: GraphQLInt },
+				group_list			: { type: new GraphQLList(GraphQLString) },
+				name				: { type: GraphQLString },
+				avatar_file			: { type: GraphQLString },
+				mobile				: { type: GraphQLString },
+				ic_number			: { type: GraphQLString },
+				id_number			: { type: GraphQLString },
+				job_number			: { type: GraphQLString },
+				id					: { type: GraphQLString },
+				birthday			: { type: GraphQLString },
+				mail				: { type: GraphQLString },
+				gender				: { type: GraphQLString },
+				prompt				: { type: GraphQLString },
+				remark				: { type: GraphQLString },
+				position			: { type: GraphQLString },
+				location			: { type: GraphQLString },
+				company_id			: { type: GraphQLString },
+				department_id		: { type: GraphQLString },
+				area_code			: { type: GraphQLString },
+				entry_time			: { type: GraphQLString },
+				reception_user_id	: { type: GraphQLID },
+				guest_company		: { type: GraphQLString },
+				guest_purpose		: { type: GraphQLString },
+				guest_level			: { type: GraphQLString },
+				create_at			: { type: GraphQLString },
+				update_at			: { type: GraphQLString },
+			},
+			async resolve(parent, args) {
+				const data = await api_v1_person_accessController.addapi_v1_person_access(args)
+				return data
+			}
+		},
+		editapi_v1_person_access: {
+			type: api_v1_person_accessType,
+			args: {
+				id: 			{ type: new GraphQLNonNull(GraphQLID) },
+				type				: { type: GraphQLInt },
+				last_type			: { type: GraphQLInt },
+				group_list			: { type: new GraphQLList(GraphQLString) },
+				name				: { type: GraphQLString },
+				avatar_file			: { type: GraphQLString },
+				mobile				: { type: GraphQLString },
+				ic_number			: { type: GraphQLString },
+				id_number			: { type: GraphQLString },
+				job_number			: { type: GraphQLString },
+				id					: { type: GraphQLString },
+				birthday			: { type: GraphQLString },
+				mail				: { type: GraphQLString },
+				gender				: { type: GraphQLString },
+				prompt				: { type: GraphQLString },
+				remark				: { type: GraphQLString },
+				position			: { type: GraphQLString },
+				location			: { type: GraphQLString },
+				company_id			: { type: GraphQLString },
+				department_id		: { type: GraphQLString },
+				area_code			: { type: GraphQLString },
+				entry_time			: { type: GraphQLString },
+				reception_user_id	: { type: GraphQLID },
+				guest_company		: { type: GraphQLString },
+				guest_purpose		: { type: GraphQLString },
+				guest_level			: { type: GraphQLString },
+				create_at			: { type: GraphQLString },
+				update_at			: { type: GraphQLString },
+			},
+			async resolve(parent, args) {
+				const data = await api_v1_person_accessController.updateapi_v1_person_access(args)
+				return data
+			}
+		},
+		deleteapi_v1_person_access: {
+			type: api_v1_person_accessType,
+			args: {
+				id: 			{ type: new GraphQLNonNull(GraphQLID) }
+			},
+			async resolve(parent, args) {
+				const data = await api_v1_person_accessController.deleteapi_v1_person_access(args)
+				return data
+			}
+		},
 	}
 })
 

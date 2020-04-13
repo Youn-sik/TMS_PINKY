@@ -1,8 +1,9 @@
 // Require the framework and instantiate it
 const fastify = require('./server.js')
-
 const gql = require('fastify-gql')
 const schema = require('./schema')
+const cors = require('cors')
+
 // Register Fastify GraphQL
 fastify.register(gql, {
     schema,
@@ -23,7 +24,7 @@ fastify.register(require('fastify-swagger'), swagger.options)
 routes.forEach((route, index) => {
     fastify.route(route)
 })
-
+fastify.use(cors())
 // Run the server!
 const start = async () => {
     try {

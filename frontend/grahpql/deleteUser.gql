@@ -1,0 +1,5 @@
+mutation ($id:ID!){
+    deleteauthorized_access(id:$id) {
+        _id
+    }
+}

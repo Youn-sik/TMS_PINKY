@@ -2,29 +2,23 @@
   <v-row justify="center">
     <v-col cols="11" class="d-flex">
       <v-card width="100%" align="center">
-        
-          <!-- Identification portrait :  -->
-        
-        <v-card-content>
+        <!-- <v-card-content> -->
           <v-col cols="4">
-            <form>
+            <form @submit.prevent="addUser">
               <div>Identification portrait</div>
-              <v-image-input
+              <!-- <v-image-input
               class="imageinput"
               v-model="imageData"
               hideActions="ture"
               imageHeight="200"
               imageWidth="200"
-            />
+            /> -->
               <v-text-field
                 v-model="name"
-                :error-messages="nameErrors"
                 label="Name"
                 required
-                @input="$v.name.$touch()"
-                @blur="$v.name.$touch()"
               ></v-text-field>
-              <v-text-field
+              <!-- <v-text-field
                 v-model="email"
                 :counter="45"
                 :error-messages="emailErrors"
@@ -41,17 +35,20 @@
                 required
                 @input="$v.email.$touch()"
                 @blur="$v.email.$touch()"
-              ></v-text-field>
+              ></v-text-field> -->
               <v-text-field
-                v-model="position"
-                :error-messages="emailErrors"
-                label="Position"
+                v-model="company"
+                label="Company"
                 :counter="45"
                 required
-                @input="$v.email.$touch()"
-                @blur="$v.email.$touch()"
               ></v-text-field>
-              <v-select
+              <v-text-field
+                v-model="data"
+                label="Data"
+                :counter="45"
+                required
+              ></v-text-field>
+              <!-- <v-select
                 v-model="select"
                 :items="items"
                 :error-messages="selectErrors"
@@ -93,11 +90,11 @@
                   min="1950-01-01"
                   @change="save"
                 ></v-date-picker>
-              </v-menu>
-              <v-btn class="mr-4" color="primary" @click="submit">등록</v-btn>
+              </v-menu> -->
+              <v-btn class="mr-4" color="primary" @click="addUser">등록</v-btn>
             </form>
           </v-col>
-        </v-card-content>
+        <!-- </v-card-content> -->
       </v-card>
     </v-col>
     
@@ -106,15 +103,20 @@
 
 
 <script>
-  import VImageInput from 'vuetify-image-input';
+  // import VImageInput from 'vuetify-image-input';
+  import ALL_USERS from "../../../grahpql/allUser.gql";
+  import CREATE_USER from "../../../grahpql/addUser.gql";
   export default {
     data: () => ({
       imageData : null,
       date: null,
       menu: false,
+      name : null,
+      data : null,
+      company : null
     }),
     components: {
-      VImageInput,
+      // VImageInput,
     },
     watch: {
       menu (val) {
@@ -125,6 +127,27 @@
       save (date) {
         this.$refs.menu.save(date)
       },
+      async addUser(){
+        await this.$apollo.mutate({
+          mutation : CREATE_USER,
+          variables : {
+              name : this.name,
+              company : this.company,
+              data : this.data,
+          },
+          update: (store, { data: { addauthorized_access } }) => {
+            const data = store.readQuery({
+              query: ALL_USERS
+            })
+            
+            data.authorized_accesss.push(addauthorized_access)
+            store.writeQuery({ ALL_USERS, data })
+          },
+        }).then(() =>{
+          this.$router.push('/index/employee');
+        })
+        
+      }
     },
   }
 </script>
