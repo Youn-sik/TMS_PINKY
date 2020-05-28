@@ -20,29 +20,29 @@
                 dark
                 flat
               >
-                <v-toolbar-title>KS Cloud 3.3</v-toolbar-title>
+                <v-toolbar-title>출입 통제 시스템</v-toolbar-title>
                 <v-spacer />
               
               </v-toolbar>
               <v-card-text>
                 <v-form method="post" @submit.prevent="login">
                   <v-text-field
-                    label="Login"
+                    label="아이디"
                     name="login"
-                    v-model="id"
+                    v-model="user_id"
                     type="text"
                   />
 
                   <v-text-field
                     id="password"
-                    label="Password"
+                    label="비밀번호"
                     name="password"
-                    v-model="password"
+                    v-model="user_pw"
                     type="password"
                   />
                   <v-card-actions>
                   <v-spacer />
-                    <v-btn color="primary" type="submit">LOGIN</v-btn>
+                    <v-btn color="primary" type="submit">로그인</v-btn>
                   </v-card-actions>
                 </v-form>
               </v-card-text>
@@ -61,48 +61,59 @@ export default {
   props:["isLogin"],
   data(){
     return{
-      id: "",
-      password: "",
-      userData : '',
-      token : '',
+      user_id: '',
+      user_pw: '',
+      userData : null,
+      token : null,
     }
   },
   apollo: {
-    getUser : {
+    login : {
       query : gql`
-        query getUser($id:String,$password:String){
-          getUser(id:$id,password:$password) {
-            id
-            password
+        query getUser($user_id:String,$user_pw:String){
+          login(user_id:$user_id,user_pw:$user_pw) {
+            user_id
           }
         }
       `,
+      fetchPolicy: 'no-cache',
+      variables () {
+        return {
+          user_id : this.user_id,
+          user_pw : this.user_pw,
+        }
+      },
       skip() {
         return true;
       },
-      variables () {
-        return {
-          id : this.id,
-          password : this.password,
+      result(ApolloQueryResult){
+        if(ApolloQueryResult.data.login === null) {
+          alert("로그인 실패");
+          this.$apollo.queries.login.skip = true;
+        } else {
+          this.token = ApolloQueryResult.data.login.user_id;
+          this.$emit('login',true);
+          document.cookie = 'token=' + this.token;
+          this.$router.push('/index');
         }
       },
-      result(ApolloQueryResult){
-        this.token = ApolloQueryResult.data.getUser.id;
-        this.$emit('login',true);
-        document.cookie = 'token=' + this.token;
-        this.$router.push('/index');
-      },
       error(){
-        this.$apollo.queries.getUser.skip = true;
         alert("로그인 실패");
+        this.$apollo.queries.login.skip = true;
       }
     }
   },
   methods: {
-    async login () {
-      this.$apollo.queries.getUser.skip = false;
-      this.$apollo.queries.getUser.refetch();
-    }
+    login () {
+      if(this.user_id === '') {
+        alert('아이디를 입력해 주세요');
+      } else if(this.user_pw === '') {
+        alert('비밀번호를 입력해 주세요');
+      } else {
+        this.$apollo.queries.login.skip = false;
+        this.$apollo.queries.login.refetch();
+      }
+    },
   }
 }
 </script>

@@ -165,21 +165,21 @@
               timestamp : this.getFormatDate(new Date()),
               avatar_file : this.image,
               app_key : "12345678",
-              type : 1,
+              type : 5,
           },
           update: (store, { data : {addapi_v1_person_user} }) => {
             const data = store.readQuery({
               query: ALL_USERS,
               // variables: { _id: addapi_v1_person_user._id, app_key: addapi_v1_person_user.app_key, name: addapi_v1_person_user.name, avatar_file: addapi_v1_person_user.avatar_file, timestamp: addapi_v1_person_user.timestamp}
               variables : {
-                type : 1
+                type : 5
               }
             })
             data.api_v1_person_users.push(addapi_v1_person_user)
             store.writeQuery({query: ALL_USERS, data })
           },
         }).then(() =>{
-          this.$router.push('/index/employee');
+          this.$router.push('/index/blacklist');
         })
         
       }

@@ -35,6 +35,36 @@ const routes = [
         component:() => import('@/views/Person/EmployeeGroup'),
       },
       {
+        name:'Visitor',
+        path:'visitor',
+        component:() => import('@/views/Person/Visitor'),
+      },
+      {
+        name:'AddVisitor',
+        path:'addVisitor',
+        component:() => import('@/views/Person/AddVisitor'),
+      },
+      {
+        name:'VisitorGroup',
+        path:'visitorgroup',
+        component:() => import('@/views/Person/VisitorGroup'),
+      },
+      {
+        name:'Blacklist',
+        path:'blacklist',
+        component:() => import('@/views/Person/Blacklist'),
+      },
+      {
+        name:'AddBlacklist',
+        path:'addBlacklist',
+        component:() => import('@/views/Person/AddBlacklist'),
+      },
+      {
+        name:'BlacklistGroup',
+        path:'blacklistgroup',
+        component:() => import('@/views/Person/BlacklistGroup'),
+      },
+      {
         name:'AttendanceRules',
         path:'attendancerules',
         component:() => import('@/views/Attendance/AttendanceRules'),
@@ -69,7 +99,7 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  mode: 'history',
+  // mode: 'history',
   routes
 })
 

@@ -1,9 +1,10 @@
-
-mutation ($id:ID!,$name:String!,$company:String!,$data:String!){
-    editauthorized_access(id:$id,name:$name,company:$company,data:$data) {
-        _id
-        name
-        company
-        data
-    }
+mutation($_id:ID!,$app_key:String!, $sign:String!, $avatar_file:String! , $name:String, $timestamp:String!) {
+  editapi_v1_person_user(_id:$_id,app_key:$app_key, sign:$sign, avatar_file:$avatar_file, timestamp:$timestamp,name:$name){
+    _id
+    name
+    avatar_file
+    sign
+    app_key
+    timestamp
+  }
 }

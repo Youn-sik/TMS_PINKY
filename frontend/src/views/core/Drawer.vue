@@ -9,7 +9,7 @@
             <v-icon>mdi-home</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>KSS cloud 3.3</v-list-item-title>
+            <v-list-item-title>출입 통제 시스템</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -94,21 +94,21 @@
       dialog: false,
       drawer: false,
       items: [
-        { icon: 'trending_up', text: 'Dashboard', to: '/dashboard'},
+        { icon: 'trending_up', text: '종합 현황판', to: '/dashboard'},
         {
           icon: 'mdi-chevron-up',
           'icon-alt': 'mdi-chevron-down',
           text: 'Personnel Management',
           model: false,
           children: [
-            { text: 'Employee Management', to: '/employee' },
-            { text: 'Employee Group Management', to: '/employeegroup' },
-            { text: 'Visitor Management', to: '/Device/Device' },
-            { text: 'Visitor Group Management', to: '/Device/Device' },
-            { text: 'Blakclist Management', to: '/Device/Device' },
-            { text: 'Blakclist Group Management', to: '/Device/Device' },
-            { text: 'Registration Record', to: '/Device/Device' },
-            { text: 'Search By Pitures', to: '/Device/Device' },
+            { text: '사원 관리', to: '/employee' },
+            { text: '사원 그룹 관리', to: '/employeegroup' },
+            { text: '방문자 관리', to: '/Device/Device' },
+            { text: '방문자 그룹 관리', to: '/Device/Device' },
+            { text: '블랙리스트 관리', to: '/Device/Device' },
+            { text: '블랙리스트 그룹 관리', to: '/Device/Device' },
+            { text: '등록 기록', to: '/Device/Device' },
+            { text: '사진으로 검색', to: '/Device/Device' },
           ],
         },
                 {

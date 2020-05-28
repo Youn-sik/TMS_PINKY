@@ -10,7 +10,7 @@
                     align="left"
                 >
                     <v-icon left>perm_identity</v-icon>
-                    Today's statistics
+                    오늘의 통계
                 </v-chip>
                 <v-card
                     outlined
@@ -19,20 +19,20 @@
                 >
                     <v-list-item three-line>
                         <v-list-item-content>
-                            <div class="overline mb-4">Total</div>
-                            <v-list-item-title class="headline mb-1">Headline 5</v-list-item-title>
+                            <div class="overline mb-3">총합</div>
+                            <v-list-item-title class="headline mb-1">34</v-list-item-title>
                         </v-list-item-content>
                         <v-list-item-content>
-                            <div class="overline mb-4">Employee</div>
-                            <v-list-item-title class="headline mb-1">Headline 5</v-list-item-title>
+                            <div class="overline mb-3">사원</div>
+                            <v-list-item-title class="headline mb-1">13</v-list-item-title>
                         </v-list-item-content>
                         <v-list-item-content>
-                            <div class="overline mb-4">Visitor</div>
-                            <v-list-item-title class="headline mb-1">Headline 5</v-list-item-title>
+                            <div class="overline mb-3">방문자</div>
+                            <v-list-item-title class="headline mb-1">14</v-list-item-title>
                         </v-list-item-content>
                         <v-list-item-content>
-                            <div class="overline mb-4">Stranger</div>
-                            <v-list-item-title class="headline mb-1">Headline 5</v-list-item-title>
+                            <div class="overline mb-3">미등록자</div>
+                            <v-list-item-title class="headline mb-1">7</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
                 </v-card>
@@ -53,7 +53,7 @@
                         pill        
                     >
                         <v-icon left>perm_identity</v-icon>
-                        Devices
+                        단말기
                     </v-chip>
                     <v-list-item three-line>
                         <v-list-item-content>
@@ -114,7 +114,7 @@
                                         
                     >
                         <v-icon left>perm_identity</v-icon>
-                        Daily check-in
+                        익일 출입
                     </v-chip>
                     <v-list-item three-line>
                         <v-list-item-content>
@@ -143,7 +143,7 @@
                                         
                     >
                         <v-icon left>perm_identity</v-icon>
-                        Daily access control alarm
+                        익일 출입 통제
                     </v-chip>
                     <v-list-item three-line>
                         <v-list-item-content>
@@ -168,7 +168,7 @@
                                         
                     >
                         <v-icon left>perm_identity</v-icon>
-                        Yesterday Attendance
+                        작일 출석
                     </v-chip>
                     <v-list-item three-line>
                         <v-list-item-content>

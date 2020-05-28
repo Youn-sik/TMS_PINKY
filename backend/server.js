@@ -9,7 +9,7 @@ const config = require("./config/config");
 
 // Connect to DB
 mongoose
-	.connect('mongodb://kool:master@localhost:27017/users',{ useNewUrlParser: true ,useUnifiedTopology: true})
+	.connect('mongodb://kool:master@mongo:27017/users',{ useNewUrlParser: true ,useUnifiedTopology: true})
 	.then(() => console.log('MongoDB connected...'))
 	.catch(err => console.log(err))
 

@@ -7,7 +7,7 @@ import { makeExecutableSchema } from 'graphql-tools';
 const app = express();
 const port = 3000;
 
-mongoose.connect('mongodb://kool:master@localhost:27017/users', { useNewUrlParser: true, useUnifiedTopology: true }, function(err) {
+mongoose.connect('mongodb://kool:master@mongo:27017/users', { useNewUrlParser: true, useUnifiedTopology: true }, function(err) {
     console.log("mongoDB connected");
 });
 

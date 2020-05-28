@@ -79,7 +79,7 @@
                 </v-card-actions>
               </v-card>
             </v-dialog>
-            <v-btn color="primary" class="mt-4" :to="{path : 'addemployee'}">추가</v-btn>
+            <v-btn color="primary" class="mt-4" :to="{path : 'addvisitor'}">추가</v-btn>
           </div>
         </v-card-title>
         <v-data-table
@@ -215,7 +215,7 @@
         api_v1_person_users : {
         query : ALL_USERS,
         variables : {
-              type : 1,
+              type : 2,
         },
         error (err) {
           if(err.message.split(':')[2] === ' "유효 하지 않는 토큰 입니다"') {
@@ -254,7 +254,7 @@
             const data = store.readQuery({
               query: ALL_USERS,
               variables : {
-                type : 1
+                type : 2
               }
             })
             data.api_v1_person_users = data.api_v1_person_users.filter(user => {
@@ -264,7 +264,7 @@
               query : ALL_USERS, 
               data,
               variables : {
-                type : 1
+                type : 2
               } 
             })
           },

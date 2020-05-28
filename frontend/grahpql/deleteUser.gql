@@ -1,5 +1,5 @@
-mutation ($id:ID!){
-    deleteauthorized_access(id:$id) {
-        _id
-    }
+mutation delUser($id:ID!){
+  deleteapi_v1_person_user(id:$id) {
+    name
+  }
 }
