@@ -43,6 +43,7 @@
             hide-details
             clear-icon="mdi-close-circle-outline"
             append-icon="search"
+            style="width:50%;"
           ></v-text-field>
           <div>
             <v-btn color="error" class="ml-2 mr-2 mt-4" v-if="userSelected[0]" @click="deleteUser"><v-icon dark left>delete_forever</v-icon>삭제</v-btn>

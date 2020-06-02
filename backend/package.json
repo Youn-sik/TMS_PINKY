@@ -14,6 +14,7 @@
     "boom": "^7.3.0",
     "cookie": "^0.4.1",
     "cors": "^2.8.5",
+    "express": "^4.17.1",
     "express-graphql": "^0.9.0",
     "fastify": "^2.13.0",
     "fastify-cors": "^3.0.3",
