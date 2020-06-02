@@ -4,6 +4,7 @@ query($type:Int) {
     name
     app_key
     sign
+    created_at
     timestamp
     avatar_file
   }

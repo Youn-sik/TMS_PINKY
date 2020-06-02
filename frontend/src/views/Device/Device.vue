@@ -8,18 +8,18 @@
       >
         <v-list-item three-line>
           <v-list-item-content>
-            <div class="mb-4">Total</div>
-            <v-list-item-title class="headline mb-1">Headline 5</v-list-item-title>
+            <div class="mb-4">총합</div>
+            <v-list-item-title class="headline mb-1">15</v-list-item-title>
           </v-list-item-content>
           <v-divider vertical></v-divider>
           <v-list-item-content>
-            <div class="mb-4">Employee</div>
-            <v-list-item-title class="headline mb-1">Headline 5</v-list-item-title>
+            <div class="mb-4">온라인</div>
+            <v-list-item-title class="headline mb-1">12</v-list-item-title>
           </v-list-item-content>
           <v-divider vertical></v-divider>
           <v-list-item-content>
-            <div class="mb-4">Visitor</div>
-            <v-list-item-title class="headline mb-1">Headline 5</v-list-item-title>
+            <div class="mb-4">오프라인</div>
+            <v-list-item-title class="headline mb-1">3</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-card>
@@ -27,15 +27,132 @@
     <v-col cols="11">
       <v-card>
         <v-card-title>
-          Device List
+          단말기 목록
           <v-spacer></v-spacer>
           <v-text-field
             v-model="search"
-            append-icon="mdi-magnify"
-            label="Search"
-            single-line
+            label="검색"
+            clearable
             hide-details
+            clear-icon="mdi-close-circle-outline"
+            append-icon="search"
           ></v-text-field>
+          <div>
+            <v-dialog v-model="addUserModal" persistent max-width="600px">
+              <template v-slot:activator="{ on }">
+                <v-btn class="ml-2 mr-2 mt-4" color="primary" dark v-on="on"><v-icon dark left>mdi-plus</v-icon>추가</v-btn>
+              </template>
+              <v-card>
+                <v-card-title>
+                  <span class="headline">단말기 추가</span>
+                </v-card-title>
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="12">
+                        <v-autocomplete
+                          :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
+                          label="단말기 타입"
+                        ></v-autocomplete>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-autocomplete
+                          :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
+                          label="단말기 게이트웨이"
+                        ></v-autocomplete>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-autocomplete
+                          :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
+                          label="채널"
+                        ></v-autocomplete>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field label="단말기 이름*" required></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field label="단말기 위치*" required></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-autocomplete
+                          :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
+                          label="프로토콜"
+                        ></v-autocomplete>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field label="URL" required></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                  <small>*표시는 필수 항목 입니다</small>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="blue darken-1" text @click="addUserModal = false">Close</v-btn>
+                  <v-btn color="blue darken-1" text @click="addUserModal = false">Save</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+            <v-dialog v-model="batchSettingModal" persistent max-width="600px">
+              <template v-slot:activator="{ on }">
+                <v-btn class="ml-2 mr-2 mt-4" color="primary" dark v-on="on"><v-icon dark left>settings</v-icon>업데이트</v-btn>
+              </template>
+              <v-card> 
+                <v-card-title>
+                  <span class="headline">업데이트</span>
+                </v-card-title>
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-container>
+                        <v-row>
+                          <v-col cols="12">
+                            <v-autocomplete
+                              :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
+                              label="단말기 타입"
+                            ></v-autocomplete>
+                          </v-col>
+                          <v-col cols="12">
+                            <v-autocomplete
+                              :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
+                              label="단말기 게이트웨이"
+                            ></v-autocomplete>
+                          </v-col>
+                          <v-col cols="12">
+                            <v-autocomplete
+                              :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
+                              label="채널"
+                            ></v-autocomplete>
+                          </v-col>
+                          <v-col cols="12">
+                            <v-text-field label="단말기 이름*" required></v-text-field>
+                          </v-col>
+                          <v-col cols="12">
+                            <v-text-field label="단말기 위치*" required></v-text-field>
+                          </v-col>
+                          <v-col cols="12">
+                            <v-autocomplete
+                              :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
+                              label="프로토콜"
+                            ></v-autocomplete>
+                          </v-col>
+                          <v-col cols="12">
+                            <v-text-field label="URL" required></v-text-field>
+                          </v-col>
+                        </v-row>
+                      </v-container>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="blue darken-1" text @click="batchSettingModal = false">Close</v-btn>
+                  <v-btn color="blue darken-1" text @click="batchSettingModal = false">Save</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>  
+            <v-btn class="ml-2 mr-2 mt-4" color="error"><v-icon dark left>delete_forever</v-icon>삭제</v-btn>    
+          </div>
         </v-card-title>
         <v-data-table
           :headers="headers"
@@ -141,97 +258,6 @@
           </template>
         </v-data-table>
       </v-card>
-    </v-col>
-        <v-col cols="11" class="text-right">
-      <div class="pa-2">
-        <v-dialog v-model="addUserModal" persistent max-width="600px">
-          <template v-slot:activator="{ on }">
-            <v-btn class="ma-2" color="primary" dark v-on="on"><v-icon dark left>mdi-plus</v-icon>Device Add</v-btn>
-          </template>
-          <v-card>
-            <v-card-title>
-              <span class="headline">Add Device</span>
-            </v-card-title>
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12">
-                    <v-autocomplete
-                      :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
-                      label="Device Type"
-                    ></v-autocomplete>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-autocomplete
-                      :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
-                      label="Device Gateway"
-                    ></v-autocomplete>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-autocomplete
-                      :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
-                      label="Channel"
-                    ></v-autocomplete>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-text-field label="Device Name*" required></v-text-field>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-text-field label="Device location*" required></v-text-field>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-autocomplete
-                      :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
-                      label="Protocol"
-                    ></v-autocomplete>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-text-field label="URL" required></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
-              <small>*indicates required field</small>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="addUserModal = false">Close</v-btn>
-              <v-btn color="blue darken-1" text @click="addUserModal = false">Save</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-        <v-dialog v-model="batchSettingModal" persistent max-width="80%">
-          <template v-slot:activator="{ on }">
-            <v-btn class="ma-2" color="primary" dark v-on="on"><v-icon dark left>settings</v-icon>Batch setting</v-btn>
-          </template>
-          <v-card>
-           
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12">
-                    <v-select v-model="color" :items="colors" label="Select Devices"></v-select>
-                     <v-card-sub-title class="subtitle-2 pa">Applied devices</v-card-sub-title>
-                    <v-data-table
-                      v-model="selected"
-                      :headers="headers"
-                      :items="desserts"
-                      item-key="name"
-                      show-select
-                      class="elevation-1"
-                    ></v-data-table>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="batchSettingModal = false">Close</v-btn>
-              <v-btn color="blue darken-1" text @click="batchSettingModal = false">Save</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>  
-        <v-btn class="ma-2" color="error"><v-icon dark left>mdi-sync</v-icon>Reboot All</v-btn>    
-      </div>
     </v-col>
   </v-row>
 </template>

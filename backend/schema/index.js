@@ -70,8 +70,8 @@ const api_v3_device_gatewayType = new GraphQLObjectType({
 		ldid		: { type: GraphQLString },
 		type_id		: { type: GraphQLInt },
 		type_name	: { type: GraphQLString },
-		update_at	: { type: GraphQLString },
-		create_at	: { type: GraphQLString },
+		updated_at	: { type: GraphQLString },
+		created_at	: { type: GraphQLString },
 		camera_data: {
 			type: api_v3_device_cameraType,
 			async resolve(parent, args) {
@@ -113,8 +113,8 @@ const api_v3_device_cameraType = new GraphQLObjectType({
 		ldid				: { type: GraphQLString },
 		type_id				: { type: GraphQLInt },
 		type_name			: { type: GraphQLString },
-		update_at			: { type: GraphQLString },
-		create_at			: { type: GraphQLString },
+		updated_at			: { type: GraphQLString },
+		created_at			: { type: GraphQLString },
 		last_offline_time	: { type: GraphQLString },
 		config_data			: { type: new GraphQLList(GraphQLString) },
 	})
@@ -202,8 +202,8 @@ const api_v1_person_userType = new GraphQLObjectType({
 		prompt				: { type: GraphQLString },
 		type				: { type: GraphQLInt },
 		last_type			: { type: GraphQLInt },
-		create_at			: { type: GraphQLString },
-		update_at			: { type: GraphQLString },
+		created_at			: { type: GraphQLString },
+		updated_at			: { type: GraphQLString },
 	})
 })
 
@@ -242,8 +242,8 @@ const api_v1_person_accessType = new GraphQLObjectType({
 		guest_company		: { type: GraphQLString },
 		guest_purpose		: { type: GraphQLString },
 		guest_level				: { type: GraphQLString },
-		create_at			: { type: GraphQLString },
-		update_at			: { type: GraphQLString },
+		created_at			: { type: GraphQLString },
+		updated_at			: { type: GraphQLString },
 	})
 })
 
@@ -420,6 +420,17 @@ const RootQuery = new GraphQLObjectType({
 			async resolve(parent, args, context) {
 				if(context.auth === true) {	
 					return await api_v1_person_userController.getapi_v1_person_users(args)
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
+			}
+		},
+		api_v1_person_every_type_users: {
+			type: new GraphQLList(api_v1_person_userType),
+			args: { type: { type: GraphQLInt } },
+			async resolve(parent, args, context) {
+				if(context.auth === true) {	
+					return await api_v1_person_userController.getapi_v1_person_every_type_users(args)
 				} else {
 					throw '유효 하지 않는 토큰 입니다';
 				}
@@ -670,8 +681,8 @@ const Mutations = new GraphQLObjectType({
 				ldid: 		{ type: GraphQLString },
 				type_id: 	{ type: GraphQLInt },
 				type_name: 	{ type: GraphQLString },
-				update_at: 	{ type: GraphQLString },
-				create_at: 	{ type: GraphQLString }
+				updated_at: 	{ type: GraphQLString },
+				created_at: 	{ type: GraphQLString }
 			},
 			async resolve(parent, args,context) {
 				if(context.auth === true) {	
@@ -702,8 +713,8 @@ const Mutations = new GraphQLObjectType({
 				ldid: 		{ type: GraphQLString },
 				type_id: 	{ type: GraphQLInt },
 				type_name: 	{ type: GraphQLString },
-				update_at: 	{ type: GraphQLString },
-				create_at: 	{ type: GraphQLString }
+				updated_at: 	{ type: GraphQLString },
+				created_at: 	{ type: GraphQLString }
 			},
 			async resolve(parent, args,context) {
 				if(context.auth === true) {	
@@ -765,8 +776,8 @@ const Mutations = new GraphQLObjectType({
 				ldid: 		{ type: GraphQLString },
 				type_id: 	{ type: GraphQLInt },
 				type_name: 	{ type: GraphQLString },
-				update_at: 	{ type: GraphQLString },
-				create_at: 	{ type: GraphQLString },
+				updated_at: 	{ type: GraphQLString },
+				created_at: 	{ type: GraphQLString },
 				last_offline_time : { type: GraphQLString },
 				config_data:{ type: new GraphQLList(GraphQLString) }
 			},
@@ -815,8 +826,8 @@ const Mutations = new GraphQLObjectType({
 				ldid: 		{ type: GraphQLString },
 				type_id: 	{ type: GraphQLInt },
 				type_name: 	{ type: GraphQLString },
-				update_at: 	{ type: GraphQLString },
-				create_at: 	{ type: GraphQLString },
+				updated_at: 	{ type: GraphQLString },
+				created_at: 	{ type: GraphQLString },
 				last_offline_time : { type: GraphQLString },
 				config_data:{ type: new GraphQLList(GraphQLString) }
 			},
@@ -1053,8 +1064,8 @@ const Mutations = new GraphQLObjectType({
 				guest_company		: { type: GraphQLString },
 				guest_purpose		: { type: GraphQLString },
 				guest_level			: { type: GraphQLString },
-				create_at			: { type: GraphQLString },
-				update_at			: { type: GraphQLString },
+				created_at			: { type: GraphQLString },
+				updated_at			: { type: GraphQLString },
 			},
 			async resolve(parent, args,context) {
 				if(context.auth === true) {	
@@ -1094,8 +1105,8 @@ const Mutations = new GraphQLObjectType({
 				guest_company		: { type: GraphQLString },
 				guest_purpose		: { type: GraphQLString },
 				guest_level			: { type: GraphQLString },
-				create_at			: { type: GraphQLString },
-				update_at			: { type: GraphQLString },
+				created_at			: { type: GraphQLString },
+				updated_at			: { type: GraphQLString },
 			},
 			async resolve(parent, args,context) {
 				if(context.auth === true) {	

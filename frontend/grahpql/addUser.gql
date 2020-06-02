@@ -1,11 +1,11 @@
-mutation CreateUser($app_key: String!, $sign: String!, $name: String! $timestamp:String!, $avatar_file:String!, $type:Int) {
-  addapi_v1_person_user(app_key: $app_key, name: $name, sign: $sign, timestamp : $timestamp, avatar_file : $avatar_file, type : $type) {
+mutation CreateUser($app_key: String!, $sign: String!, $name: String!, $created_at:String!,$timestamp:String!, $avatar_file:String!, $type:Int) {
+  addapi_v1_person_user(app_key: $app_key, name: $name, sign: $sign, created_at : $created_at, avatar_file : $avatar_file, type : $type, timestamp: $timestamp) {
     _id
     type
     app_key
     name
     sign
-    timestamp
+    created_at
     avatar_file
   }
 }

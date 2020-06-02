@@ -1,42 +1,10 @@
 <template>
   <v-row justify="center">
     <v-col cols="11" class="d-flex">
-      <v-card
-        width="25%"
-      >
-         <v-card-title>
-          <v-text-field
-            v-model="searchGroup"
-            label="검색"
-            clearable
-            hide-details
-            clear-icon="mdi-close-circle-outline"
-            append-icon="search"
-          ></v-text-field>
-        </v-card-title>
-        <!-- {{active}} 선택됨 -->
-        <v-card-text>
-          <v-treeview
-            :items="items"
-            :active.sync="active"
-            :search="searchGroup"
-            activatable
-            :open.sync="open"
-          >
-            <template v-slot:prepend="{ item }">
-              <v-icon
-                v-if="item.children"
-                v-text="`mdi-${item.id === 1 ? 'home-variant' : 'folder-network'}`"
-              ></v-icon>
-            </template>
-          </v-treeview>
-        </v-card-text>
-      </v-card>
-      <v-divider vertical></v-divider>
-      <v-card width="75%">
+      <v-card width="100%">
         <v-card-title>
           <v-text-field
-            v-model="searchEmployee"
+            v-model="search"
             label="검색"
             clearable
             hide-details
@@ -44,10 +12,10 @@
             append-icon="search"
           ></v-text-field>
           <div>
-            <v-btn color="error" class="ml-2 mr-2 mt-4" v-if="userSelected[0]" @click="deleteUser">삭제</v-btn>
-            <v-btn color="error" class="ml-2 mr-2 mt-4" v-else disabled>삭제</v-btn>
-            <v-btn color="primary" class="mt-4 mr-2" v-if="userSelected[0]" dark @click="userUpdateModal=true">업데이트</v-btn>
-            <v-btn color="error" class="mt-4 mr-2" v-else disabled>업데이트</v-btn>
+            <v-btn color="error" class="ml-2 mr-2 mt-4" v-if="userSelected[0]" @click="deleteUser"><v-icon dark left>delete_forever</v-icon>삭제</v-btn>
+            <v-btn color="error" class="ml-2 mr-2 mt-4" v-else disabled><v-icon dark left>delete_forever</v-icon>삭제</v-btn>
+            <v-btn color="primary" class="mt-4 mr-2" v-if="userSelected[0]" dark @click="userUpdateModal=true"><v-icon dark left>settings</v-icon>업데이트</v-btn>
+            <v-btn color="error" class="mt-4 mr-2" v-else disabled><v-icon dark left>settings</v-icon>업데이트</v-btn>
             <v-dialog v-model="userUpdateModal" persistent max-width="20%">
               <v-card v-if="userSelected[0]">
                 <v-card-title class="headline">사용자 정보 업데이트</v-card-title>
@@ -79,7 +47,7 @@
                 </v-card-actions>
               </v-card>
             </v-dialog>
-            <v-btn color="primary" class="mt-4" :to="{path : 'addblacklist'}">추가</v-btn>
+            <v-btn color="primary" class="mt-4" :to="{path : 'addblacklist'}"><v-icon dark left>mdi-plus</v-icon>추가</v-btn>
           </div>
         </v-card-title>
         <v-data-table
@@ -88,8 +56,7 @@
           show-select
           item-key="_id"
           :headers="headers"
-          :items="api_v1_person_users"
-          :search="searchEmployee"
+          :items="filteredItems"
         >
           <template v-slot:item.avatar_file="{ item }">
             <img 
@@ -97,8 +64,8 @@
             class="mt-1 mb-1"
             :src="'data:image/jpeg;base64,'+item.avatar_file"/>
           </template>
-          <template v-slot:item.timestamp="{ item }">
-            {{item.timestamp}}
+          <template v-slot:item.created_at="{ item }">
+            {{item.created_at}}
           </template>
         </v-data-table>
       </v-card>
@@ -114,6 +81,17 @@
   import DELETE_USER from "../../../grahpql/deleteUser.gql";
   import UPDATE_USER from "../../../grahpql/editUser.gql";
   export default {
+    computed: {
+      filteredItems() {
+        if(this.search === '') {
+          return this.api_v1_person_users
+        } else {
+          return this.api_v1_person_users.filter((i) => {
+            return i.name.indexOf(this.search) >= 0;
+          })
+        }
+      }
+    },
     data: () => ({
       active:[],
       userSelected:[],
@@ -125,7 +103,7 @@
       headers: [
           {
             text: '',
-            align: 'start',
+            align: 'center',
             value: 'avatar_file',
             width : '10%',
             sortable: false,
@@ -135,7 +113,7 @@
             align: 'start',
             value: 'name',
           },
-          { text: '생성일', value: 'timestamp' },
+          { text: '생성일', value: 'created_at' },
         ],
       items: [
         {
@@ -204,8 +182,7 @@
         },
       ],
       open: [1, 2],
-      searchGroup: null,
-      searchEmployee : null,
+      search : null,
       caseSensitive: false,
     }),
     components: {
@@ -273,13 +250,30 @@
         alert("유저를 선택해 주세요")
       }
     },
-    // To do : updateUser 쿼리 바꾼후 로직도 바꾸기
-    // To do : 토큰 만료 에러 날시 로그인 창으로 강제 이동 시키기
-    // To do : 데이터 테이블 이미지 나오도록 커스텀 하기
+    getFormatDate(date){
+        var year = date.getFullYear();              //yyyy
+        var month = (1 + date.getMonth());          //M
+        month = month >= 10 ? month : '0' + month;  //month 두자리로 저장
+        var day = date.getDate();                   //d
+        var hours = date.getHours();
+        if(hours < 10) {
+          hours = '0' + hours;
+        }
+        var minutes = date.getMinutes();
+        if(minutes < 10) {
+          minutes = '0' + minutes;
+        }
+        var seconds = date.getSeconds();
+        if(seconds < 10) {
+          seconds = '0' + seconds;
+        }
+        day = day >= 10 ? day : '0' + day;          //day 두자리로 저장
+        return  year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+    },
     updateUser () {
       let app_key = this.userSelected[0].app_key;
       let sign = this.userSelected[0].sign;
-      let timestamp = this.userSelected[0].timestamp;
+      let created_at = this.userSelected[0].created_at;
       if(!this.name){
         this.name = this.userSelected[0].name;
       }
@@ -292,9 +286,11 @@
             _id : this.userSelected[0]._id,
             name : this.name,
             app_key,
-            timestamp,
+            created_at,
             sign,
-            avatar_file : this.image
+            timestamp : this.userSelected[0].timestamp,
+            avatar_file : this.image,
+            updated_at : this.getFormatDate(new Date())
         },
       })
       this.userUpdateModal = false  

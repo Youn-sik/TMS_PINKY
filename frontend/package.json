@@ -24,6 +24,7 @@
     "vue-base64-upload": "^1.0.1",
     "vue-google-charts": "^0.3.2",
     "vue-i18n": "^8.17.3",
+    "vue-integer-plusminus": "^1.4.0",
     "vue-router": "^3.1.5",
     "vuetify": "^2.2.20",
     "vuetify-image-input": "^19.1.0"

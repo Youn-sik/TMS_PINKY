@@ -12,7 +12,6 @@ const httpEndpoint = process.env.VUE_APP_GRAPHQL_HTTP || 'http://localhost:4000/
 const authLink = setContext(async (_, { headers }) => {
   const cookie = document.cookie.match('(^|;) ?' + "token" + '=([^;]*)(;|$)')
   const token = cookie === null ? '' : cookie[2] !== undefined ? cookie[2] : '';
-  console.log(token)
   return {
     headers: {
       ...headers,

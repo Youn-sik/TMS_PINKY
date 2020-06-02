@@ -65,14 +65,44 @@ const routes = [
         component:() => import('@/views/Person/BlacklistGroup'),
       },
       {
+        name:'RegRecord',
+        path:'regrecord',
+        component:() => import('@/views/Person/RegRecord'),
+      },
+      {
+        name:'SearchPeople',
+        path:'searchpeople',
+        component:() => import('@/views/Person/SearchPeople'),
+      },
+      {
         name:'AttendanceRules',
         path:'attendancerules',
         component:() => import('@/views/Attendance/AttendanceRules'),
       },
       {
+        name:'AttendanceArea',
+        path:'attendancearea',
+        component:() => import('@/views/Attendance/AttendanceArea'),
+      },
+      {
         name:'AttendanceRecords',
         path:'attendancerecords',
         component:() => import('@/views/Attendance/AttendanceRecords'),
+      },
+      {
+        name:'AttendanceStatistics',
+        path:'attendancestatistics',
+        component:() => import('@/views/Attendance/AttendanceStatistics'),
+      },
+      {
+        name:'Account',
+        path:'account',
+        component:() => import('@/views/System/Account'),
+      },
+      {
+        name:'OperationLog',
+        path:'operationlog',
+        component:() => import('@/views/System/OperationLog'),
       },
       {
         name:'Setting update',

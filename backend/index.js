@@ -11,6 +11,8 @@ const cookie = require('cookie');
 //     schema,
 //     graphiql: true
 // })
+
+fastify.use(cors())
 const context = (req) => {
     let token = req.headers.authorization;
     if(token === undefined && req.headers.cookie !== undefined) {
@@ -29,7 +31,6 @@ const context = (req) => {
     }
     return {auth};
 }
-fastify.use(cors())
 
 fastify.use('/graphiql', 
     graphqlHTTP( (req,res) =>({
@@ -38,6 +39,22 @@ fastify.use('/graphiql',
         context : context(req),
     }))
 );
+
+fastify.route({
+    method: 'GET',
+    url: '/token_auth',
+    handler: function (request, reply) {
+        let auth
+        try {
+            let tokenAuth = jwt.verify(request.query.token,'jjh');
+            auth = true;
+        } catch (err) {
+            auth = false;
+        }
+        
+        reply.send({ auth: auth });
+    }
+  })
 
 //const mongoose = require('mongoose')
 const routes = require('./routes')
@@ -56,7 +73,7 @@ routes.forEach((route, index) => {
 // Run the server!
 const start = async () => {
     try {
-        await fastify.listen(3000,'0.0.0.0')
+        await fastify.listen(4000,'0.0.0.0')
         fastify.swagger()
         fastify.log.info(`server listening on ${fastify.server.address().port}`)
     } catch (err) {

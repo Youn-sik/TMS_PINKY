@@ -169,8 +169,8 @@
             { text: '방문자 그룹 관리', to: '/visitorgroup' },
             { text: '블랙리스트 관리', to: '/blacklist' },
             { text: '블랙리스트 그룹 관리', to: '/blacklistgroup' },
-            { text: '등록 기록', to: '/Device/Device' },
-            { text: '사진으로 검색', to: '/Device/Device' },
+            { text: '등록 기록', to: '/regrecord' },
+            { text: '사진으로 검색', to: '/searchpeople' },
           ],
         },
                 {
@@ -189,9 +189,9 @@
           model: false,
           children: [
             { text: '출석 규칙', to:"/attendancerules" },
-            { text: '출석 구역' },
+            { text: '출석 구역' , to:"/attendancearea"},
             { text: '출석 기록', to:'/attendancerecords' },
-            { text: '출석 통계' },
+            { text: '출석 통계',to:'/AttendanceStatistics' },
           ],
         },
         {
@@ -201,8 +201,8 @@
           model: false,
           children: [
             { text: '기업 정보' },
-            { text: '계정 권한' },
-            { text: '기업 일지' },
+            { text: '계정 권한', to:'/account'},
+            { text: '작업 기록', to:'/operationlog' },
             { text: '오픈 플랫폼' },
           ],
         },

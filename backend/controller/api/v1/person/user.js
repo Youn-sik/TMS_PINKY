@@ -23,6 +23,15 @@ exports.getSingleapi_v1_person_user = async (req, reply) => {
     }
 }
 
+exports.getapi_v1_person_every_type_users = async (req, reply) => {
+    try {
+        const get_data = await api_v1_person_user.find()
+        return get_data
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
 exports.addapi_v1_person_user = async (req, reply) => {
     try {
         const add = new api_v1_person_user(req)
