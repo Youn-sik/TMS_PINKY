@@ -16,7 +16,7 @@ const api_v1_group_group_Schema = new mongoose.Schema({
     is_default : Number,
     create_at : String,
     update_at : String,
-    type : Number
+    rootParent : ObjectId
 })
 
 

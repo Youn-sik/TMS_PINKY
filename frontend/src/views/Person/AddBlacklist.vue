@@ -18,79 +18,61 @@
                 label="이름"
                 required
               ></v-text-field>
-              <!-- <v-text-field
-                v-model="email"
-                :counter="45"
-                :error-messages="emailErrors"
-                label="E-mail"
-                required
-                @input="$v.email.$touch()"
-                @blur="$v.email.$touch()"
-              ></v-text-field>
-              <v-text-field
-                v-model="telephone"
-                :error-messages="emailErrors"
-                label="Telephone"
-                :counter="20"
-                required
-                @input="$v.email.$touch()"
-                @blur="$v.email.$touch()"
-              ></v-text-field> -->
-              <!-- <v-text-field
-                v-model="company"
-                label="Company"
-                :counter="45"
-                required
-              ></v-text-field>
-              <v-text-field
-                v-model="data"
-                label="Data"
-                :counter="45"
-                required
-              ></v-text-field> -->
-              <!-- <v-select
-                v-model="select"
-                :items="items"
-                :error-messages="selectErrors"
-                label="Gender"
-                required
-                @change="$v.select.$touch()"
-                @blur="$v.select.$touch()"
-              ></v-select>
-              <v-select
-                v-model="select"
-                :items="items"
-                :error-messages="selectErrors"
-                label="Employee group"
-                required
-                @change="$v.select.$touch()"
-                @blur="$v.select.$touch()"
-              ></v-select>
-              <v-menu
-                ref="menu"
-                v-model="menu"
-                :close-on-content-click="false"
-                transition="scale-transition"
-                offset-y
-                min-width="290px"
+              <v-dialog
+                v-model="dialog"
+                width="500"
               >
                 <template v-slot:activator="{ on }">
-                  <v-text-field
-                    v-model="date"
-                    label="Birthday date"
-                    prepend-icon="event"
-                    readonly
+                  <v-btn
+                    color="primary"
+                    dark
                     v-on="on"
-                  ></v-text-field>
+                  >
+                    그룹 선택
+                  </v-btn>
                 </template>
-                <v-date-picker
-                  ref="picker"
-                  v-model="date"
-                  :max="new Date().toISOString().substr(0, 10)"
-                  min="1950-01-01"
-                  @change="save"
-                ></v-date-picker>
-              </v-menu> -->
+
+                <v-card>
+                  <v-card-title
+                    class="headline grey lighten-2"
+                    primary-title
+                  >
+                    그룹 선택
+                  </v-card-title>
+
+                  <v-card-text>
+                    <v-treeview
+                      :items="api_v1_group_group"
+                      item-key="_id"
+                      :active.sync="active"
+                      :search="searchGroup"
+                      activatable
+                      return-object="false"
+                      :open.sync="open"
+                    >
+                      <template v-slot:prepend="{ item }">
+                        <v-icon
+                          v-if="item.children"
+                          v-text="`mdi-folder-network`"
+                        ></v-icon>
+                      </template>
+                    </v-treeview>
+                  </v-card-text>
+
+                  <v-divider></v-divider>
+
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      color="primary"
+                      text
+                      @click="dialog = false"
+                    >
+                      저장
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
               <base64-upload class="user"
                 :imageSrc="this.image"
                 border="left"
@@ -117,6 +99,12 @@
       menu (val) {
         val && setTimeout(() => (this.$refs.picker.activePicker = 'YEAR'))
       },
+    },
+    created () {
+      axios.get('http://localhost:4000/group?type=5')
+        .then((res) => {
+          this.api_v1_group_group = res.data;
+        })
     },
     methods: {
       save (date) {
@@ -160,9 +148,10 @@
               name : this.name,
               created_at : this.getFormatDate(new Date()),
               avatar_file : this.image,
+              parent : this.active[0],
               type : 5,
         }).then(() => {
-          this.$router.push('/index/blacklist');
+          this.$router.push('/index/employee');
         }).catch(function (error) {
           console.log(error);
         });
@@ -170,12 +159,17 @@
     },
     data: () => ({
       imageData : null,
+      active:null,
       date: null,
       menu: false,
       name : null,
       data : null,
+      open: [1, 2],
       company : null,
-      image : null
+      searchGroup : '',
+      api_v1_group_group : [],
+      dialog: false,
+      image : '',
     }),
   }
 </script>

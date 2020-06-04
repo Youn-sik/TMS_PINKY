@@ -21,13 +21,17 @@
             :active.sync="active"
             :search="searchGroup"
             activatable
-            return-object='true'
+            :return-object="true"
             :open.sync="open"
           >
             <template v-slot:prepend="{ item }">
               <v-icon
                 v-if="item.children"
-                v-text="`mdi-${item.id === 1 ? 'home-variant' : 'folder-network'}`"
+                v-text="`mdi-folder-network`"
+              ></v-icon>
+              <v-icon
+                v-else-if="item.avatar_file"
+                v-text="`person`"
               ></v-icon>
             </template>
           </v-treeview>
@@ -121,7 +125,7 @@
             return i.name.indexOf(this.searchEmployee) >= 0;
           })
         }
-      }
+      },
     },
     data: () => ({
       active:[],
@@ -155,13 +159,24 @@
     components: {
       Base64Upload,
     },
+    watch : {
+      active : function (newVal) {
+        if(newVal[0].avatar_file !== undefined) {
+          return false;
+        }
+        this.api_v1_person_users = newVal[0].user_ids;
+      }
+    },
     created () {
-      axios.get('http://localhost:4000/user?type=1')
-        .then((res) => {
-          this.api_v1_person_users = res.data
-        })
+      // axios.get('http://localhost:4000/user?type=1')
+      //   .then((res) => {
+      //     this.api_v1_person_users = res.data
+      //   })
       axios.get('http://localhost:4000/group?type=1')
         .then((res) => {
+          res.data.map((i) => {//user_ids에 있는 데이터 children으로 옮기기
+            this.moveUserIds(i);
+          })
           this.api_v1_group_group = res.data;
         })
     },
@@ -171,6 +186,16 @@
       setTimeout(() => {
         this.image = null; 
       },300)
+    },
+    moveUserIds (data)  {
+      if(data.children[0] !== undefined) {
+          data.children.map((i) => {
+              this.moveUserIds(i)
+          })
+      }
+      if(data.user_ids[0] !== undefined) {
+        data.children = data.children.concat(data.user_ids);
+      }
     },
     onChangeImage(file) {
       this.image = file.base64;

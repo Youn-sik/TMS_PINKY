@@ -53,7 +53,7 @@
                       <template v-slot:prepend="{ item }">
                         <v-icon
                           v-if="item.children"
-                          v-text="`mdi-${item.id === 1 ? 'home-variant' : 'folder-network'}`"
+                          v-text="`mdi-folder-network`"
                         ></v-icon>
                       </template>
                     </v-treeview>
@@ -103,26 +103,12 @@
     created () {
       axios.get('http://localhost:4000/group?type=1')
         .then((res) => {
-          res.data.map((i) => {
-            this.moveUserIds(i);
-          })
           this.api_v1_group_group = res.data;
-          // console.log(res.data);
         })
     },
     methods: {
       save (date) {
         this.$refs.menu.save(date)
-      },
-      moveUserIds (data)  {
-        if(data.children[0] !== undefined) {
-            data.children.map((i) => {
-                this.moveUserIds(i)
-            })
-        }
-        if(data.user_ids[0] !== undefined) {
-          data.children = data.children.concat(data.user_ids);
-        }
       },
       onChangeImage(file) {
         this.image = file.base64;
