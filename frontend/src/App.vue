@@ -1,34 +1,35 @@
 <template>
   <div id="app">
-    <div id="nav">
-    </div>
-    <router-view/>
+    <!-- 토큰이 유효하거나 로그인 페이지 일때만 렌더링 -->
+    <router-view v-if="auth === true || $route.path === '/'" />
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
-
+  data () {
+    return {
+      auth : false,
+    }
+  },
+  beforeUpdate () {
+    var value = document.cookie.match('(^|;) ?token=([^;]*)(;|$)');
+    if(value === null) {
+      const path = '/'
+      if (this.$route.path !== path) this.$router.push(path)
+    } else {
+      axios.get('http://172.16.135.89:4000/auth?token='+value[2])
+        .then((res) => {
+          if(res.data.auth === false) {
+            const path = '/'
+            if (this.$route.path !== path) this.$router.push(path)
+          } else {
+            this.auth = true;
+          }
+        })
+    }
+  },
 }
 </script>
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
 </style>

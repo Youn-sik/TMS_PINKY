@@ -1,12 +1,24 @@
 import Vue from 'vue'
 import VueApollo from 'vue-apollo'
+import { setContext } from 'apollo-link-context'
 import { createApolloClient, restartWebsockets } from 'vue-cli-plugin-apollo/graphql-client'
-
+// import jwt from 'jsonwebtoken';
 Vue.use(VueApollo)
 
 const AUTH_TOKEN = 'apollo-token'
 
-const httpEndpoint = process.env.VUE_APP_GRAPHQL_HTTP || 'http://localhost:3000/graphql'
+const httpEndpoint = process.env.VUE_APP_GRAPHQL_HTTP || 'http://localhost:4000/graphiql'
+
+const authLink = setContext(async (_, { headers }) => {
+  const cookie = document.cookie.match('(^|;) ?' + "token" + '=([^;]*)(;|$)')
+  const token = cookie === null ? '' : cookie[2] !== undefined ? cookie[2] : '';
+  return {
+    headers: {
+      ...headers,
+      authorization: token
+    }
+  }
+})
 
 const defaultOptions = {
   httpEndpoint,
@@ -15,6 +27,7 @@ const defaultOptions = {
   persisting: false,
   websocketsOnly: false,
   ssr: false,
+  link: authLink
 }
 export function createProvider (options = {}) {
   const { apolloClient, wsClient } = createApolloClient({

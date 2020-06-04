@@ -6,7 +6,7 @@ const api_v1_person_user_Schema = new mongoose.Schema({
     sign: String,
     timestamp: String,
     avatar_file: String,
-    groups: Array,
+    groups: String,
     ic_number: String,
     job_number: String,
     id_number: String,
@@ -33,7 +33,8 @@ const api_v1_person_user_Schema = new mongoose.Schema({
     type: Number,
     last_type: Number,
     created_at: String,
-    updated_at: String
+    updated_at: String,
+    parent: ObjectId
 })
 
 module.exports = mongoose.model('api_v1_person_user', api_v1_person_user_Schema)

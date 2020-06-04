@@ -25,7 +25,7 @@ exports.getSingleAuthorized_access = async (req, reply) => {
 
 exports.addAuthorized_access = async (req, reply) => {
     try {
-        const Authorized_accesss = new Authorized_access(req.body)
+        const Authorized_accesss = new Authorized_access(req)
         return Authorized_accesss.save()
     } catch (err) {
         throw boom.boomify(err)
@@ -35,7 +35,7 @@ exports.addAuthorized_access = async (req, reply) => {
 exports.updateAuthorized_access = async (req, reply) => {
     try {
         const id = req.params === undefined ? req.id : req.params.id
-        const Authorized_accesss = req.body
+        const Authorized_accesss = req
         const { ...updateData } = Authorized_accesss
         const update = await Authorized_access.findByIdAndUpdate(id, updateData, {new: true })
         return update

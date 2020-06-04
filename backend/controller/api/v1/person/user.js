@@ -2,9 +2,10 @@ const boom = require('boom')
 const api_v1_person_user = require('../../../../models/api/v1/person/user')
 
 // Get all api_v1_person_user
-exports.getapi_v1_person_user = async (req, reply) => {
+exports.getapi_v1_person_users = async (req, reply) => {
     try {
-        const get_data = await api_v1_person_user.find()
+        const type = req.params === undefined ? req.type : req.params.type
+        const get_data = await api_v1_person_user.find({type : type})
         return get_data
     } catch (err) {
         throw boom.boomify(err)
@@ -22,6 +23,15 @@ exports.getSingleapi_v1_person_user = async (req, reply) => {
     }
 }
 
+exports.getapi_v1_person_every_type_users = async (req, reply) => {
+    try {
+        const get_data = await api_v1_person_user.find()
+        return get_data
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
 exports.addapi_v1_person_user = async (req, reply) => {
     try {
         const add = new api_v1_person_user(req)
@@ -33,9 +43,9 @@ exports.addapi_v1_person_user = async (req, reply) => {
 
 exports.updateapi_v1_person_user = async (req, reply) => {
     try {
-        const id = req.params === undefined ? req.id : req.params.id
+        const _id = req.params === undefined ? req._id : req.params._id
         const update_data = req.params === undefined ? req : req.params
-        const update = await api_v1_person_user.findByIdAndUpdate(id, update_data, {new: true })
+        const update = await api_v1_person_user.findByIdAndUpdate(_id, update_data, {new: true })
         return update
     } catch (err) {
         throw boom.boomify(err)

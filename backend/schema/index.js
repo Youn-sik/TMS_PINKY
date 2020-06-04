@@ -12,6 +12,10 @@ const {
 	GraphQLNonNull
 } = graphql
 
+const auth = () => {
+
+}
+
 // Example 정찬우
 const authorized_accessController = require('../controller/authorized_accessController')
 const userController = require('../controller/userController')
@@ -29,6 +33,8 @@ const api_v2_device_alarmController = require('../controller/api/v2/device/alarm
 
 //Sense Link Person API
 const api_v1_person_userController = require('../controller/api/v1/person/user')
+
+const api_v1_person_accessController = require('../controller/api/v1/person/access')
 
 //Define Object Types Sense Link Basics API
 const api_v1_server_versionType = new GraphQLObjectType({
@@ -64,8 +70,8 @@ const api_v3_device_gatewayType = new GraphQLObjectType({
 		ldid		: { type: GraphQLString },
 		type_id		: { type: GraphQLInt },
 		type_name	: { type: GraphQLString },
-		update_at	: { type: GraphQLString },
-		create_at	: { type: GraphQLString },
+		updated_at	: { type: GraphQLString },
+		created_at	: { type: GraphQLString },
 		camera_data: {
 			type: api_v3_device_cameraType,
 			async resolve(parent, args) {
@@ -98,18 +104,19 @@ const api_v3_device_cameraType = new GraphQLObjectType({
 		camera_id			: { type: GraphQLString },
 		id					: { type: GraphQLString },
 		name				: { type: GraphQLString },
+		groups				: { type: GraphQLString },
 		description			: { type: GraphQLString },
 		direction			: { type: GraphQLInt },
-		employee_group		: { type: new GraphQLList(api_group_dummyType) },
-		visitor_group		: { type: new GraphQLList(api_group_dummyType) },
-		blacklist_group		: { type: new GraphQLList(api_group_dummyType) },
+		employee_group		: { type: new GraphQLList(GraphQLString) },
+		visitor_group		: { type: new GraphQLList(GraphQLString) },
+		blacklist_group		: { type: new GraphQLList(GraphQLString) },
 		ldid				: { type: GraphQLString },
 		type_id				: { type: GraphQLInt },
 		type_name			: { type: GraphQLString },
-		update_at			: { type: GraphQLString },
-		create_at			: { type: GraphQLString },
+		updated_at			: { type: GraphQLString },
+		created_at			: { type: GraphQLString },
 		last_offline_time	: { type: GraphQLString },
-		config_data			: { type: new GraphQLList(api_group_dummyType) },
+		config_data			: { type: new GraphQLList(GraphQLString) },
 	})
 })
 
@@ -163,7 +170,7 @@ const api_v1_person_userType = new GraphQLObjectType({
 		sign				: { type: GraphQLString },
 		timestamp			: { type: GraphQLString },
 		avatar_file			: { type: GraphQLString },
-		groups				: { type: new GraphQLList(api_group_dummyType) },
+		groups				: { type: new GraphQLList(GraphQLString) },
 		ic_number			: { type: GraphQLString },
 		job_number			: { type: GraphQLString },
 		id_number			: { type: GraphQLString },
@@ -195,11 +202,50 @@ const api_v1_person_userType = new GraphQLObjectType({
 		prompt				: { type: GraphQLString },
 		type				: { type: GraphQLInt },
 		last_type			: { type: GraphQLInt },
-		create_at			: { type: GraphQLString },
-		update_at			: { type: GraphQLString },
+		created_at			: { type: GraphQLString },
+		updated_at			: { type: GraphQLString },
 	})
 })
 
+const api_v1_person_accessType = new GraphQLObjectType({
+	name: 'api_v1_person_access',
+	fields: () => ({
+		_id					: { type: GraphQLID },
+		type				: { type: GraphQLInt },
+		last_type				: { type: GraphQLInt },
+		group_list			: { type: new GraphQLList(GraphQLString) },
+		name			: { type: GraphQLString },
+		avatar_file				: { type: GraphQLString },
+		mobile			: { type: GraphQLString },
+		ic_number			: { type: GraphQLString },
+		id_number			: { type: GraphQLString },
+		job_number					: { type: GraphQLString },
+		id			: { type: GraphQLString },
+		birthday				: { type: GraphQLString },
+		mail				: { type: GraphQLString },
+		gender				: { type: GraphQLString },
+		prompt				: { type: GraphQLString },
+		remark			: { type: GraphQLString },
+		position		: { type: GraphQLString },
+		location			: { type: GraphQLString },
+		company_id			: { type: GraphQLString },
+		department_id			: { type: GraphQLString },
+		area_code				: { type: GraphQLString },
+		entry_time			: { type: GraphQLString },
+		reception_user_id	: { type: GraphQLID },
+		reception_user_data	: {
+			type: api_v1_person_accessType,
+			async resolve(parent, args) {
+				return await api_v1_person_accessController.getapi_v1_person_access_depend_on_user({ id: parent.reception_user_id })
+			}
+		},
+		guest_company		: { type: GraphQLString },
+		guest_purpose		: { type: GraphQLString },
+		guest_level				: { type: GraphQLString },
+		created_at			: { type: GraphQLString },
+		updated_at			: { type: GraphQLString },
+	})
+})
 
 // TODO: 제거
 // Define Object Types
@@ -270,14 +316,22 @@ const RootQuery = new GraphQLObjectType({
 		api_v1_server_version: {
 			type: api_v1_server_versionType,
 			args: { id: { type: GraphQLID } },
-			async resolve(parent, args) {
-				return await api_v1_server_versionController.getSingleapi_v1_server_version(args)
+			async resolve(parent, args, context) {
+				if(context.auth === true) {	
+					return await api_v1_server_versionController.getSingleapi_v1_server_version(args)
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 		api_v1_server_versions: {
 			type: new GraphQLList(api_v1_server_versionType),
-			async resolve(parent, args) {
-				return await api_v1_server_versionController.getapi_v1_server_versions()
+			async resolve(parent, args, context) {
+				if(context.auth === true) {	
+					return await api_v1_server_versionController.getapi_v1_server_versions()
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 
@@ -285,42 +339,66 @@ const RootQuery = new GraphQLObjectType({
 		api_v3_device_gateway: {
 			type: api_v3_device_gatewayType,
 			args: { id: { type: GraphQLID } },
-			async resolve(parent, args) {
-				return await api_v3_device_gatewayController.getSingleapi_v3_device_gateway(args)
+			async resolve(parent, args, context) {
+				if(context.auth === true) {	
+					return await api_v3_device_gatewayController.getSingleapi_v3_device_gateway(args)
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 		api_v3_device_gateways: {
 			type: new GraphQLList(api_v3_device_gatewayType),
-			async resolve(parent, args) {
-				return await api_v3_device_gatewayController.getapi_v3_device_gateways()
+			async resolve(parent, args, context) {
+				if(context.auth === true) {	
+					return await api_v3_device_gatewayController.getapi_v3_device_gateways()
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 
 		api_v3_device_camera: {
 			type: api_v3_device_cameraType,
 			args: { id: { type: GraphQLID } },
-			async resolve(parent, args) {
-				return await api_v3_device_cameraController.getSingleapi_v3_device_camera(args)
+			async resolve(parent, args, context) {
+				if(context.auth === true) {	
+					return await api_v3_device_cameraController.getSingleapi_v3_device_camera(args)
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 		api_v3_device_cameras: {
 			type: new GraphQLList(api_v3_device_cameraType),
-			async resolve(parent, args) {
-				return await api_v3_device_cameraController.getapi_v3_device_cameras()
+			async resolve(parent, args, context) {
+				if(context.auth === true) {	
+					return await api_v3_device_cameraController.getapi_v3_device_cameras()
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 		
 		api_v2_device_alarm: {
 			type: api_v2_device_alarmType,
 			args: { id: { type: GraphQLID } },
-			async resolve(parent, args) {
-				return await api_v2_device_alarmController.getSingleapi_v2_device_alarm(args)
+			async resolve(parent, args, context) {
+				if(context.auth === true) {	
+					return await api_v2_device_alarmController.getSingleapi_v2_device_alarm(args)
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 		api_v2_device_alarms: {
 			type: new GraphQLList(api_v2_device_alarmType),
-			async resolve(parent, args) {
-				return await api_v2_device_alarmController.getapi_v2_device_alarms()
+			async resolve(parent, args, context) {
+				if(context.auth === true) {	
+					return await api_v2_device_alarmController.getapi_v2_device_alarms()
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 
@@ -328,14 +406,55 @@ const RootQuery = new GraphQLObjectType({
 		api_v1_person_user: {
 			type: api_v1_person_userType,
 			args: { id: { type: GraphQLID } },
-			async resolve(parent, args) {
-				return await api_v1_person_userController.getSingleapi_v1_person_user(args)
+			async resolve(parent, args, context) {
+				if(context.auth === true) {	
+					return await api_v1_person_userController.getSingleapi_v1_person_user(args)
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 		api_v1_person_users: {
 			type: new GraphQLList(api_v1_person_userType),
-			async resolve(parent, args) {
-				return await api_v1_person_userController.getapi_v1_person_users()
+			args: { type: { type: GraphQLInt } },
+			async resolve(parent, args, context) {
+				if(context.auth === true) {	
+					return await api_v1_person_userController.getapi_v1_person_users(args)
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
+			}
+		},
+		api_v1_person_every_type_users: {
+			type: new GraphQLList(api_v1_person_userType),
+			args: { type: { type: GraphQLInt } },
+			async resolve(parent, args, context) {
+				if(context.auth === true) {	
+					return await api_v1_person_userController.getapi_v1_person_every_type_users(args)
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
+			}
+		},
+		api_v1_person_access : {
+			type : api_v1_person_accessType,
+			args : { id: { type: GraphQLID } },
+			async resolve(parent, args, context) {
+				if(context.auth === true) {	
+					return await api_v1_person_accessController.getSingleapi_v1_person_access(args)
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
+			}
+		},
+		api_v1_person_accesss : {
+			type: new GraphQLList(api_v1_person_accessType),
+			async resolve(parent, args, context) {
+				if(context.auth === true) {	
+					return await api_v1_person_accessController.getapi_v1_person_access()
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 
@@ -344,31 +463,70 @@ const RootQuery = new GraphQLObjectType({
 		authorized_access: {
 			type: authorized_accessType,
 			args: { id: { type: GraphQLID } },
-			async resolve(parent, args) {
-				return await authorized_accessController.getSingleAuthorized_access(args)
+			async resolve(parent, args, context) {
+				if(context.auth === true) {	
+					return await authorized_accessController.getSingleAuthorized_access(args)
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 		// TODO: 제거
 		authorized_accesss: {
 			type: new GraphQLList(authorized_accessType),
-			async resolve(parent, args) {
-				return await authorized_accessController.getAuthorized_accesss()
+			async resolve(parent, args, context) {
+				if(context.auth === true) {	
+					return await authorized_accessController.getAuthorized_accesss()
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 		// TODO: 제거
 		user: {
 			type: userType,
-			args: { id: { type: GraphQLID } },
-			async resolve(parent, args) {
-				return await userController.getSingleUser(args)
+			args: { 
+				user_id: { type: GraphQLString},
+				user_pw: { type: GraphQLString},
+			},
+			async resolve(parent, args, context) {
+				if(context.auth === true) {	
+					return await userController.getSingleUser(args)
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
+			}
+		},
+		login : {
+			type: userType,
+			args: { 
+				user_id: { type: GraphQLString},
+				user_pw: { type: GraphQLString},
+			},
+			async resolve(parent, args, context) {
+				return await userController.login(args)
+			}
+		},
+		users : {
+			type : new GraphQLList(userType),
+			async resolve(parent, args, context) {
+				if(context.auth === true) {	
+					return await userController.getUsers()
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 		// TODO: 제거
 		all_access: {
 			type: all_accessType,
 			args: { id: { type: GraphQLID } },
-			async resolve(parent, args) {
-				return await all_accessController.getSingleAll_Access(args)
+			async resolve(parent, args, context) {
+				if(context.auth === true) {	
+					return await all_accessController.getSingleAll_Access(args)
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		}
 	}
@@ -387,9 +545,31 @@ const Mutations = new GraphQLObjectType({
                 data: { type: new GraphQLNonNull(GraphQLString) },
 				user_fkid: { type: GraphQLID }
 			},
-			async resolve(parent, args) {
-				const data = await authorized_accessController.addAuthorized_access(args)
-				return data
+			async resolve(parent, args,context) {
+
+				if(context.auth === true) {	
+					const data = await authorized_accessController.addAuthorized_access(args)
+					return data
+			} else {
+				throw '유효 하지 않는 토큰 입니다';
+			}
+			}
+		},
+		addUser : {
+			type : userType,
+			args: {
+				user_id: { type:  new GraphQLNonNull(GraphQLString) },
+				user_pw: { type:  new GraphQLNonNull(GraphQLString) },
+				user_lang: { type:  new GraphQLNonNull(GraphQLString) },
+				user_name: { type:  new GraphQLNonNull(GraphQLString) },
+			},
+			async resolve(parent, args,context) {
+				if(context.auth === true) {	
+					const data = await userController.addUser(args)
+					return data
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 		// TODO: 제거
@@ -402,9 +582,13 @@ const Mutations = new GraphQLObjectType({
                 data: { type: new GraphQLNonNull(GraphQLString) },
 				user_fkid: { type: GraphQLID }
 			},
-			async resolve(parent, args) {
-				const data = await authorized_accessController.updateAuthorized_access(args)
-				return data
+			async resolve(parent, args,context) {
+				if(context.auth === true) {	
+					const data = await authorized_accessController.updateAuthorized_access(args)
+					return data
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 		// TODO: 제거
@@ -413,9 +597,13 @@ const Mutations = new GraphQLObjectType({
 			args: {
 				id: 		{ type: new GraphQLNonNull(GraphQLID) }
 			},
-			async resolve(parent, args) {
-				const data = await authorized_accessController.deleteAuthorized_access(args)
-				return data
+			async resolve(parent, args,context) {
+				if(context.auth === true) {	
+					const data = await authorized_accessController.deleteAuthorized_access(args)
+					return data
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 
@@ -429,9 +617,13 @@ const Mutations = new GraphQLObjectType({
 				edition: 	{ type: GraphQLString },
 				date: 		{ type: GraphQLString }
 			},
-			async resolve(parent, args) {
-				const data = await api_v1_server_versionController.addapi_v1_server_version(args)
-				return data
+			async resolve(parent, args,context) {
+				if(context.auth === true) {	
+					const data = await api_v1_server_versionController.addapi_v1_server_version(args)
+					return data
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 		editapi_v1_server_version: {
@@ -444,9 +636,13 @@ const Mutations = new GraphQLObjectType({
 				edition: 	{ type: GraphQLString },
 				date: 		{ type: GraphQLString }
 			},
-			async resolve(parent, args) {
-				const data = await api_v1_server_versionController.updateapi_v1_server_version(args)
-				return data
+			async resolve(parent, args,context) {
+				if(context.auth === true) {	
+					const data = await api_v1_server_versionController.updateapi_v1_server_version(args)
+					return data
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 		deleteapi_v1_server_version: {
@@ -454,9 +650,13 @@ const Mutations = new GraphQLObjectType({
 			args: {
 				id: 		{ type: new GraphQLNonNull(GraphQLID) }
 			},
-			async resolve(parent, args) {
-				const data = await api_v1_server_versionController.deleteapi_v1_server_version(args)
-				return data
+			async resolve(parent, args,context) {
+				if(context.auth === true) {	
+					const data = await api_v1_server_versionController.deleteapi_v1_server_version(args)
+					return data
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 
@@ -481,12 +681,16 @@ const Mutations = new GraphQLObjectType({
 				ldid: 		{ type: GraphQLString },
 				type_id: 	{ type: GraphQLInt },
 				type_name: 	{ type: GraphQLString },
-				update_at: 	{ type: GraphQLString },
-				create_at: 	{ type: GraphQLString }
+				updated_at: 	{ type: GraphQLString },
+				created_at: 	{ type: GraphQLString }
 			},
-			async resolve(parent, args) {
-				const data = await api_v3_device_gatewayController.addapi_v3_device_gateway(args)
-				return data
+			async resolve(parent, args,context) {
+				if(context.auth === true) {	
+					const data = await api_v3_device_gatewayController.addapi_v3_device_gateway(args)
+					return data
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 		editapi_v3_device_gateway: {
@@ -509,12 +713,16 @@ const Mutations = new GraphQLObjectType({
 				ldid: 		{ type: GraphQLString },
 				type_id: 	{ type: GraphQLInt },
 				type_name: 	{ type: GraphQLString },
-				update_at: 	{ type: GraphQLString },
-				create_at: 	{ type: GraphQLString }
+				updated_at: 	{ type: GraphQLString },
+				created_at: 	{ type: GraphQLString }
 			},
-			async resolve(parent, args) {
-				const data = await api_v3_device_gatewayController.updateapi_v3_device_gateway(args)
-				return data
+			async resolve(parent, args,context) {
+				if(context.auth === true) {	
+					const data = await api_v3_device_gatewayController.updateapi_v3_device_gateway(args)
+					return data
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 		deleteapi_v3_device_gateway: {
@@ -522,9 +730,13 @@ const Mutations = new GraphQLObjectType({
 			args: {
 				id: 		{ type: new GraphQLNonNull(GraphQLID) }
 			},
-			async resolve(parent, args) {
-				const data = await api_v3_device_gatewayController.deleteapi_v3_device_gateway(args)
-				return data
+			async resolve(parent, args,context) {
+				if(context.auth === true) {	
+					const data = await api_v3_device_gatewayController.deleteapi_v3_device_gateway(args)
+					return data
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 
@@ -564,14 +776,18 @@ const Mutations = new GraphQLObjectType({
 				ldid: 		{ type: GraphQLString },
 				type_id: 	{ type: GraphQLInt },
 				type_name: 	{ type: GraphQLString },
-				update_at: 	{ type: GraphQLString },
-				create_at: 	{ type: GraphQLString },
+				updated_at: 	{ type: GraphQLString },
+				created_at: 	{ type: GraphQLString },
 				last_offline_time : { type: GraphQLString },
 				config_data:{ type: new GraphQLList(GraphQLString) }
 			},
-			async resolve(parent, args) {
-				const data = await api_v3_device_cameraController.addapi_v3_device_camera(args)
-				return data
+			async resolve(parent, args,context) {
+				if(context.auth === true) {	
+					const data = await api_v3_device_cameraController.addapi_v3_device_camera(args)
+					return data
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 		editapi_v3_device_camera: {
@@ -610,14 +826,18 @@ const Mutations = new GraphQLObjectType({
 				ldid: 		{ type: GraphQLString },
 				type_id: 	{ type: GraphQLInt },
 				type_name: 	{ type: GraphQLString },
-				update_at: 	{ type: GraphQLString },
-				create_at: 	{ type: GraphQLString },
+				updated_at: 	{ type: GraphQLString },
+				created_at: 	{ type: GraphQLString },
 				last_offline_time : { type: GraphQLString },
 				config_data:{ type: new GraphQLList(GraphQLString) }
 			},
-			async resolve(parent, args) {
-				const data = await api_v3_device_cameraController.updateapi_v3_device_camera(args)
-				return data
+			async resolve(parent, args,context) {
+				if(context.auth === true) {	
+					const data = await api_v3_device_cameraController.updateapi_v3_device_camera(args)
+					return data
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 		deleteapi_v3_device_camera: {
@@ -625,9 +845,13 @@ const Mutations = new GraphQLObjectType({
 			args: {
 				id: 		{ type: new GraphQLNonNull(GraphQLID) }
 			},
-			async resolve(parent, args) {
-				const data = await api_v3_device_cameraController.deleteapi_v3_device_camera(args)
-				return data
+			async resolve(parent, args,context) {
+				if(context.auth === true) {	
+					const data = await api_v3_device_cameraController.deleteapi_v3_device_camera(args)
+					return data
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 
@@ -651,9 +875,13 @@ const Mutations = new GraphQLObjectType({
 				device_id:		{ type: GraphQLID },
 				trace_id:		{ type: GraphQLID }
 			},
-			async resolve(parent, args) {
-				const data = await api_v2_device_alarmController.addapi_v2_device_alarm(args)
-				return data
+			async resolve(parent, args,context) {
+				if(context.auth === true) {	
+					const data = await api_v2_device_alarmController.addapi_v2_device_alarm(args)
+					return data
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 		editapi_v2_device_alarm: {
@@ -676,9 +904,13 @@ const Mutations = new GraphQLObjectType({
 				device_id:		{ type: GraphQLID },
 				trace_id:		{ type: GraphQLID }
 			},
-			async resolve(parent, args) {
-				const data = await api_v2_device_alarmController.updateapi_v2_device_alarm(args)
-				return data
+			async resolve(parent, args,context) {
+				if(context.auth === true) {	
+					const data = await api_v2_device_alarmController.updateapi_v2_device_alarm(args)
+					return data
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 		deleteapi_v2_device_alarm: {
@@ -686,9 +918,13 @@ const Mutations = new GraphQLObjectType({
 			args: {
 				id: 			{ type: new GraphQLNonNull(GraphQLID) }
 			},
-			async resolve(parent, args) {
-				const data = await api_v2_device_alarmController.deleteapi_v2_device_alarm(args)
-				return data
+			async resolve(parent, args,context) {
+				if(context.auth === true) {	
+					const data = await api_v2_device_alarmController.deleteapi_v2_device_alarm(args)
+					return data
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 
@@ -729,16 +965,20 @@ const Mutations = new GraphQLObjectType({
 				created_at: 	{ type: GraphQLString },
 				updated_at: 	{ type: GraphQLString }
 			},
-			async resolve(parent, args) {
+			async resolve(parent, args,context) {
 				//TODO: 인증절차
-				const data = await api_v1_person_userController.addapi_v1_person_user(args)
-				return data
+				if(context.auth === true) {	
+					const data = await api_v1_person_userController.addapi_v1_person_user(args)
+					return data
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 		editapi_v1_person_user: {
 			type: api_v1_person_userType,
 			args: {
-				id: 			{ type: new GraphQLNonNull(GraphQLID) },
+				_id: 			{ type: new GraphQLNonNull(GraphQLID) },
 				app_key: 		{ type: new GraphQLNonNull(GraphQLString) },
 				sign: 			{ type: new GraphQLNonNull(GraphQLString) },
 				timestamp: 		{ type: new GraphQLNonNull(GraphQLString) },
@@ -772,9 +1012,13 @@ const Mutations = new GraphQLObjectType({
 				created_at: 	{ type: GraphQLString },
 				updated_at: 	{ type: GraphQLString }
 			},
-			async resolve(parent, args) {
-				const data = await api_v1_person_userController.updateapi_v1_person_user(args)
-				return data
+			async resolve(parent, args,context) {
+				if(context.auth === true) {	
+					const data = await api_v1_person_userController.updateapi_v1_person_user(args)
+					return data
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
 		},
 		deleteapi_v1_person_user: {
@@ -782,11 +1026,111 @@ const Mutations = new GraphQLObjectType({
 			args: {
 				id: 			{ type: new GraphQLNonNull(GraphQLID) }
 			},
-			async resolve(parent, args) {
-				const data = await api_v1_person_userController.deleteapi_v1_person_user(args)
-				return data
+			async resolve(parent, args,context) {
+				if(context.auth === true) {	
+					const data = await api_v1_person_userController.deleteapi_v1_person_user(args)
+					return data
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
 			}
-		}
+		},
+
+		addapi_v1_person_access: {
+			type: api_v1_person_accessType,
+			args: {
+				type				: { type: GraphQLInt },
+				last_type			: { type: GraphQLInt },
+				group_list			: { type: new GraphQLList(GraphQLString) },
+				name				: { type: GraphQLString },
+				avatar_file			: { type: GraphQLString },
+				mobile				: { type: GraphQLString },
+				ic_number			: { type: GraphQLString },
+				id_number			: { type: GraphQLString },
+				job_number			: { type: GraphQLString },
+				id					: { type: GraphQLString },
+				birthday			: { type: GraphQLString },
+				mail				: { type: GraphQLString },
+				gender				: { type: GraphQLString },
+				prompt				: { type: GraphQLString },
+				remark				: { type: GraphQLString },
+				position			: { type: GraphQLString },
+				location			: { type: GraphQLString },
+				company_id			: { type: GraphQLString },
+				department_id		: { type: GraphQLString },
+				area_code			: { type: GraphQLString },
+				entry_time			: { type: GraphQLString },
+				reception_user_id	: { type: GraphQLID },
+				guest_company		: { type: GraphQLString },
+				guest_purpose		: { type: GraphQLString },
+				guest_level			: { type: GraphQLString },
+				created_at			: { type: GraphQLString },
+				updated_at			: { type: GraphQLString },
+			},
+			async resolve(parent, args,context) {
+				if(context.auth === true) {	
+					const data = await api_v1_person_accessController.addapi_v1_person_access(args)
+					return data
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
+			}
+		},
+		editapi_v1_person_access: {
+			type: api_v1_person_accessType,
+			args: {
+				_id: 			{ type: new GraphQLNonNull(GraphQLID) },
+				type				: { type: GraphQLInt },
+				last_type			: { type: GraphQLInt },
+				group_list			: { type: new GraphQLList(GraphQLString) },
+				name				: { type: GraphQLString },
+				avatar_file			: { type: GraphQLString },
+				mobile				: { type: GraphQLString },
+				ic_number			: { type: GraphQLString },
+				id_number			: { type: GraphQLString },
+				job_number			: { type: GraphQLString },
+				id					: { type: GraphQLString },
+				birthday			: { type: GraphQLString },
+				mail				: { type: GraphQLString },
+				gender				: { type: GraphQLString },
+				prompt				: { type: GraphQLString },
+				remark				: { type: GraphQLString },
+				position			: { type: GraphQLString },
+				location			: { type: GraphQLString },
+				company_id			: { type: GraphQLString },
+				department_id		: { type: GraphQLString },
+				area_code			: { type: GraphQLString },
+				entry_time			: { type: GraphQLString },
+				reception_user_id	: { type: GraphQLID },
+				guest_company		: { type: GraphQLString },
+				guest_purpose		: { type: GraphQLString },
+				guest_level			: { type: GraphQLString },
+				created_at			: { type: GraphQLString },
+				updated_at			: { type: GraphQLString },
+			},
+			async resolve(parent, args,context) {
+				if(context.auth === true) {	
+					const data = await api_v1_person_accessController.updateapi_v1_person_access(args)
+					return data
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
+			}
+		},
+		deleteapi_v1_person_access: {
+			type: api_v1_person_accessType,
+			args: {
+				id: 			{ type: new GraphQLNonNull(GraphQLID) }
+			},
+			async resolve(parent, args,context) {
+				if(context.auth === true) {	
+					const data = await api_v1_person_accessController.deleteapi_v1_person_access(args)
+					return data
+				} else {
+					throw '유효 하지 않는 토큰 입니다';
+				}
+			}
+		},
 	}
 })
 
