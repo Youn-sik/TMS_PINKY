@@ -1,5 +1,5 @@
 // Require the fastify framework and instantiate it
-const fastify = require('fastify')({
+const fastify = require('express')({
 	logger: true
 })
 

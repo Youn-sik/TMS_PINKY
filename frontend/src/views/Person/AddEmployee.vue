@@ -18,79 +18,61 @@
                 label="이름"
                 required
               ></v-text-field>
-              <!-- <v-text-field
-                v-model="email"
-                :counter="45"
-                :error-messages="emailErrors"
-                label="E-mail"
-                required
-                @input="$v.email.$touch()"
-                @blur="$v.email.$touch()"
-              ></v-text-field>
-              <v-text-field
-                v-model="telephone"
-                :error-messages="emailErrors"
-                label="Telephone"
-                :counter="20"
-                required
-                @input="$v.email.$touch()"
-                @blur="$v.email.$touch()"
-              ></v-text-field> -->
-              <!-- <v-text-field
-                v-model="company"
-                label="Company"
-                :counter="45"
-                required
-              ></v-text-field>
-              <v-text-field
-                v-model="data"
-                label="Data"
-                :counter="45"
-                required
-              ></v-text-field> -->
-              <!-- <v-select
-                v-model="select"
-                :items="items"
-                :error-messages="selectErrors"
-                label="Gender"
-                required
-                @change="$v.select.$touch()"
-                @blur="$v.select.$touch()"
-              ></v-select>
-              <v-select
-                v-model="select"
-                :items="items"
-                :error-messages="selectErrors"
-                label="Employee group"
-                required
-                @change="$v.select.$touch()"
-                @blur="$v.select.$touch()"
-              ></v-select>
-              <v-menu
-                ref="menu"
-                v-model="menu"
-                :close-on-content-click="false"
-                transition="scale-transition"
-                offset-y
-                min-width="290px"
+              <v-dialog
+                v-model="dialog"
+                width="500"
               >
                 <template v-slot:activator="{ on }">
-                  <v-text-field
-                    v-model="date"
-                    label="Birthday date"
-                    prepend-icon="event"
-                    readonly
+                  <v-btn
+                    color="primary"
+                    dark
                     v-on="on"
-                  ></v-text-field>
+                  >
+                    그룹 선택
+                  </v-btn>
                 </template>
-                <v-date-picker
-                  ref="picker"
-                  v-model="date"
-                  :max="new Date().toISOString().substr(0, 10)"
-                  min="1950-01-01"
-                  @change="save"
-                ></v-date-picker>
-              </v-menu> -->
+
+                <v-card>
+                  <v-card-title
+                    class="headline grey lighten-2"
+                    primary-title
+                  >
+                    그룹 선택
+                  </v-card-title>
+
+                  <v-card-text>
+                    <v-treeview
+                      :items="api_v1_group_group"
+                      item-key="_id"
+                      :active.sync="active"
+                      :search="searchGroup"
+                      activatable
+                      return-object="false"
+                      :open.sync="open"
+                    >
+                      <template v-slot:prepend="{ item }">
+                        <v-icon
+                          v-if="item.children"
+                          v-text="`mdi-${item.id === 1 ? 'home-variant' : 'folder-network'}`"
+                        ></v-icon>
+                      </template>
+                    </v-treeview>
+                  </v-card-text>
+
+                  <v-divider></v-divider>
+
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      color="primary"
+                      text
+                      @click="dialog = false"
+                    >
+                      저장
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
               <base64-upload class="user"
                 :imageSrc="this.image"
                 border="left"
@@ -107,11 +89,8 @@
 
 
 <script>
-  // import VImageInput from 'vuetify-image-input';
   import Base64Upload from 'vue-base64-upload'
-  import ALL_USERS from "../../../grahpql/allUser.gql";
-  import CREATE_USER from "../../../grahpql/addUser.gql";
-  
+  import axios from 'axios'
   export default {
     components: {
       Base64Upload,
@@ -121,9 +100,29 @@
         val && setTimeout(() => (this.$refs.picker.activePicker = 'YEAR'))
       },
     },
+    created () {
+      axios.get('http://localhost:4000/group?type=1')
+        .then((res) => {
+          res.data.map((i) => {
+            this.moveUserIds(i);
+          })
+          this.api_v1_group_group = res.data;
+          // console.log(res.data);
+        })
+    },
     methods: {
       save (date) {
         this.$refs.menu.save(date)
+      },
+      moveUserIds (data)  {
+        if(data.children[0] !== undefined) {
+            data.children.map((i) => {
+                this.moveUserIds(i)
+            })
+        }
+        if(data.user_ids[0] !== undefined) {
+          data.children = data.children.concat(data.user_ids);
+        }
       },
       onChangeImage(file) {
         this.image = file.base64;
@@ -157,41 +156,33 @@
           return  year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
       },
       async addUser(){
-        await this.$apollo.mutate({
-          mutation : CREATE_USER,
-          variables : {
+        if(this.name === null || this.name === '') {alert('이름을 입력해주세요.'); return false}
+        else if(this.image === null || this.image === ''){alert('사진을 업로드 해주세요.'); return false}
+        axios.post('http://localhost:4000/user',{
               name : this.name,
-              sign : "12345456497489",
               created_at : this.getFormatDate(new Date()),
               avatar_file : this.image,
-              app_key : "12345678",
-              timestamp : "123415678",
+              parent : this.active[0],
               type : 1,
-          },
-          update: (store, { data : {addapi_v1_person_user} }) => {
-            const data = store.readQuery({
-              query: ALL_USERS,
-              // variables: { _id: addapi_v1_person_user._id, app_key: addapi_v1_person_user.app_key, name: addapi_v1_person_user.name, avatar_file: addapi_v1_person_user.avatar_file, timestamp: addapi_v1_person_user.timestamp}
-              variables : {
-                type : 1
-              }
-            })
-            data.api_v1_person_users.push(addapi_v1_person_user)
-            store.writeQuery({query: ALL_USERS, data })
-          },
-        }).then(() =>{
+        }).then(() => {
           this.$router.push('/index/employee');
-        })
-        
+        }).catch(function (error) {
+          console.log(error);
+        });
       }
     },
     data: () => ({
       imageData : null,
+      active:null,
       date: null,
       menu: false,
       name : null,
       data : null,
+      open: [1, 2],
       company : null,
+      searchGroup : '',
+      api_v1_group_group : [],
+      dialog: false,
       image : '',
     }),
   }

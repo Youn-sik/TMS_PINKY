@@ -110,9 +110,7 @@
 
 <script> 
   import Base64Upload from 'vue-base64-upload'
-  import ALL_USERS from "../../../grahpql/allUser.gql";
-  import DELETE_USER from "../../../grahpql/deleteUser.gql";
-  import UPDATE_USER from "../../../grahpql/editUser.gql";
+  import axios from "axios";
   export default {
     computed: {
       filteredItems() {
@@ -222,19 +220,11 @@
     components: {
       Base64Upload,
     },
-    apollo: {
-        api_v1_person_users : {
-        query : ALL_USERS,
-        variables : {
-              type : 2,
-        },
-        error (err) {
-          if(err.message.split(':')[2] === ' "유효 하지 않는 토큰 입니다"') {
-            document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
-            this.$router.push('/');
-          }
-        }
-      }
+    created () {
+      axios.get('http://localhost:4000/user?type=2')
+        .then((res) => {
+          this.api_v1_person_users = res.data
+        })
     },
   methods: {
     async cancelModal() {
@@ -256,30 +246,14 @@
     },
     deleteUser () {
       if(this.userSelected){
-        this.$apollo.mutate({
-          mutation : DELETE_USER,
-          variables : {
-              id : this.userSelected[0]._id,
-          },
-          update: (store) => {
-            const data = store.readQuery({
-              query: ALL_USERS,
-              variables : {
-                type : 2
-              }
+        axios.delete('http://localhost:4000/user/'+this.userSelected[0]._id)
+          .then((res) => {
+            this.api_v1_person_users = this.api_v1_person_users.filter((i) => {
+              return i._id !== res.data._id;
             })
-            data.api_v1_person_users = data.api_v1_person_users.filter(user => {
-              return user._id !== this.userSelected[0]._id
-            })
-            store.writeQuery({
-              query : ALL_USERS, 
-              data,
-              variables : {
-                type : 2
-              } 
-            })
-          },
-        })
+            // this.api_v1_person_users = null
+            // this.api_v1_person_users
+          })
       } else {
         alert("유저를 선택해 주세요")
       }
@@ -305,27 +279,21 @@
         return  year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
     },
     updateUser () {
-      let app_key = this.userSelected[0].app_key;
-      let sign = this.userSelected[0].sign;
-      let created_at = this.userSelected[0].created_at;
       if(!this.name){
         this.name = this.userSelected[0].name;
       }
       if(!this.image) {
         this.image = this.userSelected[0].avatar_file;
       }
-      this.$apollo.mutate({
-        mutation : UPDATE_USER,
-        variables : {
-            _id : this.userSelected[0]._id,
-            name : this.name,
-            app_key,
-            created_at,
-            timestamp : this.userSelected[0].timestamp,
-            sign,
-            avatar_file : this.image,
-            updated_at : this.getFormatDate(new Date())
-        },
+      axios.put('http://localhost:4000/user/'+this.userSelected[0]._id,{
+        name : this.name,
+        avatar_file : this.image,
+        updated_at : this.getFormatDate(new Date()) 
+      }).then((res) => {
+        let index = this.api_v1_person_users.findIndex(x => x._id == res.data._id)
+        this.api_v1_person_users[index].name = res.data.name;
+        this.api_v1_person_users[index].avatar_file = res.data.avatar_file;
+        this.api_v1_person_users[index].updated_at = res.data.updated_at;
       })
       this.userUpdateModal = false  
       this.name = null;

@@ -55,7 +55,8 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+// import gql from 'graphql-tag';
+import axios from 'axios';
 export default {
   name: "Home",
   props:["isLogin"],
@@ -67,42 +68,6 @@ export default {
       token : null,
     }
   },
-  apollo: {
-    login : {
-      query : gql`
-        query getUser($user_id:String,$user_pw:String){
-          login(user_id:$user_id,user_pw:$user_pw) {
-            user_id
-          }
-        }
-      `,
-      fetchPolicy: 'no-cache',
-      variables () {
-        return {
-          user_id : this.user_id,
-          user_pw : this.user_pw,
-        }
-      },
-      skip() {
-        return true;
-      },
-      result(ApolloQueryResult){
-        if(ApolloQueryResult.data.login === null) {
-          alert("로그인 실패");
-          this.$apollo.queries.login.skip = true;
-        } else {
-          this.token = ApolloQueryResult.data.login.user_id;
-          this.$emit('login',true);
-          document.cookie = 'token=' + this.token;
-          this.$router.push('/index');
-        }
-      },
-      error(){
-        alert("로그인 실패");
-        this.$apollo.queries.login.skip = true;
-      }
-    }
-  },
   methods: {
     login () {
       if(this.user_id === '') {
@@ -110,8 +75,15 @@ export default {
       } else if(this.user_pw === '') {
         alert('비밀번호를 입력해 주세요');
       } else {
-        this.$apollo.queries.login.skip = false;
-        this.$apollo.queries.login.refetch();
+        axios.post('http://localhost:4000/login',{
+          user_id : this.user_id,
+          user_pw : this.user_pw
+        }).then((res) => {
+          this.token = res.data.token;
+          this.$emit('login',true);
+          document.cookie = 'token=' + this.token;
+          this.$router.push('/index');
+        })
       }
     },
   }

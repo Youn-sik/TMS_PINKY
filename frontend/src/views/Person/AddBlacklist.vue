@@ -107,11 +107,8 @@
 
 
 <script>
-  // import VImageInput from 'vuetify-image-input';
   import Base64Upload from 'vue-base64-upload'
-  import ALL_USERS from "../../../grahpql/allUser.gql";
-  import CREATE_USER from "../../../grahpql/addUser.gql";
-  
+  import axios from 'axios'
   export default {
     components: {
       Base64Upload,
@@ -157,32 +154,18 @@
           return  year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
       },
       async addUser(){
-        await this.$apollo.mutate({
-          mutation : CREATE_USER,
-          variables : {
+        if(this.name === null || this.name === '') {alert('이름을 입력해주세요.'); return false}
+        else if(this.image === null || this.image === ''){alert('사진을 업로드 해주세요.'); return false}
+        axios.post('http://localhost:4000/user',{
               name : this.name,
-              sign : "12345456497489",
               created_at : this.getFormatDate(new Date()),
               avatar_file : this.image,
-              app_key : "12345678",
-              timestamp : "123415678",
               type : 5,
-          },
-          update: (store, { data : {addapi_v1_person_user} }) => {
-            const data = store.readQuery({
-              query: ALL_USERS,
-              // variables: { _id: addapi_v1_person_user._id, app_key: addapi_v1_person_user.app_key, name: addapi_v1_person_user.name, avatar_file: addapi_v1_person_user.avatar_file, timestamp: addapi_v1_person_user.timestamp}
-              variables : {
-                type : 5
-              }
-            })
-            data.api_v1_person_users.push(addapi_v1_person_user)
-            store.writeQuery({query: ALL_USERS, data })
-          },
-        }).then(() =>{
+        }).then(() => {
           this.$router.push('/index/blacklist');
-        })
-        
+        }).catch(function (error) {
+          console.log(error);
+        });
       }
     },
     data: () => ({
@@ -192,6 +175,7 @@
       name : null,
       data : null,
       company : null,
+      image : null
     }),
   }
 </script>
