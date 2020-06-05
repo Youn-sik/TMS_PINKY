@@ -12,23 +12,69 @@
             hide-details
             clear-icon="mdi-close-circle-outline"
             append-icon="search"
-            style="width:50%;"
+            style="width:30%;"
           ></v-text-field>
-          <v-btn color="primary" class="ml-2 mt-4"><v-icon dark left>mdi-plus</v-icon>추가</v-btn>
+          <!-- <v-btn color="primary" class="ml-2 mt-4"><v-icon dark left>mdi-plus</v-icon>추가</v-btn> -->
+
+              <v-btn color="primary" class="ml-2 mt-4" @click="clickDialogBtn">
+               <v-icon dark left>mdi-plus</v-icon>추가
+              </v-btn>
+          <v-dialog
+            v-model="dialog"
+            width="500"
+          >
+            <!-- <template v-slot:activator="{ on }"> -->
+            <!-- </template> -->
+
+            <v-card>
+              <v-card-title
+                class="headline grey lighten-2"
+                primary-title
+              >
+                그룹 추가
+              </v-card-title>
+
+              <v-card-text>
+                <v-text-field
+                  v-model="groupName"
+                  label="그룹 이름"
+                  class="ml-2 mr-2 mt-2"
+                ></v-text-field>
+              </v-card-text>
+
+              <v-divider></v-divider>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="primary"
+                  text
+                  @click="addGroup"
+                >
+                  추가
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </v-card-title>
-        <!-- {{active}} 선택됨 -->
         <v-card-text>
           <v-treeview
-            :items="items"
+            :items="api_v1_group_group"
+            item-key="_id"
             :active.sync="active"
             :search="searchGroup"
             activatable
+            :return-object="true"
             :open.sync="open"
           >
             <template v-slot:prepend="{ item }">
               <v-icon
                 v-if="item.children"
-                v-text="`mdi-${item.id === 1 ? 'home-variant' : 'folder-network'}`"
+                v-text="`mdi-folder-network`"
+              ></v-icon>
+              <v-icon
+                v-else-if="item.avatar_file"
+                v-text="`person`"
               ></v-icon>
             </template>
           </v-treeview>
@@ -44,6 +90,7 @@
             hide-details
             clear-icon="mdi-close-circle-outline"
             append-icon="search"
+            style="width:50%;"
           ></v-text-field>
           <div>
             <v-btn color="error" class="ml-2 mr-2 mt-4" v-if="userSelected[0]" @click="deleteUser"><v-icon dark left>delete_forever</v-icon>삭제</v-btn>
@@ -57,8 +104,7 @@
           show-select
           item-key="_id"
           :headers="headers"
-          :items="api_v1_person_users"
-          :search="searchEmployee"
+          :items="filteredItems"
         >
           <template v-slot:item.avatar_file="{ item }">
             <img 
@@ -78,25 +124,26 @@
 
 
 <script> 
-  import ALL_USERS from "../../../grahpql/allUser.gql";
-  import DELETE_USER from "../../../grahpql/deleteUser.gql";
+  import axios from "axios";
   export default {
     computed: {
       filteredItems() {
-        if(this.search === '') {
-          return this.api_v1_person_every_type_users
+        if(this.searchEmployee === '') {
+          return this.api_v1_person_users
         } else {
-          return this.api_v1_person_every_type_users.filter((i) => {
-            return i.name.indexOf(this.search) >= 0;
+          return this.api_v1_person_users.filter((i) => {
+            return i.name.indexOf(this.searchEmployee) >= 0;
           })
         }
-      }
+      },
     },
     data: () => ({
       active:[],
       userSelected:[],
       userUpdateModal: false,
+      dialog: false,
       name:null,
+      groupName:null,
       avatar_file:null,
       image : null,
       api_v1_person_users:[],
@@ -115,124 +162,115 @@
           },
           { text: '생성일', value: 'created_at' },
         ],
-      items: [
-        {
-          id: 'Vuetify Human Resources',
-          name: 'Vuetify Human Resources',
-          children: [
-            {
-              id: "Core team",
-              name: 'Core team',
-              children: [
-                {
-                  id: 201,
-                  name: 'John',
-                },
-                {
-                  id: 202,
-                  name: 'Kael',
-                },
-                {
-                  id: 203,
-                  name: 'Nekosaur',
-                },
-                {
-                  id: 204,
-                  name: 'Jacek',
-                },
-                {
-                  id: 205,
-                  name: 'Andrew',
-                },
-              ],
-            },
-            {
-              id: "Administrators",
-              name: 'Administrators',
-              children: [
-                {
-                  id: 301,
-                  name: 'Ranee',
-                },
-                {
-                  id: 302,
-                  name: 'Rachel',
-                },
-              ],
-            },
-            {
-              id: "Contributors",
-              name: 'Contributors',
-              children: [
-                {
-                  id: 401,
-                  name: 'Phlow',
-                },
-                {
-                  id: 402,
-                  name: 'Brandon',
-                },
-                {
-                  id: 403,
-                  name: 'Sean',
-                },
-              ],
-            },
-          ],
-        },
-      ],
+      api_v1_group_group : [],
       open: [1, 2],
-      searchGroup: null,
-      searchEmployee : null,
+      searchGroup: '',
+      searchEmployee : '',
       caseSensitive: false,
     }),
-    apollo: {
-        api_v1_person_users : {
-        query : ALL_USERS,
-        variables : {
-              type : 5,
-        },
-        error (err) {
-          if(err.message.split(':')[2] === ' "유효 하지 않는 토큰 입니다"') {
-            document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
-            this.$router.push('/');
-          }
+    watch : {
+      active : function (newVal) {
+        if(newVal[0].avatar_file !== undefined) {
+          return false;
         }
+        this.api_v1_person_users = newVal[0].user_ids;
       }
     },
+    created () {
+      // axios.get('http://localhost:4000/user?type=1')
+      //   .then((res) => {
+      //     this.api_v1_person_users = res.data
+      //   })
+      axios.get('http://localhost:4000/group?type=5')
+        .then((res) => {
+          res.data.map((i) => {//user_ids에 있는 데이터 children으로 옮기기
+            this.moveUserIds(i);
+          })
+          let index = res.data.findIndex(i => i.name == "undefined");
+          if(index !== -1) {
+            let undefinedGroup = res.data.splice(index,1);
+            res.data.push(undefinedGroup[0]);
+          }
+          this.api_v1_group_group = res.data;
+        })
+    },
   methods: {
+    clickDialogBtn () {
+      if(this.active[0] !== undefined && this.active[0].rootParent !== undefined) {
+        alert('3차 그룹까지만 추가 할 수 있습니다')
+        return false;
+      } else if(this.active[0] !== undefined && this.active[0].avatar_file !== undefined) {
+        alert('그룹을 선택 해 주세요');
+        return false;
+      }
+      this.dialog = true;
+    },
+    addGroup () {
+       if(this.groupName === null || this.groupName === '') {
+        alert('이름을 입력해주세요');
+        this.dialog = false;
+        return false;
+      }
+      const parent = this.active[0]
+      axios.post('http://localhost:4000/group',{
+        name : this.groupName,
+        type : 5,
+        parent,
+      }).then((res) => {
+        if(this.api_v1_group_group[this.api_v1_group_group.length-1].name !== 'undefined') {
+          this.api_v1_group_group.push(res.data);
+        } else if(this.active[0] === undefined) {
+          this.api_v1_group_group.splice(this.api_v1_group_group.length-1,0,res.data)
+        } else {
+          this.active[0].children.map((i,index) => {
+            if(i.avatar_file !== undefined) {
+              this.active[0].children.splice(index,0,res.data)
+            } else if(index === this.active[0].children.length-1) {
+              this.active[0].children.push(res.data)
+            }
+          })
+        }
+        this.groupName === null;
+        this.dialog = false;
+      })
+    },
     async cancelModal() {
       this.userUpdateModal = false;
       setTimeout(() => {
         this.image = null; 
       },300)
     },
+    moveUserIds (data)  {
+      if(data.children[0] !== undefined) {
+          data.children.map((i) => {
+              this.moveUserIds(i)
+          })
+      }
+      if(data.user_ids[0] !== undefined) {
+        data.children = data.children.concat(data.user_ids);
+      }
+    },
+    onChangeImage(file) {
+      this.image = file.base64;
+      /*
+      {
+        size: 93602,
+        filetype: 'image/jpeg',
+        filename: 'user.jpg',
+        base64:   '/9j/4AAQSkZJRg...'
+      }
+      */
+    },
     deleteUser () {
       if(this.userSelected){
-        this.$apollo.mutate({
-          mutation : DELETE_USER,
-          variables : {
-              id : this.userSelected[0]._id,
-          },
-          update: (store) => {
-            const data = store.readQuery({
-              query: ALL_USERS,
-              variables : {
-                type : 2
-              }
+        axios.delete('http://localhost:4000/user/'+this.userSelected[0]._id)
+          .then((res) => {
+            this.api_v1_person_users = this.api_v1_person_users.filter((i) => {
+              return i._id !== res.data._id;
             })
-            data.api_v1_person_users = data.api_v1_person_users.filter(user => {
-              return user._id !== this.userSelected[0]._id
-            })
-            store.writeQuery({
-              query : ALL_USERS, 
-              data,
-              variables : {
-                type : 1
-              } 
-            })
-          },
-        })
+            // this.api_v1_person_users = null
+            // this.api_v1_person_users
+          })
       } else {
         alert("유저를 선택해 주세요")
       }
@@ -257,6 +295,28 @@
         day = day >= 10 ? day : '0' + day;          //day 두자리로 저장
         return  year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
     },
+    updateUser () {
+      if(!this.name){
+        this.name = this.userSelected[0].name;
+      }
+      if(!this.image) {
+        this.image = this.userSelected[0].avatar_file;
+      }
+      axios.put('http://localhost:4000/user/'+this.userSelected[0]._id,{
+        name : this.name,
+        avatar_file : this.image,
+        updated_at : this.getFormatDate(new Date()) 
+      }).then((res) => {
+        let index = this.api_v1_person_users.findIndex(x => x._id == res.data._id)
+        this.api_v1_person_users[index].name = res.data.name;
+        this.api_v1_person_users[index].avatar_file = res.data.avatar_file;
+        this.api_v1_person_users[index].updated_at = res.data.updated_at;
+      })
+      this.userUpdateModal = false  
+      this.name = null;
+      this.userSelected = [];
+      this.image = null;
+    }
   },
 }
 </script>

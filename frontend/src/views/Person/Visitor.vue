@@ -14,19 +14,24 @@
             append-icon="search"
           ></v-text-field>
         </v-card-title>
-        <!-- {{active}} 선택됨 -->
         <v-card-text>
           <v-treeview
-            :items="items"
+            :items="api_v1_group_group"
+            item-key="_id"
             :active.sync="active"
             :search="searchGroup"
             activatable
+            :return-object="true"
             :open.sync="open"
           >
             <template v-slot:prepend="{ item }">
               <v-icon
                 v-if="item.children"
-                v-text="`mdi-${item.id === 1 ? 'home-variant' : 'folder-network'}`"
+                v-text="`mdi-folder-network`"
+              ></v-icon>
+              <v-icon
+                v-else-if="item.avatar_file"
+                v-text="`person`"
               ></v-icon>
             </template>
           </v-treeview>
@@ -79,7 +84,7 @@
                 </v-card-actions>
               </v-card>
             </v-dialog>
-            <v-btn color="primary" class="mt-4" :to="{path : 'addvisitor'}"><v-icon dark left>mdi-plus</v-icon>추가</v-btn>
+            <v-btn color="primary" class="mt-4" :to="{path : 'addemployee'}"><v-icon dark left>mdi-plus</v-icon>추가</v-btn>
           </div>
         </v-card-title>
         <v-data-table
@@ -88,14 +93,13 @@
           show-select
           item-key="_id"
           :headers="headers"
-          :items="api_v1_person_users"
-          :search="searchEmployee"
+          :items="filteredItems"
         >
           <template v-slot:item.avatar_file="{ item }">
             <img 
             width="70px"
             class="mt-1 mb-1"
-            :src="'data:image/jpeg;base64,'+item.avatar_file"/>
+            :src="'http://localhost:4000/'+item.avatar_file"/>
           </template>
           <template v-slot:item.created_at="{ item }">
             {{item.created_at}}
@@ -114,14 +118,14 @@
   export default {
     computed: {
       filteredItems() {
-        if(this.search === '') {
-          return this.api_v1_person_every_type_users
+        if(this.searchEmployee === '') {
+          return this.api_v1_person_users
         } else {
-          return this.api_v1_person_every_type_users.filter((i) => {
-            return i.name.indexOf(this.search) >= 0;
+          return this.api_v1_person_users.filter((i) => {
+            return i.name.indexOf(this.searchEmployee) >= 0;
           })
         }
-      }
+      },
     },
     data: () => ({
       active:[],
@@ -146,84 +150,39 @@
           },
           { text: '생성일', value: 'created_at' },
         ],
-      items: [
-        {
-          id: 'Vuetify Human Resources',
-          name: 'Vuetify Human Resources',
-          children: [
-            {
-              id: "Core team",
-              name: 'Core team',
-              children: [
-                {
-                  id: 201,
-                  name: 'John',
-                },
-                {
-                  id: 202,
-                  name: 'Kael',
-                },
-                {
-                  id: 203,
-                  name: 'Nekosaur',
-                },
-                {
-                  id: 204,
-                  name: 'Jacek',
-                },
-                {
-                  id: 205,
-                  name: 'Andrew',
-                },
-              ],
-            },
-            {
-              id: "Administrators",
-              name: 'Administrators',
-              children: [
-                {
-                  id: 301,
-                  name: 'Ranee',
-                },
-                {
-                  id: 302,
-                  name: 'Rachel',
-                },
-              ],
-            },
-            {
-              id: "Contributors",
-              name: 'Contributors',
-              children: [
-                {
-                  id: 401,
-                  name: 'Phlow',
-                },
-                {
-                  id: 402,
-                  name: 'Brandon',
-                },
-                {
-                  id: 403,
-                  name: 'Sean',
-                },
-              ],
-            },
-          ],
-        },
-      ],
+      api_v1_group_group : [],
       open: [1, 2],
-      searchGroup: null,
-      searchEmployee : null,
+      searchGroup: '',
+      searchEmployee : '',
       caseSensitive: false,
     }),
     components: {
       Base64Upload,
     },
+    watch : {
+      active : function (newVal) {
+        if(newVal[0].avatar_file !== undefined) {
+          return false;
+        }
+        this.api_v1_person_users = newVal[0].user_ids;
+      }
+    },
     created () {
-      axios.get('http://localhost:4000/user?type=2')
+      // axios.get('http://localhost:4000/user?type=1')
+      //   .then((res) => {
+      //     this.api_v1_person_users = res.data
+      //   })
+      axios.get('http://localhost:4000/group?type=2')
         .then((res) => {
-          this.api_v1_person_users = res.data
+          res.data.map((i) => {//user_ids에 있는 데이터 children으로 옮기기
+            this.moveUserIds(i);
+          })
+          let index = res.data.findIndex(i => i.name == "undefined");
+          if(index !== -1) {
+            let undefinedGroup = res.data.splice(index,1);
+            res.data.push(undefinedGroup[0]);
+          }
+          this.api_v1_group_group = res.data;
         })
     },
   methods: {
@@ -232,6 +191,16 @@
       setTimeout(() => {
         this.image = null; 
       },300)
+    },
+    moveUserIds (data)  {
+      if(data.children[0] !== undefined) {
+          data.children.map((i) => {
+              this.moveUserIds(i)
+          })
+      }
+      if(data.user_ids[0] !== undefined) {
+        data.children = data.children.concat(data.user_ids);
+      }
     },
     onChangeImage(file) {
       this.image = file.base64;

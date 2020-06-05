@@ -54,7 +54,7 @@
             <v-date-picker v-model="dates" no-title scrollable range>
               <v-spacer></v-spacer>
               <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
-              <v-btn text color="primary" @click="$refs.menu.save(date)">OK</v-btn>
+              <v-btn text color="primary" @click="clickOK">OK</v-btn>
             </v-date-picker>
           </v-menu>
           <v-spacer></v-spacer>
@@ -70,13 +70,12 @@
           :items="filteredItems"
           item-key="_id"
           class="elevation-1"
-          :custom-filter="customFilter"
         >
            <template v-slot:item.avatar_file="{ item }">
             <img 
             width="70px"
             class="mt-1 mb-1"
-            :src="'data:image/jpeg;base64,'+item.avatar_file"/>
+            :src="'http://localhost:4000/'+item.avatar_file"/>
           </template>
           <template v-slot:item.type="{ item }">
             <template v-if="item.type === 1">
@@ -99,7 +98,7 @@
 </template>
 
 <script>
-  import EVERY_TYPE_USERS from "../../../grahpql/everyTypeUsers.gql";
+  import axios from 'axios';
   export default {
     computed: {
       filteredItems() {
@@ -117,9 +116,10 @@
     },
     data () {
       return {
-        mene : false,
-        dates: ['2019-09-10', '2019-09-20'],
+        menu : false,
+        dates: [this.getFormatDate(new Date(),-1), this.getFormatDate(new Date(),0)],
         search: '',
+        origin: [],
         selected: [],
         api_v1_person_every_type_users:[],
         headers: [
@@ -139,28 +139,72 @@
       }
     },
     methods:{
-      customFilter(items, search, filter) {
-        // console.log(items+"\n");
-        // console.log(search+'\n');
-        search
-        items
-        console.log(filter+'\n');
-        console.log('\n')
-        // return 
-        // items.map(row => console.log(row));
-      }
-    },
-    apollo: {
-        api_v1_person_every_type_users : {
-        query : EVERY_TYPE_USERS,
-        error (err) {
-          if(err.message.split(':')[2] === ' "유효 하지 않는 토큰 입니다"') {
-            document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
-            this.$router.push('/');
+      clickOK(){
+        if(this.dates.length === 1) {
+          this.api_v1_person_every_type_users = this.origin.filter((i) => {            
+            if(i.created_at.split(' ')[0] === this.dates[0] || (i.updated_at !== undefined&& i.updated_at.split(' ')[0] === this.dates[0])){
+              return i;
+            }
+          });
+        } else {
+          if(this.dates[0] > this.dates[1]) {
+            let temp = this.dates[0];
+            this.dates[0] = this.dates[1];
+            this.dates[1] = temp;
           }
+          this.api_v1_person_every_type_users = this.origin.filter((i) => {
+            if((i.created_at.split(' ')[0] >= this.dates[0] && i.created_at.split(' ')[0] <= this.dates[1]) 
+                || (i.updated_at !=undefined && (i.updated_at.split(' ')[0] >= this.dates[0] && i.updated_at.split(' ')[0] <= this.dates[1]))){
+              return i;
+            }
+          });
         }
+        this.$refs.menu.save(this.dates)
+      },
+      getFormatDate(date,val){
+        var year = date.getFullYear();              //yyyy
+        var month = (1 + date.getMonth());          //M
+        month = month >= 10 ? month : '0' + month;  //month 두자리로 저장
+        var day = date.getDate()+val;                   //d
+        var hours = date.getHours();
+        if(hours < 10) {
+          hours = '0' + hours;
+        }
+        var minutes = date.getMinutes();
+        if(minutes < 10) {
+          minutes = '0' + minutes;
+        }
+        var seconds = date.getSeconds();
+        if(seconds < 10) {
+          seconds = '0' + seconds;
+        }
+        day = day >= 10 ? day : '0' + day;          //day 두자리로 저장
+        return  year + '-' + month + '-' + day;
       }
     },
+    created () {
+      axios.get('http://localhost:4000/user')
+        .then((res) => {
+          this.origin = res.data
+          this.api_v1_person_every_type_users = this.origin.filter((i) => {
+            if((i.created_at.split(' ')[0] >= this.getFormatDate(new Date(),-1) || i.created_at.split(' ')[0] <= this.getFormatDate(new Date(),0)) || (i.updated_at.split(' ')[0] >= this.getFormatDate(new Date(),-1) || i.updated_at.split(' ')[0] <= this.getFormatDate(new Date(),0))){
+              return i;
+            }
+          });
+        })
+    }
+    // apollo: {
+    //     api_v1_person_every_type_users : {
+    //     query : EVERY_TYPE_USERS,
+    //     error (err) {
+    //       if(err.message.split(':')[2] === ' "유효 하지 않는 토큰 입니다"') {
+    //         document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
+    //         this.$router.push('/');
+    //       }
+    //     }
+    //   }
+    // },
+
   }
 </script>
 <style>

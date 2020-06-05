@@ -3,6 +3,7 @@ var router = express.Router();
 const boom = require('boom')
 const api_v1_person_user = require('../../../../models/api/v1/person/user')
 const api_v1_group_group = require('../../../../models/api/v1/group/group')
+var fs = require('fs')
 
 router.get('/',async function(req, res) {
     try {
@@ -32,12 +33,21 @@ router.get('/:id',async function(req, res) {
     }
 });
 
-router.post('/',function(req, res) {
+router.post('/',async function(req, res) {
     try {
-        const add = new api_v1_person_user(req.body)
-        const parent = req.body.parent === undefined ? null : req.body.parent;
-        if(parent !== null) {
-            api_v1_group_group.findByIdAndUpdate(parent ,{ $addToSet: { user_ids : add._id} }, {new: true }).exec()//parent의 children에 add의 _id값 push
+        let add = new api_v1_person_user(req.body)
+        fs.writeFile('image/'+add._id+'profile.jpg',add.avatar_file,'base64',() => {})
+        add.avatar_file = 'image/'+add._id+'profile.jpg';
+        const groups = req.body.groups === undefined ? null : req.body.groups;
+        if(groups !== null) {
+            api_v1_group_group.findByIdAndUpdate(groups ,{ $addToSet: { user_ids : add._id} }, {new: true }).exec()//groups의 children에 add의 _id값 push
+        } else {
+            if(await api_v1_group_group.findOne({name:'undefined'}) === null) {
+                let group = new api_v1_group_group({name:'undefined',type:req.body.type,user_ids:[add._id]})
+                group.save();
+            } else {
+                await api_v1_group_group.findOneAndUpdate({name:'undefined'},{ $addToSet: { user_ids : add._id} }, {new: true }).exec()
+            }
         }
         add.save();
         res.send(add);

@@ -8,6 +8,7 @@ const boom = require('boom')
 const jwt =  require('jsonwebtoken');
 const cookie = require('cookie');
 const bodyParser = require('body-parser');
+const express = require('express');
 
 //model
 const User = require('./models/User')
@@ -19,6 +20,7 @@ const groupRouter = require('./routes/api/v1/group/group');
 const alarmRouter = require('./routes/api/v2/device/alarm');
 const cameraRouter = require('./routes/api/v3/device/camera');
 const gatewayRouter = require('./routes/api/v3/device/gateway');
+const statisticsRouter = require('./routes/api/v3/device/statistics');
 const accountRouter = require('./routes/account');
 
 // Register Fastify GraphQL
@@ -26,8 +28,8 @@ const accountRouter = require('./routes/account');
 //     schema,
 //     graphiql: true
 // })
-fastify.use(bodyParser.urlencoded({extended:true}));
-fastify.use(bodyParser.json());
+fastify.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+fastify.use(bodyParser.json({limit: '50mb'}));
 fastify.use(cors())
 fastify.use('/user',usersRouter);
 fastify.use('/account',accountRouter);
@@ -36,6 +38,9 @@ fastify.use('/alarm',alarmRouter);
 fastify.use('/camera',cameraRouter);
 fastify.use('/gateway',gatewayRouter);
 fastify.use('/group',groupRouter);
+fastify.use('/statistics',statisticsRouter);
+
+fastify.use('/image',express.static('./image'));
 
 fastify.post('/login', async function(req, res) {
     try {   

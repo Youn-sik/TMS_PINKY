@@ -50,37 +50,37 @@
                   <v-container>
                     <v-row>
                       <v-col cols="12">
-                        <v-autocomplete
-                          :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
-                          label="단말기 타입"
-                        ></v-autocomplete>
-                      </v-col>
-                      <v-col cols="12">
-                        <v-autocomplete
-                          :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
-                          label="단말기 게이트웨이"
-                        ></v-autocomplete>
-                      </v-col>
-                      <v-col cols="12">
-                        <v-autocomplete
-                          :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
-                          label="채널"
-                        ></v-autocomplete>
-                      </v-col>
-                      <v-col cols="12">
-                        <v-text-field label="단말기 이름*" required></v-text-field>
-                      </v-col>
-                      <v-col cols="12">
-                        <v-text-field label="단말기 위치*" required></v-text-field>
-                      </v-col>
-                      <v-col cols="12">
-                        <v-autocomplete
-                          :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
-                          label="프로토콜"
-                        ></v-autocomplete>
-                      </v-col>
-                      <v-col cols="12">
-                        <v-text-field label="URL" required></v-text-field>
+                        <v-radio-group v-model="deviceRadio" row>
+                          <v-radio
+                            label='게이트 웨이'
+                            value='gateway'
+                          ></v-radio>
+                          <v-radio
+                            label='단말기'
+                            value='device'
+                          ></v-radio>
+                        </v-radio-group>
+                        <template v-if="deviceRadio === 'gateway'">
+                          <v-text-field label="*게이트웨이 이름" v-model="deviceName" required></v-text-field>
+                          <v-text-field label="*게이트웨이 위치" v-model="deviceLocation" required></v-text-field>
+                          <v-text-field label="*게이트웨이 IP" v-model="deviceIP" required></v-text-field>
+                          <v-text-field label="*포트 번호" v-model="port" required></v-text-field>
+                        </template>
+                        <template v-if="deviceRadio === 'device'">
+                          <v-autocomplete
+                            :items="['gateway.A', 'gateway.B', 'gateway.C', 'gateway.D']"
+                            label="*게이트 웨이"
+                            v-model="gateway"
+                          ></v-autocomplete>
+                          <v-text-field label="*단말기 이름" v-model="deviceName" required></v-text-field>
+                          <v-text-field label="*단말기 위치" v-model="deviceLocation" required></v-text-field>
+                          <v-autocomplete
+                            :items="['RTSP', 'ONVIF','GB28181']"
+                            label="*프로토콜"
+                            v-model="protocol"
+                          ></v-autocomplete>
+                          <v-text-field label="*URL" v-model="url" required></v-text-field>
+                        </template>
                       </v-col>
                     </v-row>
                   </v-container>
@@ -88,8 +88,8 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="addUserModal = false">Close</v-btn>
-                  <v-btn color="blue darken-1" text @click="addUserModal = false">Save</v-btn>
+                  <v-btn color="blue darken-1" text @click="addUserModal = false">취소</v-btn>
+                  <v-btn color="blue darken-1" text @click="addDevice">저장</v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
@@ -107,10 +107,6 @@
                       <v-container>
                         <v-row>
                           <v-col cols="12">
-                            <v-autocomplete
-                              :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
-                              label="단말기 타입"
-                            ></v-autocomplete>
                           </v-col>
                           <v-col cols="12">
                             <v-autocomplete
@@ -119,10 +115,6 @@
                             ></v-autocomplete>
                           </v-col>
                           <v-col cols="12">
-                            <v-autocomplete
-                              :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
-                              label="채널"
-                            ></v-autocomplete>
                           </v-col>
                           <v-col cols="12">
                             <v-text-field label="단말기 이름*" required></v-text-field>
@@ -156,7 +148,7 @@
         </v-card-title>
         <v-data-table
           :headers="headers"
-          :items="desserts"
+          :items="api_v3_device_camera"
           :single-expand="singleExpand"
           :expanded.sync="expanded"
           item-key="name"
@@ -263,12 +255,29 @@
 </template>
 
 <script>
+  import axios from 'axios';
   export default {
+    created () {
+      axios.get('http://localhost:4000/camera').then((res) => {
+        this.api_v3_device_camera = res.data;
+      })
+    },
     data () {
       return {
+        api_v3_device_camera : [],
         search: '',
         selected: [],
+        deviceName: '',
+        deviceLocation : '',
+        deviceIP : '',
+        port : '',
+        account : '',
+        password : '',
+        gateway : null,
+        protocol : '',
+        url : '',
         tab:null,
+        deviceRadio:'gateway',
         tabs: [
           "Device information",
           "Device Settings",
@@ -281,104 +290,64 @@
         singleExpand: false,
         headers: [
           {
-            text: 'Device ID',
+            text: '단말기 ID',
             align: 'start',
             sortable: false,
             value: 'name',
           },
-          { text: 'Calories', value: 'calories' },
-          { text: 'Fat (g)', value: 'fat' },
-          { text: 'Carbs (g)', value: 'carbs' },
-          { text: 'Protein (g)', value: 'protein' },
-          { text: 'Iron (%)', value: 'iron' },
+          { text: '단말기 명', value: 'calories' },
+          { text: '위치', value: 'fat' },
+          { text: '타입', value: 'carbs' },
+          { text: '상태', value: 'protein' },
           { text: '', value: 'data-table-expand' },
         ],
         addUserModal : false,
         batchSettingModal : false,
-        desserts: [
-          {
-            name: 'Frozen Yogurt',
-            calories: 159,
-            fat: 6.0,
-            carbs: 24,
-            protein: 4.0,
-            iron: '1%',
-          },
-          {
-            name: 'Ice cream sandwich',
-            calories: 237,
-            fat: 9.0,
-            carbs: 37,
-            protein: 4.3,
-            iron: '1%',
-          },
-          {
-            name: 'Eclair',
-            calories: 262,
-            fat: 16.0,
-            carbs: 23,
-            protein: 6.0,
-            iron: '7%',
-          },
-          {
-            name: 'Cupcake',
-            calories: 305,
-            fat: 3.7,
-            carbs: 67,
-            protein: 4.3,
-            iron: '8%',
-          },
-          {
-            name: 'Gingerbread',
-            calories: 356,
-            fat: 16.0,
-            carbs: 49,
-            protein: 3.9,
-            iron: '16%',
-          },
-          {
-            name: 'Jelly bean',
-            calories: 375,
-            fat: 0.0,
-            carbs: 94,
-            protein: 0.0,
-            iron: '0%',
-          },
-          {
-            name: 'Lollipop',
-            calories: 392,
-            fat: 0.2,
-            carbs: 98,
-            protein: 0,
-            iron: '2%',
-          },
-          {
-            name: 'Honeycomb',
-            calories: 408,
-            fat: 3.2,
-            carbs: 87,
-            protein: 6.5,
-            iron: '45%',
-          },
-          {
-            name: 'Donut',
-            calories: 452,
-            fat: 25.0,
-            carbs: 51,
-            protein: 4.9,
-            iron: '22%',
-          },
-          {
-            name: 'KitKat',
-            calories: 518,
-            fat: 26.0,
-            carbs: 65,
-            protein: 7,
-            iron: '6%',
-          },
-        ],
       }
     },
+    methods: {
+      addDevice () {
+        if(this.deviceRadio === 'gateway') {
+          if(this.deviceName === '') {
+            alert('게이트웨이 이름을 입력해주세요.');
+          } else if(this.deviceLocation === '') {
+            alert('게이트웨이 위치를 입력해주세요.');
+          } else if(this.deviceIP === '') {
+            alert('게이트웨이 IP를 입력해주세요.');
+          } else if(this.port === '') {
+            alert('포트 번호를 입력해주세요.');
+          } else{
+            axios.post('http://localhost:4000/gateway',{
+              name:this.deviceName,
+              location:this.deviceLocation,
+              ip:this.deviceIP,
+              port:this.devicePort,
+            })
+          }
+        } else {
+          if(this.gateway === '') {
+            alert('게이트웨이를 선택해주세요.');
+          } else if(this.deviceName === '') {
+            alert('단말기 이름을 입력해주세요.');
+          } else if(this.deviceLocation === '') {
+            alert('단말기 위치를 입력해주세요.');
+          } else if(this.protocol === '') {
+            alert('프로토콜을 선택해주세요.');
+          } else if(this.url === '') {
+            alert('URL을 입력해주세요.');
+          } else {
+            axios.post('http://localhost:4000/gateway',{
+              name:this.deviceName,
+              location:this.deviceLocation,
+              gateway_id:this.gateway,
+              protocol:this.protocol,
+              url:this.url
+            })
+          }
+        }
+         
+      }
+    }
   }
 </script>
 <style>

@@ -188,8 +188,8 @@
           text: '출석 관리',
           model: false,
           children: [
-            { text: '출석 규칙', to:"/attendancerules" },
-            { text: '출석 구역' , to:"/attendancearea"},
+            // { text: '출석 규칙', to:"/attendancerules" },
+            // { text: '출석 구역' , to:"/attendancearea"},
             { text: '출석 기록', to:'/attendancerecords' },
             { text: '출석 통계',to:'/AttendanceStatistics' },
           ],
@@ -200,10 +200,10 @@
           text: '시스템 관리',
           model: false,
           children: [
-            { text: '기업 정보' },
+            // { text: '기업 정보' },
             { text: '계정 권한', to:'/account'},
             { text: '작업 기록', to:'/operationlog' },
-            { text: '오픈 플랫폼' },
+            // { text: '오픈 플랫폼' },
           ],
         },
       ],
