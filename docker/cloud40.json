@@ -1,0 +1,23 @@
+{
+    "base_url": "http://172.16.135.89/",
+    "base_server_document": "/var/www/docker/",
+    "base_document": "/var/www/docker/",
+    "base_local_url": "http://172.16.135.89",
+    "local_url": "172.16.135.89",
+
+    "mongodb_host": "172.16.135.89",
+    "mongodb_user": "admin",
+    "mongodb_passwd": "master",
+    "mongodb_database": "cloud40",
+
+    "mqtt_host": "emq-master1",
+    "mqtt_user": "cloud40_core_web",
+    "mqtt_passwd" : "masterQ!W@E#R$",
+    "mqtt_port": 1883,
+    "mqtt_websocket_port": 8083,
+    "mqtt_dashboard_port": 18083,
+    "mqtt_dashboard_user": "admin",
+    "mqtt_dashboard_password": "public",
+
+    "influxdb": "influx"
+}

@@ -1,0 +1,412 @@
+2020-06-04T15:04:23: PM2 log: ===============================================================================
+2020-06-04T15:04:23: PM2 log: --- New PM2 Daemon started ----------------------------------------------------
+2020-06-04T15:04:23: PM2 log: Time                 : Thu Jun 04 2020 15:04:23 GMT+0900 (Korean Standard Time)
+2020-06-04T15:04:23: PM2 log: PM2 version          : 4.4.0
+2020-06-04T15:04:23: PM2 log: Node.js version      : 10.19.0
+2020-06-04T15:04:23: PM2 log: Current arch         : x64
+2020-06-04T15:04:23: PM2 log: PM2 home             : /root/.pm2
+2020-06-04T15:04:23: PM2 log: PM2 PID file         : /root/.pm2/pm2.pid
+2020-06-04T15:04:23: PM2 log: RPC socket file      : /root/.pm2/rpc.sock
+2020-06-04T15:04:23: PM2 log: BUS socket file      : /root/.pm2/pub.sock
+2020-06-04T15:04:23: PM2 log: Application log path : /root/.pm2/logs
+2020-06-04T15:04:23: PM2 log: Worker Interval      : 30000
+2020-06-04T15:04:23: PM2 log: Process dump file    : /root/.pm2/dump.pm2
+2020-06-04T15:04:23: PM2 log: Concurrent actions   : 2
+2020-06-04T15:04:23: PM2 log: SIGTERM timeout      : 1600
+2020-06-04T15:04:23: PM2 log: ===============================================================================
+2020-06-04T15:04:23: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:04:23: PM2 log: App [mqtt:0] online
+2020-06-04T15:04:23: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:04:23: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:04:23: PM2 log: App [mqtt:0] online
+2020-06-04T15:04:24: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:04:24: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:04:24: PM2 log: App [mqtt:0] online
+2020-06-04T15:04:24: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:04:24: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:04:24: PM2 log: App [mqtt:0] online
+2020-06-04T15:04:25: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:04:25: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:04:25: PM2 log: App [mqtt:0] online
+2020-06-04T15:04:25: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:04:25: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:04:25: PM2 log: App [mqtt:0] online
+2020-06-04T15:04:26: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:04:26: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:04:26: PM2 log: App [mqtt:0] online
+2020-06-04T15:04:26: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:04:26: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:04:26: PM2 log: App [mqtt:0] online
+2020-06-04T15:04:27: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:04:27: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:04:27: PM2 log: App [mqtt:0] online
+2020-06-04T15:04:27: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:04:27: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:04:27: PM2 log: App [mqtt:0] online
+2020-06-04T15:04:28: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:04:28: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:04:28: PM2 log: App [mqtt:0] online
+2020-06-04T15:04:28: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:04:28: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:04:28: PM2 log: App [mqtt:0] online
+2020-06-04T15:04:29: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:04:29: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:04:29: PM2 log: App [mqtt:0] online
+2020-06-04T15:04:29: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:04:29: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:04:29: PM2 log: App [mqtt:0] online
+2020-06-04T15:04:30: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:04:30: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:04:30: PM2 log: App [mqtt:0] online
+2020-06-04T15:04:30: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:04:30: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:04:30: PM2 log: App [mqtt:0] online
+2020-06-04T15:04:31: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:04:31: PM2 log: Script /mqtt.js had too many unstable restarts (16). Stopped. "errored"
+2020-06-04T15:09:46: PM2 log: ===============================================================================
+2020-06-04T15:09:46: PM2 log: --- New PM2 Daemon started ----------------------------------------------------
+2020-06-04T15:09:46: PM2 log: Time                 : Thu Jun 04 2020 15:09:46 GMT+0900 (Korean Standard Time)
+2020-06-04T15:09:46: PM2 log: PM2 version          : 4.4.0
+2020-06-04T15:09:46: PM2 log: Node.js version      : 10.19.0
+2020-06-04T15:09:46: PM2 log: Current arch         : x64
+2020-06-04T15:09:46: PM2 log: PM2 home             : /root/.pm2
+2020-06-04T15:09:46: PM2 log: PM2 PID file         : /root/.pm2/pm2.pid
+2020-06-04T15:09:46: PM2 log: RPC socket file      : /root/.pm2/rpc.sock
+2020-06-04T15:09:46: PM2 log: BUS socket file      : /root/.pm2/pub.sock
+2020-06-04T15:09:46: PM2 log: Application log path : /root/.pm2/logs
+2020-06-04T15:09:46: PM2 log: Worker Interval      : 30000
+2020-06-04T15:09:46: PM2 log: Process dump file    : /root/.pm2/dump.pm2
+2020-06-04T15:09:46: PM2 log: Concurrent actions   : 2
+2020-06-04T15:09:46: PM2 log: SIGTERM timeout      : 1600
+2020-06-04T15:09:46: PM2 log: ===============================================================================
+2020-06-04T15:09:46: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:09:46: PM2 log: App [mqtt:0] online
+2020-06-04T15:09:46: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:09:46: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:09:46: PM2 log: App [mqtt:0] online
+2020-06-04T15:09:47: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:09:47: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:09:47: PM2 log: App [mqtt:0] online
+2020-06-04T15:09:47: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:09:47: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:09:48: PM2 log: App [mqtt:0] online
+2020-06-04T15:09:49: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:09:49: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:09:49: PM2 log: App [mqtt:0] online
+2020-06-04T15:09:50: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:09:50: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:09:50: PM2 log: App [mqtt:0] online
+2020-06-04T15:09:51: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:09:51: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:09:51: PM2 log: App [mqtt:0] online
+2020-06-04T15:09:52: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:09:52: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:09:52: PM2 log: App [mqtt:0] online
+2020-06-04T15:09:52: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:09:52: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:09:52: PM2 log: App [mqtt:0] online
+2020-06-04T15:09:53: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:09:53: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:09:53: PM2 log: App [mqtt:0] online
+2020-06-04T15:09:54: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:09:54: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:09:54: PM2 log: App [mqtt:0] online
+2020-06-04T15:09:54: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:09:54: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:09:54: PM2 log: App [mqtt:0] online
+2020-06-04T15:09:55: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:09:55: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:09:55: PM2 log: App [mqtt:0] online
+2020-06-04T15:09:55: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:09:55: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:09:55: PM2 log: App [mqtt:0] online
+2020-06-04T15:09:56: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:09:56: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:09:56: PM2 log: App [mqtt:0] online
+2020-06-04T15:09:56: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:09:56: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:09:56: PM2 log: App [mqtt:0] online
+2020-06-04T15:09:57: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:09:57: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:09:57: PM2 log: App [mqtt:0] online
+2020-06-04T15:09:57: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:09:57: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:09:57: PM2 log: App [mqtt:0] online
+2020-06-04T15:09:58: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:09:58: PM2 log: Script /mqtt.js had too many unstable restarts (16). Stopped. "errored"
+2020-06-04T15:11:58: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:11:58: PM2 log: App [mqtt:0] online
+2020-06-04T15:11:59: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:11:59: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:11:59: PM2 log: App [mqtt:0] online
+2020-06-04T15:11:59: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:11:59: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:11:59: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:00: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:00: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:00: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:00: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:00: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:00: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:01: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:01: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:01: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:01: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:01: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:01: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:02: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:02: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:02: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:02: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:02: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:02: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:03: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:03: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:03: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:03: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:03: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:03: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:04: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:04: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:04: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:04: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:04: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:04: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:05: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:05: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:05: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:05: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:05: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:05: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:06: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:06: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:06: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:06: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:06: PM2 log: Script /mqtt.js had too many unstable restarts (16). Stopped. "errored"
+2020-06-04T15:12:36: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:36: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:37: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:37: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:37: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:38: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:38: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:38: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:39: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:39: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:39: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:39: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:39: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:39: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:40: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:40: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:40: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:41: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:41: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:41: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:41: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:41: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:41: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:42: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:42: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:42: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:43: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:43: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:43: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:44: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:44: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:44: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:44: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:44: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:44: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:45: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:45: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:45: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:46: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:46: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:46: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:47: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:47: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:47: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:48: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:48: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:12:48: PM2 log: App [mqtt:0] online
+2020-06-04T15:12:48: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:12:48: PM2 log: Script /mqtt.js had too many unstable restarts (16). Stopped. "errored"
+2020-06-04T15:13:00: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:13:00: PM2 log: App [mqtt:0] online
+2020-06-04T15:13:01: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:13:01: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:13:01: PM2 log: App [mqtt:0] online
+2020-06-04T15:13:02: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:13:02: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:13:02: PM2 log: App [mqtt:0] online
+2020-06-04T15:13:03: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:13:03: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:13:03: PM2 log: App [mqtt:0] online
+2020-06-04T15:13:04: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:13:04: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:13:04: PM2 log: App [mqtt:0] online
+2020-06-04T15:13:04: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:13:04: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:13:04: PM2 log: App [mqtt:0] online
+2020-06-04T15:13:05: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:13:05: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:13:05: PM2 log: App [mqtt:0] online
+2020-06-04T15:13:06: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:13:06: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:13:06: PM2 log: App [mqtt:0] online
+2020-06-04T15:13:07: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:13:07: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:13:07: PM2 log: App [mqtt:0] online
+2020-06-04T15:13:08: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:13:08: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:13:08: PM2 log: App [mqtt:0] online
+2020-06-04T15:13:09: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:13:09: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:13:09: PM2 log: App [mqtt:0] online
+2020-06-04T15:13:09: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:13:09: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:13:09: PM2 log: App [mqtt:0] online
+2020-06-04T15:13:10: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:13:10: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:13:10: PM2 log: App [mqtt:0] online
+2020-06-04T15:13:11: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:13:11: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:13:11: PM2 log: App [mqtt:0] online
+2020-06-04T15:13:12: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:13:12: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:13:12: PM2 log: App [mqtt:0] online
+2020-06-04T15:13:13: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:13:13: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:13:13: PM2 log: App [mqtt:0] online
+2020-06-04T15:13:14: PM2 log: App [mqtt:0] exited with code [1] via signal [SIGINT]
+2020-06-04T15:13:14: PM2 log: Script /mqtt.js had too many unstable restarts (16). Stopped. "errored"
+2020-06-04T15:13:17: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T15:13:17: PM2 log: App [mqtt:0] online
+2020-06-04T16:00:03: PM2 log: ===============================================================================
+2020-06-04T16:00:03: PM2 log: --- New PM2 Daemon started ----------------------------------------------------
+2020-06-04T16:00:03: PM2 log: Time                 : Thu Jun 04 2020 16:00:03 GMT+0900 (Korean Standard Time)
+2020-06-04T16:00:03: PM2 log: PM2 version          : 4.4.0
+2020-06-04T16:00:03: PM2 log: Node.js version      : 10.19.0
+2020-06-04T16:00:03: PM2 log: Current arch         : x64
+2020-06-04T16:00:03: PM2 log: PM2 home             : /root/.pm2
+2020-06-04T16:00:03: PM2 log: PM2 PID file         : /root/.pm2/pm2.pid
+2020-06-04T16:00:03: PM2 log: RPC socket file      : /root/.pm2/rpc.sock
+2020-06-04T16:00:03: PM2 log: BUS socket file      : /root/.pm2/pub.sock
+2020-06-04T16:00:03: PM2 log: Application log path : /root/.pm2/logs
+2020-06-04T16:00:03: PM2 log: Worker Interval      : 30000
+2020-06-04T16:00:03: PM2 log: Process dump file    : /root/.pm2/dump.pm2
+2020-06-04T16:00:03: PM2 log: Concurrent actions   : 2
+2020-06-04T16:00:03: PM2 log: SIGTERM timeout      : 1600
+2020-06-04T16:00:03: PM2 log: ===============================================================================
+2020-06-04T16:00:03: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T16:00:03: PM2 log: App [mqtt:0] online
+2020-06-04T16:04:29: PM2 log: ===============================================================================
+2020-06-04T16:04:29: PM2 log: --- New PM2 Daemon started ----------------------------------------------------
+2020-06-04T16:04:29: PM2 log: Time                 : Thu Jun 04 2020 16:04:29 GMT+0900 (Korean Standard Time)
+2020-06-04T16:04:29: PM2 log: PM2 version          : 4.4.0
+2020-06-04T16:04:29: PM2 log: Node.js version      : 10.19.0
+2020-06-04T16:04:29: PM2 log: Current arch         : x64
+2020-06-04T16:04:29: PM2 log: PM2 home             : /root/.pm2
+2020-06-04T16:04:29: PM2 log: PM2 PID file         : /root/.pm2/pm2.pid
+2020-06-04T16:04:29: PM2 log: RPC socket file      : /root/.pm2/rpc.sock
+2020-06-04T16:04:29: PM2 log: BUS socket file      : /root/.pm2/pub.sock
+2020-06-04T16:04:29: PM2 log: Application log path : /root/.pm2/logs
+2020-06-04T16:04:29: PM2 log: Worker Interval      : 30000
+2020-06-04T16:04:29: PM2 log: Process dump file    : /root/.pm2/dump.pm2
+2020-06-04T16:04:29: PM2 log: Concurrent actions   : 2
+2020-06-04T16:04:29: PM2 log: SIGTERM timeout      : 1600
+2020-06-04T16:04:29: PM2 log: ===============================================================================
+2020-06-04T16:04:29: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T16:04:29: PM2 log: App [mqtt:0] online
+2020-06-04T16:08:12: PM2 log: Stopping app:mqtt id:0
+2020-06-04T16:08:12: PM2 log: App [mqtt:0] exited with code [0] via signal [SIGINT]
+2020-06-04T16:08:12: PM2 log: pid=25 msg=process killed
+2020-06-04T16:08:12: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T16:08:12: PM2 log: App [mqtt:0] online
+2020-06-04T07:11:31: PM2 log: ===============================================================================
+2020-06-04T07:11:31: PM2 log: --- New PM2 Daemon started ----------------------------------------------------
+2020-06-04T07:11:31: PM2 log: Time                 : Thu Jun 04 2020 07:11:31 GMT+0000 (Coordinated Universal Time)
+2020-06-04T07:11:31: PM2 log: PM2 version          : 4.4.0
+2020-06-04T07:11:31: PM2 log: Node.js version      : 12.18.0
+2020-06-04T07:11:31: PM2 log: Current arch         : x64
+2020-06-04T07:11:31: PM2 log: PM2 home             : /root/.pm2
+2020-06-04T07:11:31: PM2 log: PM2 PID file         : /root/.pm2/pm2.pid
+2020-06-04T07:11:31: PM2 log: RPC socket file      : /root/.pm2/rpc.sock
+2020-06-04T07:11:31: PM2 log: BUS socket file      : /root/.pm2/pub.sock
+2020-06-04T07:11:31: PM2 log: Application log path : /root/.pm2/logs
+2020-06-04T07:11:31: PM2 log: Worker Interval      : 30000
+2020-06-04T07:11:31: PM2 log: Process dump file    : /root/.pm2/dump.pm2
+2020-06-04T07:11:31: PM2 log: Concurrent actions   : 2
+2020-06-04T07:11:31: PM2 log: SIGTERM timeout      : 1600
+2020-06-04T07:11:31: PM2 log: ===============================================================================
+2020-06-04T07:11:31: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T07:11:31: PM2 log: App [mqtt:0] online
+2020-06-04T07:13:07: PM2 log: Stopping app:mqtt id:0
+2020-06-04T07:13:07: PM2 log: App [mqtt:0] exited with code [0] via signal [SIGINT]
+2020-06-04T07:13:07: PM2 log: pid=24 msg=process killed
+2020-06-04T07:13:07: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T07:13:07: PM2 log: App [mqtt:0] online
+2020-06-04T08:15:36: PM2 log: Stopping app:mqtt id:0
+2020-06-04T08:15:36: PM2 log: App [mqtt:0] exited with code [0] via signal [SIGINT]
+2020-06-04T08:15:36: PM2 log: pid=77 msg=process killed
+2020-06-04T08:15:36: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T08:15:36: PM2 log: App [mqtt:0] online
+2020-06-04T09:04:01: PM2 log: Stopping app:mqtt id:0
+2020-06-04T09:04:01: PM2 log: App [mqtt:0] exited with code [0] via signal [SIGINT]
+2020-06-04T09:04:01: PM2 log: pid=96 msg=process killed
+2020-06-04T09:04:01: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T09:04:01: PM2 log: App [mqtt:0] online
+2020-06-04T09:05:20: PM2 log: Stopping app:mqtt id:0
+2020-06-04T09:05:20: PM2 log: App [mqtt:0] exited with code [0] via signal [SIGINT]
+2020-06-04T09:05:20: PM2 log: pid=115 msg=process killed
+2020-06-04T09:05:20: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T09:05:20: PM2 log: App [mqtt:0] online
+2020-06-04T09:05:38: PM2 log: Stopping app:mqtt id:0
+2020-06-04T09:05:38: PM2 log: App [mqtt:0] exited with code [0] via signal [SIGINT]
+2020-06-04T09:05:38: PM2 log: pid=134 msg=process killed
+2020-06-04T09:05:38: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T09:05:38: PM2 log: App [mqtt:0] online
+2020-06-04T09:06:06: PM2 log: Stopping app:mqtt id:0
+2020-06-04T09:06:06: PM2 log: App [mqtt:0] exited with code [0] via signal [SIGINT]
+2020-06-04T09:06:06: PM2 log: pid=153 msg=process killed
+2020-06-04T09:06:06: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T09:06:06: PM2 log: App [mqtt:0] online
+2020-06-04T09:08:20: PM2 log: Stopping app:mqtt id:0
+2020-06-04T09:08:20: PM2 log: App [mqtt:0] exited with code [0] via signal [SIGINT]
+2020-06-04T09:08:20: PM2 log: pid=172 msg=process killed
+2020-06-04T09:08:20: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T09:08:20: PM2 log: App [mqtt:0] online
+2020-06-04T09:55:51: PM2 log: Stopping app:mqtt id:0
+2020-06-04T09:55:51: PM2 log: App [mqtt:0] exited with code [0] via signal [SIGINT]
+2020-06-04T09:55:51: PM2 log: pid=191 msg=process killed
+2020-06-04T09:55:51: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T09:55:51: PM2 log: App [mqtt:0] online
+2020-06-04T09:56:03: PM2 log: Stopping app:mqtt id:0
+2020-06-04T09:56:03: PM2 log: App [mqtt:0] exited with code [0] via signal [SIGINT]
+2020-06-04T09:56:03: PM2 log: pid=217 msg=process killed
+2020-06-04T09:56:03: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-04T09:56:03: PM2 log: App [mqtt:0] online
+2020-06-05T00:11:16: PM2 log: Stopping app:mqtt id:0
+2020-06-05T00:11:16: PM2 log: App [mqtt:0] exited with code [0] via signal [SIGINT]
+2020-06-05T00:11:16: PM2 log: pid=243 msg=process killed
+2020-06-05T00:11:16: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-05T00:11:16: PM2 log: App [mqtt:0] online
+2020-06-05T03:03:44: PM2 log: ===============================================================================
+2020-06-05T03:03:44: PM2 log: --- New PM2 Daemon started ----------------------------------------------------
+2020-06-05T03:03:44: PM2 log: Time                 : Fri Jun 05 2020 03:03:44 GMT+0000 (Coordinated Universal Time)
+2020-06-05T03:03:44: PM2 log: PM2 version          : 4.4.0
+2020-06-05T03:03:44: PM2 log: Node.js version      : 12.18.0
+2020-06-05T03:03:44: PM2 log: Current arch         : x64
+2020-06-05T03:03:44: PM2 log: PM2 home             : /root/.pm2
+2020-06-05T03:03:44: PM2 log: PM2 PID file         : /root/.pm2/pm2.pid
+2020-06-05T03:03:44: PM2 log: RPC socket file      : /root/.pm2/rpc.sock
+2020-06-05T03:03:44: PM2 log: BUS socket file      : /root/.pm2/pub.sock
+2020-06-05T03:03:44: PM2 log: Application log path : /root/.pm2/logs
+2020-06-05T03:03:44: PM2 log: Worker Interval      : 30000
+2020-06-05T03:03:44: PM2 log: Process dump file    : /root/.pm2/dump.pm2
+2020-06-05T03:03:44: PM2 log: Concurrent actions   : 2
+2020-06-05T03:03:44: PM2 log: SIGTERM timeout      : 1600
+2020-06-05T03:03:44: PM2 log: ===============================================================================
+2020-06-05T03:03:44: PM2 log: App [mqtt:0] starting in -fork mode-
+2020-06-05T03:03:44: PM2 log: App [mqtt:0] online

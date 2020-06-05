@@ -1,0 +1,35 @@
+version: "3.7"
+
+services:
+  emq-master1:
+    image: idealistchanu/access:emqx3.1
+    environment:
+      #- "EMQ_NAME=emq1"
+      #- "EMQ_HOST=master1.mq.tt"
+      #- "EMQ_NODE__COOKIE=ef16498f66804df1cc6172f6996d5492"
+      - "TZ=Asia/Seoul"  
+    ports:
+      - 18083:18083
+      - 1883:1883
+      - 8083:8083
+    command: >
+      bash -c  "emqx start && tail -f /dev/null"
+    deploy:
+      replicas: 1
+
+  emq-worker1:
+    image: idealistchanu/access:emqx3.1
+    environment:
+      #- "EMQ_JOIN_CLUSTER=emq@master1.mq.tt"
+      #- "EMQ_NODE__COOKIE=ef16498f66804df1cc6172f6996d5492"
+      - "TZ=Asia/Seoul"
+    depends_on:
+     - emq-master1
+    command: >
+      bash -c  "emqx start &&tail -f /dev/null"
+    deploy:
+      replicas: 1
+      
+ 
+
+          
