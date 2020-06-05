@@ -186,6 +186,11 @@
           res.data.map((i) => {//user_ids에 있는 데이터 children으로 옮기기
             this.moveUserIds(i);
           })
+          let index = res.data.findIndex(i => i.name == "undefined");
+          if(index !== -1) {
+            let undefinedGroup = res.data.splice(index,1);
+            res.data.push(undefinedGroup[0]);
+          }
           this.api_v1_group_group = res.data;
         })
     },
@@ -212,13 +217,19 @@
         type : 5,
         parent,
       }).then((res) => {
-        this.active[0].children.map((i,index) => {
-          if(i.avatar_file !== undefined) {
-            this.active[0].children.splice(index,0,res.data)
-          } else if(index === this.active[0].children.length-1) {
-            this.active[0].children.push(res.data)
-          }
-        })
+        if(this.api_v1_group_group[this.api_v1_group_group.length-1].name !== 'undefined') {
+          this.api_v1_group_group.push(res.data);
+        } else if(this.active[0] === undefined) {
+          this.api_v1_group_group.splice(this.api_v1_group_group.length-1,0,res.data)
+        } else {
+          this.active[0].children.map((i,index) => {
+            if(i.avatar_file !== undefined) {
+              this.active[0].children.splice(index,0,res.data)
+            } else if(index === this.active[0].children.length-1) {
+              this.active[0].children.push(res.data)
+            }
+          })
+        }
         this.groupName === null;
         this.dialog = false;
       })

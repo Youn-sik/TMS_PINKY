@@ -47,7 +47,6 @@
                       :active.sync="active"
                       :search="searchGroup"
                       activatable
-                      return-object="false"
                       :open.sync="open"
                     >
                       <template v-slot:prepend="{ item }">
@@ -148,7 +147,7 @@
               name : this.name,
               created_at : this.getFormatDate(new Date()),
               avatar_file : this.image,
-              parent : this.active[0],
+              groups : this.active[0] === undefined ? null : this.active[0],
               type : 1,
         }).then(() => {
           this.$router.push('/index/employee');
@@ -158,7 +157,6 @@
       }
     },
     data: () => ({
-      imageData : null,
       active:null,
       date: null,
       menu: false,

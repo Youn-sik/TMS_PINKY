@@ -99,7 +99,7 @@
             <img 
             width="70px"
             class="mt-1 mb-1"
-            :src="'data:image/jpeg;base64,'+item.avatar_file"/>
+            :src="'http://localhost:4000/'+item.avatar_file"/>
           </template>
           <template v-slot:item.created_at="{ item }">
             {{item.created_at}}
@@ -168,7 +168,7 @@
       }
     },
     created () {
-      // axios.get('http://localhost:4000/user?type=2')
+      // axios.get('http://localhost:4000/user?type=1')
       //   .then((res) => {
       //     this.api_v1_person_users = res.data
       //   })
@@ -177,6 +177,11 @@
           res.data.map((i) => {//user_ids에 있는 데이터 children으로 옮기기
             this.moveUserIds(i);
           })
+          let index = res.data.findIndex(i => i.name == "undefined");
+          if(index !== -1) {
+            let undefinedGroup = res.data.splice(index,1);
+            res.data.push(undefinedGroup[0]);
+          }
           this.api_v1_group_group = res.data;
         })
     },

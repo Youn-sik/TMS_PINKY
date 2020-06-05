@@ -75,7 +75,7 @@
             <img 
             width="70px"
             class="mt-1 mb-1"
-            :src="'data:image/jpeg;base64,'+item.avatar_file"/>
+            :src="'http://localhost:4000/'+item.avatar_file"/>
           </template>
           <template v-slot:item.type="{ item }">
             <template v-if="item.type === 1">
@@ -153,7 +153,6 @@
             this.dates[1] = temp;
           }
           this.api_v1_person_every_type_users = this.origin.filter((i) => {
-            // 
             if((i.created_at.split(' ')[0] >= this.dates[0] && i.created_at.split(' ')[0] <= this.dates[1]) 
                 || (i.updated_at !=undefined && (i.updated_at.split(' ')[0] >= this.dates[0] && i.updated_at.split(' ')[0] <= this.dates[1]))){
               return i;
