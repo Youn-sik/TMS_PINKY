@@ -1,0 +1,1353 @@
+{ Error: ENOENT: no such file or directory, open '/cloud40.json'
+    at Object.openSync (fs.js:443:3)
+    at Object.readFileSync (fs.js:343:35)
+    at Object.<anonymous> (/mqtt.js:4:27)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+  errno: -2,
+  syscall: 'open',
+  code: 'ENOENT',
+  path: '/cloud40.json' }
+{ Error: ENOENT: no such file or directory, open '/cloud40.json'
+    at Object.openSync (fs.js:443:3)
+    at Object.readFileSync (fs.js:343:35)
+    at Object.<anonymous> (/mqtt.js:4:27)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+  errno: -2,
+  syscall: 'open',
+  code: 'ENOENT',
+  path: '/cloud40.json' }
+{ Error: ENOENT: no such file or directory, open '/cloud40.json'
+    at Object.openSync (fs.js:443:3)
+    at Object.readFileSync (fs.js:343:35)
+    at Object.<anonymous> (/mqtt.js:4:27)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+  errno: -2,
+  syscall: 'open',
+  code: 'ENOENT',
+  path: '/cloud40.json' }
+{ Error: ENOENT: no such file or directory, open '/cloud40.json'
+    at Object.openSync (fs.js:443:3)
+    at Object.readFileSync (fs.js:343:35)
+    at Object.<anonymous> (/mqtt.js:4:27)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+  errno: -2,
+  syscall: 'open',
+  code: 'ENOENT',
+  path: '/cloud40.json' }
+{ Error: ENOENT: no such file or directory, open '/cloud40.json'
+    at Object.openSync (fs.js:443:3)
+    at Object.readFileSync (fs.js:343:35)
+    at Object.<anonymous> (/mqtt.js:4:27)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+  errno: -2,
+  syscall: 'open',
+  code: 'ENOENT',
+  path: '/cloud40.json' }
+{ Error: ENOENT: no such file or directory, open '/cloud40.json'
+    at Object.openSync (fs.js:443:3)
+    at Object.readFileSync (fs.js:343:35)
+    at Object.<anonymous> (/mqtt.js:4:27)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+  errno: -2,
+  syscall: 'open',
+  code: 'ENOENT',
+  path: '/cloud40.json' }
+{ Error: ENOENT: no such file or directory, open '/cloud40.json'
+    at Object.openSync (fs.js:443:3)
+    at Object.readFileSync (fs.js:343:35)
+    at Object.<anonymous> (/mqtt.js:4:27)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+  errno: -2,
+  syscall: 'open',
+  code: 'ENOENT',
+  path: '/cloud40.json' }
+{ Error: ENOENT: no such file or directory, open '/cloud40.json'
+    at Object.openSync (fs.js:443:3)
+    at Object.readFileSync (fs.js:343:35)
+    at Object.<anonymous> (/mqtt.js:4:27)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+  errno: -2,
+  syscall: 'open',
+  code: 'ENOENT',
+  path: '/cloud40.json' }
+{ Error: ENOENT: no such file or directory, open '/cloud40.json'
+    at Object.openSync (fs.js:443:3)
+    at Object.readFileSync (fs.js:343:35)
+    at Object.<anonymous> (/mqtt.js:4:27)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+  errno: -2,
+  syscall: 'open',
+  code: 'ENOENT',
+  path: '/cloud40.json' }
+{ Error: ENOENT: no such file or directory, open '/cloud40.json'
+    at Object.openSync (fs.js:443:3)
+    at Object.readFileSync (fs.js:343:35)
+    at Object.<anonymous> (/mqtt.js:4:27)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+  errno: -2,
+  syscall: 'open',
+  code: 'ENOENT',
+  path: '/cloud40.json' }
+{ Error: ENOENT: no such file or directory, open '/cloud40.json'
+    at Object.openSync (fs.js:443:3)
+    at Object.readFileSync (fs.js:343:35)
+    at Object.<anonymous> (/mqtt.js:4:27)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+  errno: -2,
+  syscall: 'open',
+  code: 'ENOENT',
+  path: '/cloud40.json' }
+{ Error: ENOENT: no such file or directory, open '/cloud40.json'
+    at Object.openSync (fs.js:443:3)
+    at Object.readFileSync (fs.js:343:35)
+    at Object.<anonymous> (/mqtt.js:4:27)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+  errno: -2,
+  syscall: 'open',
+  code: 'ENOENT',
+  path: '/cloud40.json' }
+{ Error: ENOENT: no such file or directory, open '/cloud40.json'
+    at Object.openSync (fs.js:443:3)
+    at Object.readFileSync (fs.js:343:35)
+    at Object.<anonymous> (/mqtt.js:4:27)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+  errno: -2,
+  syscall: 'open',
+  code: 'ENOENT',
+  path: '/cloud40.json' }
+{ Error: ENOENT: no such file or directory, open '/cloud40.json'
+    at Object.openSync (fs.js:443:3)
+    at Object.readFileSync (fs.js:343:35)
+    at Object.<anonymous> (/mqtt.js:4:27)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+  errno: -2,
+  syscall: 'open',
+  code: 'ENOENT',
+  path: '/cloud40.json' }
+{ Error: ENOENT: no such file or directory, open '/cloud40.json'
+    at Object.openSync (fs.js:443:3)
+    at Object.readFileSync (fs.js:343:35)
+    at Object.<anonymous> (/mqtt.js:4:27)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+  errno: -2,
+  syscall: 'open',
+  code: 'ENOENT',
+  path: '/cloud40.json' }
+{ Error: ENOENT: no such file or directory, open '/cloud40.json'
+    at Object.openSync (fs.js:443:3)
+    at Object.readFileSync (fs.js:343:35)
+    at Object.<anonymous> (/mqtt.js:4:27)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+  errno: -2,
+  syscall: 'open',
+  code: 'ENOENT',
+  path: '/cloud40.json' }
+{ Error: Cannot find module 'moment'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt.js:8:16)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'moment'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt.js:8:16)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'moment'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt.js:8:16)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'moment'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt.js:8:16)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'moment'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt.js:8:16)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'moment'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt.js:8:16)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'moment'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt.js:8:16)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'moment'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt.js:8:16)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'moment'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt.js:8:16)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'moment'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt.js:8:16)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'moment'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt.js:8:16)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'moment'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt.js:8:16)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'moment'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt.js:8:16)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'moment'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt.js:8:16)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'moment'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt.js:8:16)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'moment'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt.js:8:16)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'moment'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt.js:8:16)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'moment'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt.js:8:16)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mqtt'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_load.js:3:14)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mqtt'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_load.js:3:14)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mqtt'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_load.js:3:14)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mqtt'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_load.js:3:14)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mqtt'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_load.js:3:14)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mqtt'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_load.js:3:14)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mqtt'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_load.js:3:14)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mqtt'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_load.js:3:14)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mqtt'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_load.js:3:14)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mqtt'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_load.js:3:14)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mqtt'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_load.js:3:14)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mqtt'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_load.js:3:14)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mqtt'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_load.js:3:14)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mqtt'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_load.js:3:14)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mqtt'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_load.js:3:14)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mqtt'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_load.js:3:14)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'image-info'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:8:19)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'image-info'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:8:19)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'image-info'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:8:19)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'image-info'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:8:19)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'image-info'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:8:19)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'image-info'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:8:19)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'image-info'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:8:19)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'image-info'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:8:19)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'image-info'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:8:19)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'image-info'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:8:19)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'image-info'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:8:19)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'image-info'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:8:19)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mariadb'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:10:17)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mariadb'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:10:17)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mariadb'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:10:17)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mariadb'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:10:17)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'influx'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:73:16)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'influx'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:73:16)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'influx'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:73:16)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'influx'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:73:16)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'influx'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:73:16)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'influx'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:73:16)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'influx'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:73:16)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mongoose'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:114:18)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mongoose'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:114:18)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mongoose'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:114:18)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mongoose'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:114:18)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mongoose'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:114:18)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mongoose'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:114:18)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mongoose'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:114:18)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mongoose'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:114:18)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ Error: Cannot find module 'mongoose'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:61:29)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt_function.js:114:18)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17) code: 'MODULE_NOT_FOUND' }
+{ MongooseServerSelectionError: connect EHOSTUNREACH 172.16.135.124:27017
+    at NativeConnection.Connection.openUri (/node_modules/mongoose/lib/connection.js:823:32)
+    at Mongoose.connect (/node_modules/mongoose/lib/index.js:333:15)
+    at Object.<anonymous> (/mqtt_function.js:122:10)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:80:39)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt.js:13:12)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+  message: 'connect EHOSTUNREACH 172.16.135.124:27017',
+  reason:
+   TopologyDescription {
+     type: 'Single',
+     setName: null,
+     maxSetVersion: null,
+     maxElectionId: null,
+     servers: Map { '172.16.135.124:27017' => [ServerDescription] },
+     stale: false,
+     compatible: true,
+     compatibilityError: null,
+     logicalSessionTimeoutMinutes: null,
+     heartbeatFrequencyMS: 10000,
+     localThresholdMS: 15,
+     commonWireVersion: null } }
+{ MongooseServerSelectionError: connect EHOSTUNREACH 172.16.135.124:27017
+    at NativeConnection.Connection.openUri (/node_modules/mongoose/lib/connection.js:823:32)
+    at Mongoose.connect (/node_modules/mongoose/lib/index.js:333:15)
+    at Object.<anonymous> (/mqtt_function.js:122:10)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:80:39)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt.js:13:12)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+  message: 'connect EHOSTUNREACH 172.16.135.124:27017',
+  reason:
+   TopologyDescription {
+     type: 'Single',
+     setName: null,
+     maxSetVersion: null,
+     maxElectionId: null,
+     servers: Map { '172.16.135.124:27017' => [ServerDescription] },
+     stale: false,
+     compatible: true,
+     compatibilityError: null,
+     logicalSessionTimeoutMinutes: null,
+     heartbeatFrequencyMS: 10000,
+     localThresholdMS: 15,
+     commonWireVersion: null } }
+{ Error: getaddrinfo ENOTFOUND cloud40-db cloud40-db:3306
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:56:26)
+ From event:
+    at _registerHandshakeCmd (/node_modules/mariadb/lib/connection.js:694:11)
+    at /node_modules/mariadb/lib/connection.js:57:11
+    at new Promise (<anonymous>)
+    at Connection.connect (/node_modules/mariadb/lib/connection.js:56:16)
+    at createConnectionPoolPromise (/node_modules/mariadb/lib/pool-promise.js:31:8)
+    at creationTryout (/node_modules/mariadb/lib/pool-base.js:352:9)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+  errno: 'ENOTFOUND',
+  code: 'ENOTFOUND',
+  syscall: 'getaddrinfo',
+  hostname: 'cloud40-db',
+  host: 'cloud40-db',
+  port: '3306',
+  fatal: true }
+{ Error: getaddrinfo ENOTFOUND cloud40-db cloud40-db:3306
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:56:26)
+ From event:
+    at _registerHandshakeCmd (/node_modules/mariadb/lib/connection.js:694:11)
+    at /node_modules/mariadb/lib/connection.js:57:11
+    at new Promise (<anonymous>)
+    at Connection.connect (/node_modules/mariadb/lib/connection.js:56:16)
+    at createConnectionPoolPromise (/node_modules/mariadb/lib/pool-promise.js:31:8)
+    at creationTryout (/node_modules/mariadb/lib/pool-base.js:352:9)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+  errno: 'ENOTFOUND',
+  code: 'ENOTFOUND',
+  syscall: 'getaddrinfo',
+  hostname: 'cloud40-db',
+  host: 'cloud40-db',
+  port: '3306',
+  fatal: true }
+{ MongooseServerSelectionError: connect EHOSTUNREACH 172.16.135.124:27017
+    at NativeConnection.Connection.openUri (/node_modules/mongoose/lib/connection.js:823:32)
+    at Mongoose.connect (/node_modules/mongoose/lib/index.js:333:15)
+    at Object.<anonymous> (/mqtt_function.js:122:10)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:80:39)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt.js:7:12)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+  message: 'connect EHOSTUNREACH 172.16.135.124:27017',
+  reason:
+   TopologyDescription {
+     type: 'Single',
+     setName: null,
+     maxSetVersion: null,
+     maxElectionId: null,
+     servers: Map { '172.16.135.124:27017' => [ServerDescription] },
+     stale: false,
+     compatible: true,
+     compatibilityError: null,
+     logicalSessionTimeoutMinutes: null,
+     heartbeatFrequencyMS: 10000,
+     localThresholdMS: 15,
+     commonWireVersion: null } }
+{ MongooseServerSelectionError: connect EHOSTUNREACH 172.16.135.124:27017
+    at NativeConnection.Connection.openUri (/node_modules/mongoose/lib/connection.js:823:32)
+    at Mongoose.connect (/node_modules/mongoose/lib/index.js:333:15)
+    at Object.<anonymous> (/mqtt_function.js:122:10)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:80:39)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt.js:7:12)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+  message: 'connect EHOSTUNREACH 172.16.135.124:27017',
+  reason:
+   TopologyDescription {
+     type: 'Single',
+     setName: null,
+     maxSetVersion: null,
+     maxElectionId: null,
+     servers: Map { '172.16.135.124:27017' => [ServerDescription] },
+     stale: false,
+     compatible: true,
+     compatibilityError: null,
+     logicalSessionTimeoutMinutes: null,
+     heartbeatFrequencyMS: 10000,
+     localThresholdMS: 15,
+     commonWireVersion: null } }
+{ MongooseServerSelectionError: connect EHOSTUNREACH 172.16.135.124:27017
+    at NativeConnection.Connection.openUri (/node_modules/mongoose/lib/connection.js:823:32)
+    at Mongoose.connect (/node_modules/mongoose/lib/index.js:333:15)
+    at Object.<anonymous> (/mqtt_function.js:122:10)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:80:39)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt.js:7:12)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+  message: 'connect EHOSTUNREACH 172.16.135.124:27017',
+  reason:
+   TopologyDescription {
+     type: 'Single',
+     setName: null,
+     maxSetVersion: null,
+     maxElectionId: null,
+     servers: Map { '172.16.135.124:27017' => [ServerDescription] },
+     stale: false,
+     compatible: true,
+     compatibilityError: null,
+     logicalSessionTimeoutMinutes: null,
+     heartbeatFrequencyMS: 10000,
+     localThresholdMS: 15,
+     commonWireVersion: null } }
+{ MongooseServerSelectionError: connect EHOSTUNREACH 172.16.135.124:27017
+    at NativeConnection.Connection.openUri (/node_modules/mongoose/lib/connection.js:823:32)
+    at Mongoose.connect (/node_modules/mongoose/lib/index.js:333:15)
+    at Object.<anonymous> (/mqtt_function.js:122:10)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:80:39)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/mqtt.js:7:12)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+  message: 'connect EHOSTUNREACH 172.16.135.124:27017',
+  reason:
+   TopologyDescription {
+     type: 'Single',
+     setName: null,
+     maxSetVersion: null,
+     maxElectionId: null,
+     servers: Map { '172.16.135.124:27017' => [ServerDescription] },
+     stale: false,
+     compatible: true,
+     compatibilityError: null,
+     logicalSessionTimeoutMinutes: null,
+     heartbeatFrequencyMS: 10000,
+     localThresholdMS: 15,
+     commonWireVersion: null } }
+{ Error: getaddrinfo ENOTFOUND cloud40-db cloud40-db:3306
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:56:26)
+ From event:
+    at _registerHandshakeCmd (/node_modules/mariadb/lib/connection.js:694:11)
+    at /node_modules/mariadb/lib/connection.js:57:11
+    at new Promise (<anonymous>)
+    at Connection.connect (/node_modules/mariadb/lib/connection.js:56:16)
+    at createConnectionPoolPromise (/node_modules/mariadb/lib/pool-promise.js:31:8)
+    at creationTryout (/node_modules/mariadb/lib/pool-base.js:352:9)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+  errno: 'ENOTFOUND',
+  code: 'ENOTFOUND',
+  syscall: 'getaddrinfo',
+  hostname: 'cloud40-db',
+  host: 'cloud40-db',
+  port: '3306',
+  fatal: true }
+{ Error: getaddrinfo ENOTFOUND cloud40-db cloud40-db:3306
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:56:26)
+ From event:
+    at _registerHandshakeCmd (/node_modules/mariadb/lib/connection.js:694:11)
+    at /node_modules/mariadb/lib/connection.js:57:11
+    at new Promise (<anonymous>)
+    at Connection.connect (/node_modules/mariadb/lib/connection.js:56:16)
+    at createConnectionPoolPromise (/node_modules/mariadb/lib/pool-promise.js:31:8)
+    at creationTryout (/node_modules/mariadb/lib/pool-base.js:352:9)
+    at ontimeout (timers.js:436:11)
+    at tryOnTimeout (timers.js:300:5)
+    at listOnTimeout (timers.js:263:5)
+    at Timer.processTimers (timers.js:223:10)
+  errno: 'ENOTFOUND',
+  code: 'ENOTFOUND',
+  syscall: 'getaddrinfo',
+  hostname: 'cloud40-db',
+  host: 'cloud40-db',
+  port: '3306',
+  fatal: true }
+Error: getaddrinfo ENOTFOUND cloud40-db
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:66:26)
+ From event:
+    at _registerHandshakeCmd (/node_modules/mariadb/lib/connection.js:694:11)
+    at /node_modules/mariadb/lib/connection.js:57:11
+    at new Promise (<anonymous>)
+    at Connection.connect (/node_modules/mariadb/lib/connection.js:56:16)
+    at createConnectionPoolPromise (/node_modules/mariadb/lib/pool-promise.js:31:8)
+    at creationTryout (/node_modules/mariadb/lib/pool-base.js:352:9)
+    at listOnTimeout (internal/timers.js:549:17)
+    at processTimers (internal/timers.js:492:7) {
+  errno: 'ENOTFOUND',
+  code: 'ENOTFOUND',
+  syscall: 'getaddrinfo',
+  hostname: 'cloud40-db',
+  fatal: true
+}
+Error: getaddrinfo ENOTFOUND cloud40-db
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:66:26)
+ From event:
+    at _registerHandshakeCmd (/node_modules/mariadb/lib/connection.js:694:11)
+    at /node_modules/mariadb/lib/connection.js:57:11
+    at new Promise (<anonymous>)
+    at Connection.connect (/node_modules/mariadb/lib/connection.js:56:16)
+    at createConnectionPoolPromise (/node_modules/mariadb/lib/pool-promise.js:31:8)
+    at creationTryout (/node_modules/mariadb/lib/pool-base.js:352:9)
+    at listOnTimeout (internal/timers.js:549:17)
+    at processTimers (internal/timers.js:492:7) {
+  errno: 'ENOTFOUND',
+  code: 'ENOTFOUND',
+  syscall: 'getaddrinfo',
+  hostname: 'cloud40-db',
+  fatal: true
+}
+Error: getaddrinfo ENOTFOUND cloud40-db
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:66:26)
+ From event:
+    at _registerHandshakeCmd (/node_modules/mariadb/lib/connection.js:694:11)
+    at /node_modules/mariadb/lib/connection.js:57:11
+    at new Promise (<anonymous>)
+    at Connection.connect (/node_modules/mariadb/lib/connection.js:56:16)
+    at createConnectionPoolPromise (/node_modules/mariadb/lib/pool-promise.js:31:8)
+    at creationTryout (/node_modules/mariadb/lib/pool-base.js:352:9)
+    at listOnTimeout (internal/timers.js:549:17)
+    at processTimers (internal/timers.js:492:7) {
+  errno: 'ENOTFOUND',
+  code: 'ENOTFOUND',
+  syscall: 'getaddrinfo',
+  hostname: 'cloud40-db',
+  fatal: true
+}
+MongooseServerSelectionError: connect ECONNREFUSED 172.16.135.89:27017
+    at NativeConnection.Connection.openUri (/node_modules/mongoose/lib/connection.js:823:32)
+    at Mongoose.connect (/node_modules/mongoose/lib/index.js:333:15)
+    at Object.<anonymous> (/mqtt_function.js:60:10)
+    at Module._compile (internal/modules/cjs/loader.js:1138:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1158:10)
+    at Module.load (internal/modules/cjs/loader.js:986:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:879:14)
+    at Module.require (internal/modules/cjs/loader.js:1026:19)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:80:39)
+    at require (internal/modules/cjs/helpers.js:72:18)
+    at Object.<anonymous> (/mqtt.js:7:12)
+    at Module._compile (internal/modules/cjs/loader.js:1138:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1158:10)
+    at Module.load (internal/modules/cjs/loader.js:986:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:879:14)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23) {
+  reason: TopologyDescription {
+    type: 'Single',
+    setName: null,
+    maxSetVersion: null,
+    maxElectionId: null,
+    servers: Map { '172.16.135.89:27017' => [ServerDescription] },
+    stale: false,
+    compatible: true,
+    compatibilityError: null,
+    logicalSessionTimeoutMinutes: null,
+    heartbeatFrequencyMS: 10000,
+    localThresholdMS: 15,
+    commonWireVersion: null
+  }
+}
+MongooseServerSelectionError: connect ECONNREFUSED 172.16.135.89:27017
+    at NativeConnection.Connection.openUri (/node_modules/mongoose/lib/connection.js:823:32)
+    at Mongoose.connect (/node_modules/mongoose/lib/index.js:333:15)
+    at Object.<anonymous> (/mqtt_function.js:60:10)
+    at Module._compile (internal/modules/cjs/loader.js:1138:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1158:10)
+    at Module.load (internal/modules/cjs/loader.js:986:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:879:14)
+    at Module.require (internal/modules/cjs/loader.js:1026:19)
+    at Module.Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:80:39)
+    at require (internal/modules/cjs/helpers.js:72:18)
+    at Object.<anonymous> (/mqtt.js:7:12)
+    at Module._compile (internal/modules/cjs/loader.js:1138:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1158:10)
+    at Module.load (internal/modules/cjs/loader.js:986:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:879:14)
+    at Object.<anonymous> (/usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js:32:23) {
+  reason: TopologyDescription {
+    type: 'Single',
+    setName: null,
+    maxSetVersion: null,
+    maxElectionId: null,
+    servers: Map { '172.16.135.89:27017' => [ServerDescription] },
+    stale: false,
+    compatible: true,
+    compatibilityError: null,
+    logicalSessionTimeoutMinutes: null,
+    heartbeatFrequencyMS: 10000,
+    localThresholdMS: 15,
+    commonWireVersion: null
+  }
+}

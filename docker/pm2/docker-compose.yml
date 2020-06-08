@@ -1,0 +1,13 @@
+version: "3.7"
+services:
+    pm2:
+      image: rayis7/ks:cloud34-pm2
+      deploy:
+        replicas: 1
+     
+      volumes:
+        #- ./pm2/data/.pm2:/root/.pm2
+        - /var/www/html/mqtt_server.js:/var/www/html/mqtt_server.js
+        - /var/www/html/server_info.json:/var/www/html/server_info.json
+      command: >
+        bash -c  "pm2 start /var/www/html/mqtt_server.js && tail -f /dev/null"
