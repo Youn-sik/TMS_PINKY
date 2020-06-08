@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const ObjectId = mongoose.Schema.Types.ObjectId
 
 const api_v3_device_camera_Schema = new mongoose.Schema({
-    gateway_obid : ObjectId,
+    gateway_obid : {type:ObjectId, ref: 'api_v3_device_gateway'},
     serail_number : String,
     name : String,
     protocol : Number,

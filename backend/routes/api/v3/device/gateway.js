@@ -25,6 +25,7 @@ router.get('/:id',async function(req, res) {
 router.post('/',function(req, res) {
     try {
         const add = new api_v3_device_gateway(req.body)
+        console.log(add);
         add.save()
         res.send(add)
     } catch (err) {

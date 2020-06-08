@@ -5,7 +5,7 @@ const api_v3_device_camera = require('../../../../models/api/v3/device/camera')
 
 router.get('/',async function(req, res) {
     try {
-        const get_data = await api_v3_device_camera.find()
+        const get_data = await api_v3_device_camera.find().populate('gateway_obid')
         res.send(get_data)
     } catch (err) {
         throw boom.boomify(err)
@@ -25,7 +25,9 @@ router.get('/:id',async function(req, res) {
 router.post('/',function(req, res) {
     try {
         const add = new api_v3_device_camera(req.body)
-        res.send(add.save())
+        console.log(req.body);
+        add.save()
+        res.send(add)
     } catch (err) {
         throw boom.boomify(err)
     }
