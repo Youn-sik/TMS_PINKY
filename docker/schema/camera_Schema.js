@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
+const moment = require('moment');
 const ObjectId = mongoose.Schema.Types.ObjectId
 
 //TODO: 나는 ref 재작업
 const cameraSchema = new mongoose.Schema({
-    gateway_obid : { type:ObjectId, ref: 'api_v3_device_gateway', required: true },
+    gateway_obid : { type:ObjectId, ref: 'Gateway', required: true },
     serial_number : { type: String, required: true },
     name : { type: String, required: true },
     protocol : { type: Number, required: true },
@@ -15,11 +16,11 @@ const cameraSchema = new mongoose.Schema({
     ip : { type: String },
     port : { type: Number },
     description : { type: String },
-    groups_obids : [{type:ObjectId, ref: 'api_v1_group_group'}],
+    groups_obids : [{type:ObjectId, ref: 'Group'}],
     group_count : { type: Number },
-    employee_group_obids : [{type:ObjectId, ref: 'api_v1_group_group'}],
-    visitor_group_obids : [{type:ObjectId, ref: 'api_v1_group_group'}],
-    blacklist_group_obids : [{type:ObjectId, ref: 'api_v1_group_group'}],
+    employee_group_obids : [{type:ObjectId, ref: 'Group'}],
+    visitor_group_obids : [{type:ObjectId, ref: 'Group'}],
+    blacklist_group_obids : [{type:ObjectId, ref: 'Group'}],
     info_update_time : { type: String },
     create_at : { type: String, default: moment().format('YYYY-MM-DD HH:mm:ss') },
     create_ut : { type: String, default: Date.now },

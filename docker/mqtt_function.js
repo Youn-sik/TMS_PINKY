@@ -59,8 +59,21 @@ mongodb.once('open', function () {
 
 mongoose.connect('mongodb://' + site.mongodb_host + ':27017/' + site.mongodb_database + '?poolSize=4', { useNewUrlParser: true, useUnifiedTopology: true });
 
-require('./schema/version_Schema');
+const Access = require('./schema/access_Schema');
+const Camera = require('./schema/camera_Schema');
+const Gateway = require('./schema/gateway_Schema');
+const Group = require('./schema/group_Schema');
+const Statistics = require('./schema/statistics_Schema');
+const User = require('./schema/user_Schema');
+const Version = require('./schema/version_Schema');
 
+
+let newVersion = new Version({ user_obid: 'N', stb_id: 'result[0].name', stb_sn: 'result[0].serial_number', log_no: 1, log_message: 'login', create_dt: 'update_time', regdate: 'update_time' });
+    newVersion.save(function (error, data) {
+        if (error) {
+            console.log(error);
+        }
+    });
 
 
 const glogs = mongoose.Schema({

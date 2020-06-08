@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const moment = require('moment');
 const ObjectId = mongoose.Schema.Types.ObjectId
 
 //TODO: 나는 ref 재작업
@@ -7,8 +8,8 @@ const gatewaySchema = new mongoose.Schema({
     location : { type: String, required: true },
     ip : { type: String, required: true },
     port : { type: Number, required: true },
-    user_obids : [{type:ObjectId, ref: 'api_v1_person_user', required: true }],
-    camera_obids : [{type:ObjectId, ref: 'api_v3_device_camera'}],
+    user_obids : [{type:ObjectId, ref: 'User', required: true }],
+    camera_obids : [{type:ObjectId, ref: 'Camera'}],
     description : { type: String },
     create_at : { type: String, default: moment().format('YYYY-MM-DD HH:mm:ss') },
     create_ut : { type: String, default: Date.now },

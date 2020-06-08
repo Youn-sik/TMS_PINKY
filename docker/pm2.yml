@@ -8,12 +8,13 @@ services:
             - '9096:9096'
         volumes:
             - ./pm2/data/.pm2:/root/.pm2
-            - /var/www/docker/cloud40.json:/cloud40.json
-            - /var/www/docker/mqtt.js:/mqtt.js
-            - /var/www/docker/mqtt_load.js:/mqtt_load.js
-            - /var/www/docker/mqtt_function.js:/mqtt_function.js
-            - /var/www/docker/mqtt_interval.js:/mqtt_interval.js
-            - /var/www/docker/mqtt_logs.js:/mqtt_logs.js
+            - /var/www/docker/cloud40.json:/var/www/docker/cloud40.json
+            - /var/www/docker/mqtt.js:/var/www/docker/mqtt.js
+            - /var/www/docker/mqtt_load.js:/var/www/docker/mqtt_load.js
+            - /var/www/docker/mqtt_function.js:/var/www/docker/mqtt_function.js
+            - /var/www/docker/mqtt_interval.js:/var/www/docker/mqtt_interval.js
+            - /var/www/docker/mqtt_logs.js:/var/www/docker/mqtt_logs.js
+            - /var/www/docker/schema:/var/www/docker/schema
         command: >
-          bash -c  "pm2 start mqtt.js && tail -f /dev/null"
-          bash -c  "pm2 start mqtt_interval.js && tail -f /dev/null"
+          bash -c  "pm2 start /var/www/docker/mqtt.js && tail -f /dev/null"
+          bash -c  "pm2 start /var/www/docker/mqtt_interval.js && tail -f /dev/null"

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const moment = require('moment');
 const ObjectId = mongoose.Schema.Types.ObjectId
 
 //TODO: 나는 ref 재작업
@@ -7,7 +8,7 @@ const accessSchema = new mongoose.Schema({
     avatar_contraction_data : { type: String, required: true },
     avatar_file_checksum : { type: String, required: true },
     avatar_temperature : { type: String, required: true },
-    user_obid : { type:ObjectId, ref: 'api_v1_person_user' },
+    user_obid : { type:ObjectId, ref: 'User' },
     type : { type : Number },
     access_time : { type: String },
     statistics_status : { type: String },

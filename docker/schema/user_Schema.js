@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const moment = require('moment');
 const ObjectId = mongoose.Schema.Types.ObjectId
 
 //TODO: 나는 ref 재작업
@@ -6,7 +7,7 @@ const userSchema = new mongoose.Schema({
     avatar_file : { type: String, required: true },
     avatar_contraction_data : { type: String, required: true },
     avatar_file_checksum : { type: String, required: true },
-    groups_obids : [{type:ObjectId, ref: 'api_v1_group_group'}],
+    groups_obids : [{type:ObjectId, ref: 'Group'}],
     user_id : { type: String },
     password : { type: String },
     mobile : { type: String },
@@ -17,7 +18,7 @@ const userSchema = new mongoose.Schema({
     access_time : { type: String },
     mail : { type: String },
     location : { type: String },
-    reception_user_obid : { type:ObjectId, ref: 'api_v1_person_user' },
+    reception_user_obid : { type:ObjectId, ref: 'User' },
     guest_company : { type: String },
     guest_purpose : { type: String },
     gender : { type : Number },
