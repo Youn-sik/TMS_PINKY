@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const moment = require('moment');
 const ObjectId = mongoose.Schema.Types.ObjectId
 
-//TODO: 나는 ref 재작업
 const cameraSchema = new mongoose.Schema({
     gateway_obid : { type:ObjectId, ref: 'Gateway', required: true },
     serial_number : { type: String, required: true },
@@ -29,7 +28,7 @@ const cameraSchema = new mongoose.Schema({
     config_data : {
         device_run_type : { type: Number },
         capture_status : { type: String },
-        capture_time : { type: Number },
+        capture_time : { type: String },
         capture_size : { type: String },
         hdd_total : { type: Number },
         hdd_used : { type: Number },

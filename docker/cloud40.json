@@ -1,6 +1,6 @@
 {
     "base_url": "http://172.16.135.89/",
-    "base_server_document": "/var/www/docker/",
+    "base_server_document": "/var/www/docker",
     "base_document": "/var/www/docker/",
     "base_local_url": "http://172.16.135.89",
     "local_url": "172.16.135.89",

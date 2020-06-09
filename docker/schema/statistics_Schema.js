@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId
 
-//TODO: 나는 ref 재작업
 const statisticsSchema = new mongoose.Schema({
     camera_obid : { type : ObjectId, ref : 'Camera', required: true },
     all_count : { type: Number, required: true },
