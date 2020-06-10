@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 const boom = require('boom')
 const api_v3_device_camera = require('../../../../models/api/v3/device/camera')
+const api_v1_group_group = require('../../../../models/api/v1/group/group')
+const api_v3_device_gateway = require('../../../../models/api/v3/device/gateway')
 
 router.get('/',async function(req, res) {
     try {
@@ -25,7 +27,7 @@ router.get('/:id',async function(req, res) {
 router.post('/',function(req, res) {
     try {
         const add = new api_v3_device_camera(req.body)
-        console.log(req.body);
+        // api_v3_device_gateway.findByIdAndUpdate(add ,{ $addToSet: { user_obids : add._id} }, {new: true }).exec()
         add.save()
         res.send(add)
     } catch (err) {
@@ -55,14 +57,3 @@ router.delete('/:id',async function(req, res) {
 });
 
 module.exports = router;
-
-//외래키인 resolve
-// exports.getapi_v3_device_camera_depend_on_gateway = async (req, reply) => {
-//     try {
-//         const id = req.params === undefined ? req.id : req.params.id
-//         const depend_on_data = await api_v3_device_camera.find({ gateway_id : id })
-//         res.send(depend_on_data)
-//     }catch (err) {
-//         throw boom.boomify(err)
-//     }
-// }

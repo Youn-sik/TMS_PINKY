@@ -1,20 +1,21 @@
 const mongoose = require('mongoose')
+const moment = require('moment');
 const ObjectId = mongoose.Schema.Types.ObjectId
 
 const api_v1_person_access_Schema = new mongoose.Schema({
-    avatar_file : String,
-    avatar_contraction_data : String,
-    avatar_file_checksum : String,
-    avatar_temperature : String,
-    user_obid : ObjectId,
-    type : Number,
-    access_time : String,
-    statistics_status : String,
-    create_at : String,
-    create_ut : String,
-    update_at : String,
-    update_ut : String,
-
+    avatar_file : { type: String, required: true },
+    avatar_contraction_data : { type: String, required: true },
+    avatar_file_checksum : { type: String, required: true },
+    avatar_temperature : { type: String, required: true },
+    avatar_file_url : { type: String, required: true },
+    user_obid : { type:ObjectId, ref: 'user' },
+    type : { type : Number },
+    access_time : { type: String },
+    statistics_status : { type: String },
+    create_at : { type: String, default: moment().format('YYYY-MM-DD HH:mm:ss') },
+    create_ut : { type: String, default: Date.now },
+    update_at : { type: String },
+    update_ut : { type: String },
 })
 
-module.exports = mongoose.model('api_v1_person_access', api_v1_person_access_Schema)
+module.exports = mongoose.model('access', api_v1_person_access_Schema)

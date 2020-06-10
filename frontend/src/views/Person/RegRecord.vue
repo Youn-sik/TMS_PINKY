@@ -88,8 +88,8 @@
               블랙리스트
             </template>
           </template>
-          <template v-slot:item.created_at="{ item }">
-            {{item.created_at}}
+          <template v-slot:item.create_at="{ item }">
+            {{item.create_at}}
           </template>
         </v-data-table>
       </v-card>
@@ -131,8 +131,8 @@
           },
           { text: '이름', value: 'name' },
           { text: '타입', value: 'type' },
-          { text: '등록 일자', value: 'created_at' },
-          { text: '수정 일자', value: 'updated_at' },
+          { text: '등록 일자', value: 'create_at' },
+          { text: '수정 일자', value: 'update_at' },
         ],
         addUserModal : false,
         batchSettingModal : false,
@@ -142,7 +142,7 @@
       clickOK(){
         if(this.dates.length === 1) {
           this.api_v1_person_every_type_users = this.origin.filter((i) => {            
-            if(i.created_at.split(' ')[0] === this.dates[0] || (i.updated_at !== undefined&& i.updated_at.split(' ')[0] === this.dates[0])){
+            if(i.create_at.split(' ')[0] === this.dates[0] || (i.update_at !== undefined&& i.update_at.split(' ')[0] === this.dates[0])){
               return i;
             }
           });
@@ -153,8 +153,8 @@
             this.dates[1] = temp;
           }
           this.api_v1_person_every_type_users = this.origin.filter((i) => {
-            if((i.created_at.split(' ')[0] >= this.dates[0] && i.created_at.split(' ')[0] <= this.dates[1]) 
-                || (i.updated_at !=undefined && (i.updated_at.split(' ')[0] >= this.dates[0] && i.updated_at.split(' ')[0] <= this.dates[1]))){
+            if((i.create_at.split(' ')[0] >= this.dates[0] && i.create_at.split(' ')[0] <= this.dates[1]) 
+                || (i.update_at !=undefined && (i.update_at.split(' ')[0] >= this.dates[0] && i.update_at.split(' ')[0] <= this.dates[1]))){
               return i;
             }
           });
@@ -186,11 +186,7 @@
       axios.get('http://localhost:4000/user')
         .then((res) => {
           this.origin = res.data
-          this.api_v1_person_every_type_users = this.origin.filter((i) => {
-            if((i.created_at.split(' ')[0] >= this.getFormatDate(new Date(),-1) || i.created_at.split(' ')[0] <= this.getFormatDate(new Date(),0)) || (i.updated_at.split(' ')[0] >= this.getFormatDate(new Date(),-1) || i.updated_at.split(' ')[0] <= this.getFormatDate(new Date(),0))){
-              return i;
-            }
-          });
+          this.api_v1_person_every_type_users = this.origin
         })
     }
     // apollo: {

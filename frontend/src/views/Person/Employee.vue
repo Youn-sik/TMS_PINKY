@@ -18,9 +18,11 @@
           <v-treeview
             :items="api_v1_group_group"
             item-key="_id"
+            item-disabled="avatar_file"
             :active.sync="active"
             :search="searchGroup"
             activatable
+            :multiple-active="false"
             :return-object="true"
             :open.sync="open"
           >
@@ -99,7 +101,7 @@
             <img 
             width="70px"
             class="mt-1 mb-1"
-            :src="'http://localhost:4000/'+item.avatar_file"/>
+            :src="item.avatar_file_url"/>
           </template>
           <template v-slot:item.created_at="{ item }">
             {{item.created_at}}
@@ -164,7 +166,7 @@
         if(newVal[0].avatar_file !== undefined) {
           return false;
         }
-        this.api_v1_person_users = newVal[0].user_ids;
+        this.api_v1_person_users = newVal[0].user_obids;
       }
     },
     created () {
@@ -174,7 +176,7 @@
       //   })
       axios.get('http://localhost:4000/group?type=1')
         .then((res) => {
-          res.data.map((i) => {//user_ids에 있는 데이터 children으로 옮기기
+          res.data.map((i) => {//user_obids에 있는 데이터 children으로 옮기기
             this.moveUserIds(i);
           })
           let index = res.data.findIndex(i => i.name == "undefined");
@@ -198,8 +200,8 @@
               this.moveUserIds(i)
           })
       }
-      if(data.user_ids[0] !== undefined) {
-        data.children = data.children.concat(data.user_ids);
+      if(data.user_obids[0] !== undefined) {
+        data.children = data.children.concat(data.user_obids);
       }
     },
     onChangeImage(file) {
@@ -220,8 +222,18 @@
             this.api_v1_person_users = this.api_v1_person_users.filter((i) => {
               return i._id !== res.data._id;
             })
-            // this.api_v1_person_users = null
-            // this.api_v1_person_users
+            axios.get('http://localhost:4000/group?type=1')
+              .then((res) => {
+                res.data.map((i) => {//user_obids에 있는 데이터 children으로 옮기기
+                  this.moveUserIds(i);
+                })
+                let index = res.data.findIndex(i => i.name == "undefined");
+                if(index !== -1) {
+                  let undefinedGroup = res.data.splice(index,1);
+                  res.data.push(undefinedGroup[0]);
+                }
+                this.api_v1_group_group = res.data;
+              })
           })
       } else {
         alert("유저를 선택해 주세요")

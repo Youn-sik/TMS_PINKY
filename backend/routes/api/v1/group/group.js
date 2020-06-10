@@ -28,15 +28,15 @@ router.get('/',async function(req, res) {
     try {
         const type = req.query.type;
         const get_data = await api_v1_group_group.find({type:type})
-        .populate('user_ids')
+        .populate('user_obids')
         .populate({
             path : 'children',
             populate : [
                 {
                     path: 'children',
-                    populate:{path:'user_ids'}
+                    populate:{path:'user_obids'}
                 },
-                {path: 'user_ids'},
+                {path: 'user_obids'},
             ],
         })
         .exec(async (err, data) => {

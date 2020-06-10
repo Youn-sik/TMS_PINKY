@@ -45,10 +45,9 @@
                       :items="api_v1_group_group"
                       item-key="_id"
                       :active.sync="active"
-                      :search="searchGroup"
+                      :v-model="active"
+                      :multiple-active="true"
                       activatable
-                      return-object="false"
-                      :open.sync="open"
                     >
                       <template v-slot:prepend="{ item }">
                         <v-icon
@@ -148,23 +147,21 @@
               name : this.name,
               created_at : this.getFormatDate(new Date()),
               avatar_file : this.image,
-              groups : this.active[0],
+              groups_obids : this.active[0] === undefined ? null : this.active,
               type : 2,
         }).then(() => {
-          this.$router.push('/index/employee');
+          this.$router.go(-1);
         }).catch(function (error) {
           console.log(error);
         });
       }
     },
     data: () => ({
-      imageData : null,
-      active:null,
+      active:[],
       date: null,
       menu: false,
       name : null,
       data : null,
-      open: [1, 2],
       company : null,
       searchGroup : '',
       api_v1_group_group : [],

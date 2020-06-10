@@ -1,32 +1,33 @@
 const mongoose = require('mongoose')
+const moment = require('moment');
 const ObjectId = mongoose.Schema.Types.ObjectId
 
 const api_v1_person_user_Schema = new mongoose.Schema({
-    avatar_file : String,
-    avatar_contraction_data : String,
-    avatar_file_checksum : String,
-    groups : ObjectId,
-    user_id : String,
-    password : String,
-    mobile : String,
-    name : String,
-    company_id : String,
-    department_id : String,
-    area_code : String,
-    access_time : String,
-    mail : String,
-    location : String,
-    reception_user_obid : ObjectId,
-    guest_company : String,
-    guest_purpose : String,
-    gender : Number,
-    prompt : String,
-    type : Number,
-    create_at : String,
-    create_ut : String,
-    update_at : String,
-    update_ut : String,
+    avatar_file : { type: String, required: true },
+    // avatar_contraction_data : { type: String, required: true },
+    avatar_file_checksum : { type: String, required: true },
+    groups_obids : [{type:ObjectId, ref: 'group'}],
+    user_id : { type: String },
+    password : { type: String },
+    mobile : { type: String },
+    name : { type: String },
+    company_id : { type: String },
+    department_id : { type: String },
+    area_code : { type: String },
+    access_time : { type: String },
+    mail : { type: String },
+    location : { type: String },
+    reception_user_obid : { type:ObjectId, ref: 'user' },
+    guest_company : { type: String },
+    guest_purpose : { type: String },
+    gender : { type : Number },
+    prompt : { type: String },
+    type : { type : Number },
+    create_at : { type: String, default: moment().format('YYYY-MM-DD HH:mm:ss') },
+    create_ut : { type: String, default: Date.now },
+    update_at : { type: String },
+    update_ut : { type: String },
 
 })
 
-module.exports = mongoose.model('api_v1_person_user', api_v1_person_user_Schema)
+module.exports = mongoose.model('user', api_v1_person_user_Schema)

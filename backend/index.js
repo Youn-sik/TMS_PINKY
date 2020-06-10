@@ -1,9 +1,9 @@
 // Require the framework and instantiate it
 const fastify = require('./server.js')
 // const gql = require('fastify-gql')
-const schema = require('./schema')
+// const schema = require('./schema')
 const cors = require('cors')
-const graphqlHTTP = require( 'express-graphql');
+// const graphqlHTTP = require( 'express-graphql');
 const boom = require('boom')
 const jwt =  require('jsonwebtoken');
 const cookie = require('cookie');
@@ -140,9 +140,9 @@ const swagger = require('./config/swagger')
 .catch(err => console.log(err))
 */
 
-routes.forEach((route, index) => {
-    fastify.route(route)
-})
+// routes.forEach((route, index) => {
+//     fastify.route(route)
+// })
 // Run the server!
 const start = async () => {
     try {

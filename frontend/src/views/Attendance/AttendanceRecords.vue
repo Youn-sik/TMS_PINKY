@@ -31,8 +31,8 @@
                     <v-select
                         class="ml-5"
                         :items="deviceStates"
+                        v-model="nowStatus"
                         style="width:5%"
-                        label="기준"
                     ></v-select>
                     <v-spacer></v-spacer>
                     <v-text-field
@@ -61,22 +61,24 @@ export default {
     },
     data: () => ({
         deviceStates : [
-            '모든 상태',
-            '출석',
-            '결석',
-            '지각',
-            '조퇴'
+            '모든 사용자',
+            '사원',
+            '방문자',
+            '블랙리스트',
         ],
+        nowStatus : '모든 사용자',
         dates: ['2019-09-10', '2019-09-20'],
         headers: [
+            { text: '', value: 'avatar_file' },
             {
                 text: '이름',
                 align: 'start',
                 value: 'name',
             },
+            { text: '그룹', value: 'created_at' },
             { text: '장소', value: 'created_at' },
-            { text: '반경(m)', value: 'created_at' },
-            { text: '연관 단말기', value: 'created_at' },
+            { text: '단말기', value: 'created_at' },
+            { text: '일시', value: 'created_at' },
         ],
     })
 }

@@ -24,11 +24,48 @@
         </v-list-item>
       </v-card>
     </v-col>
-    <v-col cols="11">
-      <v-card>
+    <v-col cols="11" class="d-flex">
+      <v-card
+        width="25%"
+      >
+         <v-card-title>
+          <v-text-field
+            v-model="searchGroup"
+            label="검색"
+            clearable
+            hide-details
+            clear-icon="mdi-close-circle-outline"
+            append-icon="search"
+          ></v-text-field>
+        </v-card-title>
+        <v-card-text>
+          <v-treeview
+            :items="api_v1_group_group"
+            item-key="_id"
+            item-disabled="avatar_file"
+            :active.sync="active"
+            :search="searchGroup"
+            activatable
+            :multiple-active="false"
+            :return-object="true"
+            :open.sync="open"
+          >
+            <template v-slot:prepend="{ item }">
+              <v-icon
+                v-if="item.children"
+                v-text="`mdi-folder-network`"
+              ></v-icon>
+              <v-icon
+                v-else-if="item.avatar_file"
+                v-text="`person`"
+              ></v-icon>
+            </template>
+          </v-treeview>
+        </v-card-text>
+      </v-card>
+      <v-divider vertical></v-divider>
+      <v-card width="75%">
         <v-card-title>
-          단말기 목록
-          <v-spacer></v-spacer>
           <v-text-field
             v-model="search"
             label="검색"
@@ -85,7 +122,7 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="batchSettingModal = false">취소</v-btn>
+                  <v-btn color="blue darken-1" text @click="cancelUpdateModal">취소</v-btn>
                   <v-btn color="blue darken-1" text @click="updateDevice">저장</v-btn>
                 </v-card-actions>
               </v-card>
@@ -146,7 +183,7 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="addUserModal = false">취소</v-btn>
+                  <v-btn color="blue darken-1" text @click="cancelDeviceModal">취소</v-btn>
                   <v-btn color="blue darken-1" text @click="addDevice">저장</v-btn>
                 </v-card-actions>
               </v-card>
@@ -331,7 +368,40 @@
           let index = this.api_v3_device_camera.findIndex(x => x._id == res.data._id)
           this.$set(this.api_v3_device_camera, index, res.data)
           this.batchSettingModal = false
+          this.deviceName = null
+          this.deviceLocation = null
+          this.gateway = null
+          this.deviceIP = null
+          this.port = null
+          this.appVersion = null
+          this.description = null
+          this.protocol = null
+          this.url = null
         })
+      },
+      cancelUpdateModal () {
+        this.batchSettingModal = false
+        this.deviceName = null
+        this.deviceLocation = null
+        this.gateway = null
+        this.deviceIP = null
+        this.port = null
+        this.appVersion = null
+        this.description = null
+        this.protocol = null
+        this.url = null
+      },
+      cancelDeviceModal() {
+        this.addUserModal = false
+        this.deviceName = null
+        this.deviceLocation = null
+        this.deviceIP = null
+        this.port = null
+        this.gateway = null
+        this.appVersion = null
+        this.description = null
+        this.protocol = null
+        this.url = null
       },
       delDevice () {
         if(this.deviceSelected){
@@ -351,8 +421,6 @@
             alert('게이트웨이 이름을 입력해주세요.');
           } else if(this.deviceLocation === null || this.deviceLocation === '') {
             alert('게이트웨이 위치를 입력해주세요.');
-          } else if(this.appVerison === null || this.appVerison === '') {
-            alert('버전을 입력해주세요.');
           } else if(this.deviceIP === null || this.deviceIP === '') {
             alert('게이트웨이 IP를 입력해주세요.');
           } else if(this.port === null || this.port === '') {
@@ -365,6 +433,15 @@
               port:parseInt(this.port),
             }).then(() => {
               this.addUserModal = false
+              this.deviceName = null
+              this.deviceLocation = null
+              this.deviceIP = null
+              this.port = null
+              this.gateway = null
+              this.appVersion = null
+              this.description = null
+              this.protocol = null
+              this.url = null
             })
           }
         } else {
@@ -374,7 +451,7 @@
             alert('단말기 이름을 입력해주세요.');
           } else if(this.deviceLocation === null || this.deviceLocation === '') {
             alert('단말기 위치를 입력해주세요.');
-          } else if(this.appVerison === null || this.appVerison === '') {
+          } else if(this.appVersion === null || this.appVersion === '') {
             alert('버전을 입력해주세요.');
           } else if(this.deviceIP === null || this.deviceIP === '') {
             alert('게이트웨이 IP를 입력해주세요.');
@@ -403,6 +480,15 @@
             }).then((res) => {
               this.api_v3_device_camera.push(res.data);
               this.addUserModal = false
+              this.deviceName = null
+              this.deviceLocation = null
+              this.deviceIP = null
+              this.port = null
+              this.gateway = null
+              this.appVersion = null
+              this.description = null
+              this.protocol = null
+              this.url = null
             })
           }
         }

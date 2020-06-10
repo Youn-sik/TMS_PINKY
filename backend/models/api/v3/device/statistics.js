@@ -2,15 +2,14 @@ const mongoose = require('mongoose')
 const ObjectId = mongoose.Schema.Types.ObjectId
 
 const api_v3_device_statistics_Schema = new mongoose.Schema({
-    camera_obid : ObjectId,
-    all_count : Number,
-    employee_count : Number,
-    guest_count : Number,
-    stranger_count : Number,
-    blacklist_count : Number,
-    statistics_list : [{type:ObjectId, ref: 'api_v1_person_access'}],
-    reference_date : String,
-
+    camera_obid : { type : ObjectId, ref : 'camera', required: true },
+    all_count : { type: Number, required: true },
+    employee_count : { type: Number },
+    guest_count : { type: Number },
+    stranger_count : { type: Number },
+    blacklist_count : { type: Number },
+    statistics_list : [{type:ObjectId, ref: 'access', required: true }],
+    reference_date : { type: String },
 })
 
-module.exports = mongoose.model('api_v3_device_statistics_Schema', api_v3_device_statistics_Schema)
+module.exports = mongoose.model('statistics', api_v3_device_statistics_Schema)
