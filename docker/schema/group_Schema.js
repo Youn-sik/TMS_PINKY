@@ -2,8 +2,6 @@ const mongoose = require('mongoose');
 const moment = require('moment');
 const ObjectId = mongoose.Schema.Types.ObjectId
 
-//TODO: group_id 삭제처리 
-//TODO: 나는 ref 재작업
 const groupSchema = new mongoose.Schema({
     rootParent : { type: ObjectId },
     parent : { type: ObjectId },

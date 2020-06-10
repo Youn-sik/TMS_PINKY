@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const moment = require('moment');
 const ObjectId = mongoose.Schema.Types.ObjectId
 
-//TODO: 나는 ref 재작업
 const gatewaySchema = new mongoose.Schema({
     name : { type: String, required: true },
     location : { type: String, required: true },

@@ -7,7 +7,6 @@ client.on('connect', function() {
 
     client.subscribe([
         '/login/+',
-        '/login/fail/+',
         '/logout/+',
         '/disconnect/result/+',
         '/download/+',
@@ -47,16 +46,8 @@ client.on('message', async function(topic, message) {
                 fn.login(json);
             }
         }
-    
-        /* 로그인 > 로그인 실패 */
-        if (topic === "/login/fail/" + json.stb_sn) {
-            if (json.stb_sn != undefined) {
-                fn.login_fail(json);
-            }
-        }
 
         /* 서버 접속 종료 > 로그아웃 */
-        /* API 로 대체 예정 */
         if (topic === "/logout/" + json.stb_sn) {
             if (json.stb_sn != undefined) {
                 fn.logout(json);
@@ -64,7 +55,6 @@ client.on('message', async function(topic, message) {
         }
 
         /* 서버 접속 종료 > 서버 접속 종료 (서버가 끊긴경우 ) */
-        /* API 로 대체 예정 */
         if (topic === "/disconnect/result/" + json.stb_sn) { 
             if (json.stb_sn != undefined) {
                 fn.disconnect_result(json);
