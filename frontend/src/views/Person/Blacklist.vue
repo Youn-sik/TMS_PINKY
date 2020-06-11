@@ -91,7 +91,7 @@
       }
     },
     created () {
-      axios.get('http://localhost:4000/user?type=5')
+      axios.get('http://172.16.135.89:3000/user?type=5')
         .then((res) => {
           this.api_v1_person_users = res.data
         })
@@ -146,7 +146,7 @@
     },
     deleteUser () {
       if(this.userSelected){
-        axios.delete('http://localhost:4000/user/'+this.userSelected[0]._id)
+        axios.delete('http://172.16.135.89:3000/user/'+this.userSelected[0]._id)
           .then((res) => {
             this.api_v1_person_users = this.api_v1_person_users.filter((i) => {
               return i._id !== res.data._id;
@@ -185,7 +185,7 @@
       if(!this.image) {
         this.image = this.userSelected[0].avatar_file;
       }
-      axios.put('http://localhost:4000/user/'+this.userSelected[0]._id,{
+      axios.put('http://172.16.135.89:3000/user/'+this.userSelected[0]._id,{
         name : this.name,
         avatar_file : this.image,
         updated_at : this.getFormatDate(new Date()) 

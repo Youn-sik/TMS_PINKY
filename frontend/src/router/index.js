@@ -20,6 +20,11 @@ const routes = [
         component:() => import('@/views/Device/Device'),
       },
       {
+        name:'DeviceScreen',
+        path:'devicescreen',
+        component:() => import('@/views/Device/DeviceScreen'),
+      },
+      {
         name:'Employee',
         path:'employee',
         component:() => import('@/views/Person/Employee'),
@@ -118,6 +123,11 @@ const routes = [
         name:"Dashboard",
         path:'dashboard',
         component:() => import('@/views/Dashboard'),
+      },
+      {
+        name:"DeviceReport",
+        path:'devicereport',
+        component:() => import('@/views/Reports/DeviceReport'),
       }
     ]
   },

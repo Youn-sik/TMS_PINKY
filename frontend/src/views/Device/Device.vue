@@ -103,8 +103,9 @@
                             <v-text-field label="*단말기 이름" v-model="deviceName" :placeholder="deviceSelected[0].name" required></v-text-field>
                             <v-text-field label="*단말기 위치" v-model="deviceLocation" :placeholder="deviceSelected[0].location" required></v-text-field>
                             <v-text-field label="*버전" v-model="appVersion" :placeholder="deviceSelected[0].app_version" required></v-text-field>
+                            <v-text-field label="*시리얼넘버" v-model="serial_number" :placeholder="deviceSelected[0].serial_number" required></v-text-field>
                             <v-text-field label="*IP" v-model="deviceIP" :placeholder="deviceSelected[0].ip" required></v-text-field>
-                            <v-text-field label="*포트" v-model="port" :placeholder="String(deviceSelected[0].port)" required></v-text-field>
+                            <v-text-field label="*포트" v-model="port" :placeholder="deviceSelected[0].port" required></v-text-field>
                             <v-text-field label="*비고" v-model="description" :placeholder="deviceSelected[0].description" required></v-text-field>
                             <v-autocomplete
                               :items="['RTSP', 'ONVIF','GB28181']"
@@ -166,6 +167,7 @@
                           <v-text-field label="*단말기 이름" v-model="deviceName" required></v-text-field>
                           <v-text-field label="*단말기 위치" v-model="deviceLocation" required></v-text-field>
                           <v-text-field label="*버전" v-model="appVersion" required></v-text-field>
+                          <v-text-field label="*시리얼넘버" v-model="serial_number" required></v-text-field>
                           <v-text-field label="*IP" v-model="deviceIP" required></v-text-field>
                           <v-text-field label="*포트" v-model="port" required></v-text-field>
                           <v-text-field label="*비고" v-model="description" required></v-text-field>
@@ -214,10 +216,6 @@
                 >
                   {{i}}
                 </v-tab>
-                <v-col class="text-right">
-                  <v-btn small class="mr-2">Add sub device</v-btn>
-                  <v-btn small>Refresh</v-btn>
-                </v-col>
               </v-tabs>
               <v-tabs-items v-model="tab">
                 <v-tab-item
@@ -225,7 +223,7 @@
                   :key="i"
                 >
                   <v-card flat color="#f9f6f7">
-                    <v-card-text v-if="i === 'Device information'">
+                    <v-card-text v-if="i === '단말 정보'">
                       <v-col class="d-flex">
                         Basic information
                       </v-col>
@@ -277,17 +275,49 @@
                         </v-col>
                       </v-row>
                     </v-card-text>
-                    <v-card-text v-else-if="i === 'Device Settings'">
-                      디바이스 세팅
-                    </v-card-text>
-                    <v-card-text v-else-if="i === 'Access Settings'">
-                      엑세스 세팅
-                    </v-card-text>
-                    <v-card-text v-else-if="i === 'Attendance Settings'">
-                      어텐던스 세팅
-                    </v-card-text>
                     <v-card-text v-else>
-                      인물 정보
+                      <v-col class="d-flex">
+                        스크린샷 설정
+                      </v-col>
+                      <v-row justify="center">
+                        <v-col cols="8">
+                          
+                        </v-col>
+                      </v-row>
+                      <v-divider></v-divider>
+                      <v-col class="d-flex">
+                        Status Info
+                      </v-col>
+                      <v-row justify="center">
+                        <v-col cols="8">
+                          <p>Door Status:</p>
+                          <p>Thermal Image Status:</p>
+                        </v-col>
+                      </v-row>
+                      <v-divider></v-divider>
+                      <v-col class="d-flex">
+                        App Information
+                      </v-col>
+                      <v-row justify="center">
+                        <v-col cols="8">
+                          <p>App package name:</p>
+                          <p>App version name:</p>
+                          <p>App version code:</p>
+                        </v-col>
+                      </v-row>
+                      <v-divider></v-divider>
+                      <v-col class="d-flex">
+                        Firmware Information
+                      </v-col>
+                      <v-row justify="center">
+                        <v-col cols="8">
+                          <p>Product model:</p>
+                          <p>Product Serial Number:</p>
+                          <p>Firmware version:</p>
+                          <p>Manufacturer:</p>
+                          <p>Hardware version code:</p>
+                        </v-col>
+                      </v-row>
                     </v-card-text>
                   </v-card>
                 </v-tab-item>
@@ -304,10 +334,10 @@
   import axios from 'axios';
   export default {
     created () {
-      axios.get('http://localhost:4000/camera').then((res) => {
+      axios.get('http://172.16.135.89:3000/camera').then((res) => {
         this.api_v3_device_camera = res.data;
       })
-      axios.get('http://localhost:4000/gateway').then((res) =>{
+      axios.get('http://172.16.135.89:3000/gateway').then((res) =>{
         this.gatewayList = res.data;
       })
     },
@@ -317,6 +347,7 @@
         api_v3_device_camera : [],
         search: '',
         selected: [],
+        serial_number:null,
         deviceName: null,
         deviceLocation : null,
         deviceIP : null,
@@ -330,13 +361,11 @@
         protocol : null,
         url : null,
         tab:null,
+        switch:null,
         deviceRadio:'gateway',
         tabs: [
-          "Device information",
-          "Device Settings",
-          "Access Settings",
-          "Attendance Settings",
-          "Person Info"
+          "단말 정보",
+          "단말 설정"
         ],
         model: 1,
         expanded: [],
@@ -354,7 +383,7 @@
     },
     methods: {
       updateDevice () {
-        axios.put('http://localhost:4000/camera/'+this.deviceSelected[0]._id,{
+        axios.put('http://172.16.135.89:3000/camera/'+this.deviceSelected[0]._id,{
           name:this.deviceName ? this.deviceName : this.deviceSelected[0].name,
           location:this.deviceLocation ? this.deviceLocation : this.deviceSelected[0].location,
           gateway_obid:this.gateway ? this.gateway._id : this.deviceSelected[0].gateway_obid._id,
@@ -405,7 +434,7 @@
       },
       delDevice () {
         if(this.deviceSelected){
-          axios.delete('http://localhost:4000/camera/'+this.deviceSelected[0]._id)
+          axios.delete('http://172.16.135.89:3000/camera/'+this.deviceSelected[0]._id)
             .then((res) => {
               this.api_v3_device_camera = this.api_v3_device_camera.filter((i) => {
                 return i._id !== res.data._id;
@@ -426,7 +455,7 @@
           } else if(this.port === null || this.port === '') {
             alert('포트 번호를 입력해주세요.');
           } else{
-            axios.post('http://localhost:4000/gateway',{
+            axios.post('http://172.16.135.89:3000/gateway',{
               name:this.deviceName,
               location:this.deviceLocation,
               ip:this.deviceIP,
@@ -453,6 +482,8 @@
             alert('단말기 위치를 입력해주세요.');
           } else if(this.appVersion === null || this.appVersion === '') {
             alert('버전을 입력해주세요.');
+          } else if(this.serial_number === null || this.serial_number == '') {
+            alert('시리얼 넘버를 입력해주세요.');
           } else if(this.deviceIP === null || this.deviceIP === '') {
             alert('게이트웨이 IP를 입력해주세요.');
           } else if(this.port === null || this.port === '') {
@@ -467,12 +498,13 @@
             if(this.protocol === 'RTSP') this.protocol = 1
             else if(this.protocol === 'OMVIF') this.protocol = 2
             else if(this.protocol === 'GB28181') this.protocol = 3
-            axios.post('http://localhost:4000/camera',{
+            axios.post('http://172.16.135.89:3000/camera',{
               name:this.deviceName,
               location:this.deviceLocation,
               gateway_obid:this.gateway._id,
               ip:this.deviceIP,
               port:parseInt(this.port),
+              serial_number:this.serial_number,
               app_version:this.appVersion,
               description:this.description,
               protocol:this.protocol,
@@ -482,6 +514,7 @@
               this.addUserModal = false
               this.deviceName = null
               this.deviceLocation = null
+              this.serial_number = null
               this.deviceIP = null
               this.port = null
               this.gateway = null

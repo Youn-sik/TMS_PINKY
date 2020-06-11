@@ -7,7 +7,7 @@ Vue.use(VueApollo)
 
 const AUTH_TOKEN = 'apollo-token'
 
-const httpEndpoint = process.env.VUE_APP_GRAPHQL_HTTP || 'http://localhost:4000/graphiql'
+const httpEndpoint = process.env.VUE_APP_GRAPHQL_HTTP || 'http://172.16.135.89:3000/graphiql'
 
 const authLink = setContext(async (_, { headers }) => {
   const cookie = document.cookie.match('(^|;) ?' + "token" + '=([^;]*)(;|$)')

@@ -44,41 +44,60 @@
                 </v-card-title>
                 <v-data-table
                     :headers="headers"
-                    :items="desserts"
+                    :items="accessRecord"
                     :items-per-page="5"
                     class="ml-2 mr-2 elevation-0"
-                ></v-data-table>
+                >
+                    <template v-slot:item.avatar_file_url="{ item }">
+                        <img 
+                        width="70px"
+                        class="mt-1 mb-1"
+                        :src="item.avatar_file_url"/>
+                    </template>
+                    <template v-slot:item.user_obid="{ item }">
+                        <template v-if="item.user_obid">
+                            {{item.user_obid.name}}
+                        </template>
+                    </template>
+                </v-data-table>
             </v-card>
         </v-col>
     </v-row>
 </template>
 <script>
+import axios from 'axios';
 export default {
     computed: {
         dateRangeText () {
         return this.dates.join(' ~ ')
       },
     },
+    created () {
+        axios.get('http://172.16.135.89:3000/access').then((res) => {
+            this.accessRecord = res.data
+            console.log(this.accessRecord);
+        })
+    },
     data: () => ({
+        accessRecord : [],
         deviceStates : [
             '모든 사용자',
             '사원',
             '방문자',
             '블랙리스트',
+            '미등록자'
         ],
         nowStatus : '모든 사용자',
         dates: ['2019-09-10', '2019-09-20'],
         headers: [
-            { text: '', value: 'avatar_file' },
+            { text: '', value: 'avatar_file_url' },
             {
                 text: '이름',
                 align: 'start',
-                value: 'name',
+                value: 'user_obid',
             },
-            { text: '그룹', value: 'created_at' },
-            { text: '장소', value: 'created_at' },
-            { text: '단말기', value: 'created_at' },
-            { text: '일시', value: 'created_at' },
+            { text: '온도', value: 'avatar_temperature' },
+            { text: '출입시간', value: 'access_time' },
         ],
     })
 }

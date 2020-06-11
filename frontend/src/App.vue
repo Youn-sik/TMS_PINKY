@@ -18,7 +18,7 @@ export default {
       const path = '/'
       if (this.$route.path !== path) this.$router.push(path)
     } else {
-      axios.get('http://172.16.135.89:4000/auth?token='+value[2])
+      axios.get('http://172.16.135.89:3000/auth?token='+value[2])
         .then((res) => {
           if(res.data.auth === false) {
             const path = '/'
@@ -31,5 +31,4 @@ export default {
   },
 }
 </script>
-<style>
-</style>
+

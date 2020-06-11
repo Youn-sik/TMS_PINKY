@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 const moment = require('moment');
 const ObjectId = mongoose.Schema.Types.ObjectId
 
@@ -6,6 +6,7 @@ const api_v1_person_user_Schema = new mongoose.Schema({
     avatar_file : { type: String, required: true },
     // avatar_contraction_data : { type: String, required: true },
     avatar_file_checksum : { type: String, required: true },
+    avatar_file_url : { type: String, required: true },
     groups_obids : [{type:ObjectId, ref: 'group'}],
     user_id : { type: String },
     password : { type: String },
@@ -27,7 +28,7 @@ const api_v1_person_user_Schema = new mongoose.Schema({
     create_ut : { type: String, default: Date.now },
     update_at : { type: String },
     update_ut : { type: String },
+});
+api_v1_person_user_Schema.index({ user_id: 1, name: 1, avatar_file_checksum: 1, type: 1 });
 
-})
-
-module.exports = mongoose.model('user', api_v1_person_user_Schema)
+module.exports = mongoose.model('user', api_v1_person_user_Schema);

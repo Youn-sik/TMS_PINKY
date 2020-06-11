@@ -11,4 +11,5 @@ const api_v1_server_version_Schema = new mongoose.Schema({
     update_ut : { type: String }
 })
 
+api_v1_server_version_Schema.index({ user_obid: 1, edition: 1 });
 module.exports = mongoose.model('version', api_v1_server_version_Schema)

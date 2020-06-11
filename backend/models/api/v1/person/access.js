@@ -17,5 +17,5 @@ const api_v1_person_access_Schema = new mongoose.Schema({
     update_at : { type: String },
     update_ut : { type: String },
 })
-
+api_v1_person_access_Schema.index({ user_obid: 1, statistics_status: 1, avatar_file_checksum: 1 });
 module.exports = mongoose.model('access', api_v1_person_access_Schema)

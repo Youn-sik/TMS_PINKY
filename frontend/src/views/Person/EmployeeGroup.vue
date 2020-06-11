@@ -141,7 +141,7 @@
                     <div style="width:80%; margin:0 auto;">
                       <base64-upload class="user"
                       style="width"
-                      :imageSrc="image ? image : 'http://localhost:4000/'+this.userSelected[0].avatar_file"
+                      :imageSrc="image ? image : 'http://172.16.135.89:3000/'+this.userSelected[0].avatar_file"
                       border="left"
                       @change="onChangeImage"></base64-upload>
                     </div>
@@ -165,11 +165,11 @@
           :headers="headers"
           :items="filteredItems"
         >
-          <template v-slot:item.avatar_file="{ item }">
+          <template v-slot:item.avatar_file_url="{ item }">
             <img 
             width="70px"
             class="mt-1 mb-1"
-            :src="'http://localhost:4000/'+item.avatar_file"/>
+            :src="item.avatar_file_url"/>
           </template>
           <template v-slot:item.created_at="{ item }">
             {{item.created_at}}
@@ -243,11 +243,11 @@
       }
     },
     created () {
-      // axios.get('http://localhost:4000/user?type=1')
+      // axios.get('http://172.16.135.89:3000/user?type=1')
       //   .then((res) => {
       //     this.api_v1_person_users = res.data
       //   })
-      axios.get('http://localhost:4000/group?type=1')
+      axios.get('http://172.16.135.89:3000/group?type=1')
         .then((res) => {
           res.data.map((i) => {//user_obids에 있는 데이터 children으로 옮기기
             this.moveUserIds(i);
@@ -286,7 +286,7 @@
         return false;
       }
       const parent = this.active[0]
-      axios.post('http://localhost:4000/group',{
+      axios.post('http://172.16.135.89:3000/group',{
         name : this.groupName,
         type : 1,
         parent,
@@ -341,13 +341,13 @@
     },
     deleteUser () {
       if(this.userSelected.length === 1 ){
-        axios.delete('http://localhost:4000/user/'+this.userSelected[0]._id,{
+        axios.delete('http://172.16.135.89:3000/user/'+this.userSelected[0]._id,{
           data:{
             type:1,
             _id:this.userSelected[0]._id
           }
         }).then(() => {
-            axios.get('http://localhost:4000/group?type=1')
+            axios.get('http://172.16.135.89:3000/group?type=1')
               .then((res) => {
                 res.data.map((i) => {//user_obids에 있는 데이터 children으로 옮기기
                   this.moveUserIds(i);
@@ -362,7 +362,7 @@
               })
           })
       } else if(this.userSelected.length > 1) {
-        axios.delete('http://localhost:4000/user/'+this.userSelected[0]._id,{
+        axios.delete('http://172.16.135.89:3000/user/'+this.userSelected[0]._id,{
           data:{
             type:1,
             selectedData:this.userSelected
@@ -373,7 +373,7 @@
               return j._id !== i._id;
             })
           })
-          axios.get('http://localhost:4000/group?type=1')
+          axios.get('http://172.16.135.89:3000/group?type=1')
             .then((res) => {
               res.data.map((i) => {//user_obids에 있는 데이터 children으로 옮기기
                 this.moveUserIds(i);
@@ -419,7 +419,7 @@
       if(!this.image) {
         this.image = this.userSelected[0].avatar_file;
       }
-      axios.put('http://localhost:4000/user/'+this.userSelected[0]._id,{
+      axios.put('http://172.16.135.89:3000/user/'+this.userSelected[0]._id,{
         _id : this.userSelected[0]._id,
         name : this.name,
         avatar_file : this.image,
@@ -432,7 +432,7 @@
         this.api_v1_person_users[index].name = res.data.name;
         this.api_v1_person_users[index].avatar_file = res.data.avatar_file;
         this.api_v1_person_users[index].updated_at = res.data.updated_at;
-        axios.get('http://localhost:4000/group?type=1')
+        axios.get('http://172.16.135.89:3000/group?type=1')
           .then((res) => {
             res.data.map((i) => {//user_obids에 있는 데이터 children으로 옮기기
               this.moveUserIds(i);

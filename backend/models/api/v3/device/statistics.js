@@ -8,8 +8,9 @@ const api_v3_device_statistics_Schema = new mongoose.Schema({
     guest_count : { type: Number },
     stranger_count : { type: Number },
     blacklist_count : { type: Number },
-    statistics_list : [{type:ObjectId, ref: 'access', required: true }],
+    statistics_obids : [{type:ObjectId, ref: 'access', required: true }],
     reference_date : { type: String },
 })
 
+api_v3_device_statistics_Schema.index({ camera_obid: 1, reference_date: 1 });
 module.exports = mongoose.model('statistics', api_v3_device_statistics_Schema)

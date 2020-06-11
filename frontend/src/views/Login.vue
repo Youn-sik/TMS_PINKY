@@ -75,7 +75,7 @@ export default {
       } else if(this.user_pw === '') {
         alert('비밀번호를 입력해 주세요');
       } else {
-        axios.post('http://localhost:4000/login',{
+        axios.post('http://172.16.135.89:3000/login',{
           user_id : this.user_id,
           user_pw : this.user_pw
         }).then((res) => {

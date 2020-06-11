@@ -100,7 +100,7 @@
       },
     },
     created () {
-      axios.get('http://localhost:4000/group?type=5')
+      axios.get('http://172.16.135.89:3000/group?type=5')
         .then((res) => {
           this.api_v1_group_group = res.data;
         })
@@ -143,7 +143,7 @@
       async addUser(){
         if(this.name === null || this.name === '') {alert('이름을 입력해주세요.'); return false}
         else if(this.image === null || this.image === ''){alert('사진을 업로드 해주세요.'); return false}
-        axios.post('http://localhost:4000/user',{
+        axios.post('http://172.16.135.89:3000/user',{
               name : this.name,
               created_at : this.getFormatDate(new Date()),
               avatar_file : this.image,

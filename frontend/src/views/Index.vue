@@ -180,6 +180,7 @@
           model: false,
           children: [
             { text: '단말 목록' ,to: '/device'},
+            { text: '단말기 스크린샷' ,to: '/devicescreen'},
           ],
         },
                 {
@@ -212,9 +213,9 @@
           text: '통계',
           model: false,
           children: [
-            { text: '출석 통계', to:'/account'},
-            { text: '출입 통계', to:'/operationlog' },
-            { text: '단말 통계', to:'/operationlog' },
+            // { text: '출석 통계', to:'/'},
+            // { text: '출입 통계', to:'/' },
+            { text: '단말 통계', to:'/devicereport' },
           ],
         },
       ],

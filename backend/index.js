@@ -19,6 +19,9 @@ const accessRouter = require('./routes/api/v1/person/access');
 const groupRouter = require('./routes/api/v1/group/group');
 const alarmRouter = require('./routes/api/v2/device/alarm');
 const cameraRouter = require('./routes/api/v3/device/camera');
+const cameraFailRouter = require('./routes/api/v3/device/camera_fail');
+const cameraFilelistRouter = require('./routes/api/v3/device/camera_filelist');
+const cameraMonitorRouter = require('./routes/api/v3/device/camera_monitor');
 const gatewayRouter = require('./routes/api/v3/device/gateway');
 const statisticsRouter = require('./routes/api/v3/device/statistics');
 const accountRouter = require('./routes/account');
@@ -36,6 +39,9 @@ fastify.use('/account',accountRouter);
 fastify.use('/access',accessRouter);
 fastify.use('/alarm',alarmRouter);
 fastify.use('/camera',cameraRouter);
+fastify.use('/camera_fail',cameraFailRouter);
+fastify.use('/camera_filelist',cameraFilelistRouter);
+fastify.use('/camera_monitor',cameraMonitorRouter);
 fastify.use('/gateway',gatewayRouter);
 fastify.use('/group',groupRouter);
 fastify.use('/statistics',statisticsRouter);
@@ -146,7 +152,7 @@ const swagger = require('./config/swagger')
 // Run the server!
 const start = async () => {
     try {
-        await fastify.listen(4000,'0.0.0.0')
+        await fastify.listen(3000,'0.0.0.0')
         fastify.swagger()
         fastify.log.info(`server listening on ${fastify.server.address().port}`)
     } catch (err) {

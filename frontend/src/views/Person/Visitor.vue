@@ -74,7 +74,7 @@
                 <div style="width:80%; margin:0 auto;">
                   <base64-upload class="user"
                   style="width"
-                  :imageSrc="image ? image : 'http://localhost:4000/'+this.userSelected[0].avatar_file"
+                  :imageSrc="image ? image : 'http://172.16.135.89:3000/'+this.userSelected[0].avatar_file"
                   border="left"
                   @change="onChangeImage"></base64-upload>
                 </div>
@@ -101,7 +101,7 @@
             <img 
             width="70px"
             class="mt-1 mb-1"
-            :src="'http://localhost:4000/'+item.avatar_file"/>
+            :src="'http://172.16.135.89:3000/'+item.avatar_file"/>
           </template>
           <template v-slot:item.created_at="{ item }">
             {{item.created_at}}
@@ -170,11 +170,11 @@
       }
     },
     created () {
-      // axios.get('http://localhost:4000/user?type=1')
+      // axios.get('http://172.16.135.89:3000/user?type=1')
       //   .then((res) => {
       //     this.api_v1_person_users = res.data
       //   })
-      axios.get('http://localhost:4000/group?type=2')
+      axios.get('http://172.16.135.89:3000/group?type=2')
         .then((res) => {
           res.data.map((i) => {//user_obids에 있는 데이터 children으로 옮기기
             this.moveUserIds(i);
@@ -217,12 +217,12 @@
     },
     deleteUser () {
       if(this.userSelected){
-        axios.delete('http://localhost:4000/user/'+this.userSelected[0]._id)
+        axios.delete('http://172.16.135.89:3000/user/'+this.userSelected[0]._id)
           .then((res) => {
             this.api_v1_person_users = this.api_v1_person_users.filter((i) => {
               return i._id !== res.data._id;
             })
-            axios.get('http://localhost:4000/group?type=2')
+            axios.get('http://172.16.135.89:3000/group?type=2')
               .then((res) => {
                 res.data.map((i) => {//user_obids에 있는 데이터 children으로 옮기기
                   this.moveUserIds(i);
@@ -266,7 +266,7 @@
       if(!this.image) {
         this.image = this.userSelected[0].avatar_file;
       }
-      axios.put('http://localhost:4000/user/'+this.userSelected[0]._id,{
+      axios.put('http://172.16.135.89:3000/user/'+this.userSelected[0]._id,{
         name : this.name,
         avatar_file : this.image,
         updated_at : this.getFormatDate(new Date()) 

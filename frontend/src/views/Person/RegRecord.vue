@@ -75,7 +75,7 @@
             <img 
             width="70px"
             class="mt-1 mb-1"
-            :src="'http://localhost:4000/'+item.avatar_file"/>
+            :src="'http://172.16.135.89:3000/'+item.avatar_file"/>
           </template>
           <template v-slot:item.type="{ item }">
             <template v-if="item.type === 1">
@@ -183,7 +183,7 @@
       }
     },
     created () {
-      axios.get('http://localhost:4000/user')
+      axios.get('http://172.16.135.89:3000/user')
         .then((res) => {
           this.origin = res.data
           this.api_v1_person_every_type_users = this.origin
