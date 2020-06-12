@@ -157,8 +157,42 @@
                     <v-divider  vertical></v-divider>
                     <v-card flat width="50%" style="text-align: center">
                       <v-btn color="primary" class="mb-3" @click="controlDeviceLog">단말기 로그 요청</v-btn><br/>
-                      <v-btn color="primary" class="mb-3">화면 캡쳐 시작</v-btn><br/>
-                      <v-btn color="primary" class="mb-3">화면 캡쳐 종료</v-btn><br/>
+                      <v-spacer></v-spacer>
+                      <v-row justify="center">
+                        <v-col cols="6">
+                          <v-menu
+                            ref="menu"
+                            v-model="menu2"
+                            :close-on-content-click="false"
+                            :nudge-right="40"
+                            :return-value.sync="time"
+                            transition="scale-transition"
+                            offset-y
+                            max-width="290px"
+                            min-width="290px"
+                          >
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-text-field
+                                v-model="time"
+                                label="시간 설정"
+                                prepend-icon="access_time"
+                                readonly
+                                v-bind="attrs"
+                                v-on="on"
+                              ></v-text-field>
+                            </template>
+                            <v-time-picker
+                              v-if="menu2"
+                              v-model="time"
+                              full-width
+                              format="24hr"
+                              @click:minute="$refs.menu.save(time)"
+                            ></v-time-picker>
+                          </v-menu>
+                        </v-col>
+                      </v-row>
+                      <v-btn color="primary" class="mb-3">캡쳐 시작</v-btn><br/>
+                      <v-btn color="primary" class="mb-3">캡쳐 종료</v-btn><br/>
                       <v-btn color="primary" class="mb-3">sdcard 삭제</v-btn><br/>
                       <v-btn color="primary" class="mb-3">sdcard 사용 하지 않는 파일 삭제</v-btn><br/>
                       <v-btn color="primary" class="mb-3">재부팅</v-btn><br/>
@@ -409,10 +443,13 @@
         api_v1_group_group:null,
         active:[],
         deviceSelected:[],
+        time: null,
+        menu2: false,
         searchGroup:null,
         api_v3_device_camera : [],
         search: '',
         selected: [],
+        captureTime : null,
         serial_number:null,
         deviceName: null,
         deviceLocation : null,
@@ -453,10 +490,10 @@
         this.$mqtt.publish('/control/log/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number});
       },
       controlCaptureStart () {
-        this.$mqtt.publish('/control/capture/start/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number,"capture_time":"00:33","capture_size":"320*240", "capture_status":"Y"});
+        this.$mqtt.publish('/control/capture/start/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number,"capture_time":this.time,"capture_size":"320*240", "capture_status":"Y"});
       },
       controlCaptureEnd () {
-        this.$mqtt.publish('/control/capture/end/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number,"stb_id":"", "capture_time":"00:33","capture_size":"320*240", "capture_status":"N"});
+        this.$mqtt.publish('/control/capture/end/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number,"stb_id":"", "capture_time":this.time,"capture_size":"320*240", "capture_status":"N"});
       },
       controlSDcardDel () {
         this.$mqtt.publish('/control/sdcard/delete/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number});
