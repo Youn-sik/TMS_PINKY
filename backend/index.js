@@ -17,6 +17,7 @@ const User = require('./models/User')
 const usersRouter = require('./routes/api/v1/person/user');
 const accessRouter = require('./routes/api/v1/person/access');
 const groupRouter = require('./routes/api/v1/group/group');
+const glogsRouter = require('./routes/api/v1/group/glogs');
 const alarmRouter = require('./routes/api/v2/device/alarm');
 const cameraRouter = require('./routes/api/v3/device/camera');
 const cameraFailRouter = require('./routes/api/v3/device/camera_fail');
@@ -44,6 +45,7 @@ fastify.use('/camera_filelist',cameraFilelistRouter);
 fastify.use('/camera_monitor',cameraMonitorRouter);
 fastify.use('/gateway',gatewayRouter);
 fastify.use('/group',groupRouter);
+fastify.use('/glogs',glogsRouter);
 fastify.use('/statistics',statisticsRouter);
 
 fastify.use(express.static(path.join(__dirname, 'uploads')));
