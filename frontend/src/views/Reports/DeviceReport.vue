@@ -55,22 +55,60 @@
             </v-date-picker>
           </v-menu>
         </v-card-title>
-        <v-card-text>
-          <GChart
-            v-if="dates[0] === dates[1] || dates[1] === undefined"
-            type="PieChart"
-            style="height:40vh; margin:10px 0px;"
-            :data="todayChartData"
-            :options="todayChartOptions"
-          />
-          <GChart
-            v-else
-            type="LineChart"
-            style="height:40vh; margin:10px 0px;"
-            :data="chartData"
-            :options="chartOptions"
-          />
-        </v-card-text>
+        <v-tabs
+          v-model="tab"
+        >
+          <v-tab
+            v-for="i in tabs"
+            :key="i"
+          >
+            {{i}}
+          </v-tab>
+        </v-tabs>
+        <v-tabs-items v-model="tab">
+          <v-tab-item
+            v-for="i in tabs"
+            :key="i"
+          >
+            <v-card flat v-if="deviceSelected === null">
+              단말기를 선택해 주세요.
+            </v-card>
+            <v-card flat v-else>
+              <v-card-text v-if="i === '방문자 통계'">
+                <GChart
+                  v-if="chartDates[0] === chartDates[1] || chartDates[1] === undefined"
+                  type="PieChart"
+                  style="height:40vh; margin:10px 0px;"
+                  :data="todayChartData"
+                  :options="todayChartOptions"
+                />
+                <GChart
+                  v-else
+                  type="LineChart"
+                  style="height:40vh; margin:10px 0px;"
+                  :data="chartData"
+                  :options="chartOptions"
+                />
+              </v-card-text>
+              <v-card-text v-else>
+                <GChart
+                  v-if="chartDates[0] === chartDates[1] || chartDates[1] === undefined"
+                  type="PieChart"
+                  style="height:40vh; margin:10px 0px;"
+                  :data="todayDeviceChartData"
+                  :options="todayChartOptions"
+                />
+                <GChart
+                  v-else
+                  type="LineChart"
+                  style="height:40vh; margin:10px 0px;"
+                  :data="deviceChartData"
+                  :options="chartOptions"
+                />
+              </v-card-text>
+            </v-card>
+          </v-tab-item>
+        </v-tabs-items>
       </v-card>
     </v-col>
   </v-row>
@@ -109,6 +147,7 @@
         //     }
         //   });
         // }
+        this.chartDates = this.dates
         this.$refs.menu.save(this.dates)
       },
       getFormatDate(date,val){
@@ -133,6 +172,7 @@
       },
       rowClick: function (item, row) {
         row.isSelected ? row.select(false) : row.select(true);
+        this.deviceSelected = item._id;
       },
     },
     computed: {
@@ -142,9 +182,11 @@
     },
     data () {
       return {
+        tabs : ['방문자 통계','단말기 통계'],
+        tab : null,
         menu : false,
         dates: [this.getFormatDate(new Date(),-1), this.getFormatDate(new Date(),-1)],
-        chartDates:null,
+        chartDates:[this.getFormatDate(new Date(),-1), this.getFormatDate(new Date(),-1)],
         todayChartOptions: {
           legend: {
               position: 'bottom',
@@ -153,6 +195,12 @@
           pieSliceText:'value',
           chartArea: {'width': '100%', 'height': '80%'},
         },
+        todayDeviceChartData : [
+          ['type', 'count'],
+          ['CPU 과다 사용',     11],
+          ['메모리 과다 사용',      2],
+          ['연결 끊김',  2],
+        ],
         api_v3_device_camera : [],
         todayChartData: [
             ['type', 'count'],
@@ -162,18 +210,18 @@
             ['미등록자', 2]
         ],
         chartData: [
-        ['date', '사원', '방문자', '블랙리스트','미등록자'],
-        ['2020-06-08', 10, 4, 2,1],
-        ['2020-06-09', 11, 4, 2,10],
-        ['2020-06-10', 6, 1, 3,1],
-      ],
-      chartOptions: {
-        chart: {
-          title: '방문자 통계',
-        }
-      },
+          ['date', '사원', '방문자', '블랙리스트','미등록자'],
+          ['2020-06-08', 10, 4, 2,1],
+          ['2020-06-09', 11, 4, 2,10],
+          ['2020-06-10', 6, 1, 3,1],
+        ],
+        chartOptions: {
+          chart: {
+            title: '방문자 통계',
+          }
+        },
         search: '',
-        deviceSelected : [],
+        deviceSelected : null,
         headers: [
           { text: '단말기 명', value: 'name' },
           { text: '시리얼 넘버', value: 'serial_number' },

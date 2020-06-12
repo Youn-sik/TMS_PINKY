@@ -9,7 +9,7 @@ const jwt =  require('jsonwebtoken');
 const cookie = require('cookie');
 const bodyParser = require('body-parser');
 const express = require('express');
-
+const path = require('path');
 //model
 const User = require('./models/User')
 
@@ -46,7 +46,9 @@ fastify.use('/gateway',gatewayRouter);
 fastify.use('/group',groupRouter);
 fastify.use('/statistics',statisticsRouter);
 
-fastify.use('/image',express.static('./image'));
+fastify.use(express.static(path.join(__dirname, 'uploads')));
+
+
 
 fastify.post('/login', async function(req, res) {
     try {   

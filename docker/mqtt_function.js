@@ -261,11 +261,14 @@ module.exports = {
                     }else{
                         let user_array = [];
                         user.forEach(function(element){
+                            if(element.type === 1) element.type = 'employee'
+                            else if(element.type === 2) element.type = 'guest'
+                            else if(element.type === 5) element.type = 'black_list'
                             let user_data = {
                                 avatar_file_url: element.avatar_file_url,
                                 avatar_file_checksum: element.avatar_file_checksum,
                                 avatar_contraction_data: element.avatar_contraction_data,
-                                avatart_type: element.type,
+                                avatar_type: element.type,
                                 avatar_obid: element._id
                             };
                             user_array.push(user_data)
@@ -314,7 +317,7 @@ module.exports = {
                 let file_name = json.stb_sn + "_" + moment().format('YYYYMMDDHHmmss') + ".png";
                 //let upload_file_path = site.base_server_document + folder_date_path;
                 let file_path = site.base_server_document + folder_date_path + "/" + json.stb_sn + "/";
-                let upload_url = site.base_local_url + folder_date_path + "/" + json.stb_sn + "/" + file_name;
+                let upload_url = site.base_local_url+ ':3000' + folder_date_path + "/" + json.stb_sn + "/" + file_name;
                 let buff = Buffer.from(element.avatar_file, 'base64');
                 
                 mkdirp.sync(file_path);
@@ -375,7 +378,7 @@ module.exports = {
                 let file_name = element.avatar_name + "_" + moment().format('YYYYMMDDHHmmss') + ".png";
                 //let upload_file_path = site.base_server_document + folder_date_path;
                 let file_path = site.base_server_document + folder_date_path + "/";
-                let upload_url = site.base_local_url + folder_date_path + "/" + file_name;
+                let upload_url = site.base_local_url+ ':3000' + folder_date_path + "/" + file_name;
                 let buff = Buffer.from(element.avatar_file, 'base64');
                 
                 mkdirp.sync(file_path);
@@ -456,7 +459,7 @@ module.exports = {
             let file_name = json.stb_sn + "_" + moment().format('YYYYMMDDHHmmss') + ".png";
             //let upload_file_path = site.base_server_document + folder_date_path;
             let file_path = site.base_server_document + folder_date_path + "/" + json.stb_sn + "/";
-            let upload_url = site.base_local_url + folder_date_path + "/" + json.stb_sn + "/" + file_name;
+            let upload_url = site.base_local_url+ ':3000' + folder_date_path + "/" + json.stb_sn + "/" + file_name;
             let buff = Buffer.from(json.data, 'base64');
             mkdirp.sync(file_path);
             fs.promises.writeFile(file_path + file_name, buff, 'utf-8')
@@ -618,7 +621,6 @@ module.exports = {
             if(json.value.hdd_used) camera.config_data.hdd_used = json.value.hdd_used;
             if(json.value.stb_version) camera.app_version = json.value.stb_version;
             if(json.value.stb_ip) camera.ip = json.value.stb_ip;
-            
             camera.save( (err) => {
                 if(err){
                     console.log(err);
@@ -825,7 +827,7 @@ module.exports = {
                 stb_sn: camera.serial_number,
                 message : log_message
             };
-            client.publish('/log_status/result/' +  camera.serial_number, JSON.stringify(send_data), mqtt_option);
+            client.publish('/log/status/result/' +  camera.serial_number, JSON.stringify(send_data), mqtt_option);
 
             let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: log_no, log_message: log_message, create_dt: json.create_time });
             newGlogs.save(function (error, data) {
