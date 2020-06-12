@@ -215,7 +215,7 @@
           {
             text: '',
             align: 'center',
-            value: 'avatar_file',
+            value: 'avatar_file_url',
             width : '10%',
             sortable: false,
           },

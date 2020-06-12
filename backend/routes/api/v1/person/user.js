@@ -41,7 +41,7 @@ router.post('/',async function(req, res) {
         let add = new api_v1_person_user(req.body)
         add.avatar_file_checksum = crypto.createHash('sha256').update(req.body.avatar_file).digest('base64');
         fs.writeFile('image/'+add._id+'profile.jpg',add.avatar_file,'base64',() => {})
-        add.avatar_file_url = 'http://localhost:4000/image/'+add._id+'profile.jpg';
+        add.avatar_file_url = 'http://172.16.135.89:3000/image/'+add._id+'profile.jpg';
         const groups = req.body.groups_obids === undefined ? null : req.body.groups_obids;
         if(groups !== null) {
             groups.map((i) => {

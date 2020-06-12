@@ -48,8 +48,9 @@ fastify.use('/group',groupRouter);
 fastify.use('/glogs',glogsRouter);
 fastify.use('/statistics',statisticsRouter);
 
-fastify.use(express.static(path.join(__dirname, 'uploads')));
-
+// fastify.use(express.static(path.join(__dirname, 'uploads')));
+fastify.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+fastify.use('/image',express.static('./image'));
 
 
 fastify.post('/login', async function(req, res) {

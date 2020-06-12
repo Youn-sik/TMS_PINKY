@@ -9,22 +9,22 @@
         <v-list-item three-line>
           <v-list-item-content>
             <div class="mb-4">총합</div>
-            <v-list-item-title class="headline mb-1">3</v-list-item-title>
+            <v-list-item-title class="headline mb-1">{{api_v1_person_every_type_users.length}}</v-list-item-title>
           </v-list-item-content>
           <v-divider vertical></v-divider>
           <v-list-item-content>
             <div class="mb-4">사원</div>
-            <v-list-item-title class="headline mb-1">2</v-list-item-title>
+            <v-list-item-title class="headline mb-1">{{empCnt}}</v-list-item-title>
           </v-list-item-content>
           <v-divider vertical></v-divider>
           <v-list-item-content>
             <div class="mb-4">방문자</div>
-            <v-list-item-title class="headline mb-1">1</v-list-item-title>
+            <v-list-item-title class="headline mb-1">{{visitCnt}}</v-list-item-title>
           </v-list-item-content>
           <v-divider vertical></v-divider>
           <v-list-item-content>
             <div class="mb-4">블랙리스트</div>
-            <v-list-item-title class="headline mb-1">0</v-list-item-title>
+            <v-list-item-title class="headline mb-1">{{blackCnt}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-card>
@@ -75,7 +75,7 @@
             <img 
             width="70px"
             class="mt-1 mb-1"
-            :src="'http://172.16.135.89:3000/'+item.avatar_file"/>
+            :src="item.avatar_file_url"/>
           </template>
           <template v-slot:item.type="{ item }">
             <template v-if="item.type === 1">
@@ -119,6 +119,9 @@
         menu : false,
         dates: [this.getFormatDate(new Date(),-1), this.getFormatDate(new Date(),0)],
         search: '',
+        empCnt:0,
+        visitCnt:0,
+        blackCnt:0,
         origin: [],
         selected: [],
         api_v1_person_every_type_users:[],
@@ -187,6 +190,11 @@
         .then((res) => {
           this.origin = res.data
           this.api_v1_person_every_type_users = this.origin
+          this.api_v1_person_every_type_users.map((i) => {
+            if(i.type === 1) this.empCnt++;
+            else if(i.type === 2) this.visitCnt++;
+            else this.blackCnt++;
+          })
         })
     }
     // apollo: {

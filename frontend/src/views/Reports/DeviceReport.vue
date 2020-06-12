@@ -30,7 +30,9 @@
       </v-card>
       <v-divider vertical></v-divider>
       <v-card width="65%">
-        <v-card-title>
+        <v-card-title 
+            class="pb-0"
+        >
           <v-menu
             ref="menu"
             v-model="menu"
@@ -70,8 +72,11 @@
             v-for="i in tabs"
             :key="i"
           >
-            <v-card flat v-if="deviceSelected === null">
+            <v-card flat v-if="deviceSelected === null" style="text-align: center; margin:100px 0px">
               단말기를 선택해 주세요.
+            </v-card>
+            <v-card flat v-else-if="isEmpty" style="text-align: center; margin:100px 0px">
+              데이터가 없습니다.
             </v-card>
             <v-card flat v-else>
               <v-card-text v-if="i === '방문자 통계'">
@@ -122,6 +127,34 @@
       axios.get('http://172.16.135.89:3000/camera').then((res) => {
         this.api_v3_device_camera = res.data;
       })
+      axios.get('http://172.16.135.89:3000/glogs?type=errer').then((res) => {
+        this.glogs = res.data;
+      })
+    },
+    watch: {
+      deviceSelected () {
+        this.isEmpty = true;
+        this.todayDeviceChartData = [
+          ['type', 'count'],
+          ['CPU 과다 사용',     0],
+          ['메모리 과다 사용',      0],
+          ['연결 끊김',  0],
+        ]
+
+        let temp = this.glogs.filter(i => i.stb_sn === this.deviceSelected)
+        temp.map((i) => {
+          if(i.log_no === 3) {
+            this.todayDeviceChartData[3][1]++;
+          } else if(i.log_no === 32) {
+            this.todayDeviceChartData[1][1]++;
+          } else if(i.log_no === 33) {
+            this.todayDeviceChartData[2][1]++;
+          }
+        })
+        if(temp.length !== 0) {
+          this.isEmpty=false;
+        }
+      },
     },
     components: {
         GChart : GChart
@@ -172,7 +205,7 @@
       },
       rowClick: function (item, row) {
         row.isSelected ? row.select(false) : row.select(true);
-        this.deviceSelected = item._id;
+        this.deviceSelected = item.serial_number;
       },
     },
     computed: {
@@ -182,6 +215,8 @@
     },
     data () {
       return {
+        glogs : [],
+        isEmpty : true,
         tabs : ['방문자 통계','단말기 통계'],
         tab : null,
         menu : false,

@@ -261,14 +261,15 @@ module.exports = {
                     }else{
                         let user_array = [];
                         user.forEach(function(element){
-                            if(element.type === 1) element.type = 'employee'
-                            else if(element.type === 2) element.type = 'guest'
-                            else if(element.type === 5) element.type = 'black_list'
+                            let type = null
+                            if(element.type === 1) type = 'employee'
+                            else if(element.type === 2) type = 'guest'
+                            else if(element.type === 5) type = 'black_list'
                             let user_data = {
                                 avatar_file_url: element.avatar_file_url,
                                 avatar_file_checksum: element.avatar_file_checksum,
                                 avatar_contraction_data: element.avatar_contraction_data,
-                                avatar_type: element.type,
+                                avatar_type: type,
                                 avatar_obid: element._id
                             };
                             user_array.push(user_data)
@@ -426,6 +427,11 @@ module.exports = {
             let buff = Buffer.from(json.data, 'base64');
             mkdirp.sync(file_path);
             fs.promises.writeFile(file_path + file_name, buff, 'utf-8')
+            
+            // send_data = {
+            //     stb_sn: json.stb_sn
+            // };
+            // client.publish('/access/addpeople/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
 
             let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 10, log_message: 'control_log_result', create_dt: json.create_time });
             newGlogs.save(function (error, data) {

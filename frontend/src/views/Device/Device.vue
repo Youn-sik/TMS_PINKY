@@ -39,7 +39,7 @@
           ></v-text-field>
         </v-card-title>
         <v-card-text>
-          <v-treeview
+          <!-- <v-treeview
             :items="api_v1_group_group"
             item-key="_id"
             item-disabled="avatar_file"
@@ -48,7 +48,6 @@
             activatable
             :multiple-active="false"
             :return-object="true"
-            :open.sync="open"
           >
             <template v-slot:prepend="{ item }">
               <v-icon
@@ -60,7 +59,7 @@
                 v-text="`person`"
               ></v-icon>
             </template>
-          </v-treeview>
+          </v-treeview> -->
         </v-card-text>
       </v-card>
       <v-divider vertical></v-divider>
@@ -105,7 +104,7 @@
                             <v-text-field label="*버전" v-model="appVersion" :placeholder="deviceSelected[0].app_version" required></v-text-field>
                             <v-text-field label="*시리얼넘버" v-model="serial_number" :placeholder="deviceSelected[0].serial_number" required></v-text-field>
                             <v-text-field label="*IP" v-model="deviceIP" :placeholder="deviceSelected[0].ip" required></v-text-field>
-                            <v-text-field label="*포트" v-model="port" :placeholder="deviceSelected[0].port" required></v-text-field>
+                            <v-text-field label="*포트" v-model="port" :placeholder="String(deviceSelected[0].port)" required></v-text-field>
                             <v-text-field label="*비고" v-model="description" :placeholder="deviceSelected[0].description" required></v-text-field>
                             <v-autocomplete
                               :items="['RTSP', 'ONVIF','GB28181']"
@@ -127,7 +126,53 @@
                   <v-btn color="blue darken-1" text @click="updateDevice">저장</v-btn>
                 </v-card-actions>
               </v-card>
-            </v-dialog>  
+            </v-dialog>
+            <v-dialog
+              v-model="controlModal"
+              max-width="50%"
+            >
+              <template v-slot:activator="{ on }">
+                <v-btn class="mr-2 mt-4" color="primary" v-on="on"><v-icon dark left>delete_forever</v-icon>제어</v-btn>
+                <!-- <v-btn class="mr-2 mt-4" v-else disabled><v-icon dark left>delete_forever</v-icon>제어</v-btn> -->
+              </template>
+              <v-card>
+                <v-card-title></v-card-title>
+                <v-card-text>
+                  <v-row justify="center">
+                    <v-card flat width="49%">
+                      <v-treeview
+                      :items="api_v3_device_camera"
+                      item-key="_id"
+                      :active.sync="active"
+                      activatable
+                      :return-object="true"
+                    >
+                      <template v-slot:prepend="{}">
+                        <v-icon
+                          v-text="`dns`"
+                        ></v-icon>
+                      </template>
+                    </v-treeview>
+                    </v-card>
+                    <v-divider  vertical></v-divider>
+                    <v-card flat width="50%" style="text-align: center">
+                      <v-btn color="primary" class="mb-3" @click="controlDeviceLog">단말기 로그 요청</v-btn><br/>
+                      <v-btn color="primary" class="mb-3">화면 캡쳐 시작</v-btn><br/>
+                      <v-btn color="primary" class="mb-3">화면 캡쳐 종료</v-btn><br/>
+                      <v-btn color="primary" class="mb-3">sdcard 삭제</v-btn><br/>
+                      <v-btn color="primary" class="mb-3">sdcard 사용 하지 않는 파일 삭제</v-btn><br/>
+                      <v-btn color="primary" class="mb-3">재부팅</v-btn><br/>
+                      <v-btn color="primary" class="mb-3">디바이스 컴텐츠 리스트 요청</v-btn><br/>
+                      <v-btn color="primary" class="mb-3">시스템 초기화</v-btn><br/>
+                    </v-card>
+                  </v-row>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="primary" text @click="controlModal = false">닫기</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog> 
             <v-dialog v-model="addUserModal" persistent max-width="600px">
               <template v-slot:activator="{ on }">
                 <v-btn class="mt-4" color="primary" dark v-on="on"><v-icon dark left>mdi-plus</v-icon>추가</v-btn>
@@ -331,9 +376,27 @@
 </template>
 
 <script>
+  /* eslint-disable */
   import axios from 'axios';
+  import fs from "fs"
+  import path from "path"
+  import mqtt from 'mqtt'
   export default {
     created () {
+      this.$mqtt.on('connect',() => {
+        console.log('MQTT was Connected...');
+      })
+      this.$mqtt.on('message', (topic,message) => {
+        console.log(topic,new TextDecoder("utf-8").decode(message))
+      })
+      this.$mqtt.subscribe('/control/log/result/+')
+      this.$mqtt.subscribe('/control/capture/start/result/+')
+      this.$mqtt.subscribe('/control/capture/end/result+')
+      this.$mqtt.subscribe('/control/sdcard/delete/result/+')
+      this.$mqtt.subscribe('/control/sdcard/part/delete/result+')
+      this.$mqtt.subscribe('/control/reboot/result/+')
+      this.$mqtt.subscribe('/control/get_device_file_list/result/+')
+      this.$mqtt.subscribe('/control/reset/result/+')
       axios.get('http://172.16.135.89:3000/camera').then((res) => {
         this.api_v3_device_camera = res.data;
       })
@@ -343,7 +406,10 @@
     },
     data () {
       return {
+        api_v1_group_group:null,
+        active:[],
         deviceSelected:[],
+        searchGroup:null,
         api_v3_device_camera : [],
         search: '',
         selected: [],
@@ -379,9 +445,34 @@
         ],
         addUserModal : false,
         batchSettingModal : false,
+        controlModal : false,
       }
     },
     methods: {
+      controlDeviceLog () {
+        this.$mqtt.publish('/control/log/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number});
+      },
+      controlCaptureStart () {
+        this.$mqtt.publish('/control/capture/start/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number,"capture_time":"00:33","capture_size":"320*240", "capture_status":"Y"});
+      },
+      controlCaptureEnd () {
+        this.$mqtt.publish('/control/capture/end/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number,"stb_id":"", "capture_time":"00:33","capture_size":"320*240", "capture_status":"N"});
+      },
+      controlSDcardDel () {
+        this.$mqtt.publish('/control/sdcard/delete/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number});
+      },
+      controlSDcardPartDel () {
+        this.$mqtt.publish('/control/sdcard/part/delete/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number});
+      },
+      controlDeviceReboot () {
+        this.$mqtt.publish('/control/reboot/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number, "message":"reboot"});
+      },
+      controlContentsReq () {
+        this.$mqtt.publish('/control/get_device_file_list/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number, "message":"get_device_file_list"});
+      },
+      controlDeviceReset () {
+        this.$mqtt.publish('/control/reset/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number});
+      },
       updateDevice () {
         axios.put('http://172.16.135.89:3000/camera/'+this.deviceSelected[0]._id,{
           name:this.deviceName ? this.deviceName : this.deviceSelected[0].name,
