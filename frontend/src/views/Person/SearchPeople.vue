@@ -67,7 +67,7 @@
 </template>
 
 <script>
-  import Base64Upload from 'vue-base64-upload'
+  import Base64Upload from '../../components/Base64Upload'
   import { IntegerPlusminus } from 'vue-integer-plusminus'
   export default {
     data: () => ({

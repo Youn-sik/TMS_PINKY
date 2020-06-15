@@ -40,8 +40,13 @@ router.post('/',async function(req, res) {
         let group = null
         let add = new api_v1_person_user(req.body)
         add.avatar_file_checksum = crypto.createHash('sha256').update(req.body.avatar_file).digest('base64');
-        fs.writeFile('image/'+add._id+'profile.jpg',add.avatar_file,'base64',() => {})
-        add.avatar_file_url = 'http://172.16.135.89:3000/image/'+add._id+'profile.jpg';
+        let overlap_check = await api_v1_person_user.findOne({avatar_file_checksum : add.avatar_file_checksum})
+        if(overlap_check) {
+            add.avatar_file_url = overlap_check.avatar_file_url;
+        } else {
+            fs.writeFile('image/'+add._id+'profile.jpg',add.avatar_file,'base64',() => {})
+            add.avatar_file_url = 'http://172.16.135.89:3000/image/'+add._id+'profile.jpg';
+        }
         const groups = req.body.groups_obids === undefined ? null : req.body.groups_obids;
         if(groups !== null) {
             groups.map((i) => {
@@ -67,29 +72,41 @@ router.post('/',async function(req, res) {
 router.put('/:id',async function(req, res) {
     try {
         let group = null
-        req.body.groups_obids.map(async (i) => {
-            await api_v1_group_group.findOneAndUpdate({_id:i},{ $pull: { user_obids : req.body._id} }, {new: true }).exec()
-        })
-        const groups = req.body.clicked_groups === undefined ? null : req.body.clicked_groups;
-        if(groups[0] !== undefined) {
-            groups.map((i) => {
-                api_v1_group_group.findByIdAndUpdate(i ,{ $addToSet: { user_obids : req.body._id} }, {new: true }).exec()//groups의 children에 add의 _id값 push
-            })
+        req.body.avatar_file_checksum = crypto.createHash('sha256').update(req.body.avatar_file).digest('base64');
+        let overlap_check = await api_v1_person_user.findOne({avatar_file_checksum : req.body.avatar_file_checksum})
+        if(overlap_check) {
+            req.body.avatar_file_url = overlap_check.avatar_file_url
         } else {
-            if(await api_v1_group_group.findOne({name:'undefined',type:req.body.type}) === null) {
-                group = new api_v1_group_group({name:'undefined',type:req.body.type,user_obids:[req.body._id]})
-                group.save();
-            } else {
-                await api_v1_group_group.findOneAndUpdate({name:'undefined',type:req.body.type},{ $addToSet: { user_obids : req.body._id} }, {new: true }).exec()
-            }
-            group = group === null ? await api_v1_group_group.findOne({name:'undefined',type:req.body.type}) : group
-            req.body.clicked_groups = [group._id];
+            fs.writeFile('image/'+req.body._id+'profile.jpg',req.body.avatar_file,'base64',() => {})
+            req.body.avatar_file_url = 'http://172.16.135.89:3000/image/'+req.body._id+'profile.jpg';
         }
+        if(String(req.body.groups_obids) !== String(req.body.clicked_groups)) {
+            console.log(String(req.body.groups_obids) !== String(req.body.clicked_groups))
+            req.body.groups_obids.map(async (i) => {
+                await api_v1_group_group.findOneAndUpdate({_id:i},{ $pull: { user_obids : req.body._id} }, {new: true }).exec()
+            })
+            const groups = req.body.clicked_groups === undefined ? null : req.body.clicked_groups;
+            if(groups[0] !== undefined) {
+                groups.map(async (i) => {
+                    await api_v1_group_group.findByIdAndUpdate(i ,{ $addToSet: { user_obids : req.body._id} }, {new: true }).exec()//groups의 children에 add의 _id값 push
+                })
+            } else {
+                if(await api_v1_group_group.findOne({name:'undefined',type:req.body.type}) === null) {
+                    group = new api_v1_group_group({name:'undefined',type:req.body.type,user_obids:[req.body._id]})
+                    group.save();
+                } else {
+                    await api_v1_group_group.findOneAndUpdate({name:'undefined',type:req.body.type},{ $addToSet: { user_obids : req.body._id} }, {new: true }).exec()
+                }
+                group = group === null ? await api_v1_group_group.findOne({name:'undefined',type:req.body.type}) : group
+                req.body.clicked_groups = [group._id];
+            }            
+        }
+
         const id = req.params === undefined ? req.id : req.params.id
         const update_data = req.body === undefined ? req : req.body
         update_data.groups_obids = req.body.clicked_groups;
-        update.update_at = moment().format('YYYY-MM-DD HH:mm:ss');
-        update.update_ut = Date.now;
+        update_data.update_at = moment().format('YYYY-MM-DD HH:mm:ss');
+        update_data.update_ut = Date.now;
         const update = await api_v1_person_user.findByIdAndUpdate(id, update_data, {new: true })
         res.send(update);
     } catch (err) {

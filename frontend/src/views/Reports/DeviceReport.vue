@@ -161,25 +161,30 @@
     },
     methods: {
       clickOK(){
-        // if(this.dates.length === 1) {
-        //   this.api_v1_person_every_type_users = this.origin.filter((i) => {            
-        //     if(i.create_at.split(' ')[0] === this.dates[0] || (i.update_at !== undefined&& i.update_at.split(' ')[0] === this.dates[0])){
-        //       return i;
-        //     }
-        //   });
-        // } else {
+        let temp = [];
+        if(this.dates.length === 1) {
+          console.log(this.glogs);
+          temp = this.glogs.filter((i) => {            
+            return i.regdate === this.dates[0]
+          });
+        } 
+        // else {
         //   if(this.dates[0] > this.dates[1]) {
         //     let temp = this.dates[0];
         //     this.dates[0] = this.dates[1];
         //     this.dates[1] = temp;
         //   }
-        //   this.api_v1_person_every_type_users = this.origin.filter((i) => {
+        //   this.glogs = this.origin.filter((i) => {
         //     if((i.create_at.split(' ')[0] >= this.dates[0] && i.create_at.split(' ')[0] <= this.dates[1]) 
         //         || (i.update_at !=undefined && (i.update_at.split(' ')[0] >= this.dates[0] && i.update_at.split(' ')[0] <= this.dates[1]))){
         //       return i;
         //     }
         //   });
         // }
+        console.log(temp);
+        // this.glogs.filter((i) => {
+        //   if(i.)
+        // })
         this.chartDates = this.dates
         this.$refs.menu.save(this.dates)
       },
@@ -219,6 +224,12 @@
         isEmpty : true,
         tabs : ['방문자 통계','단말기 통계'],
         tab : null,
+        originChartData: [
+          ['type', 'count'],
+          ['CPU 과다 사용',     0],
+          ['메모리 과다 사용',      0],
+          ['연결 끊김',  0],
+        ],
         menu : false,
         dates: [this.getFormatDate(new Date(),-1), this.getFormatDate(new Date(),-1)],
         chartDates:[this.getFormatDate(new Date(),-1), this.getFormatDate(new Date(),-1)],

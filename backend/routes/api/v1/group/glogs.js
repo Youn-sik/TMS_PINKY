@@ -11,7 +11,6 @@ router.get('/',async function(req, res) {
         } else {
             get_data = await api_v1_group_glogs.find();
         }
-        console.log('test',get_data);
         res.send(get_data)
     } catch (err) {
         throw boom.boomify(err)

@@ -141,7 +141,7 @@
                     <div style="width:80%; margin:0 auto;">
                       <base64-upload class="user"
                       style="width"
-                      :imageSrc="image ? image : 'http://172.16.135.89:3000/'+this.userSelected[0].avatar_file"
+                      :imageSrc="image ? image : this.userSelected[0].avatar_file"
                       border="left"
                       @change="onChangeImage"></base64-upload>
                     </div>
@@ -183,7 +183,7 @@
 
 
 <script> 
-  import Base64Upload from 'vue-base64-upload'
+  import Base64Upload from '../../components/Base64Upload'
   import axios from "axios";
   export default {
     computed: {
@@ -240,6 +240,7 @@
           return false;
         }
         this.api_v1_person_users = newVal[0].user_obids;
+        console.log(this.api_v1_person_users);
       }
     },
     created () {
@@ -339,6 +340,18 @@
       }
       */
     },
+    arrayUnique(array) {
+      var a = array.concat();
+      for(var i=0; i<a.length; ++i) {
+          for(var j=i+1; j<a.length; ++j) {
+              if(a[i]._id === a[j]._id) {
+                  a.splice(j--, 1);
+                  a.splice(i--, 1);
+              }
+          }
+      }
+      return a;
+    },
     deleteUser () {
       if(this.userSelected.length === 1 ){
         axios.delete('http://172.16.135.89:3000/user/'+this.userSelected[0]._id,{
@@ -346,7 +359,10 @@
             type:1,
             _id:this.userSelected[0]._id
           }
-        }).then(() => {
+        }).then((res) => {
+            this.api_v1_person_users = this.api_v1_person_users.filter((i) => {
+              return i._id !== res.data._id
+            })
             axios.get('http://172.16.135.89:3000/group?type=1')
               .then((res) => {
                 res.data.map((i) => {//user_obids에 있는 데이터 children으로 옮기기
@@ -368,11 +384,7 @@
             selectedData:this.userSelected
           }
         }).then((res) => {
-          this.api_v1_person_users = this.api_v1_person_users.filter((j) => {
-            return res.data.map((i) => {
-              return j._id !== i._id;
-            })
-          })
+          this.api_v1_person_users = this.arrayUnique(this.api_v1_person_users.concat(res.data));
           axios.get('http://172.16.135.89:3000/group?type=1')
             .then((res) => {
               res.data.map((i) => {//user_obids에 있는 데이터 children으로 옮기기
@@ -385,7 +397,6 @@
               }
               this.api_v1_person_users = this.api_v1_person_users.filter((i) => !res.data.includes(i));
               this.userSelected = [];
-              console.log('test')
             })
           })
       } else {
@@ -423,15 +434,23 @@
         _id : this.userSelected[0]._id,
         name : this.name,
         avatar_file : this.image,
+        avatar_file_checksum : this.userSelected[0].avatar_file_checksum,
         updated_at : this.getFormatDate(new Date()),
         groups_obids : this.userSelected[0].groups_obids,
         clicked_groups : this.updateActive,
         type : 1
       }).then((res) => {
         let index = this.api_v1_person_users.findIndex(x => x._id == res.data._id)
-        this.api_v1_person_users[index].name = res.data.name;
-        this.api_v1_person_users[index].avatar_file = res.data.avatar_file;
-        this.api_v1_person_users[index].updated_at = res.data.updated_at;
+        // this.api_v1_person_users[index].name = res.data.name;
+        // this.api_v1_person_users[index].avatar_file = res.data.avatar_file;
+        // this.api_v1_person_users[index].avatar_file_url = res.data.avatar_file_url;
+        // this.api_v1_person_users[index].avatar_file_checksum = res.data.avatar_file_checksum;
+        // this.api_v1_person_users[index].updated_at = res.data.updated_at;
+        // this.selectedUser[0] = res.data;
+        console.log(res.data);
+        this.$set(this.api_v1_person_users,index,res.data);
+        // this.$set(this.api_v1_person_users[index],'avatar_file_url',res.data.avatar_file_url);
+        console.log(this.api_v1_person_users[index]);
         axios.get('http://172.16.135.89:3000/group?type=1')
           .then((res) => {
             res.data.map((i) => {//user_obids에 있는 데이터 children으로 옮기기

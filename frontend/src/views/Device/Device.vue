@@ -191,13 +191,13 @@
                           </v-menu>
                         </v-col>
                       </v-row>
-                      <v-btn color="primary" class="mb-3">캡쳐 시작</v-btn><br/>
-                      <v-btn color="primary" class="mb-3">캡쳐 종료</v-btn><br/>
-                      <v-btn color="primary" class="mb-3">sdcard 삭제</v-btn><br/>
-                      <v-btn color="primary" class="mb-3">sdcard 사용 하지 않는 파일 삭제</v-btn><br/>
-                      <v-btn color="primary" class="mb-3">재부팅</v-btn><br/>
-                      <v-btn color="primary" class="mb-3">디바이스 컴텐츠 리스트 요청</v-btn><br/>
-                      <v-btn color="primary" class="mb-3">시스템 초기화</v-btn><br/>
+                      <v-btn color="primary" class="mb-3" @click="controlCaptureStart">캡쳐 시작</v-btn><br/>
+                      <v-btn color="primary" class="mb-3" @click="controlCaptureEnd">캡쳐 종료</v-btn><br/>
+                      <v-btn color="primary" class="mb-3" @click="controlSDcardDel">sdcard 삭제</v-btn><br/>
+                      <v-btn color="primary" class="mb-3" @click="controlSDcardPartDel">sdcard 사용 하지 않는 파일 삭제</v-btn><br/>
+                      <v-btn color="primary" class="mb-3" @click="controlDeviceReboot">재부팅</v-btn><br/>
+                      <v-btn color="primary" class="mb-3" @click="controlContentsReq">디바이스 컴텐츠 리스트 요청</v-btn><br/>
+                      <v-btn color="primary" class="mb-3" @click="controlDeviceReset">시스템 초기화</v-btn><br/>
                     </v-card>
                   </v-row>
                 </v-card-text>
@@ -354,50 +354,6 @@
                         </v-col>
                       </v-row>
                     </v-card-text>
-                    <v-card-text v-else>
-                      <v-col class="d-flex">
-                        스크린샷 설정
-                      </v-col>
-                      <v-row justify="center">
-                        <v-col cols="8">
-                          
-                        </v-col>
-                      </v-row>
-                      <v-divider></v-divider>
-                      <v-col class="d-flex">
-                        Status Info
-                      </v-col>
-                      <v-row justify="center">
-                        <v-col cols="8">
-                          <p>Door Status:</p>
-                          <p>Thermal Image Status:</p>
-                        </v-col>
-                      </v-row>
-                      <v-divider></v-divider>
-                      <v-col class="d-flex">
-                        App Information
-                      </v-col>
-                      <v-row justify="center">
-                        <v-col cols="8">
-                          <p>App package name:</p>
-                          <p>App version name:</p>
-                          <p>App version code:</p>
-                        </v-col>
-                      </v-row>
-                      <v-divider></v-divider>
-                      <v-col class="d-flex">
-                        Firmware Information
-                      </v-col>
-                      <v-row justify="center">
-                        <v-col cols="8">
-                          <p>Product model:</p>
-                          <p>Product Serial Number:</p>
-                          <p>Firmware version:</p>
-                          <p>Manufacturer:</p>
-                          <p>Hardware version code:</p>
-                        </v-col>
-                      </v-row>
-                    </v-card-text>
                   </v-card>
                 </v-tab-item>
               </v-tabs-items>
@@ -417,10 +373,8 @@
   import mqtt from 'mqtt'
   export default {
     created () {
-      this.$mqtt.on('connect',() => {
-        console.log('MQTT was Connected...');
-      })
       this.$mqtt.on('message', (topic,message) => {
+        //TO DO 조건문으로 필요한 topic만 받기
         console.log(topic,new TextDecoder("utf-8").decode(message))
       })
       this.$mqtt.subscribe('/control/log/result/+')
@@ -467,8 +421,7 @@
         switch:null,
         deviceRadio:'gateway',
         tabs: [
-          "단말 정보",
-          "단말 설정"
+          "단말 정보"
         ],
         model: 1,
         expanded: [],
@@ -487,28 +440,28 @@
     },
     methods: {
       controlDeviceLog () {
-        this.$mqtt.publish('/control/log/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number});
+        this.$mqtt.publish('/control/log/'+'KSU0000000',{stb_sn:'KSU0000000'});
       },
       controlCaptureStart () {
-        this.$mqtt.publish('/control/capture/start/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number,"capture_time":this.time,"capture_size":"320*240", "capture_status":"Y"});
+        this.$mqtt.publish('/control/capture/start/'+'KSU0000000',{stb_sn:'KSU0000000',"capture_time":this.time,"capture_size":"320*240", "capture_status":"Y"});
       },
       controlCaptureEnd () {
-        this.$mqtt.publish('/control/capture/end/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number,"stb_id":"", "capture_time":this.time,"capture_size":"320*240", "capture_status":"N"});
+        this.$mqtt.publish('/control/capture/end/'+'KSU0000000',{stb_sn:'KSU0000000',"stb_id":"", "capture_time":this.time,"capture_size":"320*240", "capture_status":"N"});
       },
       controlSDcardDel () {
-        this.$mqtt.publish('/control/sdcard/delete/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number});
+        this.$mqtt.publish('/control/sdcard/delete/'+'KSU0000000',{stb_sn:'KSU0000000'});
       },
       controlSDcardPartDel () {
-        this.$mqtt.publish('/control/sdcard/part/delete/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number});
+        this.$mqtt.publish('/control/sdcard/part/delete/'+'KSU0000000',{stb_sn:'KSU0000000'});
       },
       controlDeviceReboot () {
-        this.$mqtt.publish('/control/reboot/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number, "message":"reboot"});
+        this.$mqtt.publish('/control/reboot/'+'KSU0000000',{stb_sn:'KSU0000000', "message":"reboot"});
       },
       controlContentsReq () {
-        this.$mqtt.publish('/control/get_device_file_list/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number, "message":"get_device_file_list"});
+        this.$mqtt.publish('/control/get_device_file_list/'+'KSU0000000',{stb_sn:'KSU0000000', "message":"get_device_file_list"});
       },
       controlDeviceReset () {
-        this.$mqtt.publish('/control/reset/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number});
+        this.$mqtt.publish('/control/reset/'+'KSU0000000',{stb_sn:'KSU0000000'});
       },
       updateDevice () {
         axios.put('http://172.16.135.89:3000/camera/'+this.deviceSelected[0]._id,{

@@ -76,7 +76,7 @@
 
 
 <script> 
-  import Base64Upload from 'vue-base64-upload'
+  import Base64Upload from '../../components/Base64Upload'
   import axios from "axios";
   export default {
     computed: {
