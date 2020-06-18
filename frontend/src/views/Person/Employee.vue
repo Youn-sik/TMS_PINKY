@@ -188,7 +188,7 @@
         })
     },
   methods: {
-    async cancelModal() {
+    cancelModal() {
       this.userUpdateModal = false;
       setTimeout(() => {
         this.image = null; 

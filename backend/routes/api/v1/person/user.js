@@ -3,9 +3,12 @@ var router = express.Router();
 const boom = require('boom')
 const api_v1_person_user = require('../../../../models/api/v1/person/user')
 const api_v1_group_group = require('../../../../models/api/v1/group/group')
-const moment = require('moment');
+const Access = require('../../../../models/api/v1/person/access')
 const crypto = require('crypto');
 var fs = require('fs')
+var moment = require('moment');
+require('moment-timezone'); 
+moment.tz.setDefault("Asia/Seoul"); 
 
 router.get('/',async function(req, res) {
     try {
@@ -37,6 +40,12 @@ router.get('/:id',async function(req, res) {
 
 router.post('/',async function(req, res) {
     try {
+        if(req.query.type === 'stranger') {
+            let temp = await Access.findOne({_id : req.body.stranger_id})
+            req.body.avatar_file = temp.avatar_file;
+            req.body.avatar_contraction_data = temp.avatar_contraction_data;
+            Access.update({avatar_contraction_data : temp.avatar_contraction_data},{$set:{avatar_type:1}},{"multi": true},(err,result) => {})
+        }
         let group = null
         let add = new api_v1_person_user(req.body)
         add.avatar_file_checksum = crypto.createHash('sha256').update(req.body.avatar_file).digest('base64');
@@ -62,6 +71,7 @@ router.post('/',async function(req, res) {
             group = group === null ? await api_v1_group_group.findOne({name:'undefined',type:req.body.type}) : group
             add.groups_obids = [group._id];
         }
+
         add.save();
         res.send(add);
     } catch (err) {
@@ -81,7 +91,6 @@ router.put('/:id',async function(req, res) {
             req.body.avatar_file_url = 'http://172.16.135.89:3000/image/'+req.body._id+'profile.jpg';
         }
         if(String(req.body.groups_obids) !== String(req.body.clicked_groups)) {
-            console.log(String(req.body.groups_obids) !== String(req.body.clicked_groups))
             req.body.groups_obids.map(async (i) => {
                 await api_v1_group_group.findOneAndUpdate({_id:i},{ $pull: { user_obids : req.body._id} }, {new: true }).exec()
             })
@@ -107,7 +116,7 @@ router.put('/:id',async function(req, res) {
         update_data.groups_obids = req.body.clicked_groups;
         update_data.update_at = moment().format('YYYY-MM-DD HH:mm:ss');
         update_data.update_ut = Date.now;
-        const update = await api_v1_person_user.findByIdAndUpdate(id, update_data, {new: true })
+        const update = await api_v1_person_user.findOneAndUpdate({_id:id}, {$set:update_data}, {new: true })
         res.send(update);
     } catch (err) {
         throw boom.boomify(err)
@@ -119,7 +128,14 @@ router.delete('/:id',async function(req, res) {
         try {
             await api_v1_group_group.updateMany({type:req.body.type},{ $pull: { user_obids : req.body._id} }, {new: true }).exec();
             const id = req.params === undefined ? req.id : req.params.id
-            const delete_data = await api_v1_person_user.findByIdAndRemove(id)
+            const delete_data = await api_v1_person_user.findByIdAndUpdate(id,{
+                groups_obids:[],
+                avatar_file:null,
+                avatar_contraction_data:null,
+                type:10,
+                update_at:moment().format('YYYY-MM-DD HH:mm:ss'),
+                update_ut:Date.now
+            }) //type : 10 = deleted
             res.send(delete_data);
         } catch (err) {
             throw boom.boomify(err)
@@ -127,11 +143,20 @@ router.delete('/:id',async function(req, res) {
     } else {
         try {
             let deletedList = [];
-            req.body.selectedData.map(async (i) => {
+            req.body.selectedData.map(async (i,index) => {
                 await api_v1_group_group.updateMany({type:i.type},{ $pull: { user_obids : i._id} }, {new: true }).exec();
-                deletedList.push(await api_v1_person_user.findByIdAndRemove(i._id));
+                deletedList.push(await api_v1_person_user.findByIdAndUpdate(i._id,{
+                    groups_obids:[],
+                    avatar_file:null,
+                    avatar_contraction_data:null,
+                    type:10,
+                    update_at:moment().format('YYYY-MM-DD HH:mm:ss'),
+                    update_ut:Date.now()
+                }));
+                if(req.body.selectedData.length-1 === index) {
+                    res.send(deletedList)
+                }
             })
-            res.send(deletedList);
         } catch (err) {
             throw boom.boomify(err)
         }

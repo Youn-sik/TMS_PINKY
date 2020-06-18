@@ -3,7 +3,9 @@ const path = require('path');
 const site_info_json = fs.readFileSync(path.join(__dirname, "./cloud40.json"));
 const site = JSON.parse(site_info_json);
 const imageInfo = require('image-info');
-const moment = require('moment');
+var moment = require('moment');
+require('moment-timezone'); 
+moment.tz.setDefault("Asia/Seoul"); 
 const mkdirp = require('mkdirp');
 const client = require('./mqtt_load');
 
@@ -58,7 +60,7 @@ mongodb.once('open', function () {
     console.log('mongodb open');
 });
 
-mongoose.connect('mongodb://' + site.mongodb_host + ':27017/' + site.mongodb_database + '?poolSize=4', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb://' + site.mongodb_host + ':27017/' + site.mongodb_database + '?poolSize=4', { useNewUrlParser: true, useUnifiedTopology: true ,useCreateIndex: true});
 
 const Access = require('./schema/access_Schema');
 const Camera = require('./schema/camera_Schema');
@@ -312,7 +314,20 @@ module.exports = {
         try {
             let insert_array = [];
             let camera = await Camera.findOne( { serial_number : json.stb_sn });
-
+            let todayStatistics = await Statistics.findOne()
+                .where('camera_obid').equals(camera._id)
+                .where('reference_date').equals(moment().format('YYYY-MM-DD'));
+            if(todayStatistics === null) {
+                todayStatistics = new Statistics({
+                    camera_obid : camera._id,
+                    reference_date: moment().format('YYYY-MM-DD')
+                })
+            }
+            let empCnt = 0;
+            let visitorCnt = 0;
+            let blackCnt = 0;
+            let strangerCnt = 0;
+            // Statistics.findOne()
             json.values.forEach(function(element){
                 let folder_date_path = "/uploads/accesss/temp/" + moment().format('YYYYMMDD');
                 let file_name = json.stb_sn + "_" + moment().format('YYYYMMDDHHmmss') + ".png";
@@ -320,17 +335,28 @@ module.exports = {
                 let file_path = site.base_server_document + folder_date_path + "/" + json.stb_sn + "/";
                 let upload_url = site.base_local_url+ ':3000' + folder_date_path + "/" + json.stb_sn + "/" + file_name;
                 let buff = Buffer.from(element.avatar_file, 'base64');
+
+                if(element.avatar_type === 1) {
+                    empCnt++;
+                } else if(element.avatar_type === 2) {
+                    visitorCnt++;
+                } else if(element.avatar_type === 3) {
+                    strangerCnt++;
+                } else if(element.avatar_type === 4) {
+                    blackCnt++;
+                }
+                
+                User.updateOne({avatar_contraction_data : element.avatar_contraction_data}, {$inc:{count : 1}})
                 
                 mkdirp.sync(file_path);
-                
                 fs.promises.writeFile(file_path + file_name, buff, 'utf-8')
                 if(element.avatar_obid === ""){
                     insert_data = {
                         avatar_file : element.avatar_file,
                         avatar_file_checksum : element.avatar_file_checksum,
+                        avatar_type : element.avatar_type,
                         avatar_contraction_data : element.avatar_contraction_data,
                         avatar_file_url : upload_url,
-                        avatar_type : element.avatar_type,
                         avatar_temperature : element.avatar_temperature,
                         access_time : element.access_time
                     };
@@ -338,21 +364,35 @@ module.exports = {
                     insert_data = {
                         avatar_file : element.avatar_file,
                         avatar_file_checksum : element.avatar_file_checksum,
+                        avatar_type : element.avatar_type,
                         avatar_contraction_data : element.avatar_contraction_data,
                         avatar_file_url : upload_url,
-                        avatar_type : element.avatar_type,
                         user_obid : element.avatar_obid, 
                         avatar_temperature : element.avatar_temperature,
                         access_time : element.access_time
                     };
                 }
-                
                 //new mongoose.Types.ObjectId()
                 insert_array.push(insert_data);
             })
-
-            await Access.insertMany(insert_array)
             
+            let accessData = await Access.insertMany(insert_array)
+
+            Statistics.findIdAndUpdate(todayStatistics._id,{ 
+                $inc: { 
+                    all_count: empCnt+visitorCnt+strangerCnt+blackCnt,
+                    employee_count : empCnt,
+                    guest_count : visitorCnt,
+                    stranger_count : strangerCnt,
+                    blacklist_count : blackCnt,
+                }
+            },
+            {
+                $push: { 
+                    statistics_obids: accessData[0] 
+                } 
+            })
+
             send_data = {
                 stb_sn: json.stb_sn
             };

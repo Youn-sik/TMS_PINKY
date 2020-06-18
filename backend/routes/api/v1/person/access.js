@@ -5,7 +5,26 @@ const api_v1_person_access = require('../../../../models/api/v1/person/access')
 
 router.get('/',async function(req, res) {
     try {
-        const get_data = await api_v1_person_access.find().populate('user_obid')
+        let get_data;
+        if(req.query.type === '3') {
+            get_data = await api_v1_person_access.find({avatar_type:3}).sort('-access_time').select('-avatar_file -avatar_contraction_data')
+        } else if(req.query.type === 'todayStatistics') {
+            get_data = await api_v1_person_access.aggregate([
+                {
+                    $group: {
+                        _id: {"type":"$avatar_type"},
+                        count: { $sum: 1 }
+                    }
+                },
+                {
+                    $sort: {
+                        lastDate : -1
+                    }   
+                }
+            ])
+        } else {
+            get_data = await api_v1_person_access.find().sort('-access_time').select('-avatar_file -avatar_contraction_data')
+        }
         res.send(get_data)
     } catch (err) {
         throw boom.boomify(err)

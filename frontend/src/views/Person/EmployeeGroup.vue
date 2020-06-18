@@ -124,20 +124,7 @@
                     </v-treeview>
                   </v-col>
                   <v-divider vertical></v-divider>
-                  <v-col cols="6">
-                    <v-text-field
-                      v-model="name"
-                      label="이름"
-                      :placeholder="userSelected[0].name"
-                      class="ml-2 mr-2"
-                    ></v-text-field>
-                    <!-- <v-text-field
-                      v-model="company"
-                      label="Company"
-                      :placeholder="userSelected[0].company"
-                      :counter="45"
-                      class="ml-2 mr-2"
-                    ></v-text-field> -->
+                  <v-col cols="6" class="ml-8">
                     <div style="width:80%; margin:0 auto;">
                       <base64-upload class="user"
                       style="width"
@@ -145,12 +132,33 @@
                       border="left"
                       @change="onChangeImage"></base64-upload>
                     </div>
+                    <v-text-field
+                      v-model="name"
+                      label="이름"
+                      required
+                    ></v-text-field>
+                    <v-text-field
+                      v-model="mobile"
+                      :label="'휴대폰 번호' "
+                      required
+                    ></v-text-field>
+                    <v-text-field
+                      v-model="email"
+                      label="이메일"
+                      type="email"
+                      :rules="emailRules"
+                      required
+                    ></v-text-field>
+                    <v-select 
+                    :items="[{text:'남자',value:1},{text:'여자',value:2}]"
+                    v-model="gender">
+                    </v-select>
                   </v-col>
                 </v-col>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="green darken-1" text @click="updateUser">업데이트</v-btn>
-                  <v-btn color="green darken-1" text @click="cancelModal">취소</v-btn>
+                  <v-btn color="primary darken-1" text @click="updateUser">업데이트</v-btn>
+                  <v-btn color="primary darken-1" text @click="cancelModal">취소</v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
@@ -207,6 +215,15 @@
       userUpdateModal: false,
       dialog: false,
       name:null,
+      email:'',
+      emailRules: [
+        v => (/.+@.+\..+/.test(v) || v === '') || '이메일 형식으로 입력해주세요.',
+      ],
+      nameRules: [
+        v =>!!v || '필수 입력 정보 입니다.',
+      ],
+      mobile:'',
+      gender:1,
       groupName:null,
       avatar_file:null,
       image : null,
@@ -224,7 +241,8 @@
             align: 'start',
             value: 'name',
           },
-          { text: '생성일', value: 'created_at' },
+          { text: '생성일', value: 'create_at' },
+          { text: '카운트', value: 'count' },
         ],
       api_v1_group_group : [],
       open: [1, 2],
@@ -240,7 +258,6 @@
           return false;
         }
         this.api_v1_person_users = newVal[0].user_obids;
-        console.log(this.api_v1_person_users);
       }
     },
     created () {
@@ -354,15 +371,38 @@
     },
     deleteUser () {
       if(this.userSelected.length === 1 ){
-        axios.delete('http://172.16.135.89:3000/user/'+this.userSelected[0]._id,{
-          data:{
-            type:1,
-            _id:this.userSelected[0]._id
-          }
-        }).then((res) => {
-            this.api_v1_person_users = this.api_v1_person_users.filter((i) => {
-              return i._id !== res.data._id
+        if(confirm('정말로 삭제 하시겠습니까?')) {
+          axios.delete('http://172.16.135.89:3000/user/'+this.userSelected[0]._id,{
+            data:{
+              type:1,
+              _id:this.userSelected[0]._id
+            }
+          }).then((res) => {
+              this.api_v1_person_users = this.api_v1_person_users.filter((i) => {
+                return i._id !== res.data._id
+              })
+              axios.get('http://172.16.135.89:3000/group?type=1')
+                .then((res) => {
+                  res.data.map((i) => {//user_obids에 있는 데이터 children으로 옮기기
+                    this.moveUserIds(i);
+                  })
+                  let index = res.data.findIndex(i => i.name == "undefined");
+                  if(index !== -1) {
+                    let undefinedGroup = res.data.splice(index,1);
+                    res.data.push(undefinedGroup[0]);
+                  }
+                  this.userSelected = [];
+                  this.api_v1_group_group = res.data;
+                })
             })
+        } else if(this.userSelected.length > 1) {
+          axios.delete('http://172.16.135.89:3000/user/'+this.userSelected[0]._id,{
+            data:{
+              type:1,
+              selectedData:this.userSelected
+            }
+          }).then((res) => {
+            this.api_v1_person_users = this.arrayUnique(this.api_v1_person_users.concat(res.data));
             axios.get('http://172.16.135.89:3000/group?type=1')
               .then((res) => {
                 res.data.map((i) => {//user_obids에 있는 데이터 children으로 옮기기
@@ -373,32 +413,11 @@
                   let undefinedGroup = res.data.splice(index,1);
                   res.data.push(undefinedGroup[0]);
                 }
-                this.userSelected = [];
                 this.api_v1_group_group = res.data;
+                this.userSelected = [];
               })
-          })
-      } else if(this.userSelected.length > 1) {
-        axios.delete('http://172.16.135.89:3000/user/'+this.userSelected[0]._id,{
-          data:{
-            type:1,
-            selectedData:this.userSelected
-          }
-        }).then((res) => {
-          this.api_v1_person_users = this.arrayUnique(this.api_v1_person_users.concat(res.data));
-          axios.get('http://172.16.135.89:3000/group?type=1')
-            .then((res) => {
-              res.data.map((i) => {//user_obids에 있는 데이터 children으로 옮기기
-                this.moveUserIds(i);
-              })
-              let index = res.data.findIndex(i => i.name == "undefined");
-              if(index !== -1) {
-                let undefinedGroup = res.data.splice(index,1);
-                res.data.push(undefinedGroup[0]);
-              }
-              this.api_v1_person_users = this.api_v1_person_users.filter((i) => !res.data.includes(i));
-              this.userSelected = [];
             })
-          })
+        }
       } else {
         alert("유저를 선택해 주세요")
       }
@@ -424,22 +443,25 @@
         return  year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
     },
     updateUser () {
-      if(!this.name){
-        this.name = this.userSelected[0].name;
-      }
-      if(!this.image) {
-        this.image = this.userSelected[0].avatar_file;
-      }
+      // if(!this.name){
+      //   this.name = this.userSelected[0].name;
+      // }
+      // if(!this.image) {
+      //   this.image = this.userSelected[0].avatar_file;
+      // }
       axios.put('http://172.16.135.89:3000/user/'+this.userSelected[0]._id,{
         _id : this.userSelected[0]._id,
-        name : this.name,
-        avatar_file : this.image,
+        name : this.name === '' || this.name === null? undefined : this.name,
+        email : this.email === '' || this.email === null? undefined : this.email,
+        mobile : this.mobile === '' || this.mobile === null? undefined : this.mobile,
+        avatar_file : this.image === null ? this.userSelected[0].avatar_file : this.image,
         avatar_file_checksum : this.userSelected[0].avatar_file_checksum,
         updated_at : this.getFormatDate(new Date()),
         groups_obids : this.userSelected[0].groups_obids,
         clicked_groups : this.updateActive,
         type : 1
       }).then((res) => {
+        alert('업데이트 되었습니다')
         let index = this.api_v1_person_users.findIndex(x => x._id == res.data._id)
         // this.api_v1_person_users[index].name = res.data.name;
         // this.api_v1_person_users[index].avatar_file = res.data.avatar_file;
@@ -447,10 +469,10 @@
         // this.api_v1_person_users[index].avatar_file_checksum = res.data.avatar_file_checksum;
         // this.api_v1_person_users[index].updated_at = res.data.updated_at;
         // this.selectedUser[0] = res.data;
-        console.log(res.data);
+        // console.log(res.data);
         this.$set(this.api_v1_person_users,index,res.data);
         // this.$set(this.api_v1_person_users[index],'avatar_file_url',res.data.avatar_file_url);
-        console.log(this.api_v1_person_users[index]);
+        // console.log(this.api_v1_person_users[index]);
         axios.get('http://172.16.135.89:3000/group?type=1')
           .then((res) => {
             res.data.map((i) => {//user_obids에 있는 데이터 children으로 옮기기

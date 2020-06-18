@@ -20,19 +20,23 @@
                     <v-list-item three-line>
                         <v-list-item-content>
                             <div class="overline mb-3">총합</div>
-                            <v-list-item-title class="headline mb-1">34</v-list-item-title>
+                            <v-list-item-title class="headline mb-1">{{sum}}</v-list-item-title>
                         </v-list-item-content>
                         <v-list-item-content>
                             <div class="overline mb-3">사원</div>
-                            <v-list-item-title class="headline mb-1">13</v-list-item-title>
+                            <v-list-item-title class="headline mb-1">{{employee}}</v-list-item-title>
                         </v-list-item-content>
                         <v-list-item-content>
                             <div class="overline mb-3">방문자</div>
-                            <v-list-item-title class="headline mb-1">14</v-list-item-title>
+                            <v-list-item-title class="headline mb-1">{{visitor}}</v-list-item-title>
                         </v-list-item-content>
                         <v-list-item-content>
                             <div class="overline mb-3">미등록자</div>
-                            <v-list-item-title class="headline mb-1">7</v-list-item-title>
+                            <v-list-item-title class="headline mb-1">{{stranger}}</v-list-item-title>
+                        </v-list-item-content>
+                        <v-list-item-content>
+                            <div class="overline mb-3">블랙리스트</div>
+                            <v-list-item-title class="headline mb-1">{{blacklist}}</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
                 </v-card>
@@ -59,7 +63,7 @@
                         <v-list-item-content>
                             <GChart
                                 type="PieChart"
-                                :data="chartData"
+                                :data="deviceStatus"
                                 :options="devicesChartOptions"
                                 style="width: 250px; height: 250px;"
                             />
@@ -67,7 +71,7 @@
                         <v-divider vertical class="mr-4"></v-divider>
                         
                         <v-list-item-content>
-                            <div class="devicecondition">Subheader</div>
+                            <div class="devicecondition">단말기 상태</div>
                             <v-container
                             style="max-height: 220px"
                             class="overflow-y-auto"
@@ -86,11 +90,10 @@
                                             <v-list-item-content>
                                                 <v-list-item-title v-text="item.name"></v-list-item-title>
                                             </v-list-item-content>
-                                            <v-list-item-content>
-                                                <v-list-item-title v-text="item.on"></v-list-item-title>
-                                            </v-list-item-content>
-                                             <v-list-item-content>
-                                                <v-list-item-title v-text="item.off"></v-list-item-title>
+                                            <!-- <v-spacer></v-spacer> -->
+                                            <v-list-item-content style="text-align: center">
+                                                <v-icon v-text="'power'" v-if="item.status === 'Y'"></v-icon>
+                                                <v-icon v-text="'power_off'" v-else></v-icon>
                                             </v-list-item-content>
                                         </v-list-item>
                                     </v-list>
@@ -195,7 +198,31 @@
 </template>
 <script>
 import { GChart } from 'vue-google-charts'
+import axios from 'axios'
 export default {
+    created () {
+        axios.get('http://172.16.135.89:3000/access?type=todayStatistics')
+            .then((res) => {
+                res.data.map((i) => {
+                    this.sum += i.count;
+                    if(i._id.type === 1) this.employee = i.count
+                    else if(i._id.type === 2) this.visitor = i.count
+                    else if(i._id.type === 3) this.stranger = i.count
+                    else if(i._id.type === 4) this.blacklist = i.count
+                })
+            })
+        axios.get('http://172.16.135.89:3000/camera')
+            .then((res) => {
+                this.deviceConditionData = res.data;
+                res.data.map((i) => {
+                    if(i.status === "Y") {
+                        this.deviceStatus[1][1]++;
+                    } else {
+                        this.deviceStatus[2][1]++;
+                    }
+                })
+            })      
+    },
     computed: {
       dateRangeText () {
         return this.dates.join(' ~ ')
@@ -204,12 +231,45 @@ export default {
     components: {
         GChart
     },
+    methods: {
+        // onChartReady (chart) {
+        //     let data = [
+        //         ["상태",'카운트'],
+        //         ['ON',0],
+        //         ['OFF',0]
+        //     ]
+        //     let option = {
+        //         title : "단말기 상태 통계",
+        //         legend :'none',
+        //         pieSliceText:'label',
+        //         chartArea: {'width': '100%', 'height': '80%'},
+        //         titleTextStyle: {
+        //             fontSize: "13",
+        //             bold: false,
+        //             italic: false
+        //         }
+        //     }
+        //     this.deviceConditionData.map((i) => {
+        //         if(i.status === "Y") {
+        //             data[1][1]++;
+        //         } else {
+        //             data[2][1]++;
+        //         }
+        //     })
+        //     chart.draw(data,option)
+        // }
+    },
     data () {
       return {
         picker: new Date().toISOString().substr(0, 10),
         dates:[],
         nowSelected:"week",
         dayMenu: false,
+        sum : 0,
+        employee : 0,
+        visitor : 0,
+        stranger : 0,
+        blacklist : 0,
         monthMenu: false,
         weekMenu:false,
         date:["day","week","month"],
@@ -220,6 +280,11 @@ export default {
             ['Commute',  2],
             ['Watch TV', 2],
             ['Sleep',    7]
+        ],
+        deviceStatus : [
+            ["상태",'카운트'],
+            ['ON',0],
+            ['OFF',0]
         ],
         chartOptions: {
             legend :'none',
@@ -232,7 +297,7 @@ export default {
             chartArea: {'width': '100%', 'height': '80%'},
         },
         devicesChartOptions: {
-            title : "Total Statistics",
+            title : "단말기 상태 통계",
             legend :'none',
             pieSliceText:'label',
             chartArea: {'width': '100%', 'height': '80%'},
@@ -242,16 +307,7 @@ export default {
                 italic: false
             }
         },
-        deviceConditionData : [
-            { name : "DeviceA",on : 1, off : 8 },
-            { name : "DeviceB",on : 2, off : 7 },
-            { name : "DeviceC",on : 3, off : 6 },
-            { name : "DeviceD",on : 4, off : 5 },
-            { name : "DeviceE",on : 5, off : 4 },
-            { name : "DeviceF",on : 6, off : 3 },
-            { name : "DeviceG",on : 7, off : 2 },
-            { name : "DeviceH",on : 8, off : 1 },
-        ]
+        deviceConditionData : []
       }
     },
 }
@@ -259,12 +315,14 @@ export default {
 
 <style>
     .devicecondition{
-        margin : 2.5px 0 0 0;
+        margin : 2.5px 10px 0 0;
         text-anchor: start;
         font-family: Arial;
         font-size: 13px;
         stroke: none;
         stroke-width: 0;
-        fill: rgb(0, 0, 0);
+        fill: #000000;
+        position: relative;
+        bottom:13px;
     }
 </style>

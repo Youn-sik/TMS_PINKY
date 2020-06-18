@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
-const moment = require('moment');
+var moment = require('moment');
+require('moment-timezone'); 
+moment.tz.setDefault("Asia/Seoul"); 
 
 const camerafailSchema = new mongoose.Schema({
     serial_number : { type: String },

@@ -84,8 +84,11 @@
             <template v-else-if="item.type === 2">
               방문자
             </template>
-            <template v-else>
+            <template v-else-if="item.type === 5">
               블랙리스트
+            </template>
+            <template v-else-if="item.type === 10">
+              삭제됨
             </template>
           </template>
           <template v-slot:item.create_at="{ item }">

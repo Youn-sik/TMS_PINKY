@@ -164,35 +164,36 @@
           model: false,
           children: [
             // { text: '사원 관리', to: '/employee' },
-            { text: '사원 관리', to: '/employeegroup' },
+            { text: ' - 사원 관리', to: '/employeegroup' },
             // { text: '방문자 관리', to: '/visitor' },
-            { text: '방문자 관리', to: '/visitorgroup' },
+            { text: ' - 방문자 관리', to: '/visitorgroup' },
             // { text: '블랙리스트 관리', to: '/blacklist' },
-            { text: '블랙리스트 관리', to: '/blacklistgroup' },
-            { text: '등록 기록', to: '/regrecord' },
-            { text: '사진으로 검색', to: '/searchpeople' },
+            { text: ' - 블랙리스트 관리', to: '/blacklistgroup' },
+            { text: ' - 미등록자 관리', to: '/stranger' },
+            { text: ' - 등록 기록', to: '/regrecord' },
+            { text: ' - 사진으로 검색', to: '/searchpeople' },
           ],
         },
-                {
+        {
           icon: 'mdi-chevron-up',
           'icon-alt': 'mdi-chevron-down',
           text: '단말 관리',
           model: false,
           children: [
-            { text: '단말 목록' ,to: '/device'},
-            { text: '단말기 스크린샷' ,to: '/devicescreen'},
+            { text: ' - 단말 목록' ,to: '/device'},
+            { text: ' - 단말기 스크린샷' ,to: '/devicescreen'},
           ],
         },
-                {
+        {
           icon: 'mdi-chevron-up',
           'icon-alt': 'mdi-chevron-down',
-          text: '출입, 출석 관리',
+          text: '출입, 출근 관리',
           model: false,
           children: [
             // { text: '출석 규칙', to:"/attendancerules" },
             // { text: '출석 구역' , to:"/attendancearea"},
-            { text: '출입 기록', to:'/attendancerecords' },
-            { text: '출석 통계',to:'/AttendanceStatistics' },
+            { text: ' - 출입 기록', to:'/attendancerecords' },
+            { text: ' - 출근 기록',to:'/AttendanceStatistics' },
           ],
         },
         {
@@ -202,8 +203,8 @@
           model: false,
           children: [
             // { text: '기업 정보' },
-            { text: '계정 권한', to:'/account'},
-            { text: '작업 기록', to:'/operationlog' },
+            { text: ' - 계정 관리', to:'/account'},
+            { text: ' - 작업 기록', to:'/operationlog' },
             // { text: '오픈 플랫폼' },
           ],
         },
@@ -215,7 +216,7 @@
           children: [
             // { text: '출석 통계', to:'/'},
             // { text: '출입 통계', to:'/' },
-            { text: '단말 통계', to:'/devicereport' },
+            { text: ' - 단말 통계', to:'/devicereport' },
           ],
         },
       ],

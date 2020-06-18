@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
-const moment = require('moment');
+var moment = require('moment');
+require('moment-timezone'); 
+moment.tz.setDefault("Asia/Seoul"); 
 const ObjectId = mongoose.Schema.Types.ObjectId
 
 const api_v3_device_gateway_Schema = new mongoose.Schema({
@@ -11,7 +13,7 @@ const api_v3_device_gateway_Schema = new mongoose.Schema({
     camera_obids: [{type:ObjectId, ref: 'camera'}],
     description : { type: String },
     create_at : { type: String, default: moment().format('YYYY-MM-DD HH:mm:ss') },
-    create_ut : { type: String, default: Date.now },
+    create_ut : { type: String, default: Date.now() },
     update_at : { type: String },
     update_ut : { type: String },
     

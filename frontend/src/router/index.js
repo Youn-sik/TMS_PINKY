@@ -128,6 +128,22 @@ const routes = [
         name:"DeviceReport",
         path:'devicereport',
         component:() => import('@/views/Reports/DeviceReport'),
+      },
+      {
+        name:"AddAccount",
+        path:'addaccount',
+        component:() => import('@/views/System/AddAccount'),
+      },
+      {
+        name:"Stranger",
+        path:'stranger',
+        component:() => import('@/views/Person/Stranger'),
+      },
+      {
+        name:"AddStranger",
+        path:'addstranger',
+        component:() => import('@/views/Person/AddStranger'),
+        props:true
       }
     ]
   },

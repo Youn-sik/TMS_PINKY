@@ -2,21 +2,9 @@
   <v-row justify="center">
     <v-col cols="11" class="d-flex">
       <v-card width="100%" align="center">
-        <!-- <v-card-content> -->
           <v-col cols="4">
             <form @submit.prevent="addUser">
-              <!-- <div>Identification portrait</div> -->
-              <!-- <v-image-input
-              class="imageinput"
-              v-model="imageData"
-              hideActions="ture"
-              imageHeight="200"
-              imageWidth="200"
-            /> -->
-              <base64-upload class="user"
-                :imageSrc="this.image"
-                border="left"
-                @change="onChangeImage"></base64-upload>
+              <img :src="image" style="max-width:50%, max-height=50%" alt="">
               <v-text-field
                 v-model="name"
                 label="이름"
@@ -53,15 +41,21 @@
                     그룹 선택
                   </v-btn>
                 </template>
-
                 <v-card>
                   <v-card-title
-                    class="headline grey lighten-2"
                     primary-title
+                    style="height:120px"
                   >
                     그룹 선택
+                    <v-spacer></v-spacer>
+                    <v-col cols="5">
+                      <v-select 
+                      :items="[{text:'사원', value:1},{text:'방문자', value:2},{text:'블랙리스트', value:5}]" 
+                      :return-object="true"
+                      v-model="nowStatus"></v-select>
+                    </v-col>
                   </v-card-title>
-
+                  <v-divider></v-divider>
                   <v-card-text>
                     <v-treeview
                       :items="api_v1_group_group"
@@ -94,10 +88,13 @@
                   </v-card-actions>
                 </v-card>
               </v-dialog>
+              <!-- <base64-upload class="user"
+                :imageSrc="this.image"
+                border="left"
+                @change="onChangeImage"></base64-upload> -->
               <v-btn class="mr-4" color="primary" @click="addUser">등록</v-btn>
             </form>
           </v-col>
-        <!-- </v-card-content> -->
       </v-card>
     </v-col>
     
@@ -106,19 +103,26 @@
 
 
 <script>
-  import Base64Upload from '../../components/Base64Upload'
+  // import Base64Upload from '../../components/Base64Upload'
   import axios from 'axios'
   export default {
-    components: {
-      Base64Upload,
-    },
+    // components: {
+    //   Base64Upload,
+    // },
     watch: {
       menu (val) {
         val && setTimeout(() => (this.$refs.picker.activePicker = 'YEAR'))
       },
+      nowStatus(val) {
+        axios.get('http://172.16.135.89:3000/group?type='+val.value)
+          .then((res) => {
+            this.api_v1_group_group = res.data;
+          })
+      }
     },
     created () {
-      axios.get('http://172.16.135.89:3000/group?type=2')
+      this.image = this.$route.params.item.avatar_file_url
+      axios.get('http://172.16.135.89:3000/group?type=1')
         .then((res) => {
           this.api_v1_group_group = res.data;
         })
@@ -129,14 +133,6 @@
       },
       onChangeImage(file) {
         this.image = file.base64;
-        /*
-        {
-          size: 93602,
-          filetype: 'image/jpeg',
-          filename: 'user.jpg',
-          base64:   '/9j/4AAQSkZJRg...'
-        }
-        */
       },
       getFormatDate(date){
           var year = date.getFullYear();              //yyyy
@@ -158,19 +154,26 @@
           day = day >= 10 ? day : '0' + day;          //day 두자리로 저장
           return  year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
       },
-      async addUser(){
-        if(this.image === null || this.image === ''){alert('사진을 업로드 해주세요.'); return false}
-        else if(this.name === null || this.name === '') {alert('이름을 입력해주세요.'); return false}
+      addUser(){
+        if(this.name === null || this.name === '') {alert('이름을 입력해주세요.'); return false}
+        else if(this.image === null || this.image === ''){alert('사진을 업로드 해주세요.'); return false}
         else if(this.email !== '' && !/.+@.+\..+/.test(this.email)){alert('이메일 형식으로 입력해주세요.'); return false} 
-        axios.post('http://172.16.135.89:3000/user',{
+        axios.post('http://172.16.135.89:3000/user?type=stranger',{
               name : this.name,
               created_at : this.getFormatDate(new Date()),
-              avatar_file : this.image,
+              avatar_file_url : this.image,
+              stranger_id : this.$route.params.item._id,
               groups_obids : this.active[0] === undefined ? null : this.active,
-              type : 2,
+              type : this.nowStatus.value,
         }).then(() => {
-          alert('등록 되었습니다');
-          this.$router.go(-1);
+          if(this.nowStatus.value === 1) {
+            this.$router.push('/index/employeegroup');
+          } else if(this.nowStatus.value === 2) {
+            this.$router.push('/index/visitorgroup');
+          } else if(this.nowStatus.value === 5) {
+            this.$router.push('/index/blacklistgroup');
+          }
+          
         }).catch(function (error) {
           console.log(error);
         });
@@ -178,6 +181,7 @@
     },
     data: () => ({
       active:[],
+      nowStatus : {text:'사원', value:1},
       date: null,
       email:'',
       emailRules: [
@@ -189,10 +193,9 @@
       mobile:'',
       gender:1,
       menu: false,
-      name : '',
+      name : null,
       data : null,
       company : null,
-      searchGroup : '',
       api_v1_group_group : [],
       dialog: false,
       image : '',
@@ -202,4 +205,5 @@
 
 
 <style>
+
 </style>

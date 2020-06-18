@@ -5,7 +5,7 @@ const User = require('../models/User')
 
 router.get('/',async function(req, res) {
     try {
-        const users = await User.find()
+        const users = await User.find().select('user_id user_lang user_name')
         res.send(users)
     } catch (err) {
         throw boom.boomify(err)

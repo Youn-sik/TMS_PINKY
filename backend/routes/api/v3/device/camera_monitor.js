@@ -7,13 +7,13 @@ router.get('/',async function(req, res) {
     try {
         let get_data;
         if(req.query.id !== undefined) {
-            get_data = await api_v3_device_camera_monitor.find({'camera_obids':req.query.id});
+            get_data = await api_v3_device_camera_monitor.find({'camera_obids':req.query.id}).sort('-regdate')
         } else {
             get_data = await api_v3_device_camera_monitor.aggregate([
                 {
                     $group: {
                         _id: {"camera_obids":"$camera_obids","serial_number":"$serial_number"},
-                        lastDate : {$max:'$create_dt'},
+                        lastDate : {$max:'$regdate'},
                         upload_url : {$last:'$upload_url'},
                         count: { $sum: 1 }
                     }

@@ -13,11 +13,32 @@
               imageHeight="200"
               imageWidth="200"
             /> -->
+              <base64-upload class="user"
+                :imageSrc="this.image"
+                border="left"
+                @change="onChangeImage"></base64-upload>
               <v-text-field
                 v-model="name"
                 label="이름"
+                :rules="nameRules"
                 required
               ></v-text-field>
+              <v-text-field
+                v-model="mobile"
+                label="헨드폰 번호"
+                required
+              ></v-text-field>
+              <v-text-field
+                v-model="email"
+                label="이메일"
+                type="email"
+                :rules="emailRules"
+                required
+              ></v-text-field>
+              <v-select 
+              :items="[{text:'남자',value:1},{text:'여자',value:2}]"
+              v-model="gender">
+              </v-select>
               <v-dialog
                 v-model="dialog"
                 width="500"
@@ -26,6 +47,7 @@
                   <v-btn
                     color="primary"
                     dark
+                    class="mr-3"
                     v-on="on"
                   >
                     그룹 선택
@@ -72,10 +94,6 @@
                   </v-card-actions>
                 </v-card>
               </v-dialog>
-              <base64-upload class="user"
-                :imageSrc="this.image"
-                border="left"
-                @change="onChangeImage"></base64-upload>
               <v-btn class="mr-4" color="primary" @click="addUser">등록</v-btn>
             </form>
           </v-col>
@@ -141,8 +159,9 @@
           return  year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
       },
       async addUser(){
-        if(this.name === null || this.name === '') {alert('이름을 입력해주세요.'); return false}
-        else if(this.image === null || this.image === ''){alert('사진을 업로드 해주세요.'); return false}
+        if(this.image === null || this.image === ''){alert('사진을 업로드 해주세요.'); return false}
+        else if(this.name === null || this.name === '') {alert('이름을 입력해주세요.'); return false}
+        else if(this.email !== '' && !/.+@.+\..+/.test(this.email)){alert('이메일 형식으로 입력해주세요.'); return false} 
         axios.post('http://172.16.135.89:3000/user',{
               name : this.name,
               created_at : this.getFormatDate(new Date()),
@@ -150,6 +169,7 @@
               groups_obids : this.active[0] === undefined ? null : this.active,
               type : 1,
         }).then(() => {
+          alert('등록 되었습니다');
           this.$router.go(-1);
         }).catch(function (error) {
           console.log(error);
@@ -159,8 +179,17 @@
     data: () => ({
       active:[],
       date: null,
+      email:'',
+      emailRules: [
+        v => (/.+@.+\..+/.test(v) || v === '') || '이메일 형식으로 입력해주세요.',
+      ],
+      nameRules: [
+        v =>!!v || '필수 입력 정보 입니다.',
+      ],
+      mobile:'',
+      gender:1,
       menu: false,
-      name : null,
+      name : '',
       data : null,
       company : null,
       searchGroup : '',

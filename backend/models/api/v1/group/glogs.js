@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
-const moment = require('moment');
+var moment = require('moment');
+require('moment-timezone'); 
+moment.tz.setDefault("Asia/Seoul"); 
 
 const api_v1_group_glogs_Schema = new mongoose.Schema({
     process_status: { type: String, default: "N" },

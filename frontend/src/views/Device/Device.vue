@@ -101,10 +101,7 @@
                             ></v-autocomplete>
                             <v-text-field label="*단말기 이름" v-model="deviceName" :placeholder="deviceSelected[0].name" required></v-text-field>
                             <v-text-field label="*단말기 위치" v-model="deviceLocation" :placeholder="deviceSelected[0].location" required></v-text-field>
-                            <v-text-field label="*버전" v-model="appVersion" :placeholder="deviceSelected[0].app_version" required></v-text-field>
                             <v-text-field label="*시리얼넘버" v-model="serial_number" :placeholder="deviceSelected[0].serial_number" required></v-text-field>
-                            <v-text-field label="*IP" v-model="deviceIP" :placeholder="deviceSelected[0].ip" required></v-text-field>
-                            <v-text-field label="*포트" v-model="port" :placeholder="String(deviceSelected[0].port)" required></v-text-field>
                             <v-text-field label="*비고" v-model="description" :placeholder="deviceSelected[0].description" required></v-text-field>
                             <v-autocomplete
                               :items="['RTSP', 'ONVIF','GB28181']"
@@ -245,10 +242,7 @@
                           ></v-autocomplete>
                           <v-text-field label="*단말기 이름" v-model="deviceName" required></v-text-field>
                           <v-text-field label="*단말기 위치" v-model="deviceLocation" required></v-text-field>
-                          <v-text-field label="*버전" v-model="appVersion" required></v-text-field>
                           <v-text-field label="*시리얼넘버" v-model="serial_number" required></v-text-field>
-                          <v-text-field label="*IP" v-model="deviceIP" required></v-text-field>
-                          <v-text-field label="*포트" v-model="port" required></v-text-field>
                           <v-text-field label="*비고" v-model="description" required></v-text-field>
                           <v-autocomplete
                             :items="['RTSP', 'ONVIF','GB28181']"
@@ -283,7 +277,7 @@
           show-expand
           class="elevation-1"
         >
-          <template v-slot:expanded-item="{  }">
+          <template v-slot:expanded-item="{ item }">
             <td :colspan="headers.length+1" class="deviceTab pa-0">
               <v-tabs
                 v-model="tab"
@@ -304,53 +298,31 @@
                   <v-card flat color="#f9f6f7">
                     <v-card-text v-if="i === '단말 정보'">
                       <v-col class="d-flex">
-                        Basic information
+                        기본 설정 정보
                       </v-col>
                       <v-row justify="center">
                         <v-col cols="8">
-                          <p>LDID:</p>
-                          <p>Type:</p>
-                          <p>Device IP:</p>
-                          <p>Device name:</p>
-                          <p>Location:</p>
-                          <p>Description:</p>
-                          <p>First online time:</p>
-                          <p>Last offline time:</p>
-                          <p>Last update time:</p>
+                          <p>단말기 명 : {{item.name}}</p>
+                          <p>위치 : {{item.location}}</p>
+                          <p>단말기 IP : {{item.ip}}</p>
+                          <p>포트 번호 : {{item.port}}</p>
+                          <p>시리얼 넘버 : {{item.serial_number}}</p>
+                          <p>버전 : {{item.app_version}}</p>
+                          <p>프로토콜 : {{item.protocol}}</p>
+                          <p>URL : {{item.url}}</p>
+                          <p>생성 날짜 : {{item.created_at}}</p>
+                          <p>상태 : {{item.status}}</p>
                         </v-col>
                       </v-row>
                       <v-divider></v-divider>
                       <v-col class="d-flex">
-                        Status Info
+                        캡쳐 정보
                       </v-col>
                       <v-row justify="center">
                         <v-col cols="8">
-                          <p>Door Status:</p>
-                          <p>Thermal Image Status:</p>
-                        </v-col>
-                      </v-row>
-                      <v-divider></v-divider>
-                      <v-col class="d-flex">
-                        App Information
-                      </v-col>
-                      <v-row justify="center">
-                        <v-col cols="8">
-                          <p>App package name:</p>
-                          <p>App version name:</p>
-                          <p>App version code:</p>
-                        </v-col>
-                      </v-row>
-                      <v-divider></v-divider>
-                      <v-col class="d-flex">
-                        Firmware Information
-                      </v-col>
-                      <v-row justify="center">
-                        <v-col cols="8">
-                          <p>Product model:</p>
-                          <p>Product Serial Number:</p>
-                          <p>Firmware version:</p>
-                          <p>Manufacturer:</p>
-                          <p>Hardware version code:</p>
+                          <p>캡쳐 상태 : {{item.config_data.capture_status}}</p>
+                          <p>캡쳐 사이즈 : {{item.config_data.capture_size}}</p>
+                          <p>캡쳐 시간 : {{item.config_data.capture_time}}</p>
                         </v-col>
                       </v-row>
                     </v-card-text>
@@ -374,7 +346,6 @@
   export default {
     created () {
       this.$mqtt.on('message', (topic,message) => {
-        //TO DO 조건문으로 필요한 topic만 받기
         console.log(topic,new TextDecoder("utf-8").decode(message))
       })
       this.$mqtt.subscribe('/control/log/result/+')
@@ -440,28 +411,60 @@
     },
     methods: {
       controlDeviceLog () {
-        this.$mqtt.publish('/control/log/'+'KSU0000000',{stb_sn:'KSU0000000'});
+        if(this.active[0] === undefined) {
+          alert('단말기를 선택해 주세요')
+          return false;
+        }
+        this.$mqtt.publish('/control/log/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number});
       },
       controlCaptureStart () {
-        this.$mqtt.publish('/control/capture/start/'+'KSU0000000',{stb_sn:'KSU0000000',"capture_time":this.time,"capture_size":"320*240", "capture_status":"Y"});
+        if(this.active[0] === undefined) {
+          alert('단말기를 선택해 주세요')
+          return false;
+        }
+        this.$mqtt.publish('/control/capture/start/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number,"capture_time":this.time,"capture_size":"320*240", "capture_status":"Y"});
       },
       controlCaptureEnd () {
-        this.$mqtt.publish('/control/capture/end/'+'KSU0000000',{stb_sn:'KSU0000000',"stb_id":"", "capture_time":this.time,"capture_size":"320*240", "capture_status":"N"});
+        if(this.active[0] === undefined) {
+          alert('단말기를 선택해 주세요')
+          return false;
+        }
+        this.$mqtt.publish('/control/capture/end/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number,"stb_id":"", "capture_time":this.time,"capture_size":"320*240", "capture_status":"N"});
       },
       controlSDcardDel () {
-        this.$mqtt.publish('/control/sdcard/delete/'+'KSU0000000',{stb_sn:'KSU0000000'});
+        if(this.active[0] === undefined) {
+          alert('단말기를 선택해 주세요')
+          return false;
+        }
+        this.$mqtt.publish('/control/sdcard/delete/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number});
       },
       controlSDcardPartDel () {
-        this.$mqtt.publish('/control/sdcard/part/delete/'+'KSU0000000',{stb_sn:'KSU0000000'});
+        if(this.active[0] === undefined) {
+          alert('단말기를 선택해 주세요')
+          return false;
+        }
+        this.$mqtt.publish('/control/sdcard/part/delete/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number});
       },
       controlDeviceReboot () {
-        this.$mqtt.publish('/control/reboot/'+'KSU0000000',{stb_sn:'KSU0000000', "message":"reboot"});
+        if(this.active[0] === undefined) {
+          alert('단말기를 선택해 주세요')
+          return false;
+        }
+        this.$mqtt.publish('/control/reboot/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number, "message":"reboot"});
       },
       controlContentsReq () {
-        this.$mqtt.publish('/control/get_device_file_list/'+'KSU0000000',{stb_sn:'KSU0000000', "message":"get_device_file_list"});
+        if(this.active[0] === undefined) {
+          alert('단말기를 선택해 주세요')
+          return false;
+        }
+        this.$mqtt.publish('/control/get_device_file_list/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number, "message":"get_device_file_list"});
       },
       controlDeviceReset () {
-        this.$mqtt.publish('/control/reset/'+'KSU0000000',{stb_sn:'KSU0000000'});
+        if(this.active[0] === undefined) {
+          alert('단말기를 선택해 주세요')
+          return false;
+        }
+        this.$mqtt.publish('/control/reset/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number});
       },
       updateDevice () {
         axios.put('http://172.16.135.89:3000/camera/'+this.deviceSelected[0]._id,{
@@ -561,14 +564,8 @@
             alert('단말기 이름을 입력해주세요.');
           } else if(this.deviceLocation === null || this.deviceLocation === '') {
             alert('단말기 위치를 입력해주세요.');
-          } else if(this.appVersion === null || this.appVersion === '') {
-            alert('버전을 입력해주세요.');
           } else if(this.serial_number === null || this.serial_number == '') {
             alert('시리얼 넘버를 입력해주세요.');
-          } else if(this.deviceIP === null || this.deviceIP === '') {
-            alert('게이트웨이 IP를 입력해주세요.');
-          } else if(this.port === null || this.port === '') {
-            alert('포트 번호를 입력해주세요.');
           } else if(this.description === null || this.description === '') {
             alert('비고를 입력해주세요.');
           } else if(this.protocol === null || this.protocol === '') {
@@ -583,10 +580,7 @@
               name:this.deviceName,
               location:this.deviceLocation,
               gateway_obid:this.gateway._id,
-              ip:this.deviceIP,
-              port:parseInt(this.port),
               serial_number:this.serial_number,
-              app_version:this.appVersion,
               description:this.description,
               protocol:this.protocol,
               url:this.url
