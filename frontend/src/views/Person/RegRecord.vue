@@ -53,8 +53,8 @@
             </template>
             <v-date-picker v-model="dates" no-title scrollable range>
               <v-spacer></v-spacer>
-              <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
-              <v-btn text color="primary" @click="clickOK">OK</v-btn>
+              <v-btn text color="primary" @click="menu = false">취소</v-btn>
+              <v-btn text color="primary" @click="clickOK">확인</v-btn>
             </v-date-picker>
           </v-menu>
           <v-spacer></v-spacer>
@@ -68,8 +68,12 @@
         <v-data-table
           :headers="headers"
           :items="filteredItems"
+          :items-per-page="itemsPerPage"
+          :page.sync="page"
+          @page-count="pageCount = $event"
+          hide-default-footer
           item-key="_id"
-          class="elevation-1"
+          class="elevation-0"
         >
            <template v-slot:item.avatar_file="{ item }">
             <img 
@@ -95,6 +99,7 @@
             {{item.create_at}}
           </template>
         </v-data-table>
+        <v-pagination v-model="page" :total-visible="7" :length="pageCount"></v-pagination>
       </v-card>
     </v-col>
   </v-row>
@@ -125,6 +130,9 @@
         empCnt:0,
         visitCnt:0,
         blackCnt:0,
+        itemsPerPage: 10,
+        page: 1,
+        pageCount: 0,
         origin: [],
         selected: [],
         api_v1_person_every_type_users:[],
@@ -137,8 +145,8 @@
           },
           { text: '이름', value: 'name' },
           { text: '타입', value: 'type' },
-          { text: '등록 일자', value: 'create_at' },
-          { text: '수정 일자', value: 'update_at' },
+          { text: '행동', value: 'action' },
+          { text: '날짜', value: 'create_at' },
         ],
         addUserModal : false,
         batchSettingModal : false,
@@ -189,7 +197,7 @@
       }
     },
     created () {
-      axios.get('http://172.16.135.89:3000/user')
+      axios.get('http://172.16.135.89:3000/history')
         .then((res) => {
           this.origin = res.data
           this.api_v1_person_every_type_users = this.origin
@@ -200,17 +208,6 @@
           })
         })
     }
-    // apollo: {
-    //     api_v1_person_every_type_users : {
-    //     query : EVERY_TYPE_USERS,
-    //     error (err) {
-    //       if(err.message.split(':')[2] === ' "유효 하지 않는 토큰 입니다"') {
-    //         document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
-    //         this.$router.push('/');
-    //       }
-    //     }
-    //   }
-    // },
 
   }
 </script>

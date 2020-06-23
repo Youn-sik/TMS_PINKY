@@ -4,6 +4,7 @@ const boom = require('boom')
 const api_v1_person_user = require('../../../../models/api/v1/person/user')
 const api_v1_group_group = require('../../../../models/api/v1/group/group')
 const Access = require('../../../../models/api/v1/person/access')
+const History = require('../../../../models/api/v1/person/history')
 const crypto = require('crypto');
 var fs = require('fs')
 var moment = require('moment');
@@ -72,6 +73,19 @@ router.post('/',async function(req, res) {
             add.groups_obids = [group._id];
         }
 
+        const history = new History({
+            avatar_file : add.avatar_file,
+            avatar_contraction_data : add.avatar_contraction_data,
+            avatar_file_checksum : add.avatar_file_checksum,
+            avatar_file_url : add.avatar_file_url,
+            name : add.name,
+            type : add.type,
+            create_at : moment().format('YYYY-MM-DD HH:mm:ss'),
+            create_ut : Date.now(),
+            action : '생성'
+        });
+
+        history.save();
         add.save();
         res.send(add);
     } catch (err) {
@@ -117,6 +131,19 @@ router.put('/:id',async function(req, res) {
         update_data.update_at = moment().format('YYYY-MM-DD HH:mm:ss');
         update_data.update_ut = Date.now;
         const update = await api_v1_person_user.findOneAndUpdate({_id:id}, {$set:update_data}, {new: true })
+        const history = new History({
+            avatar_file : update.avatar_file,
+            avatar_contraction_data : update.avatar_contraction_data,
+            avatar_file_checksum : update.avatar_file_checksum,
+            avatar_file_url : update.avatar_file_url,
+            name : update.name,
+            type : update.type,
+            create_at : moment().format('YYYY-MM-DD HH:mm:ss'),
+            create_ut : Date.now(),
+            action : '수정',
+        });
+
+        history.save();
         res.send(update);
     } catch (err) {
         throw boom.boomify(err)
@@ -128,14 +155,19 @@ router.delete('/:id',async function(req, res) {
         try {
             await api_v1_group_group.updateMany({type:req.body.type},{ $pull: { user_obids : req.body._id} }, {new: true }).exec();
             const id = req.params === undefined ? req.id : req.params.id
-            const delete_data = await api_v1_person_user.findByIdAndUpdate(id,{
-                groups_obids:[],
-                avatar_file:null,
-                avatar_contraction_data:null,
-                type:10,
-                update_at:moment().format('YYYY-MM-DD HH:mm:ss'),
-                update_ut:Date.now
-            }) //type : 10 = deleted
+            const delete_data = await api_v1_person_user.findByIdAndDelete(id) //type : 10 = deleted
+            const history = new History({
+                avatar_file : delete_data.avatar_file,
+                avatar_contraction_data : delete_data.avatar_contraction_data,
+                avatar_file_checksum : delete_data.avatar_file_checksum,
+                avatar_file_url : delete_data.avatar_file_url,
+                name : delete_data.name,
+                type : delete_data.type,
+                create_at : moment().format('YYYY-MM-DD HH:mm:ss'),
+                create_ut : Date.now(),
+                action : '삭제',
+            });
+            history.save();
             res.send(delete_data);
         } catch (err) {
             throw boom.boomify(err)
@@ -154,6 +186,20 @@ router.delete('/:id',async function(req, res) {
                     update_ut:Date.now()
                 }));
                 if(req.body.selectedData.length-1 === index) {
+                    deletedList.map((i,index) => {
+                        const history = new History({
+                            avatar_file : i.avatar_file,
+                            avatar_contraction_data : i.avatar_contraction_data,
+                            avatar_file_checksum : i.avatar_file_checksum,
+                            avatar_file_url : i.avatar_file_url,
+                            name : i.name,
+                            type : i.type,
+                            create_at : moment().format('YYYY-MM-DD HH:mm:ss'),
+                            create_ut : Date.now(),
+                            action : '삭제',
+                        });
+                        history.save();
+                    })
                     res.send(deletedList)
                 }
             })

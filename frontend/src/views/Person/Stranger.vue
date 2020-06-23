@@ -7,6 +7,10 @@
           :single-select="true"
           show-select
           item-key="_id"
+          :items-per-page="itemsPerPage"
+          :page.sync="page"
+          @page-count="pageCount = $event"
+          hide-default-footer
           :headers="headers"
           :items="access"
         >
@@ -23,6 +27,7 @@
             <v-btn small color="primary" @click="registStrager(item)">등록</v-btn>
           </template>
         </v-data-table>
+        <v-pagination v-model="page" :total-visible="7" :length="pageCount"></v-pagination>
       </v-card>
     </v-col>
   </v-row>
@@ -40,6 +45,9 @@
     },
     data: () => ({
       access:[],
+      itemsPerPage: 10,
+      page: 1,
+      pageCount: 0,
       headers: [
           {
             text: '',

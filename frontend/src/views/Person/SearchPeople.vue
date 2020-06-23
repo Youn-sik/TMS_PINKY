@@ -38,7 +38,7 @@
         <v-data-table
           :headers="headers"
           item-key="_id"
-          class="elevation-1"
+          class="elevation-0"
         >
            <template v-slot:item.avatar_file="{ item }">
             <img 
@@ -61,6 +61,7 @@
             {{item.created_at}}
           </template>
         </v-data-table>
+        <v-pagination v-model="page" :total-visible="7" :length="pageCount"></v-pagination>
       </v-card>
     </v-col>
   </v-row>
@@ -73,6 +74,9 @@
     data: () => ({
         image : null,
         compare : 0,
+        itemsPerPage: 10,
+        page: 1,
+        pageCount: 0,
         top_n : 0,
         headers: [
           {

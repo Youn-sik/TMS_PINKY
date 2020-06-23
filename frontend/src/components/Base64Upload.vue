@@ -6,7 +6,7 @@
     style="padding:10px 0px;"/>
   <img 
     v-else
-    :src="imageSrc.indexOf('image') >= 0 ? imageSrc : 'data:image/jpeg;base64,'+imageSrc"
+    :src="imageSrc.indexOf('172.16.135.89') >= 0 ? imageSrc : 'data:image/jpeg;base64,'+imageSrc"
     style="padding:10px 0px;"/>
   <input type="file"
     accept="image/*"

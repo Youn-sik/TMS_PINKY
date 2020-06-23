@@ -12,6 +12,8 @@ const api_v1_person_access_Schema = new mongoose.Schema({
     avatar_temperature : { type: String, required: true },
     user_obid : { type:ObjectId, ref: 'User' },
     avatar_type : { type : Number },
+    stb_sn : { type:String},
+    stb_obid : { type:ObjectId, ref:'camera'},
     access_time : { type: String },
     statistics_status : { type: String },
     create_at : { type: String, default: moment().format('YYYY-MM-DD HH:mm:ss') },

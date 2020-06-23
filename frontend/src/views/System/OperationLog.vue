@@ -44,9 +44,13 @@
                 <v-data-table
                     :headers="headers"
                     :items="desserts"
-                    :items-per-page="5"
+                    :items-per-page="itemsPerPage"
+                    :page.sync="page"
+                    @page-count="pageCount = $event"
+                    hide-default-footer
                     class="ml-2 mr-2 elevation-0"
                 ></v-data-table>
+                <v-pagination v-model="page" :total-visible="7" :length="pageCount"></v-pagination>
             </v-card>
         </v-col>
     </v-row>
@@ -59,6 +63,9 @@ export default {
       },
     },
     data: () => ({
+        itemsPerPage: 10,
+        page: 1,
+        pageCount: 0,
         deviceStates : [
             '모든 상태',
             '출석',

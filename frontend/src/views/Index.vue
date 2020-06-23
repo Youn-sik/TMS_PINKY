@@ -160,6 +160,18 @@
         {
           icon: 'mdi-chevron-up',
           'icon-alt': 'mdi-chevron-down',
+          text: '출입, 출근 관리',
+          model: false,
+          children: [
+            // { text: '출석 규칙', to:"/attendancerules" },
+            // { text: '출석 구역' , to:"/attendancearea"},
+            { text: ' - 출입 기록', to:'/attendancerecords' },
+            { text: ' - 출근 기록',to:'/AttendanceStatistics' },
+          ],
+        },
+        {
+          icon: 'mdi-chevron-up',
+          'icon-alt': 'mdi-chevron-down',
           text: '인사 관리',
           model: false,
           children: [
@@ -187,18 +199,6 @@
         {
           icon: 'mdi-chevron-up',
           'icon-alt': 'mdi-chevron-down',
-          text: '출입, 출근 관리',
-          model: false,
-          children: [
-            // { text: '출석 규칙', to:"/attendancerules" },
-            // { text: '출석 구역' , to:"/attendancearea"},
-            { text: ' - 출입 기록', to:'/attendancerecords' },
-            { text: ' - 출근 기록',to:'/AttendanceStatistics' },
-          ],
-        },
-        {
-          icon: 'mdi-chevron-up',
-          'icon-alt': 'mdi-chevron-down',
           text: '시스템 관리',
           model: false,
           children: [
@@ -217,9 +217,28 @@
             // { text: '출석 통계', to:'/'},
             // { text: '출입 통계', to:'/' },
             { text: ' - 단말 통계', to:'/devicereport' },
+            { text: ' - 출입 통계', to:'/accessreport' },
+          ],
+        },
+        {
+          icon: 'mdi-chevron-up',
+          'icon-alt': 'mdi-chevron-down',
+          text: '열화상',
+          model: false,
+          children: [
+            { text: ' - 열화상 단말', to:'/itcdevice' },
+            { text: ' - 열화상 기록', to:'/itcrecords' },
           ],
         },
       ],
     }),
   }
 </script>
+
+<style>
+    tr.v-data-table__selected {
+      color: #1976d2 !important;
+      caret-color: #1976d2 !important;
+    }
+    svg > g > g:last-child { pointer-events: none }
+</style>

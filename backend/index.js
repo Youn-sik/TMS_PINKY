@@ -25,6 +25,7 @@ const cameraFilelistRouter = require('./routes/api/v3/device/camera_filelist');
 const cameraMonitorRouter = require('./routes/api/v3/device/camera_monitor');
 const gatewayRouter = require('./routes/api/v3/device/gateway');
 const statisticsRouter = require('./routes/api/v3/device/statistics');
+const historyRouter = require('./routes/api/v1/person/history');
 const accountRouter = require('./routes/account');
 
 // Register Fastify GraphQL
@@ -47,6 +48,7 @@ fastify.use('/gateway',gatewayRouter);
 fastify.use('/group',groupRouter);
 fastify.use('/glogs',glogsRouter);
 fastify.use('/statistics',statisticsRouter);
+fastify.use('/history',historyRouter);
 
 // fastify.use(express.static(path.join(__dirname, 'uploads')));
 fastify.use('/uploads', express.static(path.join(__dirname, 'uploads')));

@@ -25,7 +25,7 @@
       </v-card>
     </v-col>
     <v-col cols="11" class="d-flex">
-      <v-card
+      <!-- <v-card
         width="25%"
       >
          <v-card-title>
@@ -39,7 +39,7 @@
           ></v-text-field>
         </v-card-title>
         <v-card-text>
-          <!-- <v-treeview
+          <v-treeview
             :items="api_v1_group_group"
             item-key="_id"
             item-disabled="avatar_file"
@@ -59,11 +59,11 @@
                 v-text="`person`"
               ></v-icon>
             </template>
-          </v-treeview> -->
+          </v-treeview>
         </v-card-text>
       </v-card>
-      <v-divider vertical></v-divider>
-      <v-card width="75%">
+      <v-divider vertical></v-divider> -->
+      <v-card width="100%">
         <v-card-title>
           <v-text-field
             v-model="search"
@@ -269,13 +269,17 @@
           :headers="headers"
           v-model="deviceSelected"
           :single-select="true"
+          :items-per-page="itemsPerPage"
+          :page.sync="page"
+          @page-count="pageCount = $event"
+          hide-default-footer
           :single-expand='true'
           show-select
           :items="api_v3_device_camera"
           :expanded.sync="expanded"
           item-key="_id"
           show-expand
-          class="elevation-1"
+          class="elevation-0"
         >
           <template v-slot:expanded-item="{ item }">
             <td :colspan="headers.length+1" class="deviceTab pa-0">
@@ -332,6 +336,7 @@
             </td>
           </template>
         </v-data-table>
+        <v-pagination v-model="page" :total-visible="7" :length="pageCount"></v-pagination>
       </v-card>
     </v-col>
   </v-row>
@@ -347,6 +352,9 @@
     created () {
       this.$mqtt.on('message', (topic,message) => {
         console.log(topic,new TextDecoder("utf-8").decode(message))
+      })
+      this.$mqtt.on('connect', () => {
+        console.log('mqtt was connected')
       })
       this.$mqtt.subscribe('/control/log/result/+')
       this.$mqtt.subscribe('/control/capture/start/result/+')
@@ -371,6 +379,9 @@
         time: null,
         menu2: false,
         searchGroup:null,
+        itemsPerPage: 10,
+        page: 1,
+        pageCount: 0,
         api_v3_device_camera : [],
         search: '',
         selected: [],
@@ -415,7 +426,7 @@
           alert('단말기를 선택해 주세요')
           return false;
         }
-        this.$mqtt.publish('/control/log/'+this.active[0].serial_number,{stb_sn:this.active[0].serial_number});
+        this.$mqtt.publish('/control/log/KSU0000000',{stb_sn:'KSU0000000'});
       },
       controlCaptureStart () {
         if(this.active[0] === undefined) {

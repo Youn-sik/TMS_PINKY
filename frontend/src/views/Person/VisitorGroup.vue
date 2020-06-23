@@ -169,6 +169,10 @@
           v-model="userSelected"
           :single-select="false"
           show-select
+          :items-per-page="itemsPerPage"
+          :page.sync="page"
+          @page-count="pageCount = $event"
+          hide-default-footer
           item-key="_id"
           :headers="headers"
           :items="filteredItems"
@@ -183,6 +187,7 @@
             {{item.created_at}}
           </template>
         </v-data-table>
+        <v-pagination v-model="page" :total-visible="7" :length="pageCount"></v-pagination>
       </v-card>
     </v-col>
     
@@ -213,6 +218,9 @@
       updateActive:[],
       userSelected:[],
       userUpdateModal: false,
+      itemsPerPage: 10,
+      page: 1,
+      pageCount: 0,
       dialog: false,
       name:null,
       email:'',

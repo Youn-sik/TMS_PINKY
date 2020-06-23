@@ -144,6 +144,24 @@ const routes = [
         path:'addstranger',
         component:() => import('@/views/Person/AddStranger'),
         props:true
+      },
+      {
+        name:"AccessReport",
+        path:'accessreport',
+        component:() => import('@/views/Reports/AccessReport'),
+        props:true
+      },
+      {
+        name:"ITC_device",
+        path:'itcdevice',
+        component:() => import('@/views/ITC/ITC_device'),
+        props:true
+      },
+      {
+        name:"ITC_records",
+        path:'itcrecords',
+        component:() => import('@/views/ITC/ITC_records'),
+        props:true
       }
     ]
   },

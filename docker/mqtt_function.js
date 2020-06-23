@@ -73,6 +73,7 @@ const glogs = require('./schema/glogs_Schema');
 const Camera_fail = require('./schema/camera_fail_Schema');
 const Camera_monitor = require('./schema/camera_monitor_Schema');
 const Camera_filelist = require('./schema/camera_filelist_Schema');
+const History = require('./schema/history_Schema');
 
 /*
 let data = {
@@ -314,20 +315,12 @@ module.exports = {
         try {
             let insert_array = [];
             let camera = await Camera.findOne( { serial_number : json.stb_sn });
-            let todayStatistics = await Statistics.findOne()
-                .where('camera_obid').equals(camera._id)
-                .where('reference_date').equals(moment().format('YYYY-MM-DD'));
-            if(todayStatistics === null) {
-                todayStatistics = new Statistics({
-                    camera_obid : camera._id,
-                    reference_date: moment().format('YYYY-MM-DD')
-                })
-            }
+
             let empCnt = 0;
             let visitorCnt = 0;
             let blackCnt = 0;
             let strangerCnt = 0;
-            // Statistics.findOne()
+            
             json.values.forEach(function(element){
                 let folder_date_path = "/uploads/accesss/temp/" + moment().format('YYYYMMDD');
                 let file_name = json.stb_sn + "_" + moment().format('YYYYMMDDHHmmss') + ".png";
@@ -335,7 +328,7 @@ module.exports = {
                 let file_path = site.base_server_document + folder_date_path + "/" + json.stb_sn + "/";
                 let upload_url = site.base_local_url+ ':3000' + folder_date_path + "/" + json.stb_sn + "/" + file_name;
                 let buff = Buffer.from(element.avatar_file, 'base64');
-
+                
                 if(element.avatar_type === 1) {
                     empCnt++;
                 } else if(element.avatar_type === 2) {
@@ -345,8 +338,6 @@ module.exports = {
                 } else if(element.avatar_type === 4) {
                     blackCnt++;
                 }
-                
-                User.updateOne({avatar_contraction_data : element.avatar_contraction_data}, {$inc:{count : 1}})
                 
                 mkdirp.sync(file_path);
                 fs.promises.writeFile(file_path + file_name, buff, 'utf-8')
@@ -358,7 +349,9 @@ module.exports = {
                         avatar_contraction_data : element.avatar_contraction_data,
                         avatar_file_url : upload_url,
                         avatar_temperature : element.avatar_temperature,
-                        access_time : element.access_time
+                        access_time : element.access_time,
+                        stb_sn : json.stb_sn,
+                        stb_obid : camera._id
                     };
                 }else{
                     insert_data = {
@@ -369,7 +362,9 @@ module.exports = {
                         avatar_file_url : upload_url,
                         user_obid : element.avatar_obid, 
                         avatar_temperature : element.avatar_temperature,
-                        access_time : element.access_time
+                        access_time : element.access_time,
+                        stb_sn : json.stb_sn,
+                        stb_obid : camera._id
                     };
                 }
                 //new mongoose.Types.ObjectId()
@@ -377,21 +372,39 @@ module.exports = {
             })
             
             let accessData = await Access.insertMany(insert_array)
-
-            Statistics.findIdAndUpdate(todayStatistics._id,{ 
-                $inc: { 
+            
+            let todayStatistics = await Statistics.findOne()
+                .where('camera_obid').equals(camera._id)
+                .where('reference_date').equals(moment().format('YYYY-MM-DD'));
+            
+            if(todayStatistics === null) {
+                todayStatistics = new Statistics({
+                    camera_obid : camera._id,
+                    reference_date: moment().format('YYYY-MM-DD'),
                     all_count: empCnt+visitorCnt+strangerCnt+blackCnt,
                     employee_count : empCnt,
                     guest_count : visitorCnt,
                     stranger_count : strangerCnt,
                     blacklist_count : blackCnt,
-                }
-            },
-            {
-                $push: { 
-                    statistics_obids: accessData[0] 
-                } 
-            })
+                })
+                todayStatistics.save()
+            } else {
+                await Statistics.findByIdAndUpdate(todayStatistics._id,{ 
+                    $inc: { 
+                        all_count: empCnt+visitorCnt+strangerCnt+blackCnt,
+                        employee_count : empCnt,
+                        guest_count : visitorCnt,
+                        stranger_count : strangerCnt,
+                        blacklist_count : blackCnt
+                    },
+                    $push: { 
+                        statistics_obids: accessData[0] 
+                    } 
+                },
+                {
+                    
+                })
+            }
 
             send_data = {
                 stb_sn: json.stb_sn
@@ -432,7 +445,10 @@ module.exports = {
                     avatar_contraction_data : element.avatar_contraction_data,
                     avatar_file_url : upload_url,
                     avatar_type : element.avatar_type,
-                    name : element.avatar_name
+                    name : element.avatar_name,
+                    create_at : moment().format('YYYY-MM-DD'),
+                    create_ut : Date.now(),
+                    action : '생성'
                 };
 
                 insert_array.push(insert_data);

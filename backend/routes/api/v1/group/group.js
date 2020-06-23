@@ -3,49 +3,44 @@ var router = express.Router();
 const boom = require('boom')
 const api_v1_group_group = require('../../../../models/api/v1/group/group')
 
-// const moveUserIds = (data) => {
-//     if(data.children[0] !== undefined) {
-//         data.children.map((i) => {
-            // moveUserIds(i)
-        // })
-    // }
-    // if(data.user_ids[0] !== undefined) {
-        // console.log(data.user_ids)
-        //  = data.children.concat();
-        // data.user_ids.map((i) => {
-        //     console.log(i);
-        //     data.children.push(i);
-        //     console.log(data.children)
-        // })
-        // let array = data.user_ids.concat([data.children]);
-        // console.log(array);
-        // data.children = array;
-        // console.log(data.children);
-    // }
-// }
-
 router.get('/',async function(req, res) {
     try {
         const type = req.query.type;
-        const get_data = await api_v1_group_group.find({type:type})
-        .populate('user_obids')
-        .populate({
-            path : 'children',
-            populate : [
-                {
-                    path: 'children',
-                    populate:{path:'user_obids'}
-                },
-                {path: 'user_obids'},
-            ],
-        })
-        .exec(async (err, data) => {
-            data = data.filter(i => i.parent === undefined)
-            // data.map((i) => {
-            //     moveUserIds(i);
-            // })
-            res.send(data);
-        });
+        if(type === undefined) {
+            const get_data = await api_v1_group_group.find()
+            .populate('user_obids')
+            .populate({
+                path : 'children',
+                populate : [
+                    {
+                        path: 'children',
+                        populate:{path:'user_obids'}
+                    },
+                    {path: 'user_obids'},
+                ],
+            })
+            .exec(async (err, data) => {
+                data = data.filter(i => i.parent === undefined)
+                res.send(data);
+            });
+        } else {
+            const get_data = await api_v1_group_group.find({type:type})
+            .populate('user_obids')
+            .populate({
+                path : 'children',
+                populate : [
+                    {
+                        path: 'children',
+                        populate:{path:'user_obids'}
+                    },
+                    {path: 'user_obids'},
+                ],
+            })
+            .exec(async (err, data) => {
+                data = data.filter(i => i.parent === undefined)
+                res.send(data);
+            });
+        }
     } catch (err) {
         throw boom.boomify(err)
     }

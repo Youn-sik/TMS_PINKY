@@ -25,10 +25,13 @@
                     <v-data-table
                     :headers="headers"
                     :items="monitor_screenshots"
-                    hide-default-header
+                    :items-per-page="itemsPerPage"
+                    :page.sync="page"
+                    @page-count="pageCount = $event"
+                    hide-default-footer
                     item-key="_id"
                     style="text-align: center"
-                    class="elevation-1"
+                    class="elevation-0"
                     >
                         <template v-slot:body="{items}">
                         <tr v-for="item in items" :key="item.name" style="display:inline-block; width:19.5%; text-align:center;">
@@ -37,12 +40,13 @@
                                     <img :src="item.upload_url" alt="" onerror="this.src='http://172.16.135.89:3000/image/noImage.png'" style="width: 100%; max-height: 100%;" @click="clickImg(item._id.camera_obids) ">
                                 </div>
                                 <p style="position:relative; bottom:23px; background-color: rgba( 0, 0, 0, 0.5 ); color: #dddddd;">
-                                        {{item.create_dt}}
+                                        {{item.regdate}}
                                 </p>
                             </td>
                         </tr>
                         </template>
                     </v-data-table>
+                    <v-pagination v-model="page" :total-visible="7" :length="pageCount"></v-pagination>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -60,8 +64,12 @@
         <v-data-table
           :headers="headers"
           :items="api_v3_device_camera_monitor"
+          :items-per-page="itemsPerPage"
+          :page.sync="pageTotal"
+          @page-count="pageCountTotal = $event"
+          hide-default-footer
           item-key="_id"
-          class="elevation-1"
+          class="elevation-0"
         >
             <template v-slot:body="{items}">
                <tr v-for="item in items" :key="item.name" style="display:inline-block; width:20%; text-align:center;">
@@ -84,6 +92,7 @@
                </tr>
             </template>
         </v-data-table>
+        <v-pagination v-model="pageTotal" :total-visible="7" :length="pageCountTotal"></v-pagination>
       </v-card>
     </v-col>
   </v-row>
@@ -101,6 +110,11 @@
       return {
         deviceSelected:[],
         dialog: false,
+        itemsPerPage: 10,
+        page: 1,
+        pageCount: 0,
+        pageTotal: 1,
+        pageCountTotal: 0,
         api_v3_device_camera_monitor : [],
         monitor_screenshots : [],
         search: '',

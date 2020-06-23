@@ -128,7 +128,7 @@
                     <div style="width:80%; margin:0 auto;">
                       <base64-upload class="user"
                       style="width"
-                      :imageSrc="image ? image : this.userSelected[0].avatar_file"
+                      :imageSrc="image ? image : this.userSelected[0].avatar_file_url"
                       border="left"
                       @change="onChangeImage"></base64-upload>
                     </div>
@@ -168,6 +168,10 @@
         <v-data-table
           v-model="userSelected"
           :single-select="false"
+          :items-per-page="itemsPerPage"
+          :page.sync="page"
+          @page-count="pageCount = $event"
+          hide-default-footer
           show-select
           item-key="_id"
           :headers="headers"
@@ -183,6 +187,7 @@
             {{item.created_at}}
           </template>
         </v-data-table>
+        <v-pagination v-model="page" :total-visible="7" :length="pageCount"></v-pagination>
       </v-card>
     </v-col>
     
@@ -214,6 +219,9 @@
       userSelected:[],
       userUpdateModal: false,
       dialog: false,
+      itemsPerPage: 10,
+      page: 1,
+      pageCount: 0,
       name:null,
       email:'',
       emailRules: [
@@ -241,8 +249,16 @@
             align: 'start',
             value: 'name',
           },
+          {
+            text:'휴대폰 번호',
+            value:'mobile'
+          },
+          {
+            text:'이메일',
+            value:'mail'
+          },
           { text: '생성일', value: 'create_at' },
-          { text: '카운트', value: 'count' },
+          // { text: '카운트', value: 'count' },
         ],
       api_v1_group_group : [],
       open: [1, 2],
@@ -371,13 +387,13 @@
     },
     deleteUser () {
       if(this.userSelected.length === 1 ){
-        if(confirm('정말로 삭제 하시겠습니까?')) {
-          axios.delete('http://172.16.135.89:3000/user/'+this.userSelected[0]._id,{
-            data:{
-              type:1,
-              _id:this.userSelected[0]._id
-            }
-          }).then((res) => {
+          if(confirm('정말로 삭제 하시겠습니까?')) {
+            axios.delete('http://172.16.135.89:3000/user/'+this.userSelected[0]._id,{
+              data:{
+                type:1,
+                _id:this.userSelected[0]._id
+              }
+            }).then((res) => {
               this.api_v1_person_users = this.api_v1_person_users.filter((i) => {
                 return i._id !== res.data._id
               })
@@ -395,6 +411,7 @@
                   this.api_v1_group_group = res.data;
                 })
             })
+          }
         } else if(this.userSelected.length > 1) {
           axios.delete('http://172.16.135.89:3000/user/'+this.userSelected[0]._id,{
             data:{
@@ -417,7 +434,6 @@
                 this.userSelected = [];
               })
             })
-        }
       } else {
         alert("유저를 선택해 주세요")
       }
@@ -452,7 +468,7 @@
       axios.put('http://172.16.135.89:3000/user/'+this.userSelected[0]._id,{
         _id : this.userSelected[0]._id,
         name : this.name === '' || this.name === null? undefined : this.name,
-        email : this.email === '' || this.email === null? undefined : this.email,
+        mail : this.email === '' || this.email === null? undefined : this.email,
         mobile : this.mobile === '' || this.mobile === null? undefined : this.mobile,
         avatar_file : this.image === null ? this.userSelected[0].avatar_file : this.image,
         avatar_file_checksum : this.userSelected[0].avatar_file_checksum,

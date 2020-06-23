@@ -1,15 +1,25 @@
 var express = require('express');
 var router = express.Router();
+var moment = require('moment');
+require('moment-timezone'); 
+moment.tz.setDefault("Asia/Seoul"); 
 const boom = require('boom')
 const api_v1_person_access = require('../../../../models/api/v1/person/access')
 
 router.get('/',async function(req, res) {
     try {
         let get_data;
-        if(req.query.type === '3') {
-            get_data = await api_v1_person_access.find({avatar_type:3}).sort('-access_time').select('-avatar_file -avatar_contraction_data')
+        let date = new RegExp(moment().format('YYYY-MM-DD'));
+        let today = new RegExp(moment().format('YYYY-MM-DD'));
+        if(req.query.type && req.query.type !== 'todayStatistics'&& req.query.type !== 'todayAttendance' && req.query.type !== 'temperature' ) {
+            get_data = await api_v1_person_access.find({avatar_type:req.query.type}).sort('-access_time').select('-avatar_file -avatar_contraction_data')
         } else if(req.query.type === 'todayStatistics') {
             get_data = await api_v1_person_access.aggregate([
+                {
+                    $match: {
+                        access_time : {$regex:date}
+                    }
+                },
                 {
                     $group: {
                         _id: {"type":"$avatar_type"},
@@ -22,8 +32,35 @@ router.get('/',async function(req, res) {
                     }   
                 }
             ])
+        } else if(req.query.type === 'todayAttendance') {
+            get_data = await api_v1_person_access.aggregate([
+                {
+                    $match: {
+                        access_time : {$regex:today},
+                        avatar_type : 1
+                    }
+                },
+                {
+                    $sort: {
+                        lastDate : -1
+                    }   
+                },
+                {
+                    $group: {
+                        _id: {"avatar_contraction_data":"$avatar_contraction_data","avatar_type":"$avatar_type"},
+                        access_time : {$first:'$access_time'},
+                        count: { $sum: 1 }
+                    },
+                },
+            ])
+        } else if(req.query.type === 'temperature') {
+            get_data = await api_v1_person_access.find()
+                .where('avatar_temperature').gte(38)
+                .sort('-access_time')
+                .select('access_time avatar_file_url avatar_temperature avatar_type')
+                .limit(4)
         } else {
-            get_data = await api_v1_person_access.find().sort('-access_time').select('-avatar_file -avatar_contraction_data')
+            get_data = await api_v1_person_access.find().sort('-access_time').select('-avatar_file')
         }
         res.send(get_data)
     } catch (err) {

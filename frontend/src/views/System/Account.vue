@@ -63,12 +63,16 @@
                     :headers="headers"
                     :items="accounts"
                     show-select
+                    :items-per-page="itemsPerPage"
+                    :page.sync="page"
+                    @page-count="pageCount = $event"
+                    hide-default-footer
                     :single-select="true"
                     v-model="selected"
                     item-key="_id"
-                    :items-per-page="5"
                     class="ml-2 mr-2 elevation-0"
                 ></v-data-table>
+                <v-pagination v-model="page" :total-visible="7" :length="pageCount"></v-pagination>
             </v-card>
         </v-col>
     </v-row>
@@ -101,6 +105,9 @@ export default {
         selected : [],
         user_name:'',
         user_id:'',
+        itemsPerPage: 10,
+        page: 1,
+        pageCount: 0,
         user_pw:'',
         user_pw_chk:'',
         user_lang:'',

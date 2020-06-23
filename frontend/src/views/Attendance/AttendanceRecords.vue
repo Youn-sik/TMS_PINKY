@@ -45,8 +45,11 @@
                 </v-card-title>
                 <v-data-table
                     :headers="headers"
+                    :items-per-page="itemsPerPage"
+                    :page.sync="page"
+                    @page-count="pageCount = $event"
+                    hide-default-footer
                     :items="accessRecord"
-                    :items-per-page="5"
                     class="ml-2 mr-2 elevation-0"
                 >
                     <template v-slot:item.avatar_file_url="{ item }">
@@ -54,6 +57,12 @@
                         width="70px"
                         class="mt-1 mb-1"
                         :src="item.avatar_file_url"/>
+                    </template>
+                    <template v-slot:item.avatar_type="{ item }">
+                        <template v-if="item.avatar_type===1">사원</template>
+                        <template v-else-if="item.avatar_type===2">방문자</template>
+                        <template v-else-if="item.avatar_type===3">미등록자</template>
+                        <template v-else-if="item.avatar_type===4">블랙리스트</template>
                     </template>
                     <template v-slot:item.avatar_temperature="{ item }">
                         {{item.avatar_temperature.substring(0,4)}}
@@ -64,6 +73,7 @@
                         </template>
                     </template>
                 </v-data-table>
+                <v-pagination v-model="page" :total-visible="7" :length="pageCount"></v-pagination>
             </v-card>
         </v-col>
     </v-row>
@@ -75,6 +85,10 @@ export default {
         return {
             dates: [this.getFormatDate(new Date()), this.getFormatDate(new Date())],
             accessRecord : [],
+            accessRecordOrigin:[],
+            itemsPerPage: 10,
+            page: 1,
+            pageCount: 0,
             menu:false,
             deviceStates : [
                 {text:'모든 사용자',value:10},
@@ -88,9 +102,9 @@ export default {
             headers: [
                 { text: '', value: 'avatar_file_url' },
                 {
-                    text: '이름',
+                    text: '타입',
                     align: 'start',
-                    value: 'user_obid',
+                    value: 'avatar_type',
                 },
                 { text: '온도', value: 'avatar_temperature' },
                 { text: '출입시간', value: 'access_time' },
@@ -113,13 +127,31 @@ export default {
                 // return i.access_time.split(' ')[0] >= this.dates[0] && i.access_time.split(' ')[0] <= this.dates[1]
             // })
             this.originData = res.data
+            this.accessRecordOrigin = this.accessRecord;
             // console.log(this.accessRecord);
         })
     },
     methods: {
         clickOk () {
+            if(this.dates.length === 1 || this.dates[0] === this.dates[1]) {
+                this.accessRecord = this.originData.filter( (i) =>{
+                    return(i.access_time.split(' ')[0] === this.dates[0])
+                } )
+                this.nowStatus = {text:'모든 사용자',value:10}
+                this.accessRecordOrigin = this.accessRecord;
+            } else {
+                if(this.dates[0] > this.dates[1]) {
+                    let temp = this.dates[0];
+                    this.dates[0] = this.dates[1]
+                    this.dates[1] = temp;
+                }
+                this.accessRecord = this.originData.filter( (i) =>{
+                    return(i.access_time.split(' ')[0] >= this.dates[0] && i.access_time.split(' ')[0] <= this.dates[1])
+                } )
+                this.nowStatus = {text:'모든 사용자',value:10}
+                this.accessRecordOrigin = this.accessRecord;
+            }
             this.$refs.menu.save(this.dates)
-            // this.accessRecord = this.originData.filter( i => )
         },
         getFormatDate(date){
             var year = date.getFullYear();              //yyyy
@@ -145,9 +177,10 @@ export default {
     watch: {
       nowStatus (val) {
         if(val.text === '모든 사용자') {
-            this.accessRecord = this.originData
+            // let temp = this.accessRecord
+            this.accessRecord = this.accessRecordOrigin
         } else {
-            this.accessRecord = this.originData.filter(i => i.avatar_type === val.value)
+            this.accessRecord = this.accessRecordOrigin.filter(i => i.avatar_type === val.value)
         }
       },
     }

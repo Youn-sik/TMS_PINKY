@@ -6,8 +6,10 @@ const api_v1_group_glogs = require('../../../../models/api/v1/group/glogs')
 router.get('/',async function(req, res) {
     try {
         let get_data;
-        if(req.query.type === 'errer') {
+        if(req.query.type === 'error') {
             get_data = await api_v1_group_glogs.find().or([{log_no:'32'},{log_no:'33'},{log_no:'3'}]);
+        } else if(req.query.type === 'limit5errors') {
+            get_data = await api_v1_group_glogs.find().or([{log_no:'32'},{log_no:'33'},{log_no:'3'}]).limit(5);
         } else {
             get_data = await api_v1_group_glogs.find();
         }

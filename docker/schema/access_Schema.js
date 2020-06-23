@@ -11,6 +11,8 @@ const accessSchema = new mongoose.Schema({
     user_obid : { type:ObjectId, ref: 'User' },
     avatar_type : { type : Number },
     access_time : { type: String },
+    stb_sn : { type:String},
+    stb_obid : { type:ObjectId, ref:'Camera'},
     statistics_status : { type: String },
     create_at : { type: String, default: moment().format('YYYY-MM-DD HH:mm:ss') },
     create_ut : { type: String, default: Date.now },
