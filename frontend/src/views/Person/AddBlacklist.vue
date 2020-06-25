@@ -109,6 +109,7 @@
   import Base64Upload from '../../components/Base64Upload'
   import axios from 'axios'
   export default {
+    props:["isLogin","user_id"],
     components: {
       Base64Upload,
     },
@@ -168,6 +169,7 @@
               avatar_file : this.image,
               groups_obids : this.active[0] === undefined ? null : this.active,
               type : 5,
+              account : this.user_id,
         }).then(() => {
           alert('등록 되었습니다');
           this.$router.go(-1);

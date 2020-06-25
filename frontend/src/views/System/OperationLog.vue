@@ -3,6 +3,8 @@
         <v-col cols="11">
             <v-card>
                 <v-card-title>
+                    작업 기록
+                    <v-spacer></v-spacer>
                     <v-menu
                         ref="menu"
                         v-model="menu"
@@ -22,30 +24,28 @@
                             style="width:5%"
                         ></v-text-field>
                         </template>
-                        <v-date-picker v-model="dates" no-title scrollable range>
+                        <v-date-picker v-model="dates" no-title scrollable locale="ko" range>
                         <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
-                        <v-btn text color="primary" @click="$refs.menu.save(date)">OK</v-btn>
+                        <v-btn text color="primary" @click="menu = false">취소</v-btn>
+                        <v-btn text color="primary" @click="clickOK">확인</v-btn>
                         </v-date-picker>
                     </v-menu>
-                    <v-select
-                        class="ml-5"
-                        :items="deviceStates"
-                        style="width:5%"
-                        label="기준"
-                    ></v-select>
                     <v-spacer></v-spacer>
                     <v-spacer></v-spacer>
-                    <v-spacer></v-spacer>
-                    <v-spacer></v-spacer>
-                    <v-spacer></v-spacer>
-                    <v-spacer></v-spacer>
+                    <v-text-field
+                        v-model="search"
+                        append-icon="mdi-magnify"
+                        label="검색"
+                        single-line
+                    ></v-text-field>
                 </v-card-title>
                 <v-data-table
                     :headers="headers"
-                    :items="desserts"
                     :items-per-page="itemsPerPage"
+                    :items="operation"
                     :page.sync="page"
+                    :search="search"
+                    item-key="_id"
                     @page-count="pageCount = $event"
                     hide-default-footer
                     class="ml-2 mr-2 elevation-0"
@@ -56,38 +56,63 @@
     </v-row>
 </template>
 <script>
+import axios from 'axios'
 export default {
+    methods:{
+        clickOK () {
+            if(this.dates.length === 1 || this.dates[0] === this.dates[1]) {
+                this.operation = this.operationOrigin.filter(i=>i.date.split(' ')[0]=== this.dates[0])
+            } else {
+                if(this.dates[0] > this.dates[1]) {
+                    let temp = this.dates[0]
+                    this.dates[0] = this.dates[1];
+                    this.dates[1] = temp;
+                }
+                this.operation = this.operationOrigin.filter(i => i.date.split(' ')[0] >= this.dates[0] && i.date.split(' ')[0] <= this.dates[1])
+            }
+            this.$refs.menu.save(this.dates)
+        }
+    },
+    created() {
+        axios.get('http://172.16.135.89:3000/operation')
+            .then((res) => {
+                this.operationOrigin = res.data;
+                this.clickOK()
+            })
+    },
     computed: {
         dateRangeText () {
         return this.dates.join(' ~ ')
       },
     },
-    data: () => ({
-        itemsPerPage: 10,
-        page: 1,
-        pageCount: 0,
-        deviceStates : [
-            '모든 상태',
-            '출석',
-            '결석',
-            '지각',
-            '조퇴'
-        ],
-        dates: ['2019-09-10', '2019-09-20'],
-        headers: [
-            {
-                text: '이름',
-                align: 'start',
-                value: 'name',
-            },
-            { text: '부서', value: 'created_at' },
-            { text: 'ID', value: 'created_at' },
-            { text: '직위', value: 'created_at' },
-            { text: '출근', value: 'created_at' },
-            { text: '지각', value: 'created_at' },
-            { text: '결근', value: 'created_at' },
-            { text: '조퇴', value: 'created_at' },
-        ],
-    })
+    data() {
+        return{
+            operation:[],
+            operationOrigin:[],
+            itemsPerPage: 10,
+            page: 1,
+            search:'',
+            pageCount: 0,
+            deviceStates : [
+                '모든 상태',
+                '출석',
+                '결석',
+                '지각',
+                '조퇴'
+            ],
+            dates: [this.$moment().format('YYYY-MM-DD'), this.$moment().format('YYYY-MM-DD')],
+            menu:false,
+            headers: [
+                {
+                    text: 'ID',
+                    align: 'start',
+                    value: 'id.user_id',
+                },
+                { text: '날짜', value: 'date' ,filterable: false},
+                { text: '행동', value: 'action'},
+                { text: '상세', value: 'description'},
+            ],
+        }
+    }
 }
 </script>

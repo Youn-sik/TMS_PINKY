@@ -11,8 +11,8 @@ router.get('/',async function(req, res) {
         let get_data;
         let date = new RegExp(moment().format('YYYY-MM-DD'));
         let today = new RegExp(moment().format('YYYY-MM-DD'));
-        if(req.query.type && req.query.type !== 'todayStatistics'&& req.query.type !== 'todayAttendance' && req.query.type !== 'temperature' ) {
-            get_data = await api_v1_person_access.find({avatar_type:req.query.type}).sort('-access_time').select('-avatar_file -avatar_contraction_data')
+        if(req.query.type && req.query.type !== 'todayStatistics'&& req.query.type !== 'todayAttendance' && req.query.type !== 'temperature' && req.query.type !== 'attendance') {
+            get_data = await api_v1_person_access.find({avatar_type:req.query.type}).select('-avatar_file -avatar_contraction_data')
         } else if(req.query.type === 'todayStatistics') {
             get_data = await api_v1_person_access.aggregate([
                 {
@@ -59,8 +59,20 @@ router.get('/',async function(req, res) {
                 .sort('-access_time')
                 .select('access_time avatar_file_url avatar_temperature avatar_type')
                 .limit(4)
+        } else if(req.query.type === 'attendance') {
+            get_data = await api_v1_person_access.aggregate([
+                {
+                    $match: {avatar_type : 1}
+                },
+                {
+                    $project : {avatar_file:0,avatar_file_checksum: 0},
+                },
+                {
+                    $sort: {avatar_contraction_data : 1,access_time : 1}   
+                },
+            ])
         } else {
-            get_data = await api_v1_person_access.find().sort('-access_time').select('-avatar_file')
+            get_data = await api_v1_person_access.find().select('-avatar_file')
         }
         res.send(get_data)
     } catch (err) {

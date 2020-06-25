@@ -3,6 +3,7 @@
     <v-col cols="11" class="d-flex">
       <v-card
         width="25%"
+        class="mr-5 elevation-1"
       >
          <v-card-title>
           <v-text-field
@@ -34,7 +35,7 @@
         </v-card-text>
       </v-card>
       <v-divider vertical></v-divider>
-      <v-card width="75%">
+      <v-card width="75%" class="elevation-1">
         <!-- <v-card-text class="text--primary"> -->
         <v-row 
         style="height:100%;"

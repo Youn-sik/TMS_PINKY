@@ -28,6 +28,13 @@ router.post('/',function(req, res) {
     try {
         const add = new api_v3_device_camera(req.body)
         // api_v3_device_gateway.findByIdAndUpdate(add ,{ $addToSet: { user_obids : add._id} }, {new: true }).exec()
+        const operation = new Operation({
+            id:req.body.account,
+            action: '단말기 추가',
+            date : moment().format('YYYY-MM-DD HH:mm:ss'),
+            description : add.serial_number +' 단말기 추가'
+        })
+        operation.save();
         add.save()
         res.send(add)
     } catch (err) {
@@ -40,6 +47,13 @@ router.put('/:id',async function(req, res) {
         const id = req.params === undefined ? req.id : req.params.id
         const update_data = req.body === undefined ? req : req.body
         const update = await api_v3_device_camera.findByIdAndUpdate(id, update_data, {new: true })
+        const operation = new Operation({
+            id:req.body.account,
+            action: '단말기 수정',
+            date : moment().format('YYYY-MM-DD HH:mm:ss'),
+            description : update.serial_number +' 단말기 수정'
+        })
+        operation.save();
         res.send(update)
     } catch (err) {
         throw boom.boomify(err)
@@ -50,6 +64,13 @@ router.delete('/:id',async function(req, res) {
     try {
         const id = req.params === undefined ? req.id : req.params.id
         const delete_data = await api_v3_device_camera.findByIdAndRemove(id)
+        const operation = new Operation({
+            id:req.body.account,
+            action: '단말기 수정',
+            date : moment().format('YYYY-MM-DD HH:mm:ss'),
+            description : delete_data.serial_number +' 단말기 수정'
+        })
+        operation.save();
         res.send(delete_data)
     } catch (err) {
         throw boom.boomify(err)

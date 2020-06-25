@@ -3,6 +3,8 @@
         <v-col cols="11">
             <v-card>
                 <v-card-title>
+                    출근 기록
+                    <v-spacer></v-spacer>
                     <v-menu
                         ref="menu"
                         v-model="menu"
@@ -22,18 +24,12 @@
                             style="width:5%"
                         ></v-text-field>
                         </template>
-                        <v-date-picker v-model="dates" no-title scrollable range>
+                        <v-date-picker v-model="dates" no-title scrollable locale="ko" range>
                         <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
-                        <v-btn text color="primary" @click="$refs.menu.save(date)">OK</v-btn>
+                        <v-btn text color="primary" @click="menu = false">취소</v-btn>
+                        <v-btn text color="primary" @click="clickOK">확인</v-btn>
                         </v-date-picker>
                     </v-menu>
-                    <v-select
-                        class="ml-5"
-                        :items="deviceStates"
-                        style="width:5%"
-                        label="기준"
-                    ></v-select>
                     <v-spacer></v-spacer>
                     <v-text-field
                         v-model="search"
@@ -44,52 +40,128 @@
                 </v-card-title>
                 <v-data-table
                     :headers="headers"
-                    :items="desserts"
+                    :items="user"
                     :items-per-page="itemsPerPage"
                     :page.sync="page"
+                    :search="search"
                     @page-count="pageCount = $event"
                     hide-default-footer
                     class="ml-2 mr-2 elevation-0"
-                ></v-data-table>
+                >
+                    <template v-slot:item.avatar_file_url="{ item }">
+                        <img 
+                        width="70px"
+                        class="mt-1 mb-1"
+                        :src="item.avatar_file_url"/>
+                    </template>
+                    <!-- <template v-slot:item.attendance="{ item }">
+                        <template v-if="item.attendance">
+                            {{item.attendance}}
+                        </template>
+                        <template v-else>
+                            0
+                        </template>
+                    </template>
+                    <template v-slot:item.late="{ item }">
+                        <template v-if="item.late">
+                            {{item.late}}
+                        </template>
+                        <template v-else>
+                            0
+                        </template>
+                    </template> -->
+                </v-data-table>
                 <v-pagination v-model="page" :total-visible="7" :length="pageCount"></v-pagination>
             </v-card>
         </v-col>
     </v-row>
 </template>
 <script>
+import axios from 'axios';
 export default {
+    async created () {
+        await axios.get('http://172.16.135.89:3000/access?type=attendance')
+            .then((res) => {
+                this.accessOrigin = res.data;
+
+            })
+        axios.get('http://172.16.135.89:3000/user?type=1')
+            .then((res) => {
+                this.user = res.data;
+                this.clickOK()
+            })  
+    },
+    methods: {
+        clickOK() {
+            this.user.map((i,index) => {
+                this.$set(this.user[index],'late',0);
+                this.$set(this.user[index],'attendance',0);
+            })
+            if(this.dates.length === 1 || this.dates[0] === this.dates[1]) {
+                this.access = this.accessOrigin.filter(i => i.access_time.split(' ')[0] === this.dates[0]);
+            } else {
+                if(this.dates[0] > this.dates[1]) {
+                    let temp = this.dates[0]
+                    this.dates[0] = this.dates[1]
+                    this.dates[1] = temp;
+                }
+                this.access = this.accessOrigin.filter(i => i.access_time.split(' ')[0] >= this.dates[0] && i.access_time.split(' ')[0] <= this.dates[1]);
+            }
+            this.access.map((i,accessIndex) => {
+                if(accessIndex > 0 && this.access[accessIndex-1].avatar_contraction_data === i.avatar_contraction_data && this.access[accessIndex-1].access_time.split(' ')[0] === i.access_time.split(' ')[0]){
+                    return false;
+                }
+                let index = this.user.findIndex(j => j.avatar_contraction_data === i.avatar_contraction_data);
+                if(index !== -1){
+                    if(i.access_time.split(' ')[1] > '09:00:00') {
+                        this.$set(this.user[index],'late',++this.user[index].late);
+                    } else {
+                        this.$set(this.user[index],'attendance',++this.user[index].attendance);
+                    }
+                }    
+            })
+            this.$refs.menu.save(this.dates)
+        }
+    },
     computed: {
         dateRangeText () {
         return this.dates.join(' ~ ')
       },
     },
-    data: () => ({
-        itemsPerPage: 10,
-        page: 1,
-        pageCount: 0,
-        deviceStates : [
-            '모든 상태',
-            '출석',
-            '결석',
-            '지각',
-            '조퇴'
-        ],
-        dates: ['2019-09-10', '2019-09-20'],
-        headers: [
-            {
-                text: '이름',
-                align: 'start',
-                value: 'name',
-            },
-            { text: '부서', value: 'created_at' },
-            { text: 'ID', value: 'created_at' },
-            { text: '직위', value: 'created_at' },
-            { text: '출근', value: 'created_at' },
-            { text: '지각', value: 'created_at' },
-            { text: '결근', value: 'created_at' },
-            { text: '조퇴', value: 'created_at' },
-        ],
-    })
+    data () {
+        return {
+            access:[],
+            accessOrigin:[],
+            user:[],
+            avatar:'',
+            date:'',
+            search:'',
+            menu:false,
+            itemsPerPage: 10,
+            page: 1,
+            pageCount: 0,
+            dates: [this.$moment(Date.now()).format('YYYY-MM-DD'), this.$moment(Date.now()).format('YYYY-MM-DD')],
+            headers: [
+                {
+                    text: '',
+                    value: 'avatar_file_url',
+                    filterable: false,
+                },
+                {
+                    text: '이름',
+                    align: 'start',
+                    value: 'name',
+                },
+                { text: '부서' },
+                { text: 'ID' },
+                { text: '직위' },
+                { text: '출근',filterable: false ,value: 'attendance'},
+                { text: '지각',filterable: false ,value: 'late'},
+                { text: '결근',filterable: false },
+                { text: '조퇴',filterable: false },
+            ],
+        }
+    }
 }
 </script>
 <style>

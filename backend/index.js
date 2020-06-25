@@ -26,6 +26,7 @@ const cameraMonitorRouter = require('./routes/api/v3/device/camera_monitor');
 const gatewayRouter = require('./routes/api/v3/device/gateway');
 const statisticsRouter = require('./routes/api/v3/device/statistics');
 const historyRouter = require('./routes/api/v1/person/history');
+const operationRouter = require('./routes/api/v1/person/operation');
 const accountRouter = require('./routes/account');
 
 // Register Fastify GraphQL
@@ -49,6 +50,7 @@ fastify.use('/group',groupRouter);
 fastify.use('/glogs',glogsRouter);
 fastify.use('/statistics',statisticsRouter);
 fastify.use('/history',historyRouter);
+fastify.use('/operation',operationRouter);
 
 // fastify.use(express.static(path.join(__dirname, 'uploads')));
 fastify.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -82,6 +84,7 @@ fastify.post('/login', async function(req, res) {
 //유효한 토큰인지 검사
 fastify.get('/auth', async function(req, res) {
     let token = req.query.token;
+    let tokenAuth = {user_id:null};;
     if(token === undefined && req.headers.cookie !== undefined) {
         token = cookie.parse(req.headers.cookie).token;
     }
@@ -90,13 +93,13 @@ fastify.get('/auth', async function(req, res) {
         auth = false;
     } else {
         try {
-            let tokenAuth = jwt.verify(token,'jjh');
+            tokenAuth = jwt.verify(token,'jjh');
             auth = true;
         } catch(err) {
             auth = false;
         }
     }
-    res.send({auth});
+    res.send({auth,user_id:tokenAuth.user_id});
 });
 
 // const context = (req) => {

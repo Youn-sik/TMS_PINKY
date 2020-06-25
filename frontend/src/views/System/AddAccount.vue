@@ -39,6 +39,7 @@
 <script>
 import axios from 'axios'
 export default {
+    props:["isLogin","user_id"],
     methods : {
         addAccount () {
             if(this.user_name === '') {
@@ -56,7 +57,8 @@ export default {
                     user_name : this.user_name,
                     user_id : this.user_id,
                     user_pw : this.user_pw,
-                    user_lang : this.user_lang
+                    user_lang : this.user_lang,
+                    account : this.user_id,
                 })
                 .then(() => {
                     this.$router.go(-1);

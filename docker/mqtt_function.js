@@ -673,6 +673,20 @@ module.exports = {
         }
     },
 
+    async control_temperature_result(json) {
+        // try{
+        //     let camera = await Camera.findOne( { serial_number : json.stb_sn });
+        //     let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 24, log_message: 'stb_reset', create_dt: json.create_time });
+        //     newGlogs.save(function (error, data) {
+        //         if (error) {
+        //             console.log(error);
+        //         }
+        //     });
+        // } catch (error){
+        //     console.log(error);
+        // }
+    },
+
     async control_device_info(json) {
         try{
             let camera = await Camera.findOne({ serial_number : json.stb_sn });

@@ -5,6 +5,7 @@ const api_v1_person_user = require('../../../../models/api/v1/person/user')
 const api_v1_group_group = require('../../../../models/api/v1/group/group')
 const Access = require('../../../../models/api/v1/person/access')
 const History = require('../../../../models/api/v1/person/history')
+const Operation = require('../../../../models/api/v1/person/operation')
 const crypto = require('crypto');
 var fs = require('fs')
 var moment = require('moment');
@@ -15,11 +16,11 @@ router.get('/',async function(req, res) {
     try {
         let get_data
         if(req.query.type === '1') {
-            get_data = await api_v1_person_user.find({type:'1'})
+            get_data = await api_v1_person_user.find({type:'1'}).select('-avatar_file -avatar_file_checksum')
         } else if(req.query.type === '2') {
-            get_data = await api_v1_person_user.find({type:'2'})
+            get_data = await api_v1_person_user.find({type:'2'}).select('-avatar_file -avatar_file_checksum')
         } else if(req.query.type === '5') {
-            get_data = await api_v1_person_user.find({type:'5'})
+            get_data = await api_v1_person_user.find({type:'5'}).select('-avatar_file -avatar_file_checksum')
         } else {
             get_data = await api_v1_person_user.find()
         }
@@ -72,7 +73,10 @@ router.post('/',async function(req, res) {
             group = group === null ? await api_v1_group_group.findOne({name:'undefined',type:req.body.type}) : group
             add.groups_obids = [group._id];
         }
-
+        let type = '';
+        if(add.type === 1) type = '사원';
+        else if(add.type === 2) type = '방문자'
+        else if(add.type === 5) type = '블랙리스트'
         const history = new History({
             avatar_file : add.avatar_file,
             avatar_contraction_data : add.avatar_contraction_data,
@@ -84,7 +88,13 @@ router.post('/',async function(req, res) {
             create_ut : Date.now(),
             action : '생성'
         });
-
+        const operation = new Operation({
+            id:req.body.account,
+            action: '유저 생성',
+            date : moment().format('YYYY-MM-DD HH:mm:ss'),
+            description : add.name + ' ' + type +'에 추가'
+        })
+        operation.save();
         history.save();
         add.save();
         res.send(add);
@@ -131,6 +141,10 @@ router.put('/:id',async function(req, res) {
         update_data.update_at = moment().format('YYYY-MM-DD HH:mm:ss');
         update_data.update_ut = Date.now;
         const update = await api_v1_person_user.findOneAndUpdate({_id:id}, {$set:update_data}, {new: true })
+        let type = '';
+        if(update.type === 1) type = '사원';
+        else if(update.type === 2) type = '방문자'
+        else if(update.type === 5) type = '블랙리스트'
         const history = new History({
             avatar_file : update.avatar_file,
             avatar_contraction_data : update.avatar_contraction_data,
@@ -142,7 +156,13 @@ router.put('/:id',async function(req, res) {
             create_ut : Date.now(),
             action : '수정',
         });
-
+        const operation = new Operation({
+            id:req.body.account,
+            action: '유저 업데이트',
+            date : moment().format('YYYY-MM-DD HH:mm:ss'),
+            description : update.name+' '+type+' 수정'
+        })
+        operation.save();
         history.save();
         res.send(update);
     } catch (err) {
@@ -156,6 +176,10 @@ router.delete('/:id',async function(req, res) {
             await api_v1_group_group.updateMany({type:req.body.type},{ $pull: { user_obids : req.body._id} }, {new: true }).exec();
             const id = req.params === undefined ? req.id : req.params.id
             const delete_data = await api_v1_person_user.findByIdAndDelete(id) //type : 10 = deleted
+            let type = '';
+            if(delete_data.type === 1) type = '사원';
+            else if(delete_data.type === 2) type = '방문자'
+            else if(delete_data.type === 5) type = '블랙리스트'
             const history = new History({
                 avatar_file : delete_data.avatar_file,
                 avatar_contraction_data : delete_data.avatar_contraction_data,
@@ -167,6 +191,13 @@ router.delete('/:id',async function(req, res) {
                 create_ut : Date.now(),
                 action : '삭제',
             });
+            const operation = new Operation({
+                id:req.body.account,
+                action: '유저 삭제',
+                date : moment().format('YYYY-MM-DD HH:mm:ss'),
+                description : delete_data.name +' 삭제'
+            })
+            operation.save();
             history.save();
             res.send(delete_data);
         } catch (err) {
@@ -177,16 +208,13 @@ router.delete('/:id',async function(req, res) {
             let deletedList = [];
             req.body.selectedData.map(async (i,index) => {
                 await api_v1_group_group.updateMany({type:i.type},{ $pull: { user_obids : i._id} }, {new: true }).exec();
-                deletedList.push(await api_v1_person_user.findByIdAndUpdate(i._id,{
-                    groups_obids:[],
-                    avatar_file:null,
-                    avatar_contraction_data:null,
-                    type:10,
-                    update_at:moment().format('YYYY-MM-DD HH:mm:ss'),
-                    update_ut:Date.now()
-                }));
+                deletedList.push(await api_v1_person_user.findByIdAndDelete(i._id));
                 if(req.body.selectedData.length-1 === index) {
                     deletedList.map((i,index) => {
+                        let type = '';
+                        if(i.type === 1) type = '사원';
+                        else if(i.type === 2) type = '방문자'
+                        else if(i.type === 5) type = '블랙리스트'
                         const history = new History({
                             avatar_file : i.avatar_file,
                             avatar_contraction_data : i.avatar_contraction_data,
@@ -198,6 +226,13 @@ router.delete('/:id',async function(req, res) {
                             create_ut : Date.now(),
                             action : '삭제',
                         });
+                        const operation = new Operation({
+                            id:req.body.account,
+                            action: '유저 삭제',
+                            date : moment().format('YYYY-MM-DD HH:mm:ss'),
+                            description : i.name+' '+type+' 삭제'
+                        })
+                        operation.save();
                         history.save();
                     })
                     res.send(deletedList)

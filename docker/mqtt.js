@@ -23,6 +23,7 @@ client.on('connect', function() {
         '/control/get_device_file_list/result/+',
         '/control/reset/result/+',
         '/control/device_info/+',
+        '/control/temperature/result/+',
         '/control/rrd/+',
         '/log/status/+',
     ], (error, result) => {
@@ -156,6 +157,13 @@ client.on('message', async function(topic, message) {
         if (topic === "/control/reset/result/" + json.stb_sn) { 
             if (json.stb_sn != undefined) {
                 fn.control_reset_result(json);
+            }
+        }
+
+        /* 제어 > 온도 설정 */
+        if (topic === "/control/temperature/result/" + json.stb_sn) { 
+            if (json.stb_sn != undefined) {
+                fn.control_temperature_result(json);
             }
         }
         

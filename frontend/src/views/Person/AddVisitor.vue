@@ -123,6 +123,7 @@
           this.api_v1_group_group = res.data;
         })
     },
+    props:["isLogin","user_id"],
     methods: {
       save (date) {
         this.$refs.menu.save(date)
@@ -168,6 +169,7 @@
               avatar_file : this.image,
               groups_obids : this.active[0] === undefined ? null : this.active,
               type : 2,
+              account : this.user_id,
         }).then(() => {
           alert('등록 되었습니다');
           this.$router.go(-1);

@@ -63,10 +63,11 @@
                         <v-list-item-content>
                             <GChart
                                 type="PieChart"
-                                v-if="deviceStatus[1][1]+deviceStatus[2][1] !== 0"
                                 :data="deviceStatus"
+                                v-if="deviceStatus[1][1]+deviceStatus[2][1] !== 0"
                                 :options="devicesChartOptions"
-                                style="width: 250px; height: 250px;"
+                                style="width:100%; height: 250px;"
+                                :resizeDebounce="1"
                             />
                             <v-row v-else-if="isEmpty[0]" 
                                 align="center"
@@ -419,7 +420,7 @@ export default {
                 fontSize: "13",
                 bold: false,
                 italic: false
-            }
+            },
         },
         deviceConditionData : []
       }

@@ -1,13 +1,17 @@
 <template>
   <v-app id="inspire">
     <v-app-bar
+      :clipped-left="true"
       app
-      clipped-right
       color="primary"
+      class='elevation-0'
       dark
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title></v-toolbar-title>
+      <v-toolbar-title
+        style="width: 300px"
+        class="ml-0 pl-4"
+      >출입통제 시스템</v-toolbar-title>
       <v-spacer />
       <v-menu
         offset-y
@@ -28,20 +32,9 @@
 
     <v-navigation-drawer
       v-model="drawer"
+      :clipped="true"
       app
     >
-       <v-list>
-        <v-list-item link>
-          <v-list-item-action>
-            <v-icon>mdi-home</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>출입 통제 시스템</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-
-
      <v-list dense>
         <template v-for="item in items">
           <v-row
@@ -70,6 +63,9 @@
             v-model="item.model"
           >
             <template v-slot:activator>
+              <v-list-item-action>
+                <v-icon>{{ item.icon }}</v-icon>
+              </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title>
                   {{ item.text }}
@@ -82,11 +78,8 @@
               :to="{path: '/index'+child.to}"
               link
             >
-              <v-list-item-action v-if="child.icon">
-                <v-icon>{{ child.icon }}</v-icon>
-              </v-list-item-action>
               <v-list-item-content>
-                <v-list-item-title>
+                <v-list-item-title class="ml-12 pl-2">
                   {{ child.text }}
                 </v-list-item-title>
               </v-list-item-content>
@@ -111,11 +104,11 @@
       </v-list>
     </v-navigation-drawer>
     
-    <v-content>
-        <router-view></router-view>
+    <v-content style="background-color:#fafafa">
+        <router-view :user_id="user_id"></router-view>
     </v-content>
 
-    <v-footer
+    <!-- <v-footer
       app
       color="primary"
       class="white--text"
@@ -123,7 +116,7 @@
       <span>Vuetify</span>
       <v-spacer />
       <span>&copy; 2019</span>
-    </v-footer>
+    </v-footer> -->
   </v-app>
 </template>
 
@@ -144,7 +137,7 @@
 
 <script>
     export default {
-    // props:["isLogin","userId"],
+    props:["isLogin","user_id"],
     methods: {
       clickLogout () {
         this.$emit('logout',false);
@@ -158,76 +151,72 @@
       items: [
         { icon: 'trending_up', text: '종합 현황판', to: '/dashboard'},
         {
-          icon: 'mdi-chevron-up',
-          'icon-alt': 'mdi-chevron-down',
+          icon: 'compare_arrows',
           text: '출입, 출근 관리',
-          model: false,
           children: [
-            // { text: '출석 규칙', to:"/attendancerules" },
-            // { text: '출석 구역' , to:"/attendancearea"},
-            { text: ' - 출입 기록', to:'/attendancerecords' },
-            { text: ' - 출근 기록',to:'/AttendanceStatistics' },
+            { text: '출입 기록', to:'/attendancerecords' },
+            { text: '출근 기록',to:'/AttendanceStatistics' },
           ],
         },
         {
-          icon: 'mdi-chevron-up',
+          icon: 'people_alt',
           'icon-alt': 'mdi-chevron-down',
           text: '인사 관리',
           model: false,
           children: [
             // { text: '사원 관리', to: '/employee' },
-            { text: ' - 사원 관리', to: '/employeegroup' },
+            { text: '사원 관리', to: '/employeegroup' },
             // { text: '방문자 관리', to: '/visitor' },
-            { text: ' - 방문자 관리', to: '/visitorgroup' },
+            { text: '방문자 관리', to: '/visitorgroup' },
             // { text: '블랙리스트 관리', to: '/blacklist' },
-            { text: ' - 블랙리스트 관리', to: '/blacklistgroup' },
-            { text: ' - 미등록자 관리', to: '/stranger' },
-            { text: ' - 등록 기록', to: '/regrecord' },
-            { text: ' - 사진으로 검색', to: '/searchpeople' },
+            { text: '블랙리스트 관리', to: '/blacklistgroup' },
+            { text: '미등록자 관리', to: '/stranger' },
+            { text: '등록 기록', to: '/regrecord' },
+            { text: '사진으로 검색', to: '/searchpeople' },
           ],
         },
         {
-          icon: 'mdi-chevron-up',
+          icon: 'dns',
           'icon-alt': 'mdi-chevron-down',
           text: '단말 관리',
           model: false,
           children: [
-            { text: ' - 단말 목록' ,to: '/device'},
-            { text: ' - 단말기 스크린샷' ,to: '/devicescreen'},
+            { text: '단말 목록' ,to: '/device'},
+            { text: '단말기 스크린샷' ,to: '/devicescreen'},
           ],
         },
         {
-          icon: 'mdi-chevron-up',
+          icon: 'settings',
           'icon-alt': 'mdi-chevron-down',
           text: '시스템 관리',
           model: false,
           children: [
             // { text: '기업 정보' },
-            { text: ' - 계정 관리', to:'/account'},
-            { text: ' - 작업 기록', to:'/operationlog' },
+            { text: '계정 관리', to:'/account'},
+            { text: '작업 기록', to:'/operationlog' },
             // { text: '오픈 플랫폼' },
           ],
         },
         {
-          icon: 'mdi-chevron-up',
+          icon: 'insert_chart',
           'icon-alt': 'mdi-chevron-down',
           text: '통계',
           model: false,
           children: [
             // { text: '출석 통계', to:'/'},
             // { text: '출입 통계', to:'/' },
-            { text: ' - 단말 통계', to:'/devicereport' },
-            { text: ' - 출입 통계', to:'/accessreport' },
+            { text: '단말 통계', to:'/devicereport' },
+            { text: '출입 통계', to:'/accessreport' },
           ],
         },
         {
-          icon: 'mdi-chevron-up',
+          icon: 'camera',
           'icon-alt': 'mdi-chevron-down',
           text: '열화상',
           model: false,
           children: [
-            { text: ' - 열화상 단말', to:'/itcdevice' },
-            { text: ' - 열화상 기록', to:'/itcrecords' },
+            { text: '열화상 단말', to:'/itcdevice' },
+            { text: '열화상 기록', to:'/itcrecords' },
           ],
         },
       ],

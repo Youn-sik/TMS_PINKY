@@ -9,69 +9,31 @@
         <v-list-item three-line>
           <v-list-item-content>
             <div class="mb-4">총합</div>
-            <v-list-item-title class="headline mb-1">15</v-list-item-title>
+            <v-list-item-title class="headline mb-1">{{api_v3_device_camera.length}}</v-list-item-title>
           </v-list-item-content>
           <v-divider vertical></v-divider>
           <v-list-item-content>
             <div class="mb-4">온라인</div>
-            <v-list-item-title class="headline mb-1">12</v-list-item-title>
+            <v-list-item-title class="headline mb-1">{{online}}</v-list-item-title>
           </v-list-item-content>
           <v-divider vertical></v-divider>
           <v-list-item-content>
             <div class="mb-4">오프라인</div>
-            <v-list-item-title class="headline mb-1">3</v-list-item-title>
+            <v-list-item-title class="headline mb-1">{{offline}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-card>
     </v-col>
     <v-col cols="11" class="d-flex">
-      <!-- <v-card
-        width="25%"
-      >
-         <v-card-title>
-          <v-text-field
-            v-model="searchGroup"
-            label="검색"
-            clearable
-            hide-details
-            clear-icon="mdi-close-circle-outline"
-            append-icon="search"
-          ></v-text-field>
-        </v-card-title>
-        <v-card-text>
-          <v-treeview
-            :items="api_v1_group_group"
-            item-key="_id"
-            item-disabled="avatar_file"
-            :active.sync="active"
-            :search="searchGroup"
-            activatable
-            :multiple-active="false"
-            :return-object="true"
-          >
-            <template v-slot:prepend="{ item }">
-              <v-icon
-                v-if="item.children"
-                v-text="`mdi-folder-network`"
-              ></v-icon>
-              <v-icon
-                v-else-if="item.avatar_file"
-                v-text="`person`"
-              ></v-icon>
-            </template>
-          </v-treeview>
-        </v-card-text>
-      </v-card>
-      <v-divider vertical></v-divider> -->
       <v-card width="100%">
         <v-card-title>
+          단말 목록
+          <v-spacer></v-spacer>
           <v-text-field
             v-model="search"
+            append-icon="mdi-magnify"
             label="검색"
-            clearable
-            hide-details
-            clear-icon="mdi-close-circle-outline"
-            append-icon="search"
+            single-line
           ></v-text-field>
           <div>
             <v-btn class="ml-2 mr-2 mt-4" color="error" v-if="deviceSelected[0]" @click="delDevice"><v-icon dark left>delete_forever</v-icon>삭제</v-btn>
@@ -275,6 +237,7 @@
           hide-default-footer
           :single-expand='true'
           show-select
+          :search="search"
           :items="api_v3_device_camera"
           :expanded.sync="expanded"
           item-key="_id"
@@ -285,7 +248,7 @@
             <td :colspan="headers.length+1" class="deviceTab pa-0">
               <v-tabs
                 v-model="tab"
-                background-color="#f9f6f7"
+                background-color="#f4f6ff"
               >
                 <v-tab
                   v-for="i in tabs"
@@ -299,13 +262,10 @@
                   v-for="i in tabs"
                   :key="i"
                 >
-                  <v-card flat color="#f9f6f7">
-                    <v-card-text v-if="i === '단말 정보'">
-                      <v-col class="d-flex">
-                        기본 설정 정보
-                      </v-col>
-                      <v-row justify="center">
-                        <v-col cols="8">
+                  <v-card flat color="#f4f6ff">
+                    <v-card-text>
+                      <v-row justify="center" v-if="i === '기본 정보'">
+                        <v-col cols="10">
                           <p>단말기 명 : {{item.name}}</p>
                           <p>위치 : {{item.location}}</p>
                           <p>단말기 IP : {{item.ip}}</p>
@@ -318,12 +278,8 @@
                           <p>상태 : {{item.status}}</p>
                         </v-col>
                       </v-row>
-                      <v-divider></v-divider>
-                      <v-col class="d-flex">
-                        캡쳐 정보
-                      </v-col>
-                      <v-row justify="center">
-                        <v-col cols="8">
+                      <v-row justify="center" v-else-if="i === '캡쳐 정보'">
+                        <v-col cols="10">
                           <p>캡쳐 상태 : {{item.config_data.capture_status}}</p>
                           <p>캡쳐 사이즈 : {{item.config_data.capture_size}}</p>
                           <p>캡쳐 시간 : {{item.config_data.capture_time}}</p>
@@ -349,6 +305,7 @@
   import path from "path"
   import mqtt from 'mqtt'
   export default {
+    props:["isLogin","user_id"],
     created () {
       this.$mqtt.on('message', (topic,message) => {
         console.log(topic,new TextDecoder("utf-8").decode(message))
@@ -366,6 +323,10 @@
       this.$mqtt.subscribe('/control/reset/result/+')
       axios.get('http://172.16.135.89:3000/camera').then((res) => {
         this.api_v3_device_camera = res.data;
+        res.data.map((i) => {
+          if(i.status === 'Y') this.online++;
+          else if(i.status === 'N') this.offline++;
+        })
       })
       axios.get('http://172.16.135.89:3000/gateway').then((res) =>{
         this.gatewayList = res.data;
@@ -379,6 +340,8 @@
         time: null,
         menu2: false,
         searchGroup:null,
+        online:0,
+        offline:0,
         itemsPerPage: 10,
         page: 1,
         pageCount: 0,
@@ -403,7 +366,8 @@
         switch:null,
         deviceRadio:'gateway',
         tabs: [
-          "단말 정보"
+          "기본 정보",
+          '캡쳐 정보'
         ],
         model: 1,
         expanded: [],
@@ -412,8 +376,8 @@
           { text: '단말기 명', value: 'name' },
           { text: '버전', value: 'app_version' },
           { text: '위치', value: 'location' },
-          { text: '상태', value: 'status' },
-          { text: '', value: 'data-table-expand' },
+          { text: '상태', value: 'status' ,filterable: false},
+          { text: '', value: 'data-table-expand',filterable: false},
         ],
         addUserModal : false,
         batchSettingModal : false,
@@ -487,7 +451,8 @@
           app_version:this.appVersion ? this.appVersion : this.deviceSelected[0].app_version,
           description:this.description ? this.description : this.deviceSelected[0].description,
           protocol:this.protocol ? this.protocol : this.deviceSelected[0].protocol,
-          url:this.url ? this.url : this.deviceSelected[0].url
+          url:this.url ? this.url : this.deviceSelected[0].url,
+          account : this.user_id,
         }).then((res) => {
           let index = this.api_v3_device_camera.findIndex(x => x._id == res.data._id)
           this.$set(this.api_v3_device_camera, index, res.data)
@@ -529,7 +494,13 @@
       },
       delDevice () {
         if(this.deviceSelected){
-          axios.delete('http://172.16.135.89:3000/camera/'+this.deviceSelected[0]._id)
+          axios.delete('http://172.16.135.89:3000/camera/'+this.deviceSelected[0]._id,{
+            data:{
+              type:5,
+              _id:this.userSelected[0]._id,
+              account : this.user_id
+            }
+          })
             .then((res) => {
               this.api_v3_device_camera = this.api_v3_device_camera.filter((i) => {
                 return i._id !== res.data._id;
@@ -555,6 +526,7 @@
               location:this.deviceLocation,
               ip:this.deviceIP,
               port:parseInt(this.port),
+              account : this.user_id,
             }).then(() => {
               this.addUserModal = false
               this.deviceName = null
@@ -590,6 +562,7 @@
             axios.post('http://172.16.135.89:3000/camera',{
               name:this.deviceName,
               location:this.deviceLocation,
+              account : this.user_id,
               gateway_obid:this.gateway._id,
               serial_number:this.serial_number,
               description:this.description,

@@ -3,13 +3,13 @@
         <v-col cols="11">
             <v-card>
                 <v-card-title>
+                    계정 관리
+                    <v-spacer></v-spacer>
                     <v-text-field
                         v-model="search"
+                        append-icon="mdi-magnify"
                         label="검색"
-                        clearable
-                        hide-details
-                        clear-icon="mdi-close-circle-outline"
-                        append-icon="search"
+                        single-line
                     ></v-text-field>
                     <div>
                         <v-btn class="ml-2 mt-3" color="error" v-if="selected[0]" @click="deleteAccount"><v-icon dark left>delete_forever</v-icon>삭제</v-btn>
@@ -68,6 +68,7 @@
                     @page-count="pageCount = $event"
                     hide-default-footer
                     :single-select="true"
+                    :search="search"
                     v-model="selected"
                     item-key="_id"
                     class="ml-2 mr-2 elevation-0"

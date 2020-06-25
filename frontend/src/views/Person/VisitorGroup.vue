@@ -3,6 +3,7 @@
     <v-col cols="11" class="d-flex">
       <v-card
         width="25%"
+        class="mr-5 elevation-1"
       >
          <v-card-title>
           <v-text-field
@@ -82,7 +83,7 @@
         </v-card-text>
       </v-card>
       <v-divider vertical></v-divider>
-      <v-card width="75%">
+      <v-card width="75%" class="elevation-1">
         <v-card-title>
           <v-text-field
             v-model="searchEmployee"
@@ -162,7 +163,7 @@
                 </v-card-actions>
               </v-card>
             </v-dialog>
-            <v-btn color="primary" class="mt-4" :to="{path : 'addemployee'}"><v-icon dark left>mdi-plus</v-icon>추가</v-btn>
+            <v-btn color="primary" class="mt-4" :to="{path : 'addvisitor'}"><v-icon dark left>mdi-plus</v-icon>추가</v-btn>
           </div>
         </v-card-title>
         <v-data-table
@@ -213,6 +214,7 @@
     components: {
       Base64Upload,
     },
+    props:["isLogin","user_id"],
     data: () => ({
       active:[],
       updateActive:[],
@@ -383,7 +385,8 @@
           axios.delete('http://172.16.135.89:3000/user/'+this.userSelected[0]._id,{
             data:{
               type:2,
-              _id:this.userSelected[0]._id
+              _id:this.userSelected[0]._id,
+              account : this.user_id
             }
           }).then((res) => {
               this.api_v1_person_users = this.api_v1_person_users.filter((i) => {
@@ -407,7 +410,8 @@
           axios.delete('http://172.16.135.89:3000/user/'+this.userSelected[0]._id,{
             data:{
               type:2,
-              selectedData:this.userSelected
+              selectedData:this.userSelected,
+              account : this.user_id
             }
           }).then((res) => {
             this.api_v1_person_users = this.arrayUnique(this.api_v1_person_users.concat(res.data));
@@ -466,6 +470,7 @@
         avatar_file_checksum : this.userSelected[0].avatar_file_checksum,
         updated_at : this.getFormatDate(new Date()),
         groups_obids : this.userSelected[0].groups_obids,
+        account : this.user_id,
         clicked_groups : this.updateActive,
         type : 2
       }).then((res) => {

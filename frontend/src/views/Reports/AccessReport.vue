@@ -3,6 +3,7 @@
     <v-col cols="11" class="d-flex">
       <v-card
         width="25%"
+        class="mr-5 elevation-1"
       >
          <v-card-title>
           <v-text-field
@@ -38,7 +39,7 @@
         </v-card-text>
       </v-card>
       <v-divider vertical></v-divider>
-      <v-card width="75%">
+      <v-card width="75%" class="elevation-1">
           <v-tabs
           v-model="tab">
             <v-tab>그래프</v-tab>
@@ -59,11 +60,12 @@
                 v-model="dateRangeText"
                 prepend-icon="event"
                 readonly
+                class="ml-5"
                 v-on="on"
                 style="width:30%"
               ></v-text-field>
             </template>
-            <v-date-picker v-model="dates" no-title scrollable range>
+            <v-date-picker v-model="dates" no-title scrollable locale="ko" range>
               <v-spacer></v-spacer>
               <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
               <v-btn text color="primary" @click="clickOK">OK</v-btn>

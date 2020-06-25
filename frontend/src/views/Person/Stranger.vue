@@ -2,8 +2,10 @@
   <v-row justify="center">
     <v-col cols="11" class="d-flex">
       <v-card width="100%">
+        <v-card-title>
+          미등록자 관리
+        </v-card-title>
         <v-data-table
-          v-model="userSelected"
           :single-select="true"
           show-select
           item-key="_id"

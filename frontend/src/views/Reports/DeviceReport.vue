@@ -1,10 +1,9 @@
 <template>
   <v-row justify="center">
-    <v-col cols="11">
-    </v-col>
     <v-col cols="11" class="d-flex">
       <v-card
         width="35%"
+        class="mr-5 elevation-1"
       >
         <v-card-title>
           <v-text-field
@@ -34,7 +33,7 @@
         <v-pagination v-model="page" :total-visible="7" :length="pageCount"></v-pagination>
       </v-card>
       <v-divider vertical></v-divider>
-      <v-card width="65%">
+      <v-card width="65%" class="elevation-1">
         <v-tabs
           v-model="tab"
         >
@@ -60,11 +59,12 @@
                 v-model="dateRangeText"
                 prepend-icon="event"
                 readonly
+                class="ml-5"
                 v-on="on"
                 style="width:30%"
               ></v-text-field>
             </template>
-            <v-date-picker v-model="dates" no-title scrollable range>
+            <v-date-picker v-model="dates" no-title scrollable locale="ko" range>
               <v-spacer></v-spacer>
               <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
               <v-btn text color="primary" @click="clickOK">OK</v-btn>

@@ -3,6 +3,8 @@
         <v-col cols="11">
             <v-card>
                 <v-card-title>
+                    출입 기록
+                    <v-spacer></v-spacer>
                     <v-menu
                         ref="menu"
                         v-model="menu"
@@ -22,7 +24,7 @@
                             style="width:5%"
                         ></v-text-field>
                         </template>
-                        <v-date-picker v-model="dates" no-title scrollable range>
+                        <v-date-picker v-model="dates" no-title scrollable locale="ko" range>
                         <v-spacer></v-spacer>
                         <v-btn text color="primary" @click="menu = false">취소</v-btn>
                         <v-btn text color="primary" @click="clickOk">확인</v-btn>
@@ -119,6 +121,7 @@ export default {
     },
     created () {
         axios.get('http://172.16.135.89:3000/access').then((res) => {
+            res.data = res.data.reverse();
             this.accessRecord = res.data.filter((i) => {
                 return(i.access_time >= this.dates[0] && i.access_time.split(' ')[0] <= this.dates[1])
             })

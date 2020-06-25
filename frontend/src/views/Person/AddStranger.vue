@@ -109,6 +109,7 @@
     // components: {
     //   Base64Upload,
     // },
+    props:["isLogin","user_id"],
     watch: {
       menu (val) {
         val && setTimeout(() => (this.$refs.picker.activePicker = 'YEAR'))
@@ -165,6 +166,7 @@
               stranger_id : this.$route.params.item._id,
               groups_obids : this.active[0] === undefined ? null : this.active,
               type : this.nowStatus.value,
+              account : this.user_id,
         }).then(() => {
           if(this.nowStatus.value === 1) {
             this.$router.push('/index/employeegroup');

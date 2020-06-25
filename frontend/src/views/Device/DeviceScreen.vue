@@ -4,15 +4,16 @@
       <v-divider vertical></v-divider>
       <v-card width="100%">
         <v-card-title>
+          단말 목록
+          <v-spacer></v-spacer>
           <v-text-field
             v-model="search"
+            append-icon="mdi-magnify"
             label="검색"
-            clearable
-            hide-details
-            clear-icon="mdi-close-circle-outline"
-            append-icon="search"
+            single-line
           ></v-text-field>
         </v-card-title>
+        <v-divider></v-divider>
         <v-dialog
         v-model="dialog"
         max-width="50vw"
@@ -29,6 +30,7 @@
                     :page.sync="page"
                     @page-count="pageCount = $event"
                     hide-default-footer
+                    hide-default-header
                     item-key="_id"
                     style="text-align: center"
                     class="elevation-0"
@@ -63,23 +65,18 @@
         </v-dialog>
         <v-data-table
           :headers="headers"
-          :items="api_v3_device_camera_monitor"
+          :items="filteredItems"
           :items-per-page="itemsPerPage"
           :page.sync="pageTotal"
+          :search="search"
           @page-count="pageCountTotal = $event"
           hide-default-footer
+          hide-default-header
           item-key="_id"
           class="elevation-0"
         >
             <template v-slot:body="{items}">
                <tr v-for="item in items" :key="item.name" style="display:inline-block; width:20%; text-align:center;">
-                   <!-- <td style="width:100%; height=100px;">
-                       <img :src="item.upload_url" alt="" style="width: 15vw; height: auto; margin-top:10px; border:1px solid #1976D2" @click="clickImg(item._id.camera_obids)">
-                       <p style="position:relative; bottom:48px; background-color: rgba( 0, 0, 0, 0.5 ); color: #dddddd;" @click="clickImg(item._id.camera_obids)">
-                            {{item._id.serial_number}}<br/>
-                            {{item.lastDate}}
-                       </p>
-                   </td> -->
                     <td style="width:100%; height=100px;">
                         <div style="width: 15vw; height: 22vh; border:1px solid #1976D2; margin-top:10px">
                             <img :src="item.upload_url" alt="" onerror="this.src='http://172.16.135.89:3000/image/noImage.png'" style="width: 100%; max-height: 100%; cursor:pointer" @click="clickImg(item._id.camera_obids) ">
@@ -101,6 +98,13 @@
 <script>
   import axios from 'axios';
   export default {
+    computed: {
+      filteredItems() {
+        return this.api_v3_device_camera_monitor.filter((i) => {
+          return !this.search || (i._id.serial_number.indexOf(this.search) >= 0 );
+        })
+      }
+  },
     created () {
         axios.get('http://172.16.135.89:3000/camera_monitor').then((res) => {
             this.api_v3_device_camera_monitor = res.data;
@@ -119,7 +123,7 @@
         monitor_screenshots : [],
         search: '',
         headers: [
-          { text: '', value: '', sortable: false},
+          { text: 'name', value: 'name', sortable: false,filterable: false},
         ],
       }
     },

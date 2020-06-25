@@ -1,35 +1,6 @@
 <template>
   <v-row justify="center">
     <v-col cols="11">
-      <v-card
-        outlined
-        elevation="1"
-        align="center"
-      >
-        <v-list-item three-line>
-          <v-list-item-content>
-            <div class="mb-4">총합</div>
-            <v-list-item-title class="headline mb-1">{{api_v1_person_every_type_users.length}}</v-list-item-title>
-          </v-list-item-content>
-          <v-divider vertical></v-divider>
-          <v-list-item-content>
-            <div class="mb-4">사원</div>
-            <v-list-item-title class="headline mb-1">{{empCnt}}</v-list-item-title>
-          </v-list-item-content>
-          <v-divider vertical></v-divider>
-          <v-list-item-content>
-            <div class="mb-4">방문자</div>
-            <v-list-item-title class="headline mb-1">{{visitCnt}}</v-list-item-title>
-          </v-list-item-content>
-          <v-divider vertical></v-divider>
-          <v-list-item-content>
-            <div class="mb-4">블랙리스트</div>
-            <v-list-item-title class="headline mb-1">{{blackCnt}}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-card>
-    </v-col>
-    <v-col cols="11">
       <v-card>
         <v-card-title>
           등록 기록
@@ -51,7 +22,7 @@
                 v-on="on"
               ></v-text-field>
             </template>
-            <v-date-picker v-model="dates" no-title scrollable range>
+            <v-date-picker v-model="dates" no-title scrollable locale="ko" range>
               <v-spacer></v-spacer>
               <v-btn text color="primary" @click="menu = false">취소</v-btn>
               <v-btn text color="primary" @click="clickOK">확인</v-btn>
