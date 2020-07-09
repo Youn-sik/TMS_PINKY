@@ -3,6 +3,7 @@
         <v-row justify="center">
             <v-col cols="11">
                 <v-chip
+                    @click="$router.push('/index/access/records')"
                     class="mb-2"
                     color="primary"
                     text-color="white"
@@ -50,6 +51,7 @@
                     max-height = "340px"
                 >
                     <v-chip
+                        @click="$router.push('/index/device/list')"
                         color="primary"
                         text-color="white"
                         align="left"
@@ -68,6 +70,7 @@
                                 :options="devicesChartOptions"
                                 style="width:100%; height: 250px;"
                                 :resizeDebounce="1"
+                                :events="deviceChartEvents"
                             />
                             <v-row v-else-if="isEmpty[0]" 
                                 align="center"
@@ -80,7 +83,7 @@
                         <v-list-item-content>
                             <div class="devicecondition">단말기 상태</div>
                             <v-container
-                            style="max-height: 220px"
+                            style="max-height: 225px"
                             class="overflow-y-auto"
                             >
                             
@@ -88,17 +91,16 @@
                                     justify="center"
                                 >
                                 
-                                    <v-list two-line subheader width="100%">
+                                    <v-list two-line subheader width="100%" :dense="true">
                                         
                                         <v-list-item
                                             v-for="item in deviceConditionData"
                                             :key="item.title"
                                         >
-                                            <v-list-item-content>
+                                            <v-list-item-content style="">
                                                 <v-list-item-title v-text="item.name"></v-list-item-title>
                                             </v-list-item-content>
-                                            <!-- <v-spacer></v-spacer> -->
-                                            <v-list-item-content style="text-align: center">
+                                            <v-list-item-content style="text-align: center;">
                                                 <v-icon v-text="'power'" v-if="item.status === 'Y'"></v-icon>
                                                 <v-icon v-text="'power_off'" v-else></v-icon>
                                             </v-list-item-content>
@@ -121,6 +123,7 @@
                         align="left"
                         label
                         pill
+                        @click="$router.push('/index/access/records')"
                                         
                     >
                         <v-icon left>perm_identity</v-icon>
@@ -128,19 +131,20 @@
                     </v-chip>
                     <v-list-item three-line style="height:85%">
                         <v-list-item-content>
-                            <GChart
-                                type="PieChart"
-                                v-if="accessData[1][1]+accessData[2][1]+accessData[3][1]+accessData[4][1] !== 0"
-                                :data="accessData"
-                                :options="chartOptions"
-                                style="width: 250px; height: 250px;"
-                            />
                             <v-row 
-                                v-else-if="isEmpty[1]" 
+                                v-if="isEmpty[1]" 
                                 align="center"
                                 justify="center">
                                 데이터가 없습니다
                             </v-row>
+                            <GChart
+                                type="PieChart"
+                                v-else
+                                :data="accessData"
+                                :options="chartOptions"
+                                style="width: 250px; height: 250px;"
+                                :events="accessChartEvents"
+                            />
                         </v-list-item-content>
                     </v-list-item>
                 </v-card>
@@ -157,26 +161,27 @@
                         align="left"
                         label
                         pill
-                                        
+                        @click="$router.push('/index/access/statistics')"                
                     >
                         <v-icon left>perm_identity</v-icon>
                         금일 츌근
                     </v-chip>
                     <v-list-item three-line style="height:85%">
                         <v-list-item-content>
-                            <GChart
-                                type="PieChart"
-                                v-if="attendanceData[1][1] + attendanceData[2][1] !== 0"
-                                :data="attendanceData"
-                                :options="yesterdayChartOptions"
-                                style="width: 250px; height: 250px;"
-                            />
                             <v-row 
-                                v-else-if="isEmpty[3]" 
+                                v-if="isEmpty[3]" 
                                 align="center"
                                 justify="center">
                                 데이터가 없습니다
                             </v-row>
+                            <GChart
+                                type="PieChart"
+                                v-else
+                                :data="attendanceData"
+                                :options="yesterdayChartOptions"
+                                style="width: 250px; height: 250px;"
+                                :events="attendanceChartEvents"
+                            />
                         </v-list-item-content>
                     </v-list-item>
                 </v-card>
@@ -194,7 +199,7 @@
                         align="left"
                         label
                         pill
-                                        
+                        @click="$router.push('/index/device/log')"                    
                     >
                         <v-icon left>perm_identity</v-icon>
                         단말기 에러
@@ -202,7 +207,6 @@
                     <v-list-item three-line>
                         <v-list-item-content>
                             <v-data-table
-                            v-if="glogs.length > 0"
                             :headers="headers"
                             :items="glogs"
                             hide-default-footer
@@ -220,12 +224,6 @@
                                     </template>
                                 </template>
                             </v-data-table>
-                            <v-row 
-                                v-else-if="isEmpty[2]" 
-                                align="center"
-                                justify="center">
-                                데이터가 없습니다
-                            </v-row>
                         </v-list-item-content>
                     </v-list-item>
                 </v-card>
@@ -242,7 +240,7 @@
                         align="left"
                         label
                         pill
-                                        
+                        @click="$router.push('/index/access/records')"         
                     >
                         <v-icon left>perm_identity</v-icon>
                         온도 경고
@@ -308,6 +306,7 @@ export default {
                     }
                 })
                 if(this.attendanceData[1][1] + this.attendanceData[2][1]  === 0) this.isEmpty[3] = true;
+                else this.isEmpty[3] = false;
             })
         axios.get('http://172.16.135.89:3000/access?type=todayStatistics')
             .then((res) => {
@@ -320,6 +319,7 @@ export default {
                     else if(i._id.type === 4) this.blacklist = i.count
                 })
                 if(this.sum === 0) this.isEmpty[1] = true;
+                else this.isEmpty[1] = false;
             })
         axios.get('http://172.16.135.89:3000/camera')
             .then((res) => {
@@ -332,6 +332,7 @@ export default {
                     }
                 })
                 if(res.data.length === 0) this.isEmpty[0] = true;
+                else this.isEmpty[0] = false;
             })
         axios.get("http://172.16.135.89:3000/access?type=temperature")
             .then((res) => {
@@ -341,11 +342,13 @@ export default {
                     }
                 })
                 if(this.temperature.length === 0) this.isEmpty[4] = true;
+                else this.isEmpty[4] = false;
             })
-        axios.get('http://172.16.135.89:3000/glogs?type=error')
+        axios.get('http://172.16.135.89:3000/glogs?type=limit5errors')
             .then((res) => {
                 this.glogs = res.data
                 if(this.glogs.length === 0) this.isEmpty[2] = true;
+                else this.isEmpty[2] = false;
             })
     },
     components: {
@@ -355,13 +358,28 @@ export default {
     },
     data () {
       return {
+        deviceChartEvents: {
+            'select': () => {
+                this.$router.push('/index/device/list');
+            }
+        },
+        accessChartEvents: {
+            'select': () => {
+                this.$router.push('/index/access/records');
+            }
+        },
+        attendanceChartEvents: {
+            'select': () => {
+                this.$router.push('/index/device/statistics');
+            }
+        },
         picker: new Date().toISOString().substr(0, 10),
         dates:this.$moment(new Date).format("YYYY-MM-DD"),
         nowSelected:"week",
         dayMenu: false,
         glogs:[],
         sum : 0,
-        isEmpty : [false,false,false,false,false], // 0 : 단말기, 1 : 금일 출입, 2 : 단말기 에러, 3 : 전일 출근, 4 : 온도경고
+        isEmpty : [true,true,true,true,true], // 0 : 단말기, 1 : 금일 출입, 2 : 단말기 에러, 3 : 전일 출근, 4 : 온도경고
         employee : 0,
         visitor : 0,
         isLoadingForAccess : false,

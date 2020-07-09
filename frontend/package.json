@@ -10,6 +10,7 @@
     "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/ko/**/*.json'"
   },
   "dependencies": {
+    "@videojs/http-streaming": "^1.13.3",
     "apollo-boost": "^0.4.7",
     "axios": "^0.19.2",
     "chai": "^4.2.0",
@@ -19,6 +20,7 @@
     "jsonwebtoken": "^8.5.1",
     "material-design-icons-iconfont": "^5.0.1",
     "mqtt": "^4.1.0",
+    "video.js": "^7.8.3",
     "vue": "^2.6.11",
     "vue-apollo": "^3.0.3",
     "vue-base64-file-upload": "^1.0.4",

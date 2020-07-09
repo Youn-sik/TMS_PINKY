@@ -6,7 +6,9 @@ const api_v3_device_camera_monitor = require('../../../../models/api/v3/device/c
 router.get('/',async function(req, res) {
     try {
         let get_data;
-        if(req.query.id !== undefined) {
+        if(req.query.id === undefined) {
+            get_data = await api_v3_device_camera_monitor.find().limit(1000);
+        } else if(req.query.id !== 'one_device') {
             get_data = await api_v3_device_camera_monitor.find({'camera_obids':req.query.id}).sort('-regdate')
         } else {
             get_data = await api_v3_device_camera_monitor.aggregate([

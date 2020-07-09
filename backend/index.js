@@ -10,6 +10,8 @@ const cookie = require('cookie');
 const bodyParser = require('body-parser');
 const express = require('express');
 const path = require('path');
+const crypto = require('crypto')
+
 //model
 const User = require('./models/User')
 
@@ -56,26 +58,35 @@ fastify.use('/operation',operationRouter);
 fastify.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 fastify.use('/image',express.static('./image'));
 
+const swaggerJSDoc = require('swagger-jsdoc');
+const swaggerOption = require('./routes/swagger');
+const swaggerSpec = swaggerJSDoc(swaggerOption);
+const swaggerUi = require('swagger-ui-express');
+ 
+fastify.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 fastify.post('/login', async function(req, res) {
     try {   
         const user_id = req.body === undefined ? req.user_id : req.body.user_id
         const user_pw = req.body === undefined ? req.user_pw : req.body.user_pw
-        const user = await User.findOne({ user_id: user_id, user_pw : user_pw })
-        if(user !== null) {
-            let token = jwt.sign({
-                    user_id:user.id
-                },
-                'jjh',//시크릿 키 배포시 가려야 함
-                {
-                    expiresIn:'5h'
-                }
-            )
-            res.send({"token":token})
-        } else {
-            res.status(400)
-            res.send({err:"존재하지 않는 계정입니다"})
-        }
+        const user = await User.findOne({ user_id: user_id })
+
+        crypto.pbkdf2(user_pw, user.salt, 105614, 64, 'sha512', (err, key) => {
+            if(key.toString('base64') === user.user_pw) {
+                let token = jwt.sign({
+                        user_id:user.id
+                    },
+                    'jjh',//시크릿 키 배포시 가려야 함
+                    {
+                        expiresIn:'5h'
+                    }
+                )
+                res.send({"token":token})
+            } else {
+                res.status(400)
+                res.send({err:"존재하지 않는 계정입니다"})
+            }
+        })
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -102,6 +113,33 @@ fastify.get('/auth', async function(req, res) {
     res.send({auth,user_id:tokenAuth.user_id});
 });
 
+new hls(server, {
+    provider: {
+        exists: (req, cb) => {
+            const ext = req.url.split('.').pop();
+
+            if (ext !== 'm3u8' && ext !== 'ts') {
+                return cb(null, true);
+            }
+
+            fs.access(__dirname + req.url, fs.constants.F_OK, function (err) {
+                if (err) {
+                    console.log('File not exist');
+                    return cb(null, false);
+                }
+                cb(null, true);
+            });
+        },
+        getManifestStream: (req, cb) => {
+            const stream = fs.createReadStream(__dirname + req.url);
+            cb(null, stream);
+        },
+        getSegmentStream: (req, cb) => {
+            const stream = fs.createReadStream(__dirname + req.url);
+            cb(null, stream);
+        }
+    }
+});
 // const context = (req) => {
 //     let token = req.headers.authorization;
 //     if(token === undefined && req.headers.cookie !== undefined) {

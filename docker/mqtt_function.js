@@ -265,9 +265,10 @@ module.exports = {
                         let user_array = [];
                         user.forEach(function(element){
                             let type = null
-                            if(element.type === 1) type = 'employee'
-                            else if(element.type === 2) type = 'guest'
-                            else if(element.type === 5) type = 'black_list'
+                            if(element.type === 1) type = 1
+                            else if(element.type === 2) type = 2
+                            else if(element.type === 5) type = 4
+                            else type = 3
                             let user_data = {
                                 avatar_file_url: element.avatar_file_url,
                                 avatar_file_checksum: element.avatar_file_checksum,
@@ -328,7 +329,7 @@ module.exports = {
                 let file_path = site.base_server_document + folder_date_path + "/" + json.stb_sn + "/";
                 let upload_url = site.base_local_url+ ':3000' + folder_date_path + "/" + json.stb_sn + "/" + file_name;
                 let buff = Buffer.from(element.avatar_file, 'base64');
-                
+                element.avatar_obid = '5ee9db4360497f4ee3dd0f4f'
                 if(element.avatar_type === 1) {
                     empCnt++;
                 } else if(element.avatar_type === 2) {
@@ -349,7 +350,7 @@ module.exports = {
                         avatar_contraction_data : element.avatar_contraction_data,
                         avatar_file_url : upload_url,
                         avatar_temperature : element.avatar_temperature,
-                        access_time : element.access_time,
+                        access_time : moment().format('YYYY-MM-DD HH:mm:ss'),
                         stb_sn : json.stb_sn,
                         stb_obid : camera._id
                     };
@@ -362,7 +363,7 @@ module.exports = {
                         avatar_file_url : upload_url,
                         user_obid : element.avatar_obid, 
                         avatar_temperature : element.avatar_temperature,
-                        access_time : element.access_time,
+                        access_time : moment().format('YYYY-MM-DD HH:mm:ss'),
                         stb_sn : json.stb_sn,
                         stb_obid : camera._id
                     };

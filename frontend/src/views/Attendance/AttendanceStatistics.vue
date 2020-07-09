@@ -48,6 +48,13 @@
                     hide-default-footer
                     class="ml-2 mr-2 elevation-0"
                 >
+                    <template v-slot:no-data>
+                        <div style="height:75vh; font-size:2em">
+                            <v-row justify="center" align="center" style="height:100%;">
+                                데이터가 없습니다
+                            </v-row>
+                        </div>
+                    </template>
                     <template v-slot:item.avatar_file_url="{ item }">
                         <img 
                         width="70px"
@@ -79,17 +86,18 @@
 <script>
 import axios from 'axios';
 export default {
-    async created () {
-        await axios.get('http://172.16.135.89:3000/access?type=attendance')
-            .then((res) => {
-                this.accessOrigin = res.data;
-
-            })
-        axios.get('http://172.16.135.89:3000/user?type=1')
+    async beforeCreate () {
+        await axios.get('http://172.16.135.89:3000/user?type=1')
             .then((res) => {
                 this.user = res.data;
                 this.clickOK()
             })  
+        axios.get('http://172.16.135.89:3000/access?type=attendance')
+            .then((res) => {
+                this.accessOrigin = res.data;
+
+            })
+        
     },
     methods: {
         clickOK() {
@@ -132,7 +140,9 @@ export default {
         return {
             access:[],
             accessOrigin:[],
-            user:[],
+            user:[
+                {},
+            ],
             avatar:'',
             date:'',
             search:'',
@@ -165,5 +175,5 @@ export default {
 }
 </script>
 <style>
-  /* html { overflow: auto } */
+
 </style>

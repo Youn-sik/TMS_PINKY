@@ -4,6 +4,7 @@
       <v-card width="100%" align="center">
           <v-col cols="4">
             <form @submit.prevent="addUser">
+              <v-card-title class="headline" style="padding:10px 0;">미등록자 등록</v-card-title>
               <img :src="image" style="max-width:50%, max-height=50%" alt="">
               <v-text-field
                 v-model="name"
@@ -135,33 +136,13 @@
       onChangeImage(file) {
         this.image = file.base64;
       },
-      getFormatDate(date){
-          var year = date.getFullYear();              //yyyy
-          var month = (1 + date.getMonth());          //M
-          month = month >= 10 ? month : '0' + month;  //month 두자리로 저장
-          var day = date.getDate();                   //d
-          var hours = date.getHours();
-          if(hours < 10) {
-            hours = '0' + hours;
-          }
-          var minutes = date.getMinutes();
-          if(minutes < 10) {
-            minutes = '0' + minutes;
-          }
-          var seconds = date.getSeconds();
-          if(seconds < 10) {
-            seconds = '0' + seconds;
-          }
-          day = day >= 10 ? day : '0' + day;          //day 두자리로 저장
-          return  year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
-      },
       addUser(){
         if(this.name === null || this.name === '') {alert('이름을 입력해주세요.'); return false}
         else if(this.image === null || this.image === ''){alert('사진을 업로드 해주세요.'); return false}
         else if(this.email !== '' && !/.+@.+\..+/.test(this.email)){alert('이메일 형식으로 입력해주세요.'); return false} 
         axios.post('http://172.16.135.89:3000/user?type=stranger',{
               name : this.name,
-              created_at : this.getFormatDate(new Date()),
+              created_at : this.$moment().format('YYYY-MM-DD'),
               avatar_file_url : this.image,
               stranger_id : this.$route.params.item._id,
               groups_obids : this.active[0] === undefined ? null : this.active,

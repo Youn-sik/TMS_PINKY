@@ -50,14 +50,23 @@ router.post('/',async function(req, res) {
         }
         let group = null
         let add = new api_v1_person_user(req.body)
-        add.avatar_file_checksum = crypto.createHash('sha256').update(req.body.avatar_file).digest('base64');
         let overlap_check = await api_v1_person_user.findOne({avatar_file_checksum : add.avatar_file_checksum})
         if(overlap_check) {
             add.avatar_file_url = overlap_check.avatar_file_url;
+            add.avatar_file_checksum = overlap_check.avatar_file_checksum;
+            add.avatar_contraction_data = overlap_check.avatar_contraction_data;
         } else {
-            fs.writeFile('image/'+add._id+'profile.jpg',add.avatar_file,'base64',() => {})
+            fs.writeFileSync('image/'+add._id+'profile.jpg',add.avatar_file,'base64')
             add.avatar_file_url = 'http://172.16.135.89:3000/image/'+add._id+'profile.jpg';
+
+            //sha256 checksum
+            let file_buffer = fs.readFileSync(__dirname+'/../../../../image/'+add._id+'profile.jpg');
+            let sum = crypto.createHash('sha256');
+            sum.update(file_buffer);
+            const hex = sum.digest('hex');
+            add.avatar_file_checksum = hex;
         }
+
         const groups = req.body.groups_obids === undefined ? null : req.body.groups_obids;
         if(groups !== null) {
             groups.map((i) => {
@@ -107,13 +116,8 @@ router.put('/:id',async function(req, res) {
     try {
         let group = null
         req.body.avatar_file_checksum = crypto.createHash('sha256').update(req.body.avatar_file).digest('base64');
-        let overlap_check = await api_v1_person_user.findOne({avatar_file_checksum : req.body.avatar_file_checksum})
-        if(overlap_check) {
-            req.body.avatar_file_url = overlap_check.avatar_file_url
-        } else {
-            fs.writeFile('image/'+req.body._id+'profile.jpg',req.body.avatar_file,'base64',() => {})
-            req.body.avatar_file_url = 'http://172.16.135.89:3000/image/'+req.body._id+'profile.jpg';
-        }
+        fs.writeFileSync('image/'+req.body._id+'profile_updated_'+moment().format('YYYY-MM-DD_HH:mm:ss')+'.jpg',req.body.avatar_file,'base64');
+        req.body.avatar_file_url = 'http://172.16.135.89:3000/image/'+req.body._id+'profile_updated_'+moment().format('YYYY-MM-DD_HH:mm:ss')+'.jpg';
         if(String(req.body.groups_obids) !== String(req.body.clicked_groups)) {
             req.body.groups_obids.map(async (i) => {
                 await api_v1_group_group.findOneAndUpdate({_id:i},{ $pull: { user_obids : req.body._id} }, {new: true }).exec()

@@ -4,12 +4,13 @@
             <v-card>
                 <v-row justify="center" >
                     <v-col cols="3" class="text-center">
+                        <v-card-title class="headline" style="padding:10px 0;">계정 생성</v-card-title>
                         <v-text-field
                             v-model="user_name"
                             label="이름"
                         ></v-text-field>
                         <v-text-field
-                            v-model="user_id"
+                            v-model="id"
                             label="ID"
                         ></v-text-field>
                         <v-text-field
@@ -18,6 +19,7 @@
                             label="비밀번호"
                         ></v-text-field>
                         <v-text-field
+                            type="password"
                             v-model="user_pw_chk"
                             label="비밀번호 확인"
                         ></v-text-field>
@@ -44,7 +46,7 @@ export default {
         addAccount () {
             if(this.user_name === '') {
                 alert('이름을 입력해주세요')
-            } else if (this.user_id === '') {
+            } else if (this.id === '') {
                 alert('아이디를 입력해주세요')
             } else if (this.user_pw === '') {
                 alert('비밀번호를 입력해주세요')
@@ -55,10 +57,10 @@ export default {
             } else {
                 axios.post('http://172.16.135.89:3000/account',{
                     user_name : this.user_name,
-                    user_id : this.user_id,
+                    user_id : this.id,
                     user_pw : this.user_pw,
                     user_lang : this.user_lang,
-                    account : this.user_id,
+                    account : this.id,
                 })
                 .then(() => {
                     this.$router.go(-1);
@@ -68,7 +70,7 @@ export default {
     },
     data: () => ({
         user_name : '',
-        user_id : '',
+        id : '',
         user_pw : '',
         user_lang : '',
         user_pw_chk : ''

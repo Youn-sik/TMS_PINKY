@@ -96,7 +96,7 @@
     data () {
       return {
         menu : false,
-        dates: [this.getFormatDate(new Date(),-1), this.getFormatDate(new Date(),0)],
+        dates: [this.$moment().format('YYYY-MM-DD'),this.$moment().format('YYYY-MM-DD') ],
         search: '',
         empCnt:0,
         visitCnt:0,
@@ -124,54 +124,31 @@
       }
     },
     methods:{
-      clickOK(){
-        if(this.dates.length === 1) {
-          this.api_v1_person_every_type_users = this.origin.filter((i) => {            
-            if(i.create_at.split(' ')[0] === this.dates[0] || (i.update_at !== undefined&& i.update_at.split(' ')[0] === this.dates[0])){
-              return i;
-            }
-          });
+      clickOK () {
+        if(this.dates.length === 1 || this.dates[0] === this.dates[1]) {
+            this.api_v1_person_every_type_users = this.origin.filter( (i) =>{
+                return(i.create_at.split(' ')[0] === this.dates[0])
+            } )
         } else {
-          if(this.dates[0] > this.dates[1]) {
-            let temp = this.dates[0];
-            this.dates[0] = this.dates[1];
-            this.dates[1] = temp;
-          }
-          this.api_v1_person_every_type_users = this.origin.filter((i) => {
-            if((i.create_at.split(' ')[0] >= this.dates[0] && i.create_at.split(' ')[0] <= this.dates[1]) 
-                || (i.update_at !=undefined && (i.update_at.split(' ')[0] >= this.dates[0] && i.update_at.split(' ')[0] <= this.dates[1]))){
-              return i;
+            if(this.dates[0] > this.dates[1]) {
+                let temp = this.dates[0];
+                this.dates[0] = this.dates[1]
+                this.dates[1] = temp;
             }
-          });
+            this.api_v1_person_every_type_users = this.origin.filter( (i) =>{
+                return(i.create_at.split(' ')[0] >= this.dates[0] && i.create_at.split(' ')[0] <= this.dates[1])
+            } )
         }
         this.$refs.menu.save(this.dates)
-      },
-      getFormatDate(date,val){
-        var year = date.getFullYear();              //yyyy
-        var month = (1 + date.getMonth());          //M
-        month = month >= 10 ? month : '0' + month;  //month 두자리로 저장
-        var day = date.getDate()+val;                   //d
-        var hours = date.getHours();
-        if(hours < 10) {
-          hours = '0' + hours;
-        }
-        var minutes = date.getMinutes();
-        if(minutes < 10) {
-          minutes = '0' + minutes;
-        }
-        var seconds = date.getSeconds();
-        if(seconds < 10) {
-          seconds = '0' + seconds;
-        }
-        day = day >= 10 ? day : '0' + day;          //day 두자리로 저장
-        return  year + '-' + month + '-' + day;
-      }
+    },
     },
     created () {
       axios.get('http://172.16.135.89:3000/history')
         .then((res) => {
           this.origin = res.data
-          this.api_v1_person_every_type_users = this.origin
+          this.api_v1_person_every_type_users = this.origin.filter( (i) =>{
+            return(i.create_at >= this.dates[0] && i.create_at.split(' ')[0] <= this.dates[1])
+          })
           this.api_v1_person_every_type_users.map((i) => {
             if(i.type === 1) this.empCnt++;
             else if(i.type === 2) this.visitCnt++;

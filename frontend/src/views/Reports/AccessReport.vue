@@ -168,7 +168,6 @@
             api_v1_group_group:[
                 {_id:'사원', name:'사원',children:[]},
                 {_id:'방문자',name:'방문자',children:[]},
-                {_id:'미등록자',name:'미등록자',children:[]},
                 {_id:'블랙리스트',name:'블랙리스트',children:[]}
             ],
             accessChartData:[
@@ -205,7 +204,7 @@
             personalAccess:[],
             searchGroup: '',
             menu : false,
-            dates: [this.getFormatDate(new Date,-1), this.getFormatDate(new Date,-1)],
+            dates: [this.$moment().subtract(1, 'days').format('YYYY-MM-DD'),this.$moment().subtract(1, 'days').format('YYYY-MM-DD')],
         }
     },
     watch : {
@@ -304,14 +303,6 @@
       if(data.user_obids[0] !== undefined) {
         data.children = data.children.concat(data.user_obids);
       }
-    },
-    getFormatDate(date){
-        var year = date.getFullYear();              //yyyy
-        var month = (1 + date.getMonth());          //M
-        month = month >= 10 ? month : '0' + month;  //month 두자리로 저장
-        var day = date.getDate();                   //d
-        day = day >= 10 ? day : '0' + day;          //day 두자리로 저장
-        return  year + '-' + month + '-' + day
     },
   },
 }

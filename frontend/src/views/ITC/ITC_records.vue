@@ -36,7 +36,6 @@
       </v-card>
       <v-divider vertical></v-divider>
       <v-card width="75%" class="elevation-1">
-        <!-- <v-card-text class="text--primary"> -->
         <v-row 
         style="height:100%;"
         v-if="!active[0]"
@@ -45,13 +44,55 @@
         단말기를 선택해 주세요
         </v-row>
         <template v-else>
+            <v-card-title>
+              출입 기록
+              <v-spacer></v-spacer>
+              <v-menu
+                  ref="menu"
+                  v-model="menu"
+                  :close-on-content-click="false"
+                  :return-value.sync="dates"
+                  transition="scale-transition"
+                  offset-y
+                  min-width="290px"
+                  
+              >
+                  <template v-slot:activator="{ on }">
+                  <v-text-field
+                      v-model="dateRangeText"
+                      prepend-icon="event"
+                      readonly
+                      v-on="on"
+                      style="width:5%"
+                  ></v-text-field>
+                  </template>
+                  <v-date-picker v-model="dates" no-title scrollable locale="ko" range>
+                  <v-spacer></v-spacer>
+                  <v-btn text color="primary" @click="menu = false">취소</v-btn>
+                  <v-btn text color="primary" @click="clickOk">확인</v-btn>
+                  </v-date-picker>
+              </v-menu>
+              <v-select
+                  class="ml-5"
+                  :items="deviceStates"
+                  v-model="nowStatus"
+                  :return-object="true"
+                  style="width:5%"
+              ></v-select>
+              <v-select
+                  class="ml-5"
+                  :items="['전체','정상온도','온도이상자']"
+                  v-model="tempStatus"
+                  style="width:5%"
+              ></v-select>
+            </v-card-title>
             <v-data-table
                 :headers="headers"
                 :items-per-page="itemsPerPage"
                 :page.sync="page"
                 @page-count="pageCount = $event"
                 hide-default-footer
-                :items="accessData"
+                :items="access"
                 class="ml-2 mr-2 elevation-0"
             >
                 <template v-slot:item.avatar_file_url="{ item }">
@@ -93,10 +134,22 @@
             temperature_min : 30,
             searchGroup: '',
             menu : false,
+            originData:[],
+            allData:[],
             deviceList : [],
             access : [],
             itemsPerPage: 10,
             page: 1,
+            deviceStates : [
+                {text:'모든 사용자',value:10},
+                {text:'사원',value:1},
+                {text:'방문자',value:2},
+                {text:'블랙리스트',value:4},
+                {text:'미등록자',value:3}
+            ],
+            tempStatus:'전체',
+            nowStatus : {text:'모든 사용자',value:10},
+            search : null,
             pageCount: 0,
             headers: [
                 { text: '', value: 'avatar_file_url' },
@@ -108,30 +161,31 @@
                 { text: '온도', value: 'avatar_temperature' },
                 { text: '출입시간', value: 'access_time' },
             ],
-            dates: [this.getFormatDate(new Date,-1), this.getFormatDate(new Date,-1)],
+            dates: [this.$moment().subtract(1,'days').format('YYYY-MM-DD'), this.$moment().subtract(1,'days').format('YYYY-MM-DD')],
         }
     },
-    methods :{
-        getFormatDate(date,val){
-        var year = date.getFullYear();              //yyyy
-        var month = (1 + date.getMonth());          //M
-        month = month >= 10 ? month : '0' + month;  //month 두자리로 저장
-        var day = date.getDate()+val;                   //d
-        var hours = date.getHours();
-        if(hours < 10) {
-          hours = '0' + hours;
-        }
-        var minutes = date.getMinutes();
-        if(minutes < 10) {
-          minutes = '0' + minutes;
-        }
-        var seconds = date.getSeconds();
-        if(seconds < 10) {
-          seconds = '0' + seconds;
-        }
-        day = day >= 10 ? day : '0' + day;          //day 두자리로 저장
-        return  year + '-' + month + '-' + day;
-      },
+    methods: {
+      clickOk () {
+            if(this.dates.length === 1 || this.dates[0] === this.dates[1]) {
+                this.access = this.originData.filter( (i) =>{
+                    return(i.access_time.split(' ')[0] === this.dates[0])
+                } )
+                this.nowStatus = {text:'모든 사용자',value:10}
+                this.tempStatus = '전체';
+            } else {
+                if(this.dates[0] > this.dates[1]) {
+                    let temp = this.dates[0];
+                    this.dates[0] = this.dates[1]
+                    this.dates[1] = temp;
+                }
+                this.access = this.originData.filter( (i) =>{
+                    return(i.access_time.split(' ')[0] >= this.dates[0] && i.access_time.split(' ')[0] <= this.dates[1])
+                } )
+                this.nowStatus = {text:'모든 사용자',value:10}
+                this.tempStatus = '전체';
+            }
+            this.$refs.menu.save(this.dates)
+        },
     },
     created () {
        axios.get('http://172.16.135.89:3000/camera')
@@ -140,12 +194,55 @@
         })
         axios.get('http://172.16.135.89:3000/access')
         .then((res) => {
-            this.access = res.data;
+            this.allData = res.data;//모든 데이터
         })
     },
+    watch: {
+      active : function (newVal) {
+        if(newVal[0]) {
+          this.originData = this.allData.filter(i => i.stb_sn === newVal[0].serial_number);//선택된 단말의 모든 데이터
+          this.access = this.originData.filter((i) => {
+            if(i.access_time.split(' ')[0] === this.dates[0]) {
+              return true;
+            }
+          })
+        }
+      },
+      nowStatus (val) {
+        this.tempStatus = '전체'
+        if(val.text === '모든 사용자') {
+            this.access = this.originData
+        } else {
+            this.access = this.originData.filter(i => i.avatar_type === val.value)
+        }
+      },
+      tempStatus (val) {
+        if(this.nowStatus.value === 10) {
+            if(val === '전체') {
+            this.access = this.originData
+            } else if(val === '온도이상자') {
+                this.access = this.originData.filter(i => i.avatar_temperature > '37');
+            } else {
+                this.access = this.originData.filter(i => i.avatar_temperature <= '37')
+            }
+        } else {
+            if(val === '전체') {
+            this.access = this.originData.filter(i => i.avatar_type === this.nowStatus.value)
+            } else if(val === '온도이상자') {
+                this.access = this.originData.filter(i => i.avatar_type === this.nowStatus.value && i.avatar_temperature > '37');
+            } else {
+                this.access = this.originData.filter(i => i.avatar_type === this.nowStatus.value && i.avatar_temperature <= '37')
+            }
+        }
+      }
+    },
     computed: {
-        accessData () {
-            return this.access.filter(i => i.stb_sn === this.active[0].serial_number)
+        // accessData () {
+            
+        //     // return this.access.filter
+        // },
+        dateRangeText () {
+          return this.dates.join(' ~ ')
         },
     },
 }

@@ -35,18 +35,18 @@
                     style="text-align: center"
                     class="elevation-0"
                     >
-                        <template v-slot:body="{items}">
-                        <tr v-for="item in items" :key="item.name" style="display:inline-block; width:19.5%; text-align:center;">
-                            <td style="width:100%; height=100px;">
-                                <div style="width: 8vw; height: 15vh; border:1px solid #1976D2; margin-top:10px">
-                                    <img :src="item.upload_url" alt="" onerror="this.src='http://172.16.135.89:3000/image/noImage.png'" style="width: 100%; max-height: 100%;" @click="clickImg(item._id.camera_obids) ">
-                                </div>
-                                <p style="position:relative; bottom:23px; background-color: rgba( 0, 0, 0, 0.5 ); color: #dddddd;">
+                      <template v-slot:body="{items}">
+                        <tr v-for="item in items" :key="item._id" style="display:inline-block; width:19%; text-align:center;">
+                              <td style="width:100%; height=100px;">
+                                  <div style="width: 8vw; height: 12vh; margin-top:10px">
+                                      <img class="elevation-3" :src="item.upload_url" alt="" @click="click_dialog_img(item.upload_url)" onerror="this.src='http://172.16.135.89:3000/image/noImage.png'" style="width: 100%; max-height: 100%; cursor:pointer">
+                                  </div>
+                                  <p style="position:relative; bottom:23px; background-color: rgba( 0, 0, 0, 0.5 ); color: #dddddd;">
                                         {{item.regdate}}
-                                </p>
-                            </td>
+                                  </p>
+                              </td>
                         </tr>
-                        </template>
+                      </template>
                     </v-data-table>
                     <v-pagination v-model="page" :total-visible="7" :length="pageCount"></v-pagination>
                 </v-card-text>
@@ -63,6 +63,22 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <v-dialog
+          v-model="imageDialog"
+          max-width="50vw"
+        >
+            <v-card>
+              <v-img
+                :src="image_url"
+                class="grey darken-4"
+              >
+                <v-btn large color="blue darken-2" @click="imageDialog=false" icon style="float: right; position:relative;">
+                  <v-icon>clear</v-icon>
+                </v-btn>
+              </v-img>
+            </v-card>
+           
+        </v-dialog>
         <v-data-table
           :headers="headers"
           :items="filteredItems"
@@ -78,7 +94,7 @@
             <template v-slot:body="{items}">
                <tr v-for="item in items" :key="item.name" style="display:inline-block; width:20%; text-align:center;">
                     <td style="width:100%; height=100px;">
-                        <div style="width: 15vw; height: 22vh; border:1px solid #1976D2; margin-top:10px">
+                        <div class="elevation-3" style="width: 15vw; height: 22vh; margin-top:10px">
                             <img :src="item.upload_url" alt="" onerror="this.src='http://172.16.135.89:3000/image/noImage.png'" style="width: 100%; max-height: 100%; cursor:pointer" @click="clickImg(item._id.camera_obids) ">
                         </div>
                         <p style="position:relative; bottom:42px; background-color: rgba( 0, 0, 0, 0.5 ); color: #dddddd; cursor:pointer" @click="clickImg(item._id.camera_obids)">
@@ -106,7 +122,7 @@
       }
   },
     created () {
-        axios.get('http://172.16.135.89:3000/camera_monitor').then((res) => {
+        axios.get('http://172.16.135.89:3000/camera_monitor?id=one_device').then((res) => {
             this.api_v3_device_camera_monitor = res.data;
         })
     },
@@ -114,6 +130,8 @@
       return {
         deviceSelected:[],
         dialog: false,
+        imageDialog:false,
+        image_url:'',
         itemsPerPage: 10,
         page: 1,
         pageCount: 0,
@@ -128,6 +146,10 @@
       }
     },
     methods: {
+        click_dialog_img(image_url) {
+          this.imageDialog = true;
+          this.image_url = image_url
+        },
         clickImg(id) {
             axios.get('http://172.16.135.89:3000/camera_monitor?id='+id).then((res) => {
                 this.monitor_screenshots = res.data;

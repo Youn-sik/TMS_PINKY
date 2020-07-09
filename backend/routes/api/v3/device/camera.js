@@ -2,8 +2,10 @@ var express = require('express');
 var router = express.Router();
 const boom = require('boom')
 const api_v3_device_camera = require('../../../../models/api/v3/device/camera')
-const api_v1_group_group = require('../../../../models/api/v1/group/group')
-const api_v3_device_gateway = require('../../../../models/api/v3/device/gateway')
+const Operation = require('../../../../models/api/v1/person/operation')
+var moment = require('moment');
+require('moment-timezone'); 
+moment.tz.setDefault("Asia/Seoul"); 
 
 router.get('/',async function(req, res) {
     try {
@@ -66,12 +68,12 @@ router.delete('/:id',async function(req, res) {
         const delete_data = await api_v3_device_camera.findByIdAndRemove(id)
         const operation = new Operation({
             id:req.body.account,
-            action: '단말기 수정',
+            action: '단말기 삭제',
             date : moment().format('YYYY-MM-DD HH:mm:ss'),
-            description : delete_data.serial_number +' 단말기 수정'
+            description : delete_data.serial_number +' 단말기 삭제'
         })
         operation.save();
-        res.send(delete_data)
+        res.send(delete_data) 
     } catch (err) {
         throw boom.boomify(err)
     }

@@ -15,6 +15,7 @@ const userSchema = new mongoose.Schema({
     name : { type: String },
     company_id : { type: String },
     department_id : { type: String },
+    position : { type: String},
     area_code : { type: String },
     access_time : { type: String },
     mail : { type: String },

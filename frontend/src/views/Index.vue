@@ -9,10 +9,12 @@
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title
-        style="width: 300px"
+        @click="$router.push('/index')"
+        style="width: 300px; cursor: pointer"
         class="ml-0 pl-4"
       >출입통제 시스템</v-toolbar-title>
       <v-spacer />
+      {{$route.name}}
       <v-menu
         offset-y
       >
@@ -23,6 +25,10 @@
           </v-btn>
         </template>
         <v-list class="px-2">
+          <v-list-item @click="$router.push('/index/system/account')" class="mx-0 px-8 ">
+            <v-list-item-title>계정관리</v-list-item-title>
+          </v-list-item>
+          <v-divider></v-divider>
           <v-list-item @click="clickLogout" class="mx-0 px-8 ">
             <v-list-item-title>로그아웃</v-list-item-title>
           </v-list-item>
@@ -154,8 +160,8 @@
           icon: 'compare_arrows',
           text: '출입, 출근 관리',
           children: [
-            { text: '출입 기록', to:'/attendancerecords' },
-            { text: '출근 기록',to:'/AttendanceStatistics' },
+            { text: '출입 기록', to:'/access/records' },
+            { text: '출근 기록',to:'/access/statistics' },
           ],
         },
         {
@@ -165,14 +171,14 @@
           model: false,
           children: [
             // { text: '사원 관리', to: '/employee' },
-            { text: '사원 관리', to: '/employeegroup' },
+            { text: '사원 관리', to: '/people/employee' },
             // { text: '방문자 관리', to: '/visitor' },
-            { text: '방문자 관리', to: '/visitorgroup' },
+            { text: '방문자 관리', to: '/people/visitor' },
             // { text: '블랙리스트 관리', to: '/blacklist' },
-            { text: '블랙리스트 관리', to: '/blacklistgroup' },
-            { text: '미등록자 관리', to: '/stranger' },
-            { text: '등록 기록', to: '/regrecord' },
-            { text: '사진으로 검색', to: '/searchpeople' },
+            { text: '블랙리스트 관리', to: '/people/blacklist' },
+            { text: '미등록자 관리', to: '/people/stranger' },
+            { text: '등록 기록', to: '/people/regrecord' },
+            { text: '사진으로 검색', to: '/people/search' },
           ],
         },
         {
@@ -181,8 +187,9 @@
           text: '단말 관리',
           model: false,
           children: [
-            { text: '단말 목록' ,to: '/device'},
-            { text: '단말기 스크린샷' ,to: '/devicescreen'},
+            { text: '단말기 목록' ,to: '/device/list'},
+            { text: '단말기 에러 로그' ,to: '/device/log'},
+            { text: '단말기 스크린샷' ,to: '/device/screen'},
           ],
         },
         {
@@ -192,8 +199,8 @@
           model: false,
           children: [
             // { text: '기업 정보' },
-            { text: '계정 관리', to:'/account'},
-            { text: '작업 기록', to:'/operationlog' },
+            { text: '계정 관리', to:'/system/account'},
+            { text: '작업 기록', to:'/system/log' },
             // { text: '오픈 플랫폼' },
           ],
         },
@@ -205,8 +212,8 @@
           children: [
             // { text: '출석 통계', to:'/'},
             // { text: '출입 통계', to:'/' },
-            { text: '단말 통계', to:'/devicereport' },
-            { text: '출입 통계', to:'/accessreport' },
+            { text: '단말 통계', to:'/report/device' },
+            { text: '출입 통계', to:'/report/access' },
           ],
         },
         {
@@ -215,8 +222,8 @@
           text: '열화상',
           model: false,
           children: [
-            { text: '열화상 단말', to:'/itcdevice' },
-            { text: '열화상 기록', to:'/itcrecords' },
+            { text: '열화상 단말', to:'/itc/device' },
+            { text: '열화상 기록', to:'/itc/records' },
           ],
         },
       ],

@@ -3,10 +3,10 @@
     <v-col cols="11">
       <v-card>
         <v-row justify="center">
-            <div class="mr-3">
+            <div class="mr-3 mt-10">
                 사진 업로드 :
             </div>
-            <div style="width:15vw;">
+            <div style="width:15vw;" class="mt-10">
                 <base64-upload class="user mb-3"
                 :imageSrc="this.image"
                 border="left"

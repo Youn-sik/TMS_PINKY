@@ -11,7 +11,7 @@ router.get('/',async function(req, res) {
         } else if(req.query.type === 'limit5errors') {
             get_data = await api_v1_group_glogs.find().or([{log_no:'32'},{log_no:'33'},{log_no:'3'}]).limit(5);
         } else {
-            get_data = await api_v1_group_glogs.find();
+            get_data = await api_v1_group_glogs.find().limit(1000);
         }
         res.send(get_data)
     } catch (err) {

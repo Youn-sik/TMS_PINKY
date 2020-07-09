@@ -11,6 +11,7 @@ const api_v1_person_user_Schema = new mongoose.Schema({
     avatar_file_url : { type: String, required: true },
     groups_obids : [{type:ObjectId, ref: 'group'}],
     user_id : { type: String },
+    position : { type: String},
     password : { type: String },
     mobile : { type: String },
     name : { type: String },

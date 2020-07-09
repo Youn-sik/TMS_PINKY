@@ -87,36 +87,13 @@
             searchGroup: '',
             menu : false,
             deviceList : [],
-            dates: [this.getFormatDate(new Date,-1), this.getFormatDate(new Date,-1)],
+            dates: [this.$moment().subtract(1,'days').format('YYYY-MM-DD'), this.$moment().subtract(1,'days').format('YYYY-MM-DD')],
         }
     },
     methods :{
         controlTemperature () {
-          this.$mqtt.publish('/control/temperature/' + this.active[0].serial_number,{
-              stb_sn : this.active[0].serial_number,
-              temperature_max : this.temperature_max
-            });
+          this.$mqtt.publish('/control/temperature/' + this.active[0].serial_number,JSON.stringify({stb_sn : this.active[0].serial_number,temperature_max : this.temperature_max}));
         },
-        getFormatDate(date,val){
-        var year = date.getFullYear();              //yyyy
-        var month = (1 + date.getMonth());          //M
-        month = month >= 10 ? month : '0' + month;  //month 두자리로 저장
-        var day = date.getDate()+val;                   //d
-        var hours = date.getHours();
-        if(hours < 10) {
-          hours = '0' + hours;
-        }
-        var minutes = date.getMinutes();
-        if(minutes < 10) {
-          minutes = '0' + minutes;
-        }
-        var seconds = date.getSeconds();
-        if(seconds < 10) {
-          seconds = '0' + seconds;
-        }
-        day = day >= 10 ? day : '0' + day;          //day 두자리로 저장
-        return  year + '-' + month + '-' + day;
-      },
     },
     created () {
       this.$mqtt.on('message', (topic,message) => {

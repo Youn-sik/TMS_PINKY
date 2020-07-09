@@ -4,7 +4,6 @@ const fn = require('./mqtt_function.js');
 
 client.on('connect', function() {
     console.log('MQTT connected.');
-
     client.subscribe([
         '/login/+',
         '/logout/+',
@@ -40,7 +39,6 @@ client.on('message', async function(topic, message) {
     try {
         let context = message.toString();
         let json = JSON.parse(context);
-        
         /* 로그인 > 로그인 시도 */
         if (topic === "/login/" + json.stb_sn) {
             if (json.stb_sn != undefined) {

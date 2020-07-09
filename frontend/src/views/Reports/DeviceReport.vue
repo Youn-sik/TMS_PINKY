@@ -93,7 +93,7 @@
                 />
                 <GChart
                   v-else
-                  type="LineChart"
+                  type="ComboChart"
                   style="height:40vh; margin:10px 0px;"
                   :data="chartData"
                   :options="chartOptions"
@@ -111,7 +111,7 @@
                 />
                 <GChart
                   v-else
-                  type="LineChart"
+                  type="ComboChart"
                   style="height:40vh; margin:10px 0px;"
                   :data="deviceChartData"
                   :options="chartOptions"
@@ -200,7 +200,7 @@
                 let between_i_date = (end_date.getTime() - i_date.getTime())/1000/60/60/24;
                 let index = between_date - between_i_date +1;
                 this.chartData[index][1] = i.employee_count
-                this.chartData[index][2] = i.visitor_count
+                this.chartData[index][2] = i.guest_count
                 this.chartData[index][3] = i.blacklist_count
                 this.chartData[index][4] = i.stranger_count
               }
@@ -266,26 +266,6 @@
         this.chartDates = this.dates
         this.$refs.menu.save(this.dates)
       },
-      getFormatDate(date,val){
-        var year = date.getFullYear();              //yyyy
-        var month = (1 + date.getMonth());          //M
-        month = month >= 10 ? month : '0' + month;  //month 두자리로 저장
-        var day = date.getDate()+val;                   //d
-        var hours = date.getHours();
-        if(hours < 10) {
-          hours = '0' + hours;
-        }
-        var minutes = date.getMinutes();
-        if(minutes < 10) {
-          minutes = '0' + minutes;
-        }
-        var seconds = date.getSeconds();
-        if(seconds < 10) {
-          seconds = '0' + seconds;
-        }
-        day = day >= 10 ? day : '0' + day;          //day 두자리로 저장
-        return  year + '-' + month + '-' + day;
-      },
       rowClick: function (item, row) {
         row.isSelected ? row.select(false) : row.select(true);
         this.deviceSelected = {sn:item.serial_number,id:item._id};
@@ -314,8 +294,8 @@
         ],
         deviceStatistics : [],
         menu : false,
-        dates: [this.getFormatDate(new Date(),-1), this.getFormatDate(new Date(),-1)],
-        chartDates:[this.getFormatDate(new Date(),-1), this.getFormatDate(new Date(),-1)],
+        dates: [this.$moment().subtract(1, 'days').format('YYYY-MM-DD'),this.$moment().subtract(1, 'days').format('YYYY-MM-DD')],
+        chartDates:[this.$moment().subtract(1, 'days').format('YYYY-MM-DD'),this.$moment().subtract(1, 'days').format('YYYY-MM-DD')],
         todayChartOptions: {
           legend: {
               position: 'bottom',
@@ -354,6 +334,8 @@
           },
           pieSliceText:'value',
           chartArea: {'width': '90%', 'height': '80%'},
+          seriesType: 'bars',
+          series: {5: {type: 'line'}}
         },
         search: '',
         deviceSelected : null,

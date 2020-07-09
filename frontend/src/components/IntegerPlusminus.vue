@@ -152,7 +152,6 @@
     },
     created () {
       this.intValue = this.value
-      if (this.step < 1) this.step = 1
       if (this.max < this.min) this.max = undefined
     }
   }

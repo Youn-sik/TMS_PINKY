@@ -16,8 +16,9 @@
             style="width:30%;"
           ></v-text-field>
           <!-- <v-btn color="primary" class="ml-2 mt-4"><v-icon dark left>mdi-plus</v-icon>추가</v-btn> -->
-
-              <v-btn color="primary" class="ml-2 mt-4" @click="clickDialogBtn">
+              <v-btn color="error" small class="ml-2 mt-4" @click="deleteGroup" v-if="active[0]"><v-icon dark left>delete_forever</v-icon>삭제</v-btn>
+              <v-btn color="error" small class="ml-2 mt-4" @click="deleteGroup" v-else disabled><v-icon dark left>delete_forever</v-icon>삭제</v-btn>
+              <v-btn color="primary" small class="ml-2 mt-4" @click="clickDialogBtn">
                <v-icon dark left>mdi-plus</v-icon>추가
               </v-btn>
           <v-dialog
@@ -104,6 +105,7 @@
                 <v-card-title class="headline">사용자 정보 업데이트</v-card-title>
                 <v-col class="d-flex">
                   <v-col cols="5">
+                    <v-subheader>그룹 변경</v-subheader>
                     <v-treeview
                       :items="api_v1_group_group"
                       item-key="_id"
@@ -126,16 +128,22 @@
                   </v-col>
                   <v-divider vertical></v-divider>
                   <v-col cols="6" class="ml-8">
+                    <v-subheader>정보 업데이트</v-subheader>
                     <div style="width:80%; margin:0 auto;">
                       <base64-upload class="user"
                       style="width"
-                      :imageSrc="image ? image : this.userSelected[0].avatar_file"
+                      :imageSrc="image ? image : this.userSelected[0].avatar_file_url"
                       border="left"
                       @change="onChangeImage"></base64-upload>
                     </div>
                     <v-text-field
                       v-model="name"
                       label="이름"
+                      required
+                    ></v-text-field>
+                    <v-text-field
+                      v-model="position"
+                      label="직급"
                       required
                     ></v-text-field>
                     <v-text-field
@@ -163,7 +171,7 @@
                 </v-card-actions>
               </v-card>
             </v-dialog>
-            <v-btn color="primary" class="mt-4" :to="{path : 'addblacklist'}"><v-icon dark left>mdi-plus</v-icon>추가</v-btn>
+            <v-btn color="primary" class="mt-4" :to="{path : 'blacklist/add'}"><v-icon dark left>mdi-plus</v-icon>추가</v-btn>
           </div>
         </v-card-title>
         <v-data-table
@@ -178,6 +186,9 @@
           :headers="headers"
           :items="filteredItems"
         >
+          <template v-if="!active[0]" v-slot:no-data>
+            그룹을 선택해 주세요
+          </template>
           <template v-slot:item.avatar_file_url="{ item }">
             <img 
             width="70px"
@@ -219,11 +230,11 @@
       active:[],
       updateActive:[],
       userSelected:[],
+      userUpdateModal: false,
+      dialog: false,
       itemsPerPage: 10,
       page: 1,
       pageCount: 0,
-      userUpdateModal: false,
-      dialog: false,
       name:null,
       email:'',
       emailRules: [
@@ -236,6 +247,7 @@
       gender:1,
       groupName:null,
       avatar_file:null,
+      position:'',
       image : null,
       api_v1_person_users:[],
       headers: [
@@ -251,8 +263,21 @@
             align: 'start',
             value: 'name',
           },
+          {
+            text: '직급',
+            align: 'start',
+            value: 'position',
+          },
+          {
+            text:'휴대폰 번호',
+            value:'mobile'
+          },
+          {
+            text:'이메일',
+            value:'mail'
+          },
           { text: '생성일', value: 'create_at' },
-          { text: '카운트', value: 'count' },
+          // { text: '카운트', value: 'count' },
         ],
       api_v1_group_group : [],
       open: [1, 2],
@@ -289,6 +314,28 @@
         })
     },
   methods: {
+    deleteGroup() {
+      if(confirm("삭제시 해당 그룹의 사용자는 undefined 그룹으로 \n변경됩니다 삭제 하시겠습니까?")){
+        axios.delete('http://172.16.135.89:3000/group/'+this.active[0]._id)
+          .then(() => {
+            // this.api_v1_group_group[this.api_v1_group_group.length-1].children.concat(this.active[0].children);
+            // this.active.split(0,1);
+            axios.get('http://172.16.135.89:3000/group?type=1')
+            .then((res) => {
+              res.data.map((i) => {//user_obids에 있는 데이터 children으로 옮기기
+                this.moveUserIds(i);
+              })
+              let index = res.data.findIndex(i => i.name == "undefined");
+              if(index !== -1) {
+                let undefinedGroup = res.data.splice(index,1);
+                res.data.push(undefinedGroup[0]);
+              }
+              this.api_v1_group_group = res.data;
+            })
+          })
+        alert('삭제 되었습니다');
+      }
+    },
     clickUpdate () {
       if(this.userSelected.length > 1) {
         alert('하나의 사용자만 선택해 주세요.');
@@ -319,12 +366,14 @@
         type : 5,
         parent,
       }).then((res) => {
-        if(this.active[0] === undefined && this.api_v1_group_group.length === 0) {
-          this.api_v1_group_group.push(res.data);
-        } else if(this.api_v1_group_group[this.api_v1_group_group.length - 1].name === 'undefined') {
-          this.api_v1_group_group.splice(this.api_v1_group_group.length-1,0,res.data)
-        } else if(this.active[0] === undefined) {
-          this.api_v1_group_group.push(res.data);
+        if(this.active[0] === undefined) {
+          if(this.api_v1_group_group.length === 0) {
+            this.api_v1_group_group.push(res.data);
+          } else if(this.api_v1_group_group[this.api_v1_group_group.length - 1].name === 'undefined') {
+            this.api_v1_group_group.splice(this.api_v1_group_group.length-1,0,res.data)
+          } else {
+            this.api_v1_group_group.push(res.data);
+          }
         } else if(this.active[0].children.length >= 1){
           this.active[0].children.map((i,index) => {
             if(i.avatar_file !== undefined) {
@@ -381,14 +430,14 @@
     },
     deleteUser () {
       if(this.userSelected.length === 1 ){
-        if(confirm('정말로 삭제 하시겠습니까?')) {
-          axios.delete('http://172.16.135.89:3000/user/'+this.userSelected[0]._id,{
-            data:{
-              type:5,
-              _id:this.userSelected[0]._id,
-              account : this.user_id
-            }
-          }).then((res) => {
+          if(confirm('정말로 삭제 하시겠습니까?')) {
+            axios.delete('http://172.16.135.89:3000/user/'+this.userSelected[0]._id,{
+              data:{
+                type:5,
+                _id:this.userSelected[0]._id,
+                account : this.user_id
+              }
+            }).then((res) => {
               this.api_v1_person_users = this.api_v1_person_users.filter((i) => {
                 return i._id !== res.data._id
               })
@@ -406,12 +455,13 @@
                   this.api_v1_group_group = res.data;
                 })
             })
+          }
         } else if(this.userSelected.length > 1) {
           axios.delete('http://172.16.135.89:3000/user/'+this.userSelected[0]._id,{
             data:{
-              type:1,
-              account:this.user_id,
-              selectedData:this.userSelected
+              type:5,
+              selectedData:this.userSelected,
+              account : this.user_id
             }
           }).then((res) => {
             this.api_v1_person_users = this.arrayUnique(this.api_v1_person_users.concat(res.data));
@@ -429,80 +479,49 @@
                 this.userSelected = [];
               })
             })
-        }
       } else {
         alert("유저를 선택해 주세요")
       }
     },
-    getFormatDate(date){
-        var year = date.getFullYear();              //yyyy
-        var month = (1 + date.getMonth());          //M
-        month = month >= 10 ? month : '0' + month;  //month 두자리로 저장
-        var day = date.getDate();                   //d
-        var hours = date.getHours();
-        if(hours < 10) {
-          hours = '0' + hours;
-        }
-        var minutes = date.getMinutes();
-        if(minutes < 10) {
-          minutes = '0' + minutes;
-        }
-        var seconds = date.getSeconds();
-        if(seconds < 10) {
-          seconds = '0' + seconds;
-        }
-        day = day >= 10 ? day : '0' + day;          //day 두자리로 저장
-        return  year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
-    },
     updateUser () {
-      // if(!this.name){
-      //   this.name = this.userSelected[0].name;
-      // }
-      // if(!this.image) {
-      //   this.image = this.userSelected[0].avatar_file;
-      // }
-      axios.put('http://172.16.135.89:3000/user/'+this.userSelected[0]._id,{
-        _id : this.userSelected[0]._id,
-        name : this.name === '' || this.name === null? undefined : this.name,
-        email : this.email === '' || this.email === null? undefined : this.email,
-        mobile : this.mobile === '' || this.mobile === null? undefined : this.mobile,
-        avatar_file : this.image === null ? this.userSelected[0].avatar_file : this.image,
-        avatar_file_checksum : this.userSelected[0].avatar_file_checksum,
-        updated_at : this.getFormatDate(new Date()),
-        groups_obids : this.userSelected[0].groups_obids,
-        clicked_groups : this.updateActive,
-        type : 5,
-        account : this.user_id,
-      }).then((res) => {
-        alert('업데이트 되었습니다')
-        let index = this.api_v1_person_users.findIndex(x => x._id == res.data._id)
-        // this.api_v1_person_users[index].name = res.data.name;
-        // this.api_v1_person_users[index].avatar_file = res.data.avatar_file;
-        // this.api_v1_person_users[index].avatar_file_url = res.data.avatar_file_url;
-        // this.api_v1_person_users[index].avatar_file_checksum = res.data.avatar_file_checksum;
-        // this.api_v1_person_users[index].updated_at = res.data.updated_at;
-        // this.selectedUser[0] = res.data;
-        // console.log(res.data);
-        this.$set(this.api_v1_person_users,index,res.data);
-        // this.$set(this.api_v1_person_users[index],'avatar_file_url',res.data.avatar_file_url);
-        // console.log(this.api_v1_person_users[index]);
-        axios.get('http://172.16.135.89:3000/group?type=5')
-          .then((res) => {
-            res.data.map((i) => {//user_obids에 있는 데이터 children으로 옮기기
-              this.moveUserIds(i);
+      if(confirm("변경된 사항은 되돌릴수 없습니다 변경하시겠습니까?")) {  
+        axios.put('http://172.16.135.89:3000/user/'+this.userSelected[0]._id,{
+          _id : this.userSelected[0]._id,
+          name : this.name === '' || this.name === null? undefined : this.name,
+          mail : this.email === '' || this.email === null? undefined : this.email,
+          mobile : this.mobile === '' || this.mobile === null? undefined : this.mobile,
+          avatar_file : this.image === null ? this.userSelected[0].avatar_file : this.image,
+          avatar_file_url : this.userSelected[0].avatar_file_url,
+          avatar_file_checksum : this.userSelected[0].avatar_file_checksum,
+          updated_at : this.$moment().format('YYYY-MM-DD'),
+          groups_obids : this.userSelected[0].groups_obids,
+          account : this.user_id,
+          clicked_groups : this.updateActive,
+          position : this.position,
+          type : 5
+        }).then((res) => {
+          let index = this.api_v1_person_users.findIndex(x => x._id == res.data._id)
+          this.$set(this.api_v1_person_users,index,res.data);
+          axios.get('http://172.16.135.89:3000/group?type=5')
+            .then((res) => {
+              res.data.map((i) => {//user_obids에 있는 데이터 children으로 옮기기
+                this.moveUserIds(i);
+              })
+              let index = res.data.findIndex(i => i.name == "undefined");
+              if(index !== -1) {
+                let undefinedGroup = res.data.splice(index,1);
+                res.data.push(undefinedGroup[0]);
+              }
+              this.api_v1_group_group = res.data;
             })
-            let index = res.data.findIndex(i => i.name == "undefined");
-            if(index !== -1) {
-              let undefinedGroup = res.data.splice(index,1);
-              res.data.push(undefinedGroup[0]);
-            }
-            this.api_v1_group_group = res.data;
-          })
-      })
-      this.userUpdateModal = false  
-      this.name = null;
-      this.userSelected = [];
-      this.image = null;
+        })
+        this.userUpdateModal = false  
+        this.name = null;
+        this.userSelected = [];
+        this.image = null;
+        this.position = null;
+        alert('업데이트 되었습니다')
+      }
     }
   },
 }

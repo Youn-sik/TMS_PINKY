@@ -2,6 +2,9 @@ var express = require('express');
 var router = express.Router();
 const boom = require('boom')
 const api_v3_device_gateway = require('../../../../models/api/v3/device/gateway')
+var moment = require('moment');
+require('moment-timezone'); 
+moment.tz.setDefault("Asia/Seoul"); 
 
 router.get('/',async function(req, res) {
     try {
@@ -24,8 +27,9 @@ router.get('/:id',async function(req, res) {
 
 router.post('/',function(req, res) {
     try {
+        req.body.create_at = moment().format('YYYY-MM-DD HH:mm:ss')
+        req.body.create_ut = Date.now()
         const add = new api_v3_device_gateway(req.body)
-        console.log(add);
         add.save()
         res.send(add)
     } catch (err) {

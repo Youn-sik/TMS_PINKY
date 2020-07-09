@@ -89,7 +89,24 @@ router.delete('/:id',async function(req, res) {
     try {
         const id = req.params === undefined ? req.id : req.params.id
         const delete_data = await api_v1_group_group.findByIdAndRemove(id)
-        res.send(delete_data);
+
+        let update_data = await api_v1_group_group.findOneAndUpdate({name:'undefined',type:delete_data.type},{ 
+            $addToSet: { 
+                user_obids : { 
+                    $each: delete_data.user_obids 
+                },
+                children : { 
+                    $each: delete_data.children 
+                }
+            } 
+        }, {new: true }).exec()
+        
+        if(!update_data) {
+            update_data = new api_v1_group_group({name:'undefined',type:delete_data.type,user_obids:delete_data.user_obids,children:delete_data.children})
+            update_data.save();
+        }
+
+        res.send(update_data);
     } catch (err) {
         throw boom.boomify(err)
     }
