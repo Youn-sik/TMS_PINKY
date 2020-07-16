@@ -87,6 +87,8 @@
               ></v-select>
             </v-card-title>
             <v-data-table
+                :loading="loading" 
+                loading-text="불러오는중입니다 잠시만 기다려주세요..."
                 :headers="headers"
                 :items-per-page="itemsPerPage"
                 :page.sync="page"
@@ -129,6 +131,7 @@
   export default {
     data () {
         return {
+            loading:true,
             active:[],
             temperature_max : 40,
             temperature_min : 30,
@@ -208,6 +211,7 @@
               return true;
             }
           })
+          this.loading=false;
         }
       },
       nowStatus (val) {

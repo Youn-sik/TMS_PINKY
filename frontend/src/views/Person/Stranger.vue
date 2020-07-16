@@ -35,6 +35,8 @@
           <v-spacer></v-spacer>
         </v-card-title>
         <v-data-table
+          :loading="loading" 
+          loading-text="불러오는중입니다 잠시만 기다려주세요..."
           item-key="_id"
           :items-per-page="itemsPerPage"
           :page.sync="page"
@@ -83,6 +85,7 @@
             return(i.access_time.split(' ')[0] >= this.dates[0] && i.access_time.split(' ')[0] <= this.dates[1])
           })
           this.originData = res.data;
+          this.loading=false;
         })
     },
     data () {
@@ -92,6 +95,7 @@
         menu : false,
         dates: [this.$moment().format('YYYY-MM-DD'), this.$moment().format('YYYY-MM-DD')],
         page: 1,
+        loading:true,
         originData : [],
         pageCount: 0,
         headers: [

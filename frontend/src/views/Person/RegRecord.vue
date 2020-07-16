@@ -37,6 +37,8 @@
           ></v-text-field>
         </v-card-title>
         <v-data-table
+          :loading="loading" 
+          loading-text="불러오는중입니다 잠시만 기다려주세요..."
           :headers="headers"
           :items="filteredItems"
           :items-per-page="itemsPerPage"
@@ -101,6 +103,7 @@
         empCnt:0,
         visitCnt:0,
         blackCnt:0,
+        loading: true,
         itemsPerPage: 10,
         page: 1,
         pageCount: 0,
@@ -154,6 +157,7 @@
             else if(i.type === 2) this.visitCnt++;
             else this.blackCnt++;
           })
+          this.loading=false;
         })
     }
 

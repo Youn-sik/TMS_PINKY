@@ -13,7 +13,7 @@
             single-line
           ></v-text-field>
         </v-card-title>
-        <v-divider></v-divider>
+        <!-- <v-divider></v-divider> -->
         <v-dialog
         v-model="dialog"
         max-width="50vw"
@@ -80,6 +80,8 @@
            
         </v-dialog>
         <v-data-table
+          :loading="loading" 
+          loading-text="불러오는중입니다 잠시만 기다려주세요..."
           :headers="headers"
           :items="filteredItems"
           :items-per-page="itemsPerPage"
@@ -91,6 +93,15 @@
           item-key="_id"
           class="elevation-0"
         >
+
+            <template v-slot:header="{ props: { headers } }">
+              <thead>
+                <tr>
+                  <th :colspan="headers.length">
+                  </th>
+                </tr>
+              </thead>
+            </template>
             <template v-slot:body="{items}">
                <tr v-for="item in items" :key="item.name" style="display:inline-block; width:20%; text-align:center;">
                     <td style="width:100%; height=100px;">
@@ -124,6 +135,7 @@
     created () {
         axios.get('http://172.16.135.89:3000/camera_monitor?id=one_device').then((res) => {
             this.api_v3_device_camera_monitor = res.data;
+            this.loading = false
         })
     },
     data () {
@@ -132,6 +144,7 @@
         dialog: false,
         imageDialog:false,
         image_url:'',
+        loading : true,
         itemsPerPage: 10,
         page: 1,
         pageCount: 0,

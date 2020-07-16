@@ -39,6 +39,8 @@
           ></v-text-field>
         </v-card-title>
         <v-data-table
+          :loading="loading" 
+          loading-text="불러오는중입니다 잠시만 기다려주세요..."
           :headers="headers"
           :items-per-page="itemsPerPage"
           :page.sync="page"
@@ -70,6 +72,7 @@
             this.logs = this.origin.filter((i) => {
               return(i.regdate.split(' ')[0] >= this.dates[0] && i.regdate.split(' ')[0] <= this.dates[1])
             });
+            this.loading=false
           })
     },
     methods: {
@@ -99,6 +102,7 @@
         dates: [this.$moment().format('YYYY-MM-DD'), this.$moment().format('YYYY-MM-DD')],
         menu:false,
         itemsPerPage: 10,
+        loading: true,
         page: 1,
         pageCount: 0,
         headers: [

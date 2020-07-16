@@ -39,6 +39,8 @@
                     ></v-text-field>
                 </v-card-title>
                 <v-data-table
+                    :loading="loading" 
+                    loading-text="불러오는중입니다 잠시만 기다려주세요..."
                     :headers="headers"
                     :items="user"
                     :items-per-page="itemsPerPage"
@@ -90,12 +92,12 @@ export default {
         await axios.get('http://172.16.135.89:3000/user?type=1')
             .then((res) => {
                 this.user = res.data;
+                this.loading=false
                 this.clickOK()
             })  
         axios.get('http://172.16.135.89:3000/access?type=attendance')
             .then((res) => {
                 this.accessOrigin = res.data;
-
             })
         
     },
@@ -139,6 +141,7 @@ export default {
     data () {
         return {
             access:[],
+            loading:true,
             accessOrigin:[],
             user:[
                 {},
