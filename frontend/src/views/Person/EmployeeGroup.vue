@@ -142,6 +142,16 @@
                       required
                     ></v-text-field>
                     <v-text-field
+                      v-model="location"
+                      label="근무지"
+                      required
+                    ></v-text-field>
+                    <v-text-field
+                      v-model="dep"
+                      label="부서"
+                      required
+                    ></v-text-field>
+                    <v-text-field
                       v-model="position"
                       label="직급"
                       required
@@ -248,6 +258,8 @@
       groupName:null,
       avatar_file:null,
       position:'',
+      location:'',
+      dep:'',
       image : null,
       api_v1_person_users:[],
       headers: [
@@ -262,6 +274,16 @@
             text: '이름',
             align: 'start',
             value: 'name',
+          },
+          {
+            text: '근무지',
+            align: 'start',
+            value: 'locatio',
+          },
+          {
+            text: '부서',
+            align: 'start',
+            value: 'department_id',
           },
           {
             text: '직급',
@@ -498,6 +520,8 @@
           account : this.user_id,
           clicked_groups : this.updateActive,
           position : this.position,
+          location : this.location,
+          department_id : this.dep,
           type : 1
         }).then((res) => {
           let index = this.api_v1_person_users.findIndex(x => x._id == res.data._id)

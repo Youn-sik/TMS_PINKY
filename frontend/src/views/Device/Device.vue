@@ -1,5 +1,56 @@
 <template>
   <v-row justify="center">
+    <v-col cols="11" class="d-flex">
+      <v-expansion-panels
+        v-model="panel"
+        multiple
+      >
+        <v-expansion-panel>
+          <v-expansion-panel-header>스트리밍</v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <v-col class="d-flex">
+              <video id="my_video_1" class="video-js vjs-theme-city" vjs-big-play-centered controls preload="auto" data-setup='{"liveui": false}' style="width:100%; height:700px">
+                <source src="../../assets/sample.m3u8" type="application/x-mpegURL"/>
+              </video>
+              <v-card width="35%" elevation="0">
+                <v-card-title>
+                  출입 기록
+                </v-card-title>
+                <v-divider></v-divider>
+                <v-data-table
+                :items="access_realtime"
+                :items-per-page="5"
+                :headers="access_headers"
+                hide-default-header
+                hide-default-footer
+                item-key="_id"
+                class="elevation-0 pt-5"
+                >
+                  <template v-slot:body="{items}">
+                    <tr v-for="(item,index) in items" :key="index">
+                        <td style="width:100%; height:100px;">
+                          <div style="float:left">
+                            <img :src="item.avatar_file_url" style="width: auto; height: 5.5vw;" alt="" onerror="this.src='http://172.16.135.89:3000/image/noImage.png'" @click="clickImg(item._id.camera_obids) ">
+                          </div>
+                          <div style="float:left; margin-left:10px;">
+                            <p v-if="item.avatar_type === 1">사원</p>
+                            <p v-else-if="item.avatar_type === 2">방문자</p>
+                            <p v-else-if="item.avatar_type === 3">미등록자</p>
+                            <p v-else-if="item.avatar_type === 4">블랙리스트</p>
+                            <p>{{item.avatar_temperature.substring(0,4)}}℃</p>
+                            <p>{{item.access_time}}</p>
+                          </div>
+                        </td>
+                        <v-divider></v-divider>
+                    </tr>
+                  </template>
+                </v-data-table>
+              </v-card>
+            </v-col>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
+    </v-col>
     <v-col cols="11">
       <v-card
         outlined
@@ -32,8 +83,9 @@
           <v-text-field
             v-model="search"
             append-icon="mdi-magnify"
+            clearable
+            hide-details
             label="검색"
-            single-line
           ></v-text-field>
           <div>
             <v-btn class="ml-2 mr-2 mt-4" color="error" v-if="deviceSelected[0]" @click="delDevice"><v-icon dark left>delete_forever</v-icon>삭제</v-btn>
@@ -145,8 +197,10 @@
                               v-if="menu2"
                               v-model="time"
                               full-width
+                              use-seconds
+                              max="00:59:59"
                               format="24hr"
-                              @click:minute="$refs.menu.save(time)"
+                              @click:second="$refs.menu.save(time)"
                             ></v-time-picker>
                           </v-menu>
                           <v-select
@@ -252,7 +306,8 @@
           class="elevation-0"
         >
           <template v-slot:item.streaming="{item}">
-            <v-btn @click="startStreaming(item)" @click:outside="endStreaming(item)" color="primary" small>스트리밍 재생</v-btn>
+            <v-btn @click="startStreaming(item)"  v-if="nowStreaming === item.serial_number" disabled @click:outside="endStreaming(item)" color="primary" small>스트리밍 재생</v-btn>
+            <v-btn @click="startStreaming(item)"  v-else @click:outside="endStreaming(item)" color="primary" small>스트리밍 재생</v-btn>
           </template>
           <template v-slot:expanded-item="{ item }">
             <td :colspan="headers.length+1" class="deviceTab pa-0">
@@ -309,39 +364,13 @@
         </v-data-table>
         <v-pagination v-model="page" :total-visible="7" :length="pageCount"></v-pagination>
       </v-card>
-      <v-dialog 
-      :persistent="loading"
-      width="1100" height="500"
-      @click:outside="endStreaming"
-      v-model="streamingModal">
-        <v-col class="pa-0 d-flex">
-          <v-card width="800" height="500">
-            <div v-html="video"></div>
-          </v-card>
-          <v-card width="300" height="500">
-            <v-card-title>온도 기록</v-card-title>
-            <v-divider></v-divider>
-            <v-data-table
-            hide-default-footer
-            hide-default-header
-            >
-              
-            </v-data-table>
-          </v-card>
-        </v-col>
-      </v-dialog>
-      <v-snackbar
-      v-model="snackbar"
-      :timeout="1000"
-      >
-        로딩을 기다려주세요...
-    </v-snackbar>
     </v-col>
   </v-row>
 </template>
 <script>
   import videojs from 'video.js';
   import axios from 'axios';
+  import mqtt from 'mqtt';
   export default {
     props:["isLogin","user_id"],
     watch: {
@@ -349,7 +378,7 @@
         handler(val) {
           if(val.length === 0) {
             this.display = null;
-            this.time = null;
+            this.time = "00:00:00";
           } else if(val[0].config_data){
             if(val[0].config_data.capture_size) {
               this.display = val[0].config_data.capture_size
@@ -358,70 +387,110 @@
             }
             
             if(val[0].config_data.capture_time) {
-              this.time = val[0].config_data.capture_time
+              this.time = "00:"+val[0].config_data.capture_time
             } else {
-              this.time = null;
+              this.time = "00:00:00";
             }
           } else {
             this.display = null;
-            this.time = null;
+            this.time = "00:00:00";
           }
         }      
       },
     },
-    mounted () {
-      
-    },
-    beforeDestroy () {
-      // console.log(this.player);
-      if(this.player) {
-        this.player.dispose();
-      }
-    },
-    created () {
-      this.$mqtt.on('message', (topic,message) => {
-        // console.log(topic,new TextDecoder("utf-8").decode(message))
-        let context = message.toString();
-        let json = JSON.parse(context);
-        if(topic === '/access/realtime/'+this.streaming_device_sn) {
-          this.access_realtime.unshift(json)
-        }
-      })
-      this.$mqtt.subscribe('/access/realtime/+')
-      this.$mqtt.subscribe('/control/log/result/+')
-      this.$mqtt.subscribe('/control/capture/start/result/+')
-      this.$mqtt.subscribe('/control/capture/end/result+')
-      this.$mqtt.subscribe('/control/sdcard/delete/result/+')
-      this.$mqtt.subscribe('/control/sdcard/part/delete/result+')
-      this.$mqtt.subscribe('/control/reboot/result/+')
-      this.$mqtt.subscribe('/control/get_device_file_list/result/+')
-      this.$mqtt.subscribe('/control/reset/result/+')
-      axios.get('http://172.16.135.89:3000/camera').then((res) => {
+    async mounted () {
+      this.player = videojs('my_video_1',{autoplay: 'any'});
+      this.player.play()
+      await axios.get('http://172.16.135.89:3000/camera').then(async (res) => {
         this.api_v3_device_camera = res.data;
         res.data.map((i) => {
           if(i.status === 'Y') this.online++;
           else if(i.status === 'N') this.offline++;
         })
+        this.nowStreaming = this.api_v3_device_camera[0].serial_number
       })
+      axios.post('http://172.16.135.89:4000/start',{
+        "uri" : "rtsp://"+this.api_v3_device_camera[0].ip+":9096"
+        // "uri" : "rtsp://172.16.135.89:8554/test"
+      }).then((res) => {
+        this.loading = false;
+        this.video_id = res.data.id
+        setTimeout(() =>{
+          this.player.src('http://172.16.135.89:4000/stream/'+this.video_id+'/'+this.video_id+'.m3u8');
+          this.player.play();
+        },2500)
+      })
+    },
+    beforeDestroy () {
+      if(this.video_id){
+        axios.post('http://172.16.135.89:4000/stop',{
+          id:this.video_id
+        })
+      }
+      if(this.player) {
+        this.player.dispose();
+      }
+    },
+    async created () {
+      this.client = mqtt.connect('ws://172.16.135.89:8083/mqtt')
+      this.client.on('connect',() => {
+        console.log('mqtt was connected');
+        this.client.subscribe('/access/realtime/result/+')
+        this.client.subscribe('/control/log/result/+')
+        this.client.subscribe('/control/capture/start/result/+')
+        this.client.subscribe('/control/capture/end/result+')
+        this.client.subscribe('/control/sdcard/delete/result/+')
+        this.client.subscribe('/control/sdcard/part/delete/result+')
+        this.client.subscribe('/control/reboot/result/+')
+        this.client.subscribe('/control/get_device_file_list/result/+')
+        this.client.subscribe('/control/reset/result/+')
+      })
+      this.client.on('message', (topic, message) => {
+        let context = message.toString();
+        let json = JSON.parse(context);
+        if(topic === '/access/realtime/result/'+this.nowStreaming) {
+          setTimeout(() => {
+            this.access_realtime.unshift(json.values[0])
+          },7000)
+        } else if(topic === '/control/log/result/'+this.active[0].serial_number){
+          alert('제어 완료')
+        } else if(topic === '/control/capture/start/result/'+this.active[0].serial_number){
+          alert('제어 완료')
+        } else if(topic === '/control/capture/upload/result/'+this.active[0].serial_number){
+          alert('제어 완료')
+        } else if(topic === '/control/capture/end/result/'+this.active[0].serial_number){
+          alert('제어 완료')
+        } else if(topic === '/control/sdcard/delete/result/'+this.active[0].serial_number){
+          alert('제어 완료')
+        } else if(topic === '/control/sdcard/part/delete/result/'+this.active[0].serial_number){
+          alert('제어 완료')
+        } else if(topic === '/control/reboot/result/'+this.active[0].serial_number){
+          alert('제어 완료')
+        }
+      })
+      window.addEventListener('beforeunload', this.stopVideo)
       axios.get('http://172.16.135.89:3000/gateway').then((res) =>{
         this.gatewayList = res.data;
       })
     },
     data () {
       return {
+        panel: [0,1],
+        nowStreaming:null,
+        client:null,
         access_realtime:[],
         streamingModal:false,
         api_v1_group_group:null,
         active:[],
         deviceSelected:[],
-        time: null,
+        time: "00:00:00",
         menu2: false,
         searchGroup:null,
         online:0,
         offline:0,
         itemsPerPage: 10,
         page: 1,
-        loading:true,
+        loading : true,
         pageCount: 0,
         api_v3_device_camera : [],
         search: '',
@@ -456,6 +525,17 @@
         model: 1,
         expanded: [],
         singleExpand: false,
+        access_headers: [
+          {
+            text: '',
+            align: 'center',
+            value: 'avatar_file_url',
+            width : '10%',
+            sortable: false,
+          },
+          { text: '온도', value: 'avatar_temperature',width : '30%' },
+          { text: '생성일', value: 'access_time' },
+        ],
         headers: [
           { text: '단말기 명', value: 'name' },
           { text: '버전', value: 'app_version' },
@@ -470,103 +550,107 @@
       }
     },
     methods: {
-      endStreaming(){
-        if(!this.loading){
-          axios.post('http://172.16.135.89/stop',{
-            "id":this.video_id,
-            "alias":"test",
-            "remove":true
+      stopVideo(){
+        if(this.video_id) {
+          axios.post('http://172.16.135.89:4000/stop',{
+            id:this.video_id,
           })
-          videojs('my_video_1').dispose()
-          this.video='';
-        } else {
-          this.snackbar=true;
         }
       },
-      async startStreaming(item) {
-        this.streaming_device_sn = item.serial_number
-        this.loading=true;
-        this.video='test'
-        this.streamingModal = true;
-        this.video='<video id="my_video_1" class="video-js vjs-theme-city" controls data-setup="{}" preload="auto" width="800"  height="500"> </video>'
-        await setTimeout(async () =>{
-          this.player = await videojs('my_video_1',{autoplay: 'any'});
-        },1)
-        // axios.get('http://172.16.135.89:4000/')
-        // axios.get('http://172.16.135.89:4000/videos/test.m3u8')
-        axios.post('http://172.16.135.89/start',{
-          "uri" : "rtsp://170.93.143.139/rtplive/470011e600ef003a004ee33696235daa",
-          "alias" : "test"
-        }).then((res) => {
-          this.loading=false;
-          this.video_id = res.data.id
-          // this.player.src('http://172.16.135.89/stream/'+res.data.id+'/index.m3u8');
-          this.player.src('http://172.16.135.89/stream/'+res.data.id+'/index.m3u8');
-          this.player.play();
-        }).catch(function () {
-          this.loading=false;
+      // endStreaming(){
+      //   if(!this.loading){
+      //     axios.post('http://172.16.135.89/stop',{
+      //       "id":this.video_id,
+      //       "alias":"test",
+      //       "remove":true
+      //     })
+      //     videojs('my_video_1').dispose()
+      //     this.video='';
+      //   } else {
+      //     this.snackbar=true;
+      //   }
+      // },
+      startStreaming(item) {
+        this.nowStreaming=item.serial_number;
+        axios.post('http://172.16.135.89:4000/stop',{
+          id:this.video_id
         })
+        this.player.src('../../assets/sample.m3u8')
+        this.player.play();
+        axios.post('http://172.16.135.89:4000/start',{
+          "uri" : "rtsp://"+item.ip+":9096/"
+        }).then((res) => {
+          this.video_id = res.data.id
+          setTimeout(() =>{
+            this.player.src('http://172.16.135.89:4000/stream/'+this.video_id+'/'+this.video_id+'.m3u8');
+            this.player.play();
+          },5000)
+        })
+        
       },
       controlDeviceLog () {
         if(this.active[0] === undefined) {
           alert('단말기를 선택해 주세요')
           return false;
         }
-        this.$mqtt.publish('/control/log/'+this.active[0].serial_number,JSON.stringify({stb_sn:this.active[0].serial_number}));
+        this.client.publish('/control/log/'+this.active[0].serial_number,JSON.stringify({stb_sn:this.active[0].serial_number}));
       },
       controlCaptureStart () {
         if(this.active[0] === undefined) {
           alert('단말기를 선택해 주세요')
           return false;
-        } else if (!(this.time || this.display)) {
+        } else if (!(this.time === '00:00:00' || this.display)) {
           alert('시간,사이즈를 입력해 주세요')
           return false;
         }
-        this.$mqtt.publish('/control/capture/start/'+this.active[0].serial_number,
-        JSON.stringify({stb_sn:this.active[0].serial_number,"capture_time":this.time,"capture_size":this.display, "capture_status":"Y"}));
+        let time = this.time.substring(3);
+
+        this.client.publish('/control/capture/start/'+this.active[0].serial_number,
+        JSON.stringify({stb_sn:this.active[0].serial_number,"capture_time":time,"capture_size":this.display, "capture_status":"Y"}));
       },
       controlCaptureEnd () {
         if(this.active[0] === undefined) {
           alert('단말기를 선택해 주세요')
           return false;
         }
-        this.$mqtt.publish('/control/capture/end/'+this.active[0].serial_number,
-        JSON.stringify({stb_sn:this.active[0].serial_number,"stb_id":"", "capture_time":this.time,"capture_size":"320*240", "capture_status":"N"}));
+        let time = this.time.substring(3);
+        this.client.publish('/control/capture/end/'+this.active[0].serial_number,
+        JSON.stringify({stb_sn:this.active[0].serial_number,"stb_id":"", "capture_time":time,"capture_size":"320*240", "capture_status":"N"}));
       },
       controlSDcardDel () {
         if(this.active[0] === undefined) {
           alert('단말기를 선택해 주세요')
           return false;
         }
-        this.$mqtt.publish('/control/sdcard/delete/'+this.active[0].serial_number,JSON.stringify({stb_sn:this.active[0].serial_number}));
+        this.client.publish('/control/sdcard/delete/'+this.active[0].serial_number,JSON.stringify({stb_sn:this.active[0].serial_number}));
       },
       controlSDcardPartDel () {
         if(this.active[0] === undefined) {
           alert('단말기를 선택해 주세요')
           return false;
         }
-        this.$mqtt.publish('/control/sdcard/part/delete/'+this.active[0].serial_number,JSON.stringify({stb_sn:this.active[0].serial_number}));
+        this.client.publish('/control/sdcard/part/delete/'+this.active[0].serial_number,JSON.stringify({stb_sn:this.active[0].serial_number}));
       },
       controlDeviceReboot () {
         if(this.active[0] === undefined) {
           alert('단말기를 선택해 주세요')
           return false;
         }
-        this.$mqtt.publish('/control/reboot/'+this.active[0].serial_number,JSON.stringify({stb_sn:this.active[0].serial_number, "message":"reboot"}));
+        this.client.publish('/control/reboot/'+this.active[0].serial_number,JSON.stringify({stb_sn:this.active[0].serial_number, "message":"reboot"}));
       },
       controlContentsReq () {
         if(this.active[0] === undefined) {
           alert('단말기를 선택해 주세요')
           return false;
         }
-        this.$mqtt.publish('/control/get_device_file_list/'+this.active[0].serial_number,JSON.stringify({stb_sn:this.active[0].serial_number, "message":"get_device_file_list"}));
+        this.client.publish('/control/get_device_file_list/'+this.active[0].serial_number,JSON.stringify({stb_sn:this.active[0].serial_number, "message":"get_device_file_list"}));
       },
       controlDeviceReset () {
         if(this.active[0] === undefined) {
           alert('단말기를 선택해 주세요')
           return false;
         }
-        this.$mqtt.publish('/control/reset/'+this.active[0].serial_number,JSON.stringify({stb_sn:this.active[0].serial_number}));
+        this.client.publish('/control/reset/'+this.active[0].serial_number,JSON.stringify({stb_sn:this.active[0].serial_number}));
       },
       updateDevice () {
         axios.put('http://172.16.135.89:3000/camera/'+this.deviceSelected[0]._id,{

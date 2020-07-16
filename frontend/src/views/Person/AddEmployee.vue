@@ -25,6 +25,18 @@
                 required
               ></v-text-field>
               <v-text-field
+                v-model="location"
+                label="근무지"
+                :rules="nameRules"
+                required
+              ></v-text-field>
+              <v-text-field
+                v-model="dep"
+                label="부서"
+                :rules="nameRules"
+                required
+              ></v-text-field>
+              <v-text-field
                 v-model="position"
                 label="직급"
                 :rules="nameRules"
@@ -149,6 +161,9 @@
       async addUser(){
         if(this.image === null || this.image === ''){alert('사진을 업로드 해주세요.'); return false}
         else if(this.name === null || this.name === '') {alert('이름을 입력해주세요.'); return false}
+        else if(this.location === null || this.location === '') {alert('근무지를 입력해주세요.'); return false}
+        else if(this.dep === null || this.dep === '') {alert('부서를 입력해주세요.'); return false}
+        else if(this.position === null || this.position === '') {alert('직급을 입력해주세요.'); return false}
         else if(this.email !== '' && !/.+@.+\..+/.test(this.email)){alert('이메일 형식으로 입력해주세요.'); return false} 
         axios.post('http://172.16.135.89:3000/user',{
               name : this.name,
@@ -157,7 +172,10 @@
               groups_obids : this.active[0] === undefined ? null : this.active,
               type : 1,
               account : this.user_id,
-              mobile : this.mobile
+              mobile : this.mobile,
+              location : this.location,
+              department_id: this.dep,
+              postion: this.position
         }).then(() => {
           alert('등록 되었습니다');
           this.$router.go(-1);
@@ -180,6 +198,8 @@
       gender:1,
       position:'',
       menu: false,
+      locaation:'',
+      dep:'',
       name : '',
       data : null,
       company : null,

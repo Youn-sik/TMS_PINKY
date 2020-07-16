@@ -92,7 +92,7 @@
                 :page.sync="page"
                 @page-count="pageCount = $event"
                 hide-default-footer
-                :items="access"
+                :items="accessRecords"
                 class="ml-2 mr-2 elevation-0"
             >
                 <template v-slot:item.avatar_file_url="{ item }">
@@ -135,6 +135,7 @@
             searchGroup: '',
             menu : false,
             originData:[],
+            accessRecords:[],
             allData:[],
             deviceList : [],
             access : [],
@@ -172,6 +173,7 @@
                 } )
                 this.nowStatus = {text:'모든 사용자',value:10}
                 this.tempStatus = '전체';
+                console.log(this.access)
             } else {
                 if(this.dates[0] > this.dates[1]) {
                     let temp = this.dates[0];
@@ -201,7 +203,7 @@
       active : function (newVal) {
         if(newVal[0]) {
           this.originData = this.allData.filter(i => i.stb_sn === newVal[0].serial_number);//선택된 단말의 모든 데이터
-          this.access = this.originData.filter((i) => {
+          this.accessRecords = this.originData.filter((i) => {
             if(i.access_time.split(' ')[0] === this.dates[0]) {
               return true;
             }
@@ -211,27 +213,27 @@
       nowStatus (val) {
         this.tempStatus = '전체'
         if(val.text === '모든 사용자') {
-            this.access = this.originData
+            this.accessRecords = this.access
         } else {
-            this.access = this.originData.filter(i => i.avatar_type === val.value)
+            this.accessRecords = this.access.filter(i => i.avatar_type === val.value)
         }
       },
       tempStatus (val) {
         if(this.nowStatus.value === 10) {
             if(val === '전체') {
-            this.access = this.originData
+            this.accessRecords = this.access
             } else if(val === '온도이상자') {
-                this.access = this.originData.filter(i => i.avatar_temperature > '37');
+                this.accessRecords = this.access.filter(i => i.avatar_temperature > '38');
             } else {
-                this.access = this.originData.filter(i => i.avatar_temperature <= '37')
+                this.accessRecords = this.access.filter(i => i.avatar_temperature <= '38')
             }
         } else {
             if(val === '전체') {
-            this.access = this.originData.filter(i => i.avatar_type === this.nowStatus.value)
+            this.accessRecords = this.access.filter(i => i.avatar_type === this.nowStatus.value)
             } else if(val === '온도이상자') {
-                this.access = this.originData.filter(i => i.avatar_type === this.nowStatus.value && i.avatar_temperature > '37');
+                this.accessRecords = this.access.filter(i => i.avatar_type === this.nowStatus.value && i.avatar_temperature > '38');
             } else {
-                this.access = this.originData.filter(i => i.avatar_type === this.nowStatus.value && i.avatar_temperature <= '37')
+                this.accessRecords = this.access.filter(i => i.avatar_type === this.nowStatus.value && i.avatar_temperature <= '38')
             }
         }
       }

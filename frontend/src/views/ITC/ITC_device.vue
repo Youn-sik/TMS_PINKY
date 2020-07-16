@@ -75,6 +75,7 @@
 <script>
   import axios from "axios";
   import IntegerPlusminus from '../../components/IntegerPlusminus'
+  import mqtt from 'mqtt';
   export default {
     components: {
       IntegerPlusminus,
@@ -86,21 +87,24 @@
             temperature_min : 30,
             searchGroup: '',
             menu : false,
+            client:null,
             deviceList : [],
             dates: [this.$moment().subtract(1,'days').format('YYYY-MM-DD'), this.$moment().subtract(1,'days').format('YYYY-MM-DD')],
         }
     },
     methods :{
         controlTemperature () {
-          this.$mqtt.publish('/control/temperature/' + this.active[0].serial_number,JSON.stringify({stb_sn : this.active[0].serial_number,temperature_max : this.temperature_max}));
+          this.client.publish('/control/temperature/' + this.active[0].serial_number,JSON.stringify({stb_sn : this.active[0].serial_number,temperature_max : this.temperature_max}));
         },
     },
     created () {
-      this.$mqtt.on('message', (topic,message) => {
-        console.log(topic,new TextDecoder("utf-8").decode(message))
+      this.client = mqtt.connect('ws://172.16.135.89:8083/mqtt')
+      this.client.on('connect',() => {
+        console.log('mqtt was connected');
+        this.client.subscribe('/control/temperature/result/+')
       })
-      this.$mqtt.on('connect', () => {
-        console.log('mqtt was connected')
+      this.client.on('message', (topic,message) => {
+        console.log(topic,new TextDecoder("utf-8").decode(message))
       })
        axios.get('http://172.16.135.89:3000/camera')
         .then((res) => {

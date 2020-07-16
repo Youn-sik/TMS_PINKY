@@ -7,14 +7,14 @@ import VueGoogleCharts from 'vue-google-charts';
 import 'material-design-icons-iconfont/dist/material-design-icons.css';
 import i18n from './i18n'
 import vueMoment from 'vue-moment'
-import mqtt from './mqtt';
+// import mqtt from './mqtt';
 
 Vue.config.productionTip = false
 Vue.use(VueGoogleCharts);
 Vue.use(vueMoment);
 new Vue({
   router,
-  mqtt,
+  // mqtt,
   apolloProvider: createProvider(),
   vuetify,
   i18n,

@@ -6,9 +6,49 @@
             <form @submit.prevent="addUser">
               <v-card-title class="headline" style="padding:10px 0;">미등록자 등록</v-card-title>
               <img :src="image" style="max-width:50%, max-height=50%" alt="">
+              <v-select
+              :items="[{text:'사원',value:1},{text:'방문자',value:2},{text:'블랙리스트',value:5}]"
+              :return-object="true"
+              v-model="type">
+              </v-select>
               <v-text-field
                 v-model="name"
                 label="이름"
+                :rules="nameRules"
+                required
+              ></v-text-field>
+               <v-text-field
+                v-model="guest_company"
+                label="회사명"
+                v-if="type.text==='방문자'"
+                :rules="nameRules"
+                required
+              ></v-text-field>
+              <v-text-field
+                v-model="guest_purpose"
+                label="방문목적"
+                v-if="type.text==='방문자'"
+                :rules="nameRules"
+                required
+              ></v-text-field>
+               <v-text-field
+                v-model="location"
+                label="근무지"
+                v-if="type.text==='사원'"
+                :rules="nameRules"
+                required
+              ></v-text-field>
+              <v-text-field
+                v-model="dep"
+                label="부서"
+                v-if="type.text==='사원'"
+                :rules="nameRules"
+                required
+              ></v-text-field>
+              <v-text-field
+                v-model="position"
+                label="직급"
+                v-if="type.text==='사원'"
                 :rules="nameRules"
                 required
               ></v-text-field>
@@ -45,16 +85,8 @@
                 <v-card>
                   <v-card-title
                     primary-title
-                    style="height:120px"
                   >
-                    그룹 선택
-                    <v-spacer></v-spacer>
-                    <v-col cols="5">
-                      <v-select 
-                      :items="[{text:'사원', value:1},{text:'방문자', value:2},{text:'블랙리스트', value:5}]" 
-                      :return-object="true"
-                      v-model="nowStatus"></v-select>
-                    </v-col>
+                    {{type.text}} 그룹 선택
                   </v-card-title>
                   <v-divider></v-divider>
                   <v-card-text>
@@ -115,7 +147,7 @@
       menu (val) {
         val && setTimeout(() => (this.$refs.picker.activePicker = 'YEAR'))
       },
-      nowStatus(val) {
+      type (val) {
         axios.get('http://172.16.135.89:3000/group?type='+val.value)
           .then((res) => {
             this.api_v1_group_group = res.data;
@@ -123,6 +155,9 @@
       }
     },
     created () {
+      if(this.$route.params.item === undefined) {
+        this.$router.go(-1);
+      }
       this.image = this.$route.params.item.avatar_file_url
       axios.get('http://172.16.135.89:3000/group?type=1')
         .then((res) => {
@@ -145,6 +180,11 @@
               created_at : this.$moment().format('YYYY-MM-DD'),
               avatar_file_url : this.image,
               stranger_id : this.$route.params.item._id,
+              guest_company:this.guest_company,
+              guest_purpose:this.guest_purpose,
+              location: this.location,
+              position: this.position,
+              department_id:this.department_id,
               groups_obids : this.active[0] === undefined ? null : this.active,
               type : this.nowStatus.value,
               account : this.user_id,
@@ -174,9 +214,15 @@
         v =>!!v || '필수 입력 정보 입니다.',
       ],
       mobile:'',
+      type:{text:'사원',value:1},
       gender:1,
       menu: false,
       name : null,
+      guest_company: '',
+      guest_purpose: '',
+      location:'',
+      dep:'',
+      position:'',
       data : null,
       company : null,
       api_v1_group_group : [],

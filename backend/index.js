@@ -11,7 +11,7 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const path = require('path');
 const crypto = require('crypto')
-
+const { spawn } = require('child_process');
 //model
 const User = require('./models/User')
 
@@ -57,6 +57,7 @@ fastify.use('/operation',operationRouter);
 // fastify.use(express.static(path.join(__dirname, 'uploads')));
 fastify.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 fastify.use('/image',express.static('./image'));
+fastify.use('/stream',express.static('./videos'));
 
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerOption = require('./routes/swagger');
@@ -65,6 +66,24 @@ const swaggerUi = require('swagger-ui-express');
  
 fastify.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+// fastify.get('/strea',function(req,res) {
+//     var parser = m3u8.createStream();
+//     var file   = fs.createReadStream('/media/jeon/data/stream/index.m3u8');
+//     file.pipe(parser);
+
+//     parser.on('item', function(item) {
+//     // emits PlaylistItem, MediaItem, StreamItem, and IframeStreamItem
+//     });
+//     parser.on('m3u', function(m3u) {
+//     // fully parsed m3u file
+//     });
+// })
+let child;
+fastify.post('/strat', async function(req, res) {
+    let temp = '-v info -i '+req.body.uri+' -c:v copy -c:a copy -bufsize 1835k -pix_fmt yuv420p -flags -global_header -hls_time 10 -hls_list_size 6 -hls_wrap 10 -start_number 1 /var/www/backend/videos/'+req.body.sn+'.m3u8'
+    let args = temp.split(' ')
+    child = spawn('ffmpeg', args)
+})
 fastify.post('/login', async function(req, res) {
     try {   
         const user_id = req.body === undefined ? req.user_id : req.body.user_id
@@ -113,33 +132,33 @@ fastify.get('/auth', async function(req, res) {
     res.send({auth,user_id:tokenAuth.user_id});
 });
 
-new hls(server, {
-    provider: {
-        exists: (req, cb) => {
-            const ext = req.url.split('.').pop();
+// new hls(server, {
+//     provider: {
+//         exists: (req, cb) => {
+//             const ext = req.url.split('.').pop();
 
-            if (ext !== 'm3u8' && ext !== 'ts') {
-                return cb(null, true);
-            }
+//             if (ext !== 'm3u8' && ext !== 'ts') {
+//                 return cb(null, true);
+//             }
 
-            fs.access(__dirname + req.url, fs.constants.F_OK, function (err) {
-                if (err) {
-                    console.log('File not exist');
-                    return cb(null, false);
-                }
-                cb(null, true);
-            });
-        },
-        getManifestStream: (req, cb) => {
-            const stream = fs.createReadStream(__dirname + req.url);
-            cb(null, stream);
-        },
-        getSegmentStream: (req, cb) => {
-            const stream = fs.createReadStream(__dirname + req.url);
-            cb(null, stream);
-        }
-    }
-});
+//             fs.access(__dirname + req.url, fs.constants.F_OK, function (err) {
+//                 if (err) {
+//                     console.log('File not exist');
+//                     return cb(null, false);
+//                 }
+//                 cb(null, true);
+//             });
+//         },
+//         getManifestStream: (req, cb) => {
+//             const stream = fs.createReadStream(__dirname + req.url);
+//             cb(null, stream);
+//         },
+//         getSegmentStream: (req, cb) => {
+//             const stream = fs.createReadStream(__dirname + req.url);
+//             cb(null, stream);
+//         }
+//     }
+// });
 // const context = (req) => {
 //     let token = req.headers.authorization;
 //     if(token === undefined && req.headers.cookie !== undefined) {

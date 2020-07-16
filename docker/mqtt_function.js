@@ -408,7 +408,8 @@ module.exports = {
             }
 
             send_data = {
-                stb_sn: json.stb_sn
+                stb_sn: json.stb_sn,
+                values: insert_array
             };
             client.publish('/access/realtime/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
 

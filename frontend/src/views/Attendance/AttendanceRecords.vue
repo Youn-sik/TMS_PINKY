@@ -52,6 +52,8 @@
                     ></v-text-field>
                 </v-card-title>
                 <v-data-table
+                    :loading="loading" 
+                    loading-text="불러오는중입니다 잠시만 기다려주세요..."
                     :headers="headers"
                     :items-per-page="itemsPerPage"
                     :page.sync="page"
@@ -77,7 +79,7 @@
                                     class="mt-1 mb-1"
                                     :src="item.avatar_file_url"/>
                                 </td>
-                                <td v-else>
+                                <td v-else style="width:5%">
                                     <img 
                                     width="70px"
                                     style="margin-left:2px;"
@@ -98,8 +100,8 @@
                                     <template v-else-if="item.avatar_type===4">블랙리스트</template>
                                 </td>
 
-                                <td v-if="item.avatar_temperature >= '38'" :class="'highTemp '+index">{{item.avatar_temperature.substring(0,4)}}</td>
-                                <td v-else>{{item.avatar_temperature.substring(0,4)}}</td>
+                                <td v-if="item.avatar_temperature >= '38'" :class="'highTemp '+index">{{(""+item.avatar_temperature).substring(0,4)}}</td>
+                                <td v-else>{{(""+item.avatar_temperature).substring(0,4)}}</td>
 
                                 <td v-if="item.avatar_temperature >= '38'" :class="'highTemp '+index+' access'">{{item.access_time}}</td>
                                 <td v-else>{{item.access_time}}</td>
@@ -118,9 +120,10 @@ export default {
     data () {
         return {
             dates: [this.$moment().format('YYYY-MM-DD'), this.$moment().format('YYYY-MM-DD')],
-            accessRecord : [{}],
+            accessRecord : [],
             accessRecordOrigin:[],
             itemsPerPage: 7,
+            loading:true,
             page: 1,
             pageCount: 0,
             menu:false,
@@ -164,6 +167,7 @@ export default {
             // })
             this.originData = res.data
             this.accessRecordOrigin = this.accessRecord;
+            this.loading=false;
             // console.log(this.accessRecord);
         })
     },

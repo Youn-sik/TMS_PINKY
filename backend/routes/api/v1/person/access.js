@@ -72,7 +72,7 @@ router.get('/',async function(req, res) {
                 },
             ])
         } else {
-            get_data = await api_v1_person_access.find().select('-avatar_file').limit(1000)
+            get_data = await api_v1_person_access.find().select('-avatar_file').limit(5000)
         }
         res.send(get_data)
     } catch (err) {

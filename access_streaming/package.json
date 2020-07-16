@@ -1,0 +1,21 @@
+{
+  "name": "access_streaming",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.0.20",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "fluent-ffmpeg": "^2.1.2",
+    "mkdirp": "^1.0.4",
+    "moment": "^2.27.0",
+    "moment-timezone": "^0.5.31",
+    "morgan": "^1.10.0"
+  }
+}
