@@ -142,6 +142,16 @@
                       required
                     ></v-text-field>
                     <v-text-field
+                      v-model="guest_company"
+                      label="회사명"
+                      required
+                    ></v-text-field>
+                    <v-text-field
+                      v-model="guest_purpose"
+                      label="방문 목적"
+                      required
+                    ></v-text-field>
+                    <v-text-field
                       v-model="position"
                       label="직급"
                       required
@@ -190,10 +200,12 @@
             그룹을 선택해 주세요
           </template>
           <template v-slot:item.avatar_file_url="{ item }">
-            <img 
-            width="70px"
-            class="mt-1 mb-1"
-            :src="item.avatar_file_url"/>
+            <v-row justify="center" align="center" style="height:110px;">
+              <img 
+              width="70px;"
+              style="max-height:100px;"
+              :src="item.avatar_file_url"/>
+            </v-row>
           </template>
           <template v-slot:item.created_at="{ item }">
             {{item.created_at}}
@@ -231,6 +243,8 @@
       updateActive:[],
       userSelected:[],
       userUpdateModal: false,
+      guest_purpose:'',
+      guest_company:'',
       dialog: false,
       itemsPerPage: 10,
       page: 1,
@@ -262,6 +276,16 @@
             text: '이름',
             align: 'start',
             value: 'name',
+          },
+          {
+            text: '회사명',
+            align: 'start',
+            value: 'guest_company',
+          },
+          {
+            text: '방문목적',
+            align: 'start',
+            value: 'guest_purpose',
           },
           {
             text: '직급',
@@ -497,7 +521,9 @@
           groups_obids : this.userSelected[0].groups_obids,
           account : this.user_id,
           clicked_groups : this.updateActive,
-          position : this.position,
+          position : this.postirion === '' || this.postirion === null? undefined : this.postirion,
+          guest_company : this.guest_company === '' || this.guest_company === null? undefined : this.guest_company,
+          guest_purpose : this.guest_purpose === '' || this.guest_purpose === null? undefined : this.guest_purpose,
           type : 2
         }).then((res) => {
           let index = this.api_v1_person_users.findIndex(x => x._id == res.data._id)
@@ -520,6 +546,8 @@
         this.userSelected = [];
         this.image = null;
         this.position = null;
+        this.guest_company = '';
+        this.guest_purpose = '';
         alert('업데이트 되었습니다')
       }
     }

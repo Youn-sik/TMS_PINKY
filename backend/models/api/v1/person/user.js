@@ -29,7 +29,7 @@ const api_v1_person_user_Schema = new mongoose.Schema({
     prompt : { type: String },
     type : { type : Number },
     create_at : { type: String, default: moment().format('YYYY-MM-DD HH:mm:ss') },
-    create_ut : { type: String, default: Date.now() },
+    create_ut : { type: String, default: Date.now()},
     update_at : { type: String },
     update_ut : { type: String },
 });

@@ -190,11 +190,11 @@
               account : this.user_id,
         }).then(() => {
           if(this.nowStatus.value === 1) {
-            this.$router.push('/index/employeegroup');
+            this.$router.push('/index/people/employee');
           } else if(this.nowStatus.value === 2) {
-            this.$router.push('/index/visitorgroup');
+            this.$router.push('/index/people/visitor');
           } else if(this.nowStatus.value === 5) {
-            this.$router.push('/index/blacklistgroup');
+            this.$router.push('/index/people/blacklist');
           }
           
         }).catch(function (error) {

@@ -61,26 +61,33 @@
                         <v-icon left>perm_identity</v-icon>
                         단말기
                     </v-chip>
-                    <v-list-item three-line>
+                    <v-list-item three-line style="height:82%">
                         <v-list-item-content>
-                            <GChart
-                                type="PieChart"
-                                :data="deviceStatus"
-                                v-if="deviceStatus[1][1]+deviceStatus[2][1] !== 0"
-                                :options="devicesChartOptions"
-                                style="width:100%; height: 250px;"
-                                :resizeDebounce="1"
-                                :events="deviceChartEvents"
-                            />
-                            <v-row v-else-if="isEmpty[0]" 
-                                align="center"
-                                justify="center">
-                                데이터가 없습니다
-                            </v-row>
+                            <v-progress-circular
+                            indeterminate
+                            v-if="deviceStatus[1][1]+deviceStatus[2][1] === 0"
+                            color="primary"
+                            ></v-progress-circular>
+                            <template v-else>
+                                <GChart
+                                    type="PieChart"
+                                    :data="deviceStatus"
+                                    v-if="deviceStatus[1][1]+deviceStatus[2][1] !== 0"
+                                    :options="devicesChartOptions"
+                                    style="width:100%; height: 250px;"
+                                    :resizeDebounce="1"
+                                    :events="deviceChartEvents"
+                                />
+                                <v-row v-else-if="isEmpty[0]" 
+                                    align="center"
+                                    justify="center">
+                                    데이터가 없습니다
+                                </v-row>
+                            </template>
                         </v-list-item-content>
                         <v-divider vertical class="mr-4"></v-divider>
                         
-                        <v-list-item-content>
+                        <v-list-item-content style="float:left">
                             <div class="devicecondition">단말기 상태</div>
                             <v-container
                             style="max-height: 225px"
@@ -131,20 +138,27 @@
                     </v-chip>
                     <v-list-item three-line style="height:85%">
                         <v-list-item-content>
-                            <v-row 
-                                v-if="isEmpty[1]" 
-                                align="center"
-                                justify="center">
-                                데이터가 없습니다
-                            </v-row>
-                            <GChart
-                                type="PieChart"
-                                v-else
-                                :data="accessData"
-                                :options="chartOptions"
-                                style="width: 250px; height: 250px;"
-                                :events="accessChartEvents"
-                            />
+                            <v-progress-circular
+                            indeterminate
+                            v-if="!isEmpty[1]"
+                            color="primary"
+                            ></v-progress-circular>
+                            <template v-else>
+                                <v-row 
+                                    v-if="isEmpty[1]" 
+                                    align="center"
+                                    justify="center">
+                                    데이터가 없습니다
+                                </v-row>
+                                <GChart
+                                    type="PieChart"
+                                    v-else
+                                    :data="accessData"
+                                    :options="chartOptions"
+                                    style="width: 250px; height: 250px;"
+                                    :events="accessChartEvents"
+                                />
+                            </template>
                         </v-list-item-content>
                     </v-list-item>
                 </v-card>
@@ -168,20 +182,27 @@
                     </v-chip>
                     <v-list-item three-line style="height:85%">
                         <v-list-item-content>
-                            <v-row 
-                                v-if="isEmpty[3]" 
-                                align="center"
-                                justify="center">
-                                데이터가 없습니다
-                            </v-row>
-                            <GChart
-                                type="PieChart"
-                                v-else
-                                :data="attendanceData"
-                                :options="yesterdayChartOptions"
-                                style="width: 250px; height: 250px;"
-                                :events="attendanceChartEvents"
-                            />
+                            <v-progress-circular
+                            indeterminate
+                            v-if="!isEmpty[3]"
+                            color="primary"
+                            ></v-progress-circular>
+                            <template v-else>
+                                <v-row 
+                                    v-if="isEmpty[3]" 
+                                    align="center"
+                                    justify="center">
+                                    데이터가 없습니다
+                                </v-row>
+                                <GChart
+                                    type="PieChart"
+                                    v-else
+                                    :data="attendanceData"
+                                    :options="yesterdayChartOptions"
+                                    style="width: 250px; height: 250px;"
+                                    :events="attendanceChartEvents"
+                                />
+                            </template>
                         </v-list-item-content>
                     </v-list-item>
                 </v-card>
@@ -383,6 +404,7 @@ export default {
         employee : 0,
         visitor : 0,
         isLoadingForAccess : false,
+        loading:[true,true,true],
         stranger : 0,
         blacklist : 0,
         monthMenu: false,

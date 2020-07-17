@@ -190,10 +190,12 @@
             그룹을 선택해 주세요
           </template>
           <template v-slot:item.avatar_file_url="{ item }">
-            <img 
-            width="70px"
-            class="mt-1 mb-1"
-            :src="item.avatar_file_url"/>
+            <v-row justify="center" align="center" style="height:110px;">
+              <img 
+              width="70px;"
+              style="max-height:100px;"
+              :src="item.avatar_file_url"/>
+            </v-row>
           </template>
           <template v-slot:item.created_at="{ item }">
             {{item.created_at}}
@@ -262,6 +264,21 @@
             text: '이름',
             align: 'start',
             value: 'name',
+          },
+          {
+            text: '성별',
+            align: 'start',
+            value: 'gender',
+          },
+          {
+            text: '장소',
+            align: 'start',
+            value: 'location',
+          },
+          {
+            text: '사유',
+            align: 'start',
+            value: 'position',
           },
           {
             text: '직급',
@@ -497,7 +514,8 @@
           groups_obids : this.userSelected[0].groups_obids,
           account : this.user_id,
           clicked_groups : this.updateActive,
-          position : this.position,
+          position : this.position === '' || this.position === null? undefined : this.position,
+          location:this.location === '' || this.location === null? undefined : this.location,
           type : 5
         }).then((res) => {
           let index = this.api_v1_person_users.findIndex(x => x._id == res.data._id)

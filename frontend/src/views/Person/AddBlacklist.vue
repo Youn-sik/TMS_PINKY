@@ -25,6 +25,18 @@
                 required
               ></v-text-field>
               <v-text-field
+                v-model="location"
+                label="장소"
+                :rules="nameRules"
+                required
+              ></v-text-field>
+              <v-text-field
+                v-model="position"
+                label="사유"
+                :rules="nameRules"
+                required
+              ></v-text-field>
+              <v-text-field
                 v-model="mobile"
                 label="헨드폰 번호"
                 required
@@ -150,6 +162,8 @@
               avatar_file : this.image,
               groups_obids : this.active[0] === undefined ? null : this.active,
               type : 5,
+              location:this.location,
+              position: this.position,
               account : this.user_id,
         }).then(() => {
           alert('등록 되었습니다');
@@ -175,6 +189,8 @@
       name : '',
       data : null,
       company : null,
+      location:'',
+      position:'',
       searchGroup : '',
       api_v1_group_group : [],
       dialog: false,

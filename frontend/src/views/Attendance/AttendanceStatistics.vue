@@ -58,10 +58,12 @@
                         </div>
                     </template>
                     <template v-slot:item.avatar_file_url="{ item }">
+                        <v-row justify="center" align="center" style="height:110px;">
                         <img 
-                        width="70px"
-                        class="mt-1 mb-1"
+                        width="70px;"
+                        style="max-height:100px;"
                         :src="item.avatar_file_url"/>
+                        </v-row>
                     </template>
                     <!-- <template v-slot:item.attendance="{ item }">
                         <template v-if="item.attendance">

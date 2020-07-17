@@ -199,11 +199,17 @@
           <template v-if="!active[0]" v-slot:no-data>
             그룹을 선택해 주세요
           </template>
+          <template v-slot:item.gender="{ item }">
+            <div v-if="item.gender === 1">남자</div>
+            <div v-else>여자</div>
+          </template>
           <template v-slot:item.avatar_file_url="{ item }">
-            <img 
-            width="70px"
-            class="mt-1 mb-1"
-            :src="item.avatar_file_url"/>
+            <v-row justify="center" align="center" style="height:110px;">
+              <img 
+              width="70px;"
+              style="max-height:100px;"
+              :src="item.avatar_file_url"/>
+            </v-row>
           </template>
           <template v-slot:item.created_at="{ item }">
             {{item.created_at}}
@@ -253,13 +259,13 @@
       nameRules: [
         v =>!!v || '필수 입력 정보 입니다.',
       ],
-      mobile:'',
+      mobile:null,
       gender:1,
       groupName:null,
       avatar_file:null,
-      position:'',
-      location:'',
-      dep:'',
+      position:null,
+      location:null,
+      dep:null,
       image : null,
       api_v1_person_users:[],
       headers: [
@@ -276,9 +282,14 @@
             value: 'name',
           },
           {
+            text: '성별',
+            align: 'start',
+            value: 'gender',
+          },
+          {
             text: '근무지',
             align: 'start',
-            value: 'locatio',
+            value: 'location',
           },
           {
             text: '부서',
@@ -519,9 +530,10 @@
           groups_obids : this.userSelected[0].groups_obids,
           account : this.user_id,
           clicked_groups : this.updateActive,
-          position : this.position,
-          location : this.location,
-          department_id : this.dep,
+          position : this.position === '' || this.position === null? undefined : this.position,
+          location : this.location === '' || this.location === null? undefined : this.location,
+          department_id : this.dep === '' || this.dep === null? undefined : this.dep,
+          gender:this.gender,
           type : 1
         }).then((res) => {
           let index = this.api_v1_person_users.findIndex(x => x._id == res.data._id)
@@ -543,6 +555,9 @@
         this.name = null;
         this.userSelected = [];
         this.image = null;
+        this.position = null;
+        this.location = null;
+        this.dep = null;
         this.position = null;
         alert('업데이트 되었습니다')
       }

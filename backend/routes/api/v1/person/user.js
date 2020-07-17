@@ -66,7 +66,6 @@ router.post('/',async function(req, res) {
             const hex = sum.digest('hex');
             add.avatar_file_checksum = hex;
         }
-
         const groups = req.body.groups_obids === undefined ? null : req.body.groups_obids;
         if(groups !== null) {
             groups.map((i) => {
@@ -143,7 +142,7 @@ router.put('/:id',async function(req, res) {
         const update_data = req.body === undefined ? req : req.body
         update_data.groups_obids = req.body.clicked_groups;
         update_data.update_at = moment().format('YYYY-MM-DD HH:mm:ss');
-        update_data.update_ut = Date.now;
+        update_data.update_ut = Date.now();
         const update = await api_v1_person_user.findOneAndUpdate({_id:id}, {$set:update_data}, {new: true })
         let type = '';
         if(update.type === 1) type = '사원';

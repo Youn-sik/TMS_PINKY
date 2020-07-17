@@ -45,11 +45,13 @@
           :headers="headers"
           :items="access"
         >
-          <template v-slot:item.avatar_file="{ item }">
-            <img 
-            width="70px"
-            class="mt-1 mb-1"
-            :src="item.avatar_file_url"/>
+          <template v-slot:item.avatar_file_url="{ item }">
+            <v-row justify="center" align="center" style="height:110px;">
+              <img 
+              width="70px;"
+              style="max-height:100px;"
+              :src="item.avatar_file_url"/>
+            </v-row>
           </template>
           <template v-slot:item.created_at="{ item }">
             {{item.created_at}}

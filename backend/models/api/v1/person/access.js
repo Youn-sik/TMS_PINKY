@@ -17,7 +17,7 @@ const api_v1_person_access_Schema = new mongoose.Schema({
     access_time : { type: String },
     statistics_status : { type: String },
     create_at : { type: String, default: moment().format('YYYY-MM-DD HH:mm:ss') },
-    create_ut : { type: String, default: Date.now },
+    create_ut : { type: String, default: Date.now() },
     update_at : { type: String },
     update_ut : { type: String },
 })
