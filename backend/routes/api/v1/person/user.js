@@ -46,7 +46,6 @@ router.post('/',async function(req, res) {
             let temp = await Access.findOne({_id : req.body.stranger_id})
             req.body.avatar_file = temp.avatar_file;
             req.body.avatar_contraction_data = temp.avatar_contraction_data;
-            Access.update({avatar_contraction_data : temp.avatar_contraction_data},{$set:{avatar_type:1}},{"multi": true},(err,result) => {})
         }
         let group = null
         let add = new api_v1_person_user(req.body)
@@ -178,7 +177,7 @@ router.delete('/:id',async function(req, res) {
         try {
             await api_v1_group_group.updateMany({type:req.body.type},{ $pull: { user_obids : req.body._id} }, {new: true }).exec();
             const id = req.params === undefined ? req.id : req.params.id
-            const delete_data = await api_v1_person_user.findByIdAndDelete(id) //type : 10 = deleted
+            const delete_data = await api_v1_person_user.findByIdAndDelete(id)
             let type = '';
             if(delete_data.type === 1) type = '사원';
             else if(delete_data.type === 2) type = '방문자'

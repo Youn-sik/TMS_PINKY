@@ -281,11 +281,6 @@
             value: 'position',
           },
           {
-            text: '직급',
-            align: 'start',
-            value: 'position',
-          },
-          {
             text:'휴대폰 번호',
             value:'mobile'
           },
@@ -337,7 +332,7 @@
           .then(() => {
             // this.api_v1_group_group[this.api_v1_group_group.length-1].children.concat(this.active[0].children);
             // this.active.split(0,1);
-            axios.get('http://172.16.135.89:3000/group?type=1')
+            axios.get('http://172.16.135.89:3000/group?type=5')
             .then((res) => {
               res.data.map((i) => {//user_obids에 있는 데이터 children으로 옮기기
                 this.moveUserIds(i);

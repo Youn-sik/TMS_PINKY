@@ -65,7 +65,7 @@
                         <v-list-item-content>
                             <v-progress-circular
                             indeterminate
-                            v-if="deviceStatus[1][1]+deviceStatus[2][1] === 0"
+                            v-if="isLoading[0]"
                             color="primary"
                             ></v-progress-circular>
                             <template v-else>
@@ -75,7 +75,7 @@
                                     v-if="deviceStatus[1][1]+deviceStatus[2][1] !== 0"
                                     :options="devicesChartOptions"
                                     style="width:100%; height: 250px;"
-                                    :resizeDebounce="1"
+                                    :resizeDebounce="0.1"
                                     :events="deviceChartEvents"
                                 />
                                 <v-row v-else-if="isEmpty[0]" 
@@ -88,7 +88,7 @@
                         <v-divider vertical class="mr-4"></v-divider>
                         
                         <v-list-item-content style="float:left">
-                            <div class="devicecondition">단말기 상태</div>
+                            <!-- <div class="devicecondition">단말기 상태</div> -->
                             <v-container
                             style="max-height: 225px"
                             class="overflow-y-auto"
@@ -140,7 +140,7 @@
                         <v-list-item-content>
                             <v-progress-circular
                             indeterminate
-                            v-if="!isEmpty[1]"
+                            v-if="isLoading[1]"
                             color="primary"
                             ></v-progress-circular>
                             <template v-else>
@@ -184,7 +184,7 @@
                         <v-list-item-content>
                             <v-progress-circular
                             indeterminate
-                            v-if="!isEmpty[3]"
+                            v-if="isLoading[3]"
                             color="primary"
                             ></v-progress-circular>
                             <template v-else>
@@ -226,7 +226,7 @@
                         단말기 에러
                     </v-chip>
                     <v-list-item three-line>
-                        <v-list-item-content>
+                        <v-list-item-content class="dash">
                             <v-data-table
                             :headers="headers"
                             :items="glogs"
@@ -326,8 +326,12 @@ export default {
                         this.attendanceData[2][1]++;
                     }
                 })
-                if(this.attendanceData[1][1] + this.attendanceData[2][1]  === 0) this.isEmpty[3] = true;
-                else this.isEmpty[3] = false;
+                this.isLoading[3] = false;
+                if(this.attendanceData[1][1] + this.attendanceData[2][1]  === 0){ 
+                    this.isEmpty[3] = true;
+                } else {
+                    this.isEmpty[3] = false;
+                }
             })
         axios.get('http://172.16.135.89:3000/access?type=todayStatistics')
             .then((res) => {
@@ -339,8 +343,14 @@ export default {
                     else if(i._id.type === 3) this.stranger = i.count
                     else if(i._id.type === 4) this.blacklist = i.count
                 })
-                if(this.sum === 0) this.isEmpty[1] = true;
-                else this.isEmpty[1] = false;
+                if(this.sum === 0) {
+                    this.isEmpty[1] = true;
+                    this.isLoading[1] = false;
+                }
+                else {
+                    this.isEmpty[1] = false;
+                    this.isLoading[1] = false;
+                }
             })
         axios.get('http://172.16.135.89:3000/camera')
             .then((res) => {
@@ -352,8 +362,14 @@ export default {
                         this.deviceStatus[2][1]++;
                     }
                 })
-                if(res.data.length === 0) this.isEmpty[0] = true;
-                else this.isEmpty[0] = false;
+                if(res.data.length === 0) {
+                    this.isEmpty[0] = true;
+                    this.isLoading[0] = false;
+                }
+                else {
+                    this.isEmpty[0] = false;
+                    this.isLoading[0] = false;
+                }
             })
         axios.get("http://172.16.135.89:3000/access?type=temperature")
             .then((res) => {
@@ -362,8 +378,14 @@ export default {
                         return i;
                     }
                 })
-                if(this.temperature.length === 0) this.isEmpty[4] = true;
-                else this.isEmpty[4] = false;
+                if(this.temperature.length === 0) {
+                    this.isEmpty[4] = true;
+                    this.isLoading[4] = false;
+                }
+                else { 
+                    this.isEmpty[4] = false;
+                    this.isLoading[4] = false;
+                }
             })
         axios.get('http://172.16.135.89:3000/glogs?type=limit5errors')
             .then((res) => {
@@ -401,6 +423,7 @@ export default {
         glogs:[],
         sum : 0,
         isEmpty : [true,true,true,true,true], // 0 : 단말기, 1 : 금일 출입, 2 : 단말기 에러, 3 : 전일 출근, 4 : 온도경고
+        isLoading:[true,true,true,true,true],
         employee : 0,
         visitor : 0,
         isLoadingForAccess : false,
@@ -452,7 +475,7 @@ export default {
             chartArea: {'width': '100%', 'height': '80%'},
         },
         devicesChartOptions: {
-            title : "단말기 상태 통계",
+            // title : "단말기 상태 통계",
             legend :'bottom',
             pieSliceText:'value',
             chartArea: {'width': '100%', 'height': '80%'},
@@ -478,5 +501,9 @@ export default {
         fill: #000000;
         position: relative;
         bottom:13px;
+    }
+
+    .dash td {
+        font-size: 0.875rem !important;
     }
 </style>

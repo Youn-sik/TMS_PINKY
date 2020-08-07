@@ -9,43 +9,9 @@
           <v-expansion-panel-header>스트리밍</v-expansion-panel-header>
           <v-expansion-panel-content>
             <v-col class="d-flex">
-              <video id="my_video_1" class="video-js vjs-theme-city" vjs-big-play-centered controls preload="auto" data-setup='{"liveui": false}' style="width:100%; height:700px">
-                <source src="../../assets/sample.m3u8" type="application/x-mpegURL"/>
+              <video id="my_video_1" class="video-js vjs-theme-city" vjs-big-play-centered controls preload="auto" style="width:100%; height:700px">
+                <source src="http://172.16.135.89:4000/stream/test/playlist.m3u8" type="application/x-mpegURL"/>
               </video>
-              <v-card width="35%" elevation="0">
-                <v-card-title>
-                  출입 기록
-                </v-card-title>
-                <v-divider></v-divider>
-                <v-data-table
-                :items="access_realtime"
-                :items-per-page="5"
-                :headers="access_headers"
-                hide-default-header
-                hide-default-footer
-                item-key="_id"
-                class="elevation-0 pt-5"
-                >
-                  <template v-slot:body="{items}">
-                    <tr v-for="(item,index) in items" :key="index">
-                        <td style="width:100%; height:100px;">
-                          <div style="float:left">
-                            <img :src="item.avatar_file_url" style="width: auto; height: 5.5vw;" alt="" onerror="this.src='http://172.16.135.89:3000/image/noImage.png'" @click="clickImg(item._id.camera_obids) ">
-                          </div>
-                          <div style="float:left; margin-left:10px;">
-                            <p v-if="item.avatar_type === 1">사원</p>
-                            <p v-else-if="item.avatar_type === 2">방문자</p>
-                            <p v-else-if="item.avatar_type === 3">미등록자</p>
-                            <p v-else-if="item.avatar_type === 4">블랙리스트</p>
-                            <p>{{item.avatar_temperature.substring(0,4)}}℃</p>
-                            <p>{{item.access_time}}</p>
-                          </div>
-                        </td>
-                        <v-divider></v-divider>
-                    </tr>
-                  </template>
-                </v-data-table>
-              </v-card>
             </v-col>
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -364,6 +330,22 @@
         </v-data-table>
         <v-pagination v-model="page" :total-visible="7" :length="pageCount"></v-pagination>
       </v-card>
+      <v-snackbar
+      v-model="snackbar"
+      :timeout="2000"
+      >
+        ERROR : 재생할 수 없습니다.
+        <template v-slot:action="{ attrs }">
+          <v-btn
+            color="blue"
+            text
+            v-bind="attrs"
+            @click="snackbar = false"
+          >
+            Close
+          </v-btn>
+        </template>
+      </v-snackbar>
     </v-col>
   </v-row>
 </template>
@@ -399,7 +381,23 @@
       },
     },
     async mounted () {
-      this.player = videojs('my_video_1',{autoplay: 'any'});
+      this.player = videojs('my_video_1',{
+        userActions: {
+          hotkeys: true
+        },
+        controlBar: {
+          pictureInPictureToggle: true
+        },
+        liveui: true,
+        autoplay:'any',
+        html5: {
+          hls: {
+            overrideNative: true
+          },
+          nativeAudioTracks: false,
+          nativeVideoTracks: false,
+        }
+      });
       this.player.play()
       await axios.get('http://172.16.135.89:3000/camera').then(async (res) => {
         this.api_v3_device_camera = res.data;
@@ -409,17 +407,23 @@
         })
         this.nowStreaming = this.api_v3_device_camera[0].serial_number
       })
-      axios.post('http://172.16.135.89:4000/start',{
-        "uri" : "rtsp://"+this.api_v3_device_camera[0].ip+":9096"
-        // "uri" : "rtsp://172.16.135.89:8554/test"
-      }).then((res) => {
-        this.loading = false;
-        this.video_id = res.data.id
-        setTimeout(() =>{
-          this.player.src('http://172.16.135.89:4000/stream/'+this.video_id+'/'+this.video_id+'.m3u8');
-          this.player.play();
-        },2500)
-      })
+      // axios.post('http://172.16.135.89:4000/start',{
+      //   // "uri" : "rtsp://"+this.api_v3_device_camera[0].ip+":9096"
+      //   "uri" : "rtsp://172.16.135.89:8554/test"
+      // }).then((res) => {
+      //   if(res.data.error) {
+      //     this.snackbar = true;
+      //   } else {
+      //     this.loading = false;
+      //     this.video_id = res.data.id
+      //     setTimeout(() =>{
+      //       this.player.src('http://172.16.135.89:4000/stream/'+this.video_id+'/'+this.video_id+'.m3u8');
+      //       // this.player.currentTime(5);
+      //       this.player.play();
+      //       // this.player.startTracking()
+      //     },4000)
+      //   }
+      // })
     },
     beforeDestroy () {
       if(this.video_id){
@@ -444,29 +448,6 @@
         this.client.subscribe('/control/reboot/result/+')
         this.client.subscribe('/control/get_device_file_list/result/+')
         this.client.subscribe('/control/reset/result/+')
-      })
-      this.client.on('message', (topic, message) => {
-        let context = message.toString();
-        let json = JSON.parse(context);
-        if(topic === '/access/realtime/result/'+this.nowStreaming) {
-          setTimeout(() => {
-            this.access_realtime.unshift(json.values[0])
-          },7000)
-        } else if(topic === '/control/log/result/'+this.active[0].serial_number){
-          alert('제어 완료')
-        } else if(topic === '/control/capture/start/result/'+this.active[0].serial_number){
-          alert('제어 완료')
-        } else if(topic === '/control/capture/upload/result/'+this.active[0].serial_number){
-          alert('제어 완료')
-        } else if(topic === '/control/capture/end/result/'+this.active[0].serial_number){
-          alert('제어 완료')
-        } else if(topic === '/control/sdcard/delete/result/'+this.active[0].serial_number){
-          alert('제어 완료')
-        } else if(topic === '/control/sdcard/part/delete/result/'+this.active[0].serial_number){
-          alert('제어 완료')
-        } else if(topic === '/control/reboot/result/'+this.active[0].serial_number){
-          alert('제어 완료')
-        }
       })
       window.addEventListener('beforeunload', this.stopVideo)
       axios.get('http://172.16.135.89:3000/gateway').then((res) =>{
@@ -594,6 +575,7 @@
           return false;
         }
         this.client.publish('/control/log/'+this.active[0].serial_number,JSON.stringify({stb_sn:this.active[0].serial_number}));
+        alert('제어 요청 성공')
       },
       controlCaptureStart () {
         if(this.active[0] === undefined) {
@@ -607,6 +589,7 @@
 
         this.client.publish('/control/capture/start/'+this.active[0].serial_number,
         JSON.stringify({stb_sn:this.active[0].serial_number,"capture_time":time,"capture_size":this.display, "capture_status":"Y"}));
+        alert('제어 요청 성공')
       },
       controlCaptureEnd () {
         if(this.active[0] === undefined) {
@@ -616,6 +599,7 @@
         let time = this.time.substring(3);
         this.client.publish('/control/capture/end/'+this.active[0].serial_number,
         JSON.stringify({stb_sn:this.active[0].serial_number,"stb_id":"", "capture_time":time,"capture_size":"320*240", "capture_status":"N"}));
+        alert('제어 요청 성공')
       },
       controlSDcardDel () {
         if(this.active[0] === undefined) {
@@ -623,6 +607,7 @@
           return false;
         }
         this.client.publish('/control/sdcard/delete/'+this.active[0].serial_number,JSON.stringify({stb_sn:this.active[0].serial_number}));
+        alert('제어 요청 성공')
       },
       controlSDcardPartDel () {
         if(this.active[0] === undefined) {
@@ -630,6 +615,7 @@
           return false;
         }
         this.client.publish('/control/sdcard/part/delete/'+this.active[0].serial_number,JSON.stringify({stb_sn:this.active[0].serial_number}));
+        alert('제어 요청 성공')
       },
       controlDeviceReboot () {
         if(this.active[0] === undefined) {
@@ -637,6 +623,7 @@
           return false;
         }
         this.client.publish('/control/reboot/'+this.active[0].serial_number,JSON.stringify({stb_sn:this.active[0].serial_number, "message":"reboot"}));
+        alert('제어 요청 성공')
       },
       controlContentsReq () {
         if(this.active[0] === undefined) {
@@ -644,6 +631,7 @@
           return false;
         }
         this.client.publish('/control/get_device_file_list/'+this.active[0].serial_number,JSON.stringify({stb_sn:this.active[0].serial_number, "message":"get_device_file_list"}));
+        alert('제어 요청 성공')
       },
       controlDeviceReset () {
         if(this.active[0] === undefined) {
@@ -651,6 +639,7 @@
           return false;
         }
         this.client.publish('/control/reset/'+this.active[0].serial_number,JSON.stringify({stb_sn:this.active[0].serial_number}));
+        alert('제어 요청 성공')
       },
       updateDevice () {
         axios.put('http://172.16.135.89:3000/camera/'+this.deviceSelected[0]._id,{

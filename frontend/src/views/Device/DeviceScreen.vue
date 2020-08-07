@@ -16,7 +16,7 @@
         <!-- <v-divider></v-divider> -->
         <v-dialog
         v-model="dialog"
-        max-width="50vw"
+        max-width="55vw"
         >
             <v-card>
                 <v-card-title>
@@ -33,6 +33,7 @@
                       ></v-progress-circular>
                     </div>
                     <template v-else>
+                      <v-divider class="pb-1"></v-divider>
                       <v-data-table
                       :headers="headers"
                       :items="monitor_screenshots"
@@ -40,19 +41,20 @@
                       :page.sync="page"
                       @page-count="pageCount = $event"
                       hide-default-footer
+                      hide-default-header
                       item-key="_id"
                       style="text-align: center"
                       class="elevation-0"
                       >
                         <template v-slot:body="{items}">
-                          <tr v-for="item in items" :key="item._id" style="display:inline-block; width:19%; text-align:center;">
+                          <tr v-for="item in items" :key="item._id" style="display:inline-block; width:19%; margin-bottom:15px; text-align:center;">
                                 <td style="width:100%; height=100px;">
                                     <div style="width: 8vw; height: 12vh; margin-top:10px">
                                         <img class="elevation-3" :src="item.upload_url" alt="" @click="click_dialog_img(item.upload_url)" onerror="this.src='http://172.16.135.89:3000/image/noImage.png'" style="width: 100%; max-height: 100%; cursor:pointer">
-                                    </div>
-                                    <p style="position:relative; bottom:23px; background-color: rgba( 0, 0, 0, 0.5 ); color: #dddddd;">
+                                        <p style=" display: block; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; position:relative; bottom:28px; background-color: rgba( 0, 0, 0, 0.5 ); color: #dddddd;">
                                           {{item.regdate}}
-                                    </p>
+                                        </p>
+                                    </div>
                                 </td>
                           </tr>
                         </template>
@@ -99,6 +101,7 @@
           ></v-progress-circular>
         </div>
         <template v-else>
+        <v-divider class="pb-2"></v-divider>
         <v-data-table
           :headers="headers"
           :items="filteredItems"
@@ -111,24 +114,24 @@
           item-key="_id"
           class="elevation-0"
         >
-            <template v-slot:header="{ props: { headers } }">
+            <!-- <template v-slot:header="{ props: { headers } }">
               <thead>
                 <tr>
                   <th :colspan="headers.length">
                   </th>
                 </tr>
               </thead>
-            </template>
+            </template> -->
             <template v-slot:body="{items}">
                <tr v-for="item in items" :key="item.name" style="display:inline-block; width:20%; text-align:center;">
                     <td style="width:100%; height=100px;">
-                        <div class="elevation-3" style="width: 15vw; height: 22vh; margin-top:10px">
-                            <img :src="item.upload_url" alt="" onerror="this.src='http://172.16.135.89:3000/image/noImage.png'" style="width: 100%; max-height: 100%; cursor:pointer" @click="clickImg(item._id.camera_obids) ">
-                        </div>
-                        <p style="position:relative; bottom:42px; background-color: rgba( 0, 0, 0, 0.5 ); color: #dddddd; cursor:pointer" @click="clickImg(item._id.camera_obids)">
+                        <div style="width: 15vw; height: 22vh; margin-top:10px">
+                            <img class="elevation-3" :src="item.upload_url" alt="" onerror="this.src='http://172.16.135.89:3000/image/noImage.png'" style="width: 100%; max-height: 100%; cursor:pointer" @click="clickImg(item._id.camera_obids) ">
+                            <p style="position:relative; bottom:48px; background-color: rgba( 0, 0, 0, 0.5 ); color: #dddddd; cursor:pointer" @click="clickImg(item._id.camera_obids)">
                                 {{item._id.serial_number}}<br/>
                                 {{item.lastDate}}
-                        </p>
+                            </p>
+                        </div>
                     </td>
                </tr>
             </template>

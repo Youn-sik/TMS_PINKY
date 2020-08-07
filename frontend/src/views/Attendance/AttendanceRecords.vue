@@ -74,10 +74,13 @@
                         <tbody>
                             <tr v-for="(item,index) in items" :key="item.name">
                                 <td v-if="item.avatar_temperature >= '38'" :class="'highTemp '+index+' image'" style="width:5%">
-                                    <img 
-                                    width="70px"
-                                    class="mt-1 mb-1"
-                                    :src="item.avatar_file_url"/>
+                                    <v-row justify="center" align="center" style="height:110px;">
+                                        <img 
+                                        width="70px"
+                                        class="mt-1 mb-1"
+                                        style="max-height:100px;"
+                                        :src="item.avatar_file_url"/>
+                                    </v-row>
                                 </td>
                                 <td v-else style="width:5%">
                                     <v-row justify="center" align="center" style="height:110px;">

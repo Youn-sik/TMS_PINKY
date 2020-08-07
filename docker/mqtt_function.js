@@ -504,7 +504,13 @@ module.exports = {
 
     async control_capture_start_result(json) {
         try{
-            let camera = await Camera.findOne( { serial_number : json.stb_sn });
+            let camera = await Camera.findOneAndUpdate({ serial_number : json.stb_sn }, {$set:
+                {
+                    "config_data.capture_time":json.capture_time,
+                    "config_data.capture_status":"Y",
+                    "config_data.capture_size":json.capture_size,
+                }
+            }, {new: true })
             let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 11, log_message: 'capture_start', create_dt: json.create_time });
             newGlogs.save(function (error, data) {
                 if (error) {
@@ -559,7 +565,12 @@ module.exports = {
 
     async control_capture_end_result(json) {
         try{
-            let camera = await Camera.findOne( { serial_number : json.stb_sn });
+            let camera = await Camera.findOneAndUpdate({ serial_number : json.stb_sn }, {$set:
+                {
+                    "config_data.capture_status":"N"
+                }
+            }, 
+                {new: true })
             let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 12, log_message: 'capture_stop', create_dt: json.create_time });
             newGlogs.save(function (error, data) {
                 if (error) {

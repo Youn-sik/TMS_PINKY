@@ -722,18 +722,18 @@
  *       post:
  *          tags:
  *          - "camera_monitor"
- *          summary: "단말기 등록"
+ *          summary: "단말기 스크린샷 등록"
  *          parameters:
  *          - in: "body"
  *            name: "body"
- *            description: "단말기 등록"
+ *            description: "단말기 스크린샷 등록"
  *            required: true
  *            schema:
  *              $ref: "#/definitions/Camera_monitor"
  *       get:
  *         tags:
  *         - "camera_monitor"
- *         summary: "단말기 목록 조회" 
+ *         summary: "단말기 스크린샷 목록 조회" 
  *         responses:
  *          "200":
  *            schema:
@@ -777,11 +777,11 @@
  *       get:
  *         tags:
  *         - "camera_monitor"
- *         summary: "단말기 조회"
+ *         summary: "단말기 스크린샷 조회"
  *         parameters:
  *          - name: "camera_monitor _id"
  *            in: "path"
- *            description: "단말기의 mongodb _id"
+ *            description: "단말기 스크린샷의 mongodb _id"
  *            required: true
  *            type: "string"
  *            format: "string"
@@ -794,11 +794,11 @@
  *       put:
  *         tags:
  *         - "camera_monitor"
- *         summary: "카메라 업데이트"
+ *         summary: "스크린샷 업데이트"
  *         parameters:
  *          - name: "camera_monitor _id"
  *            in: "path"
- *            description: "단말기의 mongodb _id"
+ *            description: "단말기 스크린샷의 mongodb _id"
  *            required: true
  *            type: "string"
  *            format: "string"
@@ -811,11 +811,11 @@
  *       delete:
  *         tags:
  *         - "camera_monitor"
- *         summary: "카메라 삭제"
+ *         summary: "스크린샷 삭제"
  *         parameters:
  *          - name: "camera_monitor _id"
  *            in: "path"
- *            description: "단말기의 mongodb _id"
+ *            description: "단말기 스크린샷의 mongodb _id"
  *            required: true
  *            type: "string"
  *            format: "string"

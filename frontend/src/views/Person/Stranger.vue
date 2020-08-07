@@ -60,7 +60,7 @@
             <v-btn small color="primary" @click="registStrager(item)">등록</v-btn>
           </template>
           <template v-slot:item.avatar_temperature="{ item }">
-            {{item.avatar_temperature.substr(0,4)}}
+            {{item.avatar_temperature.substr(0,4)}}℃
           </template>
           
         </v-data-table>
@@ -83,7 +83,6 @@
       axios.get('http://172.16.135.89:3000/access?type=3')
         .then((res) => {
           this.access = res.data.filter((i) => {
-            res.data = res.data.reverse()
             return(i.access_time.split(' ')[0] >= this.dates[0] && i.access_time.split(' ')[0] <= this.dates[1])
           })
           this.originData = res.data;
@@ -104,7 +103,7 @@
             {
               text: '',
               align: 'center',
-              value: 'avatar_file',
+              value: 'avatar_file_url',
               width : '10%',
               sortable: false,
             },

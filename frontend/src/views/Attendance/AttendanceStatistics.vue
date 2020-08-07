@@ -167,13 +167,13 @@ export default {
                     align: 'start',
                     value: 'name',
                 },
-                { text: '부서' },
-                { text: 'ID' },
-                { text: '직위' },
+                { text: '근무지',value:"location" },
+                { text: '부서' ,value:"department_id"},
+                { text: '직급' ,value:"position"},
                 { text: '출근',filterable: false ,value: 'attendance'},
                 { text: '지각',filterable: false ,value: 'late'},
-                { text: '결근',filterable: false },
-                { text: '조퇴',filterable: false },
+                // { text: '결근',filterable: false },
+                // { text: '조퇴',filterable: false },
             ],
         }
     }

@@ -13,8 +13,8 @@ const logger = require('morgan')
 function video_timeout (req, res, next) {
     if(req.url.split('/').length === 4){
         let fileData = req.url.split('/')[3].split('.')
-        if(fileData[1] === 'm3u8') {
-            var index = stream_list.findIndex(i => i.id == fileData[0]); 
+        var index = stream_list.findIndex(i => i.id == fileData[0]); 
+        if(fileData[1] === 'm3u8' && index !== -1) {
             stream_list[index]._clearTimeout();
             stream_list[index]._setTimeout();
         }
@@ -36,21 +36,30 @@ app.get('/list', (req, res) => {
 
 app.post('/start', async function(req, res) {
     let id = Math.random().toString(36).substr(2,11)
+    var flag_args = ['omit_endlist', 'append_list'];
     mkdirp('./videos/'+id);
     let temp = new ffmpeg(req.body.uri).addOptions([
+        '-vcodec libx264',
+        '-crf 23',
+        '-r 10',
         '-fflags nobuffer',
         '-c:v copy',
         '-c:a copy',
-        '-bufsize 1835k',
+        '-b:v 60k',
+        '-maxrate 60k',
+        '-minrate 60k',
+        '-bufsize 60k',
         '-pix_fmt yuv420p',
         '-flags low_delay',
         '-flags',
         '-global_header',
+        '-probesize 5000',
+        '-hls_flags ' + flag_args.join('+'),
+        '-hls_playlist_type event',
         '-hls_time 3',
         '-hls_list_size 6',
         '-hls_wrap 10',
-        '-start_number 1'
-    ]).withVideoBitrate('650k', true)
+    ])
     .on('start', function(commandLine) {
         console.log('Spawned FFmpeg with command: ' + commandLine);
     })
@@ -68,7 +77,7 @@ app.post('/start', async function(req, res) {
                     await stream_list[index]['stream'].kill('SIGTERM')
                     await stream_list.splice(index,1);
                     deleteFolderRecursive(path)
-                }, 20000);
+                }, 60000);
             },
             _clearTimeout: function(){
                 let _this = this;
@@ -81,6 +90,9 @@ app.post('/start', async function(req, res) {
     }).on('error', function(err) {
         deleteFolderRecursive('./videos/'+id)
         console.log(moment().format('YYYY-MM-DD HH:mm:ss')+' Cannot process video: ' + err.message);
+        if(err) {
+            // res.send({error:'Cannot process video: ' + err.message})
+        }
     }).saveToFile('./videos/'+id+'/'+id+'.m3u8');
 })
 

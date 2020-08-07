@@ -89,7 +89,6 @@ fastify.post('/login', async function(req, res) {
         const user_id = req.body === undefined ? req.user_id : req.body.user_id
         const user_pw = req.body === undefined ? req.user_pw : req.body.user_pw
         const user = await User.findOne({ user_id: user_id })
-
         crypto.pbkdf2(user_pw, user.salt, 105614, 64, 'sha512', (err, key) => {
             if(key.toString('base64') === user.user_pw) {
                 let token = jwt.sign({
@@ -97,7 +96,7 @@ fastify.post('/login', async function(req, res) {
                     },
                     'jjh',//시크릿 키 배포시 가려야 함
                     {
-                        expiresIn:'5h'
+                        expiresIn:'10h'
                     }
                 )
                 res.send({"token":token})
@@ -120,12 +119,14 @@ fastify.get('/auth', async function(req, res) {
     }
     let auth;
     if(token === ''){
+        console.log("Token is empty")
         auth = false;
     } else {
         try {
             tokenAuth = jwt.verify(token,'jjh');
             auth = true;
         } catch(err) {
+            console.log(err)
             auth = false;
         }
     }
