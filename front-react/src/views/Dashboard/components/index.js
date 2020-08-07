@@ -1,0 +1,10 @@
+export { default as Employee } from './Employee';
+export { default as DeviceErrors } from './DeviceErrors';
+export { default as TempAlert } from './TempAlert';
+export { default as LatestSales } from './LatestSales';
+export { default as Black } from './Black';
+export { default as Stranger } from './Stranger';
+export { default as Visitor } from './Visitor';
+export { default as Device } from './Device';
+export { default as Access } from './Access';
+export { default as Attendance } from './Attendance';
