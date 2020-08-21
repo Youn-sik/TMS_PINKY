@@ -2,7 +2,7 @@ import React,{ useState,useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 import axios from 'axios';
-import { UsersTable } from './components';
+import { AccountsTable } from './components';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -11,25 +11,22 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Account = (props) => {
-  const [groups,setGroups] = useState([]);
-  const [userSearch,setUserSearch] = useState('');
-  const [users,setUsers] = useState([]);
-  const [filteredUsers,setFilteredUsers] = useState([]);
-  const [clickedNode,setClickedNode] = useState({});
+  const [accountsSearch,setAccountsSearch] = useState('');
+  const [accounts,setAccounts] = useState([]);
+  const [filteredAccounts,setFilteredAccounts] = useState([]);
   const [loading,setLoading] = useState(true);
-  const [selectedNode , setSelectedNode] = useState([]);
   const classes = useStyles();
 
   useEffect(() => {
-    if(userSearch !== '') {
-      let copyUsers = users;
-      let tempFilteredUsers = filterUsers(copyUsers);
-      setFilteredUsers(tempFilteredUsers);
+    if(accountsSearch !== '') {
+      let copyAccounts = accounts;
+      let tempFilteredAccounts = filterAccount(copyAccounts);
+      setFilteredAccounts(tempFilteredAccounts);
     }
-  },[userSearch])
+  },[accountsSearch])
 
 
-  const _setUsers = (node,length) => {
+  const _setAccounts = (node,length) => {
     let groupLength = 0
     let children = JSON.parse(JSON.stringify(node.children))
     for(let i = 0; i<children.length; i++) {
@@ -39,14 +36,14 @@ const Account = (props) => {
         break;
       }
     }
-    setUsers(children.splice(groupLength))
+    setAccounts(children.splice(groupLength))
   }
 
-  const filterUsers = (users) => {
+  const filterAccount = (accounts) => {
     let temp = []
-    users.map((user) => {
-      if(user.user_name.indexOf(userSearch) > -1 || user.user_id.indexOf(userSearch) > -1) {
-        temp.push(user)
+    accounts.map((account) => {
+      if(account.account_name.indexOf(accountsSearch) > -1 || account.account_id.indexOf(accountsSearch) > -1) {
+        temp.push(account)
       }
     })
     return temp
@@ -54,19 +51,19 @@ const Account = (props) => {
 
   async function getAccounts() {
     let result = await axios.get('http://172.16.135.89:3000/account')
-    setUsers(result.data);
+    setAccounts(result.data);
     setLoading(false)
   }
 
-  const deleteUsers = async (selectedUsers) => {
+  const deleteAccounts = async (selectedAccounts) => {
     if(window.confirm('정말 삭제 하시겠습니까?')) {
-      await axios.delete('http://172.16.135.89:3000/account/'+users[0]._id,{
+      await axios.delete('http://172.16.135.89:3000/account/'+accounts[0]._id,{
         data:{
           account : 'admin' // to do :나중에 계정 정보 넣을것
         }
       })
 
-      selectedUsers.sort((a, b) =>{
+      selectedAccounts.sort((a, b) =>{
         if(a.index > b.index){
           return 1
         } else {
@@ -74,15 +71,15 @@ const Account = (props) => {
         }
       })
   
-      let temp = JSON.parse(JSON.stringify(users)); //테이블에서 제거
-      if(temp.length === selectedUsers) {
+      let temp = JSON.parse(JSON.stringify(accounts)); //테이블에서 제거
+      if(temp.length === selectedAccounts) {
         temp=[]
       } else {
-        selectedUsers.map((user,index) => {
-          temp.splice(user.index-index,1);
+        selectedAccounts.map((account,index) => {
+          temp.splice(account.index-index,1);
         })
       }
-      await setUsers(temp);
+      await setAccounts(temp);
     }
   }
 
@@ -104,15 +101,11 @@ const Account = (props) => {
           xl={12}
           xs={12}
         >
-          {/* <AccountDetails users={users}/> */}
-          <UsersTable 
-          clickedNode={clickedNode} 
-          selectedNode={selectedNode}
-          groups={groups} 
-          deleteUsers={deleteUsers} 
-          users={userSearch === '' ?  users : filteredUsers } 
-          userSearch={userSearch}
-          setUserSearch={setUserSearch}
+          <AccountsTable
+          deleteAccounts={deleteAccounts} 
+          accounts={accountsSearch === '' ?  accounts : filteredAccounts } 
+          accountsSearch={accountsSearch}
+          setAccountsSearch={setAccountsSearch}
           loading={loading}
           />
         </Grid>

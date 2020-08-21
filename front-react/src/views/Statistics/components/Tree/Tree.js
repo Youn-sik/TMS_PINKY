@@ -28,7 +28,32 @@ import {
 } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
-  root: {},
+  root: {
+    color: theme.palette.text.secondary,
+    '&:hover > $content': {
+      backgroundColor: theme.palette.action.hover,
+    },
+    '&:focus > $content, &$selected > $content': {
+      backgroundColor: `var(--tree-view-bg-color, ${theme.palette.grey[400]})`,
+      color: 'var(--tree-view-color)',
+    },
+    '&:focus > $content $label, &:hover > $content $label, &$selected > $content $label': {
+      backgroundColor: 'transparent',
+    },
+  },
+  content: {
+    color: theme.palette.text.secondary,
+    fontWeight: theme.typography.fontWeightMedium,
+    "$expanded > &": {
+      fontWeight: theme.typography.fontWeightRegular
+    }
+  },
+  expanded: {},
+  selected: {},
+  label: {
+    fontWeight: "inherit",
+    color: "inherit"
+  },
   details: {
     display: 'flex'
   },
@@ -93,11 +118,23 @@ const Tree = props => {
       label={
         <div className={classes.labelRoot}>
           {Array.isArray(node.children) ? <GroupIcon color="inherit" className={classes.labelIcon}/> : <PersonIcon color="inherit" className={classes.labelIcon}/>}
-          <Typography variant="body2" className={classes.labelText}>
+          <Typography color="inherit" variant="body2" className={classes.labelText}>
             {node.name}
           </Typography>
         </div>
-      }>
+      }
+      style={{
+        '--tree-view-color': '#1a73e8',
+        '--tree-view-bg-color': '#e8f0fe',
+      }}
+      classes={{
+        root: classes.root,
+        content: classes.content,
+        expanded: classes.expanded,
+        selected: classes.selected,
+        group: classes.group,
+        label: classes.label
+      }}>
         {Array.isArray(node.children) ? node.children.map((child) => renderTree(child,depth+1)) : null}
       </TreeItem>
   ) 
@@ -118,6 +155,7 @@ const Tree = props => {
           defaultCollapseIcon={<ArrowDropDownIcon />}
           defaultExpandIcon={<ArrowRightIcon />}
           defaultEndIcon={<div style={{ width: 24 }} />}
+          style={{overflow:"auto"}}
         >
           {/* {groups.length ? groups.map(group => renderTree(group,0)) : <div></div>} */}
           <TreeItem
@@ -125,11 +163,23 @@ const Tree = props => {
           label={
             <div className={classes.labelRoot}>
               <GroupIcon color="inherit" className={classes.labelIcon}/>
-              <Typography variant="body2" className={classes.labelText}>
+              <Typography color="inherit" variant="body2" className={classes.labelText}>
                 사원
               </Typography>
             </div>
           }
+          style={{
+            '--tree-view-color': '#1a73e8',
+            '--tree-view-bg-color': '#e8f0fe',
+          }}
+          classes={{
+            root: classes.root,
+            content: classes.content,
+            expanded: classes.expanded,
+            selected: classes.selected,
+            group: classes.group,
+            label: classes.label
+          }}
           >
             {groups.length ? groups.map(
               (group) => {
@@ -143,11 +193,23 @@ const Tree = props => {
           label={
             <div className={classes.labelRoot}>
               <GroupIcon color="inherit" className={classes.labelIcon}/>
-              <Typography variant="body2" className={classes.labelText}>
+              <Typography color="inherit" variant="body2" className={classes.labelText}>
                 방문자
               </Typography>
             </div>
           }
+          style={{
+            '--tree-view-color': '#1a73e8',
+            '--tree-view-bg-color': '#e8f0fe',
+          }}
+          classes={{
+            root: classes.root,
+            content: classes.content,
+            expanded: classes.expanded,
+            selected: classes.selected,
+            group: classes.group,
+            label: classes.label
+          }}
           >
             {groups.length ? groups.map(
               (group) => {
@@ -161,11 +223,23 @@ const Tree = props => {
           label={
             <div className={classes.labelRoot}>
               <GroupIcon color="inherit" className={classes.labelIcon}/>
-              <Typography variant="body2" className={classes.labelText}>
+              <Typography color="inherit" variant="body2" className={classes.labelText}>
                 블랙리스트
               </Typography>
             </div>
           }
+          style={{
+            '--tree-view-color': '#1a73e8',
+            '--tree-view-bg-color': '#e8f0fe',
+          }}
+          classes={{
+            root: classes.root,
+            content: classes.content,
+            expanded: classes.expanded,
+            selected: classes.selected,
+            group: classes.group,
+            label: classes.label
+          }}
           >
             {groups.length ? groups.map(
               (group) => {

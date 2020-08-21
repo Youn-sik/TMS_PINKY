@@ -9,7 +9,6 @@ import {
   Visitor,
   Black,
   Stranger,
-  LatestSales,
   Device,
   Access,
   TempAlert,
@@ -57,6 +56,7 @@ const Dashboard = () => {
       else if(i._id.type === 2) setVisitor(i.count)
       else if(i._id.type === 3) setStranger(i.count)
       else if(i._id.type === 4) setBlack(i.count)
+      return;
     })
   }
 
@@ -68,6 +68,7 @@ const Dashboard = () => {
       } else {
         setOff(off => off+1);
       }
+      return;
     })
   }
 
@@ -79,6 +80,7 @@ const Dashboard = () => {
       } else {
         setLate(late => late+1);
       }
+      return;
     })
   }
 

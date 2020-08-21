@@ -14,10 +14,7 @@ import {
   ListItemAvatar,
   ListItemText,
 } from '@material-ui/core';
-import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import Pagination from '@material-ui/lab/Pagination';
-
-import mockData from './data';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -46,7 +43,6 @@ const Access = props => {
 
   const classes = useStyles();
 
-  const [products] = useState(mockData);
   const [rowsPerPage, setRowsPerPage] = useState(7);
   const [page, setPage] = useState(1);
 

@@ -1,7 +1,6 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import PerfectScrollbar from 'react-perfect-scrollbar';
 import Pagination from '@material-ui/lab/Pagination';
 import TextField from '@material-ui/core/TextField';
 import Search from '@material-ui/icons/Search';
@@ -12,9 +11,7 @@ import { Grid } from '@material-ui/core';
 import {
   Card,
   CardActions,
-  CardHeader,
   CardContent,
-  Avatar,
   Checkbox,
   Table,
   TableBody,
@@ -22,8 +19,8 @@ import {
   TableHead,
   TableRow,
   Button,
-  Typography,
-  TablePagination
+  Paper,
+  TableContainer
 } from '@material-ui/core';
 
 import { getInitials } from 'helpers';
@@ -34,7 +31,8 @@ const useStyles = makeStyles(theme => ({
     padding: 0
   },
   inner: {
-    minWidth: 1050
+    minWidth: 1050,
+    
   },
   action: {
     padding:"10px 20px"
@@ -178,9 +176,8 @@ const UsersTable = props => {
       {/* }/> */}
 
       <CardContent className={classes.content}>
-        <PerfectScrollbar>
-          <div className={classes.inner}>
-            <Table size="small">
+          <TableContainer component={Paper}>
+            <Table size="small" className={classes.inner}>
               <TableHead>
                 <TableRow>
                   <TableCell padding="checkbox">
@@ -233,8 +230,7 @@ const UsersTable = props => {
                   })}
               </TableBody>
             </Table>
-          </div>
-        </PerfectScrollbar>
+          </TableContainer>
       </CardContent>
       <CardActions className={classes.actions}>
         <Grid

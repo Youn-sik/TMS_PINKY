@@ -113,10 +113,10 @@ const AddDevice = (props) => {
   }
 
   const addGate = async () => {
-    console.log(parseInt(gate.port))
+    const port = 'port';
     await axios.post('http://172.16.135.89:3000/gateway',{
       ...gate,
-      ["port"] : parseInt(gate.port),
+      [port] : parseInt(gate.port),
       account:'admin'
     })
     window.alert('게이트웨이 등록 완료.')

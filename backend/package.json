@@ -27,6 +27,7 @@
     "hls-server": "^1.5.0",
     "jsonwebtoken": "^8.5.1",
     "m3u8": "0.0.10",
+    "mkdirp": "^1.0.4",
     "moment": "^2.26.0",
     "moment-timezone": "^0.5.31",
     "mongoose": "^5.9.6",

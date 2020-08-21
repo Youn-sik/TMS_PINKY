@@ -14,7 +14,7 @@ import {
   Attendance,
   Tree,
 } from './components';
-
+// eslint-disable-next-line no-extend-native
 Date.prototype.yyyymmdd = function()
 {
     var yyyy = this.getFullYear().toString();
@@ -43,7 +43,6 @@ const Statistics = () => {
   const [devices,setDevices] = useState([]);
   const [device,setDevice] = useState({})
   const [count,setCount] = useState(0);
-  const [errors,setErrors] = useState([]);
   const [errorData,setErrorData] = useState({});
   const [allErrorData,setAllErrorData] = useState({});
   const [groups,setGroups] = useState([]);

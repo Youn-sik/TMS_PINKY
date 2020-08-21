@@ -97,7 +97,7 @@ const emailMaskCustom = (props) => {
 }
 
 const EditDevice = (props) => {
-    const {deviceObject} = props.location;
+    const deviceObject = props.location.state;
     const classes = useStyles();
     const history = props.history;
     const [device, setDevice] = useState({
@@ -133,7 +133,7 @@ const EditDevice = (props) => {
     }
 
     useEffect(() => {
-        console.log(deviceObject);
+      console.log(props.location)
         let device = JSON.parse(JSON.stringify(deviceObject))
         let editedUser = {
             name : device.name,

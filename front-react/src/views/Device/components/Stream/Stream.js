@@ -30,19 +30,27 @@ export default class Stream extends React.Component {
   }
 
   async componentDidUpdate() {
-    this.player.play();
     if(this.state.preStream !== this.props.stream) { //2번 실행 방지
       this.setState({
         preStream : this.props.stream
       });
-      let result = await axios.post('http://172.16.135.89:4000/start',{
-        "uri" : "rtsp://"+this.props.stream+":9096"
-      })
-      setTimeout(() =>{
-        this.player.src('http://172.16.135.89:4000/stream/'+result.data.id+'/'+result.data.id+'.m3u8');
-        this.player.play();
-      },5000)
-      this.props.setStreamId(result.data.id);
+      try{
+        let result = await axios.post('http://172.16.135.89:4000/start',{
+          "uri" : "rtsp://"+this.props.stream+":9096"
+        })
+        if(result.data.error) {
+          throw result.data.error
+        }
+        setTimeout(() =>{
+          this.player.src('http://172.16.135.89:4000/stream/'+result.data.id+'/'+result.data.id+'.m3u8');
+          this.player.play();
+        },5000)
+        this.props.setStreamId(result.data.id);
+      } catch(e) {
+        this.player.createModal('스트리밍 연결 실패!');
+        this.player.src('./sample.m3u8');
+        this.player.pause();
+      }
     }
   }
 

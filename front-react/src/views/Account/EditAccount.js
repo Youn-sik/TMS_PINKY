@@ -1,7 +1,6 @@
 import React,{ useState,useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
-import MaskedInput from 'react-text-mask';
-import { Grid,Card,CardContent,TextField,Button,Typography } from '@material-ui/core';
+import { Grid,Card,CardContent,TextField,Button } from '@material-ui/core';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import Select from '@material-ui/core/Select';
@@ -53,34 +52,34 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const EditAccount = (props) => {
-    const {selectedUser} = props.location;
+    const {selectedAccounts} = props.location;
     const classes = useStyles();
     const history = props.history;
 
-    const [userInfo, setUserInfo] = useState({
+    const [accountInfo, setAccountInfo] = useState({
         user_id:"",
         user_lang:"",
         user_name:"",
     })
 
     const handleChange = (event) => {
-        setUserInfo({
-          ...userInfo,
+        setAccountInfo({
+          ...accountInfo,
           [event.target.name]: event.target.value,
         });
     };
 
     useEffect(() => {
-        if(selectedUser.length > 0){
-        setUserInfo({
-            ...selectedUser[0]
+        if(selectedAccounts.length > 0){
+        setAccountInfo({
+            ...selectedAccounts[0]
         })}
-    },[])
+    },[selectedAccounts])
 
     const addUser = async () => {
-      await axios.put('http://172.16.135.89:3000/account/'+selectedUser[0]._id,{
-          ...selectedUser[0],
-          ...userInfo,
+      await axios.put('http://172.16.135.89:3000/account/'+selectedAccounts[0]._id,{
+          ...selectedAccounts[0],
+          ...accountInfo,
       })
       alert('등록 되었습니다.')
       history.push('/system/account')
@@ -105,7 +104,7 @@ const EditAccount = (props) => {
                         <div style={{width: '100%'}}>
                             <TextField 
                             name="user_name"
-                            value={userInfo.user_name}
+                            value={accountInfo.user_name}
                             style={{width:'100%'}} 
                             required 
                             id="standard-required" 
@@ -116,7 +115,7 @@ const EditAccount = (props) => {
                         <div style={{width: '100%'}}>
                             <TextField 
                             name="user_id"
-                            value={userInfo.user_id}
+                            value={accountInfo.user_id}
                             style={{width:'100%'}} 
                             required 
                             id="standard-required" 
@@ -125,12 +124,12 @@ const EditAccount = (props) => {
                             />
                         </div>
                         {
-                          userInfo.pw_chk === userInfo.user_pw ?
+                          accountInfo.pw_chk === accountInfo.user_pw ?
                           <div>                 
                             <div style={{width: '100%'}}>
                               <TextField 
                               name="user_pw"
-                              value={userInfo.user_pw} 
+                              value={accountInfo.user_pw} 
                               style={{width:'100%'}} 
                               required 
                               onChange={handleChange}
@@ -141,7 +140,7 @@ const EditAccount = (props) => {
                             <div style={{width: '100%'}}>
                               <TextField 
                               name="pw_chk"
-                              value={userInfo.pw_chk} 
+                              value={accountInfo.pw_chk} 
                               style={{width:'100%'}} 
                               required 
                               id="standard-required" 
@@ -157,7 +156,7 @@ const EditAccount = (props) => {
                               error
                               helperText="비밀번호가 같지 않습니다!"
                               name="user_pw"
-                              value={userInfo.user_pw} 
+                              value={accountInfo.user_pw} 
                               style={{width:'100%'}} 
                               required 
                               onChange={handleChange}
@@ -170,7 +169,7 @@ const EditAccount = (props) => {
                               error
                               helperText="비밀번호가 같지 않습니다!"
                               name="pw_chk"
-                              value={userInfo.pw_chk} 
+                              value={accountInfo.pw_chk} 
                               style={{width:'100%'}} 
                               required 
                               id="standard-required" 
@@ -183,7 +182,7 @@ const EditAccount = (props) => {
 
                         <Select
                         name="user_lang"
-                        value={userInfo.user_lang} 
+                        value={accountInfo.user_lang} 
                         style={{width:'100%',marginTop:15}} 
                         onChange={handleChange}
                         >

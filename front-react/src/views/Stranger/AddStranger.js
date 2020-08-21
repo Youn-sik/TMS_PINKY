@@ -4,7 +4,6 @@ import MaskedInput from 'react-text-mask';
 import { Grid,Card,CardContent,TextField,Button,Typography } from '@material-ui/core';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import ImageUploader from "react-images-upload";
 import emailMask from 'text-mask-addons/dist/emailMask'
 // import './image.css'
 import Dialog from '@material-ui/core/Dialog';
@@ -23,6 +22,19 @@ import InputLabel from '@material-ui/core/InputLabel';
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(4)
+  },
+  treeItemStyle: {
+    color: theme.palette.text.secondary,
+    '&:hover > $content': {
+      backgroundColor: theme.palette.action.hover,
+    },
+    '&:focus > $content, &$selected > $content': {
+      backgroundColor: `var(--tree-view-bg-color, ${theme.palette.grey[400]})`,
+      color: 'var(--tree-view-color)',
+    },
+    '&:focus > $content $label, &:hover > $content $label, &$selected > $content $label': {
+      backgroundColor: 'transparent',
+    },
   },
   details: {
     display: 'flex'
@@ -104,14 +116,9 @@ const AddStranger = (props) => {
     const [pictures, setPictures] = useState([]);
     const [open, setOpen] = useState(false);
     const [groups, setGroups] = useState([]);
-    const [node,setNode] = useState({});
     const [type,setType] = useState(1);
     const [allGroups,setAllGroups] = useState([]);
     const [selectedGroup,setSelectedGroup] = useState({});
-
-    const onDrop = picture => {
-        setPictures([...pictures, picture]);
-    };
 
     const handleClickOpen = () => {
       setOpen(true);
@@ -153,11 +160,7 @@ const AddStranger = (props) => {
  
     useEffect(() => {
       getGroups()
-    },[])
-
-    useEffect(() => {
-      console.log(groups);
-    },[groups])
+    })
 
     useEffect(() => {
       if(allGroups.length !== 0) {  
@@ -165,7 +168,7 @@ const AddStranger = (props) => {
         setGroups(filteredGroups)
         setSelectedGroup({})
       }
-    },[type])
+    },[type,allGroups])
 
     const renderTree = (node) => (
         <TreeItem 
@@ -181,11 +184,24 @@ const AddStranger = (props) => {
         label={
           <div className={classes.labelRoot}>
             {Array.isArray(node.children) ? <GroupIcon color="inherit" className={classes.labelIcon}/> : <PersonIcon color="inherit" className={classes.labelIcon}/>}
-            <Typography variant="body2" className={classes.labelText}>
-              {node.name}
-            </Typography>
-          </div>
-        }>
+            <Typography color="inherit" variant="body2" className={classes.labelText}>
+            {node.name}
+          </Typography>
+        </div>
+      }
+      style={{
+        '--tree-view-color': '#1a73e8',
+        '--tree-view-bg-color': '#e8f0fe',
+      }}
+      classes={{
+        root: classes.treeItemStyle,
+        content: classes.content,
+        expanded: classes.expanded,
+        selected: classes.selected,
+        group: classes.group,
+        label: classes.label
+      }}
+        >
           {Array.isArray(node.children) ? node.children.map((child) => renderTree(child)) : null}
         </TreeItem>
     )

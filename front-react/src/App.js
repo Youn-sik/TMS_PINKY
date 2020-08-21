@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { Chart } from 'react-chartjs-2';
@@ -33,12 +33,10 @@ export default class App extends React.Component {
     this.unlisten = browserHistory.listen((location, action) => { //클릭을 통한 페이지 이동 감지
       if(location.pathname !== '/sign-in' && location.pathname !== '/') {
         var value = document.cookie.match('(^|;) ?token=([^;]*)(;|$)');
-        // console.log(value)
         if(Array.isArray(value)) {
           axios.get('http://172.16.135.89:3000/auth?token='+value[2])
           .then((res) => {
             if(res.data.auth === false) {
-              console.log(res.data);
               browserHistory.push('/sign-in')
               document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
               this.setState({

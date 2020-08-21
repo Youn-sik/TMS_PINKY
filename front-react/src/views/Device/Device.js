@@ -2,8 +2,7 @@ import React,{ useState,useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 import axios from 'axios';
-import { AccountProfile, Stream, DeviceTable } from './components';
-import ImageUploader from "react-images-upload";
+import { Stream, DeviceTable } from './components';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -109,7 +108,8 @@ const Employee = (props) => {
     controls: true,
     sources: [
       {
-        src: streamId === '' ? './sample.m3u8' :'http://172.16.135.89:4000/stream/'+streamId+'/'+streamId+'.m3u8',
+        // src: streamId === '' ? './sample.m3u8' :'http://172.16.135.89:4000/stream/'+streamId+'/'+streamId+'.m3u8',
+        src:'./sample.m3u8'
       },
     ],
   };
@@ -141,6 +141,7 @@ const Employee = (props) => {
           {/* <AccountDetails users={users}/> */}
           <DeviceTable
           stream={stream}
+          history={props.history}
           setStream={_setStream}
           setClickedNode={_setClickedNode} 
           clickedNode={clickedNode} 

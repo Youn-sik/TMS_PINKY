@@ -1,7 +1,6 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect,forwardRef } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import PerfectScrollbar from 'react-perfect-scrollbar';
 import Pagination from '@material-ui/lab/Pagination';
 import TextField from '@material-ui/core/TextField';
 import Search from '@material-ui/icons/Search';
@@ -25,7 +24,9 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-  LinearProgress
+  LinearProgress,
+  TableContainer,
+  Paper
 } from '@material-ui/core';
 
 import { getInitials } from 'helpers';
@@ -74,7 +75,10 @@ const useStyles = makeStyles(theme => ({
     width: "100%",
   },
   buttonStyle: {
-    margin:"0 8px"
+    margin:"5px",
+    [theme.breakpoints.down(540)] : {
+     margin:"5px 10%"
+    }
   },
   activeStyle:{
     color: "white",
@@ -83,8 +87,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const DeviceTable = props => {
-  const {loading,stream,setStream,userSearch,setSearch,selectedNode,setClickedNode,clickedNode,setUsers,deleteDevice,className,device, ...rest } = props;
-
+  const {loading,history,stream,setStream,userSearch,setSearch,selectedNode,setClickedNode,clickedNode,setUsers,deleteDevice,className,device, ...rest } = props;
+  // const history = props.history;
   const classes = useStyles();
 
   const [rowsPerPage, setRowsPerPage] = useState(7);
@@ -157,6 +161,11 @@ const DeviceTable = props => {
     if(e.target.value.length < 3 && (e.target.value < 40)) {
       setTemp(e.target.value)
     }
+  }
+
+  const clickEdit = () => {
+    history.push({pathname:'/device/edit',state:selectedObject});
+    // history.push('/system/account')
   }
 
   const mqttPubl = (name) => {
@@ -259,25 +268,26 @@ const DeviceTable = props => {
             }
             {
               selected.length === 1 ? 
-              <Button variant="contained" color="primary" onClick={() =>{ 
+              <Button variant="contained" className={classes.buttonStyle} color="primary" onClick={() =>{ 
                 if(selectedObject.status === "N") {
                   alert("단말을 연결해주세요")
                 } else {
                   setOpen(true)
                 }
               }}>제어</Button> :
-              <Button variant="contained" color="primary" disabled>제어</Button>
+              <Button variant="contained" className={classes.buttonStyle} color="primary" disabled>제어</Button>
             }
             {
               selected.length === 1 ? 
-              <RouterLink style={{ textDecoration: 'none' }} to={{
-                pathname:"/device/edit",
-                deviceObject:selectedObject,
-                }}><Button variant="contained" color="primary" className={classes.buttonStyle}>수정</Button></RouterLink> :
+              
+              <Button variant="contained" color="primary" onClick={clickEdit} className={classes.buttonStyle}>수정</Button>
+                  :
               <Button variant="contained" color="primary" className={classes.buttonStyle} disabled>수정</Button> 
             }
             
-            <RouterLink style={{ textDecoration: 'none' }} to={{
+            <RouterLink style={{ textDecoration: 'none' }} 
+            className={classes.buttonStyle}
+            to={{
               pathname:"/device/add",
               groups:props.groups,
               setClickedNode:props.setClickedNode,
@@ -289,9 +299,9 @@ const DeviceTable = props => {
       {/* }/> */}
 
       <CardContent className={classes.content}>
-        <PerfectScrollbar>
-          <div className={classes.inner}>
-            <Table size="small">
+        {loading ? <LinearProgress style={{width:"100%"}} /> : null}
+        <TableContainer component={Paper}>
+            <Table className={classes.inner} size="small">
               <TableHead>
                 <TableRow>
                   <TableCell padding="checkbox">
@@ -306,7 +316,6 @@ const DeviceTable = props => {
                   <TableCell>스트리밍</TableCell>
                 </TableRow>
               </TableHead>
-              {loading ? <LinearProgress style={{width:"5750%"}} /> : null}
               <TableBody>
                 {props.device.slice((page-1) * rowsPerPage, (page-1) * rowsPerPage + rowsPerPage).map((device,index) => {
                   const isItemSelected = isSelected(device._id);
@@ -336,8 +345,7 @@ const DeviceTable = props => {
                   })}
               </TableBody>
             </Table>
-          </div>
-        </PerfectScrollbar>
+          </TableContainer>
       </CardContent>
       <CardActions className={classes.actions}>
         <Grid

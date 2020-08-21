@@ -55,7 +55,7 @@ router.get('/',async function(req, res) {
             ])
         } else if(req.query.type === 'temperature') {
             get_data = await api_v1_person_access.find()
-                .where('avatar_temperature').gte(38)
+                .where('avatar_temperature').gte(37.5)
                 .sort('-access_time')
                 .select('access_time avatar_file_url avatar_temperature avatar_type')
                 .limit(4)

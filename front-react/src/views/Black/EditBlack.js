@@ -5,7 +5,6 @@ import { Grid,Card,CardContent,TextField,Button,Typography } from '@material-ui/
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import ImageUploader from "react-images-upload";
-import emailMask from 'text-mask-addons/dist/emailMask'
 import './image.css'
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -20,8 +19,34 @@ import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 const useStyles = makeStyles(theme => ({
-  root: {
+  root:{
     padding: theme.spacing(4)
+  },
+  treeItemStyle: {
+    color: theme.palette.text.secondary,
+    '&:hover > $content': {
+      backgroundColor: theme.palette.action.hover,
+    },
+    '&:focus > $content, &$selected > $content': {
+      backgroundColor: `var(--tree-view-bg-color, ${theme.palette.grey[400]})`,
+      color: 'var(--tree-view-color)',
+    },
+    '&:focus > $content $label, &:hover > $content $label, &$selected > $content $label': {
+      backgroundColor: 'transparent',
+    },
+  },
+  content: {
+    color: theme.palette.text.secondary,
+    fontWeight: theme.typography.fontWeightMedium,
+    "$expanded > &": {
+      fontWeight: theme.typography.fontWeightRegular
+    }
+  },
+  expanded: {},
+  selected: {},
+  label: {
+    fontWeight: "inherit",
+    color: "inherit"
   },
   details: {
     display: 'flex'
@@ -81,23 +106,8 @@ const TextMaskCustom = (props) => {
     ) 
 }
 
-const emailMaskCustom = (props) => {
-    const { inputRef, ...other } = props;
-    return (
-        <MaskedInput
-        {...other}
-        ref={(ref) => {
-            inputRef(ref ? ref.inputElement : null);
-        }}
-        mask={emailMask}
-        placeholderChar={'\u2000'}
-        showMask
-        />
-    ) 
-}
-
 const EditBlack = (props) => {
-    const {groups,userObject,selectedNode,clickedNode,setUsers,setClickedNode} = props.location;
+    const {userObject,selectedNode} = props.location;
     const classes = useStyles();
     const history = props.history;
     const [pictures, setPictures] = useState([]);
@@ -136,8 +146,7 @@ const EditBlack = (props) => {
             gender : user.gender,
         }
         setUserInfo(editedUser);
-        console.log(userObject[0]);
-    },[])
+    },[userObject])
 
     const handleChange = (event) => {
         setUserInfo({
@@ -155,15 +164,28 @@ const EditBlack = (props) => {
           onLabelClick={() =>{
             if(Array.isArray(node.children)) setNode(node)
           }} 
-        className={classes.treeItem} key={node._id} nodeId={node._id} 
+        className={classes.treeItem} key={node._id}
         label={
           <div className={classes.labelRoot}>
             {Array.isArray(node.children) ? <GroupIcon color="inherit" className={classes.labelIcon}/> : <PersonIcon color="inherit" className={classes.labelIcon}/>}
-            <Typography variant="body2" className={classes.labelText}>
+            <Typography color="inherit" variant="body2" className={classes.labelText}>
               {node.name}
             </Typography>
           </div>
-        }>
+        }
+        style={{
+          '--tree-view-color': '#1a73e8',
+          '--tree-view-bg-color': '#e8f0fe',
+        }}
+        classes={{
+          root: classes.treeItemStyle,
+          content: classes.content,
+          expanded: classes.expanded,
+          selected: classes.selected,
+          group: classes.group,
+          label: classes.label
+        }}
+        >
           {Array.isArray(node.children) ? node.children.map((child) => renderTree(child)) : null}
         </TreeItem>
     )

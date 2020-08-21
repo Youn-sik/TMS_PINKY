@@ -1,7 +1,6 @@
-import React,{ useState,useEffect } from 'react';
+import React,{ useState } from 'react';
 import { makeStyles } from '@material-ui/styles';
-import MaskedInput from 'react-text-mask';
-import { Grid,Card,CardContent,TextField,Button,Typography } from '@material-ui/core';
+import { Grid,Card,CardContent,TextField,Button } from '@material-ui/core';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import Select from '@material-ui/core/Select';
@@ -53,11 +52,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const AddAccount = (props) => {
-    const {groups,clickedNode,setUsers,setClickedNode} = props.location;
     const classes = useStyles();
     const history = props.history;
 
-    const [userInfo, setUserInfo] = useState({
+    const [accountInfo, setAccountInfo] = useState({
         name : '',
         user_id : '',
         user_lang : 'KOR',
@@ -66,25 +64,21 @@ const AddAccount = (props) => {
     })
 
     const handleChange = (event) => {
-        setUserInfo({
-          ...userInfo,
+        setAccountInfo({
+          ...accountInfo,
           [event.target.name]: event.target.value,
         });
     };
 
-    useEffect(() => {
-        console.log(props.location)
-    },[])
-
-    const addUser = async () => {
-      if(userInfo.user_name === '') alert("이름을 입력해주세요")
-      else if(userInfo.user_id === '') alert('아이디를 입력해주세요')
-      else if(userInfo.user_pw === '') alert('부서를 입력해주세요')
-      else if(userInfo.pw_chk === '') alert('직급을 입력해주세요')
-      else if(userInfo.user_pw !== userInfo.pw_chk) alert('비밀번호가 다릅니다')
+    const addAccount = async () => {
+      if(accountInfo.user_name === '') alert("이름을 입력해주세요")
+      else if(accountInfo.user_id === '') alert('아이디를 입력해주세요')
+      else if(accountInfo.user_pw === '') alert('부서를 입력해주세요')
+      else if(accountInfo.pw_chk === '') alert('직급을 입력해주세요')
+      else if(accountInfo.user_pw !== accountInfo.pw_chk) alert('비밀번호가 다릅니다')
       else {
         await axios.post('http://172.16.135.89:3000/account',{
-          ...userInfo,
+          ...accountInfo,
         })
         alert('등록 되었습니다.')
         history.push('/system/account')
@@ -110,7 +104,7 @@ const AddAccount = (props) => {
                         <div style={{width: '100%'}}>
                             <TextField 
                             name="user_name"
-                            value={userInfo.user_name}
+                            value={accountInfo.user_name}
                             style={{width:'100%'}} 
                             required 
                             id="standard-required" 
@@ -121,7 +115,7 @@ const AddAccount = (props) => {
                         <div style={{width: '100%'}}>
                             <TextField 
                             name="user_id"
-                            value={userInfo.user_id}
+                            value={accountInfo.user_id}
                             style={{width:'100%'}} 
                             required 
                             id="standard-required" 
@@ -130,12 +124,12 @@ const AddAccount = (props) => {
                             />
                         </div>
                         {
-                          userInfo.pw_chk === userInfo.user_pw ?
+                          accountInfo.pw_chk === accountInfo.user_pw ?
                           <div>                 
                             <div style={{width: '100%'}}>
                               <TextField 
                               name="user_pw"
-                              value={userInfo.user_pw} 
+                              value={accountInfo.user_pw} 
                               style={{width:'100%'}} 
                               required 
                               onChange={handleChange}
@@ -146,7 +140,7 @@ const AddAccount = (props) => {
                             <div style={{width: '100%'}}>
                               <TextField 
                               name="pw_chk"
-                              value={userInfo.pw_chk} 
+                              value={accountInfo.pw_chk} 
                               style={{width:'100%'}} 
                               required 
                               id="standard-required" 
@@ -162,7 +156,7 @@ const AddAccount = (props) => {
                               error
                               helperText="비밀번호가 같지 않습니다!"
                               name="user_pw"
-                              value={userInfo.user_pw} 
+                              value={accountInfo.user_pw} 
                               style={{width:'100%'}} 
                               required 
                               onChange={handleChange}
@@ -175,7 +169,7 @@ const AddAccount = (props) => {
                               error
                               helperText="비밀번호가 같지 않습니다!"
                               name="pw_chk"
-                              value={userInfo.pw_chk} 
+                              value={accountInfo.pw_chk} 
                               style={{width:'100%'}} 
                               required 
                               id="standard-required" 
@@ -188,7 +182,7 @@ const AddAccount = (props) => {
 
                         <Select
                         name="user_lang"
-                        value={userInfo.user_lang}
+                        value={accountInfo.user_lang}
                         style={{width:'100%',marginTop:15}} 
                         onChange={handleChange}
                         >
@@ -199,7 +193,7 @@ const AddAccount = (props) => {
                         container justify="center"
                         alignItems="center"
                         >
-                        <Button style={{marginTop: 10}} variant="contained" color="primary" onClick={addUser}>등록</Button>
+                        <Button style={{marginTop: 10}} variant="contained" color="primary" onClick={addAccount}>등록</Button>
                         </Grid>
                     </CardContent>
                 </Card>
@@ -216,7 +210,7 @@ AddAccount.propTypes = {
     setClickedNode : PropTypes.func,
     search : PropTypes.string,
     searchNode : PropTypes.func,
-    setUsers : PropTypes.func,
+    setAccounts : PropTypes.func,
     deleteGroupNode : PropTypes.func,
 };
 

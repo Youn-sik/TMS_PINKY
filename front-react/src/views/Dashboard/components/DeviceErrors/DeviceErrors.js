@@ -1,28 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 import clsx from 'clsx';
-import moment from 'moment';
-import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import {
   Card,
-  CardActions,
   CardHeader,
   CardContent,
-  Button,
   Divider,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  Tooltip,
-  TableSortLabel
+  TableContainer,
 } from '@material-ui/core';
-import ArrowRightIcon from '@material-ui/icons/ArrowRight';
-
-// import mockData from './data';
-import { StatusBullet } from 'components';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -30,7 +21,7 @@ const useStyles = makeStyles(theme => ({
     padding: 0
   },
   inner: {
-    minWidth: 800
+    minWidth: 1050
   },
   statusContainer: {
     display: 'flex',
@@ -71,9 +62,8 @@ const DeviceErrors = props => {
       />
       <Divider />
       <CardContent className={classes.content}>
-        <PerfectScrollbar>
-          <div className={classes.inner}>
-            <Table>
+        <TableContainer>
+            <Table className={classes.inner}>
               <TableHead>
                 <TableRow>
                   <TableCell>시리얼 넘버</TableCell>
@@ -107,8 +97,7 @@ const DeviceErrors = props => {
                 ))}
               </TableBody>
             </Table>
-          </div>
-        </PerfectScrollbar>
+          </TableContainer>
       </CardContent>
     </Card>
   );

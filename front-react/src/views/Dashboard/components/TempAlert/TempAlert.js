@@ -6,17 +6,15 @@ import {
   Card,
   CardHeader,
   CardContent,
-  CardActions,
-  Button,
   Divider,
-  List,
-  ListItem,
-  ListItemAvatar,
   ListItemText,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableContainer,
 } from '@material-ui/core';
-import ArrowRightIcon from '@material-ui/icons/ArrowRight';
-
-import mockData from './data';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -45,8 +43,6 @@ const TempAlert = props => {
 
   const classes = useStyles();
 
-  const [products] = useState(mockData);
-
   return (
     <Card
       {...rest}
@@ -57,31 +53,41 @@ const TempAlert = props => {
       />
       <Divider />
       <CardContent className={classes.content}>
-        <List>
-          {props.temp.map((people, i) => (
-            <ListItem
-              divider={i < props.temp.length - 1}
-              key={people._id}
-            >
-              <ListItemAvatar>
-                <img
-                  alt="Product"
-                  className={classes.image}
-                  src={people.avatar_file_url}
-                />
-              </ListItemAvatar>
-              <ListItemText
-                primary={people.avatar_type === 1 ? "사원" :
-                        people.avatar_type === 2 ? '방문자' :
-                        people.avatar_type === 3 ? '미등록자' : '블랙리스트'}
-                secondary={`${people.access_time} 출입`}
-              />
-              <div>
-                {`${String(people.avatar_temperature).substring(0,4)}℃`}
-              </div>
-            </ListItem>
-          ))}
-        </List>
+          <TableContainer>
+            <Table className={classes.inner}>
+              <TableHead>
+                <TableRow>
+                  <TableCell>사진</TableCell>
+                  <TableCell>온도</TableCell>
+                  <TableCell>타입,날짜</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {props.temp.map(person => (
+                  <TableRow
+                    hover
+                    key={person._id}
+                  >
+                    <TableCell>                
+                      <img
+                        alt="Product"
+                        className={classes.image}
+                        src={person.avatar_file_url}
+                      /></TableCell>
+                    <TableCell>{person.avatar_temperature}</TableCell>
+                    <TableCell>
+                      <ListItemText
+                        primary={person.avatar_type === 1 ? "사원" :
+                                person.avatar_type === 2 ? '방문자' :
+                                person.avatar_type === 3 ? '미등록자' : '블랙리스트'}
+                        secondary={`${person.access_time} 출입`}
+                      />  
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
       </CardContent>
     </Card>
   );

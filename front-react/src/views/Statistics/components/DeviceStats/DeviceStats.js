@@ -1,20 +1,15 @@
-import React,{useEffect} from 'react';
+import React from 'react';
 import { Line } from 'react-chartjs-2';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import { makeStyles, useTheme } from '@material-ui/styles';
+import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 import {
   Card,
   CardHeader,
   CardContent,
-  IconButton,
   Divider,
 } from '@material-ui/core';
-import PermIdentity from '@material-ui/icons/PermIdentity';
-import NotInterested from '@material-ui/icons/NotInterested';
-import PeopleIcon from '@material-ui/icons/PeopleOutlined';
-import AttachMoneyIcon from '@material-ui/icons/HelpOutline';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -47,7 +42,6 @@ const DeviceStats = props => {
   const { chartData,className, date, ...rest } = props;
 
   const classes = useStyles();
-  const theme = useTheme();
 
   const data = {
     datasets: [

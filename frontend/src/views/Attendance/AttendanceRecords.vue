@@ -73,7 +73,7 @@
                     <template v-if="accessRecord.length > 0" v-slot:body="{ items }">
                         <tbody>
                             <tr v-for="(item,index) in items" :key="item.name">
-                                <td v-if="item.avatar_temperature >= '38'" :class="'highTemp '+index+' image'" style="width:5%">
+                                <td v-if="item.avatar_temperature >= '37.5'" :class="'highTemp '+index+' image'" style="width:5%">
                                     <v-row justify="center" align="center" style="height:110px;">
                                         <img 
                                         width="70px"
@@ -92,7 +92,7 @@
                                     </v-row>
                                 </td>
 
-                                <td v-if="item.avatar_temperature >= '38'" :class="'highTemp '+index">
+                                <td v-if="item.avatar_temperature >= '37.5'" :class="'highTemp '+index">
                                     <template v-if="item.avatar_type===1">사원</template>
                                     <template v-else-if="item.avatar_type===2">방문자</template>
                                     <template v-else-if="item.avatar_type===3">미등록자</template>
@@ -105,10 +105,10 @@
                                     <template v-else-if="item.avatar_type===4">블랙리스트</template>
                                 </td>
 
-                                <td v-if="item.avatar_temperature >= '38'" :class="'highTemp '+index">{{(""+item.avatar_temperature).substring(0,4)}}</td>
+                                <td v-if="item.avatar_temperature >= '37.5'" :class="'highTemp '+index">{{(""+item.avatar_temperature).substring(0,4)}}</td>
                                 <td v-else>{{(""+item.avatar_temperature).substring(0,4)}}</td>
 
-                                <td v-if="item.avatar_temperature >= '38'" :class="'highTemp '+index+' access'">{{item.access_time}}</td>
+                                <td v-if="item.avatar_temperature >= '37.5'" :class="'highTemp '+index+' access'">{{item.access_time}}</td>
                                 <td v-else>{{item.access_time}}</td>
                             </tr>
                         </tbody>
@@ -213,17 +213,17 @@ export default {
             if(val === '전체') {
             this.accessRecord = this.accessRecordOrigin
             } else if(val === '온도이상자') {
-                this.accessRecord = this.accessRecordOrigin.filter(i => i.avatar_temperature >= '38');
+                this.accessRecord = this.accessRecordOrigin.filter(i => i.avatar_temperature >= '37.5');
             } else {
-                this.accessRecord = this.accessRecordOrigin.filter(i => i.avatar_temperature < '38')
+                this.accessRecord = this.accessRecordOrigin.filter(i => i.avatar_temperature < '37.5')
             }
         } else {
             if(val === '전체') {
             this.accessRecord = this.accessRecordOrigin.filter(i => i.avatar_type === this.nowStatus.value)
             } else if(val === '온도이상자') {
-                this.accessRecord = this.accessRecordOrigin.filter(i => i.avatar_type === this.nowStatus.value && i.avatar_temperature >= '38');
+                this.accessRecord = this.accessRecordOrigin.filter(i => i.avatar_type === this.nowStatus.value && i.avatar_temperature >= '37.5');
             } else {
-                this.accessRecord = this.accessRecordOrigin.filter(i => i.avatar_type === this.nowStatus.value && i.avatar_temperature < '38')
+                this.accessRecord = this.accessRecordOrigin.filter(i => i.avatar_type === this.nowStatus.value && i.avatar_temperature < '37.5')
             }
         }
       }

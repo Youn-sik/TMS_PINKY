@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import PerfectScrollbar from 'react-perfect-scrollbar';
 import Pagination from '@material-ui/lab/Pagination';
 import { NavLink as RouterLink } from 'react-router-dom';
 import { makeStyles } from '@material-ui/styles';
@@ -21,7 +20,9 @@ import {
   TableRow,
   Typography,
   Button,
-  TablePagination
+  TablePagination,
+  TableContainer,
+  Paper
 } from '@material-ui/core';
 
 import { getInitials } from 'helpers';
@@ -76,9 +77,9 @@ const UsersTable = props => {
       className={clsx(classes.root, className)}
     >
       <CardContent className={classes.content}>
-        <PerfectScrollbar>
-          <div className={classes.inner}>
-            <Table size="small">
+        {loading ? <LinearProgress style={{width:'100%'}} /> : null}
+        <TableContainer component={Paper}>
+            <Table className={classes.inner} size="small">
               <TableHead>
                 <TableRow>
                   <TableCell>사진</TableCell>
@@ -88,11 +89,10 @@ const UsersTable = props => {
                   <TableCell>등록</TableCell>
                 </TableRow>
               </TableHead>
-              {loading ? <LinearProgress style={{padding:'0 270%'}} /> : null}
               {
                 <TableBody>
                   {props.accesses.slice((page-1) * rowsPerPage, (page-1) * rowsPerPage + rowsPerPage).map(access => {
-                    if(access.avatar_temperature >= 38){ //출입 기록 38도 이상일때
+                    if(access.avatar_temperature >= 37.5){ //출입 기록 37.5도 이상일때
                       return(
                         <TableRow
                           className={classes.highTempRow}
@@ -157,8 +157,7 @@ const UsersTable = props => {
                 </TableBody>
               }
             </Table>
-          </div>
-        </PerfectScrollbar>
+          </TableContainer>
       </CardContent>
       <CardActions className={classes.actions}>
         <Grid

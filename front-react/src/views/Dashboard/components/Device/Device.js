@@ -7,7 +7,6 @@ import {
   Card,
   CardHeader,
   CardContent,
-  IconButton,
   Divider,
   Typography
 } from '@material-ui/core';

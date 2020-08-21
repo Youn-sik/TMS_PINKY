@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 import TextField from '@material-ui/core/TextField';
-import Search from '@material-ui/icons/Search';
-import InputAdornment from '@material-ui/core/InputAdornment';
 import TreeView from '@material-ui/lab/TreeView';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
@@ -23,11 +21,35 @@ import {
   Typography,
   Divider,
   Button,
-  Checkbox
 } from '@material-ui/core';
 
-const useStyles = makeStyles(theme => ({
-  root: {},
+const useStyles = makeStyles((theme) => ({
+  root: {
+    color: theme.palette.text.secondary,
+    '&:hover > $content': {
+      backgroundColor: theme.palette.action.hover,
+    },
+    '&:focus > $content, &$selected > $content': {
+      backgroundColor: `var(--tree-view-bg-color, ${theme.palette.grey[400]})`,
+      color: 'var(--tree-view-color)',
+    },
+    '&:focus > $content $label, &:hover > $content $label, &$selected > $content $label': {
+      backgroundColor: 'transparent',
+    },
+  },
+  content: {
+    color: theme.palette.text.secondary,
+    fontWeight: theme.typography.fontWeightMedium,
+    "$expanded > &": {
+      fontWeight: theme.typography.fontWeightRegular
+    }
+  },
+  expanded: {},
+  selected: {},
+  label: {
+    fontWeight: "inherit",
+    color: "inherit"
+  },
   details: {
     display: 'flex'
   },
@@ -113,11 +135,24 @@ const AccountProfile = props => {
       label={
         <div className={classes.labelRoot}>
           {Array.isArray(node.children) ? <GroupIcon color="inherit" className={classes.labelIcon}/> : <PersonIcon color="inherit" className={classes.labelIcon}/>}
-          <Typography variant="body2" className={classes.labelText}>
+          <Typography color="inherit" variant="body2" className={classes.labelText}>
             {node.name}
           </Typography>
         </div>
-      }>
+      }
+      style={{
+        '--tree-view-color': '#1a73e8',
+        '--tree-view-bg-color': '#e8f0fe',
+      }}
+      classes={{
+        root: classes.root,
+        content: classes.content,
+        expanded: classes.expanded,
+        selected: classes.selected,
+        group: classes.group,
+        label: classes.label
+      }}
+      >
         {Array.isArray(node.children) ? node.children.map((child) => renderTree(child,depth+1)) : null}
       </TreeItem>
   ) 

@@ -2,8 +2,7 @@ import React,{ useState,useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 import axios from 'axios';
-import { AccountProfile, AccountDetails, UsersTable } from './components';
-import ImageUploader from "react-images-upload";
+import { Groups, UsersTable } from './components';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -199,7 +198,7 @@ const Black = (props) => {
           xl={3}
           xs={12}
         >
-          <AccountProfile 
+          <Groups 
           setClickedNode={_setClickedNode}
           setSelectedNode={_setSelectedNode}
           clickedNode={clickedNode}

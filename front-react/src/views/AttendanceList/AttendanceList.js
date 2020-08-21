@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from 'react';
-import { makeStyles, useTheme } from '@material-ui/styles';
+import { makeStyles } from '@material-ui/styles';
 import axios from 'axios';
 import { UsersToolbar, UsersTable } from './components';
 import Card from '@material-ui/core/Card';
@@ -24,12 +24,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const UserList = () => {
-  const [accesses,setAccesses] = useState([]);
-  const [users,setUsers] = useState([]);//화면에 보여질 유저
-  const [originUsers,setOriginUsers] = useState([]);//모든 유저 데이터
+  const [accesses,setAccesses] = useState([]);//출입 기록
+  const [filteredUsers,setFilteredUsers] = useState([]);//검색된 유저 리스트
+  const [users,setUsers] = useState([]);//유저 리스트
   const [date,setDate] = useState([moment().locale('ko').format('YYYY-MM-DD'), moment().locale('ko').format('YYYY-MM-DD')]);
-  const [type,setType] = useState('0');
-  const [temp,setTemp] = useState('0');
   const [searchVal, setSearchVal] = useState("");
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -64,7 +62,6 @@ const UserList = () => {
       user.late=0
       user.attendance=0
     })
-    setOriginUsers(result.data)
     setUsers(result.data)
     setLoading(false);
   }
@@ -77,6 +74,11 @@ const UserList = () => {
 
   const searchEvent = (e) => {
     setSearchVal(e.target.value)
+    if(e.target.value === '') {
+      setFilteredUsers([]);
+    } else {
+      setFilteredUsers(users.filter(user => user.name === e.target.value))
+    }
   }
 
   const handleDate = (val) => {
@@ -107,7 +109,7 @@ const UserList = () => {
       <Card className={classes.root,classes.cardcontent}>
         <UsersToolbar className={classes.toolbar} dateChange={handleDate} search_val={searchVal} search_event={searchEvent}/>
         <div className={classes.content}>
-          <UsersTable loading={loading} users={users} />
+          <UsersTable loading={loading} users={searchVal !== '' ? filteredUsers : users} />
         </div>
       </Card>
     </div>

@@ -8,7 +8,6 @@ import {
   Grid,
   Typography,
   Avatar,
-  LinearProgress
 } from '@material-ui/core';
 import NotInterested from '@material-ui/icons/NotInterested';
 const useStyles = makeStyles(theme => ({

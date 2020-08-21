@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react';
+import React from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
@@ -8,7 +8,6 @@ import {
   Card,
   CardHeader,
   CardContent,
-  IconButton,
   Divider,
   Typography
 } from '@material-ui/core';

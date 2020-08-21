@@ -2,7 +2,6 @@ import React, { useState,useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import PerfectScrollbar from 'react-perfect-scrollbar';
 import Pagination from '@material-ui/lab/Pagination';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
@@ -19,6 +18,8 @@ import {
   TableHead,
   TableRow,
   Typography,
+  Paper,
+  TableContainer,
   TablePagination
 } from '@material-ui/core';
 
@@ -66,12 +67,13 @@ const UsersTable = props => {
       className={clsx(classes.root, className)}
     >
       <CardContent className={classes.content}>
-        <PerfectScrollbar>
-          <div className={classes.inner}>
-            <Table size="small">
+        {loading ? <LinearProgress style={{width:'100%'}} /> : null}
+        <TableContainer component={Paper}>
+            <Table className={classes.inner} size="small">
               <TableHead>
                 <TableRow>
                   <TableCell>사진</TableCell>
+                  <TableCell>이름</TableCell>
                   <TableCell>근무지</TableCell>
                   <TableCell>부서</TableCell>
                   <TableCell>직급</TableCell>
@@ -79,7 +81,6 @@ const UsersTable = props => {
                   <TableCell>지각</TableCell>
                 </TableRow>
               </TableHead>
-              {loading ? <LinearProgress style={{padding:"0 230%"}} /> : null}
               <TableBody>
                 {props.users.slice((page-1) * rowsPerPage, (page-1) * rowsPerPage + rowsPerPage).map(user => {
                   return(
@@ -96,6 +97,7 @@ const UsersTable = props => {
                           </img>
                         </div>
                       </TableCell>
+                      <TableCell>{user.name}</TableCell>
                       <TableCell>{user.location}</TableCell>
                       <TableCell>{user.department_id}</TableCell>
                       <TableCell>{user.position}</TableCell>
@@ -106,8 +108,7 @@ const UsersTable = props => {
                   })}
               </TableBody>
             </Table>
-          </div>
-        </PerfectScrollbar>
+          </TableContainer>
       </CardContent>
       <CardActions className={classes.actions}>
         <Grid

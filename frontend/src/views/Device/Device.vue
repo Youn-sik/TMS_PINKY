@@ -10,7 +10,7 @@
           <v-expansion-panel-content>
             <v-col class="d-flex">
               <video id="my_video_1" class="video-js vjs-theme-city" vjs-big-play-centered controls preload="auto" style="width:100%; height:700px">
-                <source src="http://172.16.135.89:4000/stream/test/playlist.m3u8" type="application/x-mpegURL"/>
+                <source src="./loading.m3u8" type="application/x-mpegURL"/>
               </video>
             </v-col>
           </v-expansion-panel-content>

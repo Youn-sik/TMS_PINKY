@@ -52,9 +52,9 @@ const Stranger = () => {
     if(tempVal === '0') {
       return true;
     } else if (tempVal === '1') {
-      return i.avatar_temperature < 38;
+      return i.avatar_temperature < 37.5;
     } else {
-      return i.avatar_temperature >= 38;
+      return i.avatar_temperature >= 37.5;
     }
   }
 

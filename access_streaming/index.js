@@ -90,9 +90,9 @@ app.post('/start', async function(req, res) {
     }).on('error', function(err) {
         deleteFolderRecursive('./videos/'+id)
         console.log(moment().format('YYYY-MM-DD HH:mm:ss')+' Cannot process video: ' + err.message);
-        if(err) {
-            // res.send({error:'Cannot process video: ' + err.message})
-        }
+        // if(err) {
+            res.send({error:'Cannot process video: ' + err.message})
+        // }
     }).saveToFile('./videos/'+id+'/'+id+'.m3u8');
 })
 
