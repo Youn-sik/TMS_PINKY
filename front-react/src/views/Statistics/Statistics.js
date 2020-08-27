@@ -64,16 +64,21 @@ const Statistics = () => {
     dates.map((date,index) => {
       employee.map((i) => {
         if(i.access_time.split(' ')[0] === date) temp[0][index]++
+        return false;
       });
       visitor.map((i) => {
         if(i.access_time.split(' ')[0] === date) temp[1][index]++
+        return false;
       });
       stranger.map((i) => {
         if(i.access_time.split(' ')[0] === date) temp[2][index]++
+        return false;
       });
       black.map((i) => {
-        if(i.access_time.split(' ')[0] === date) temp[0][index]++
+        if(i.access_time.split(' ')[0] === date) temp[3][index]++
+        return false;
       })
+      return false;
     })
     return temp
   }
@@ -90,13 +95,17 @@ const Statistics = () => {
     dates.map((date,index) => {
       disconnect.map((i) => {
         if(i.regdate.split(' ')[0] === date) temp[0][index]++
+        return false;
       });
       cpu.map((i) => {
         if(i.regdate.split(' ')[0] === date) temp[1][index]++
+        return false;
       });
       memory.map((i) => {
         if(i.regdate.split(' ')[0] === date) temp[2][index]++
+        return false;
       });
+      return false;
     })
     return temp
   }
@@ -105,6 +114,7 @@ const Statistics = () => {
     if(data.children[0] !== undefined) {
         data.children.map((i) => {
             moveUserIds(i)
+            return false;
         })
     }
     if(data.user_obids[0] !== undefined) {
@@ -120,8 +130,9 @@ const Statistics = () => {
     let tempGroups = await axios.get('http://172.16.135.89:3000/group')
     tempGroups.data.map((i) => {//user_obids에 있는 데이터 children으로 옮기기
       moveUserIds(i);
+      return false;
     })
-    let index = tempGroups.data.findIndex(i => i.name == "undefined");
+    let index = tempGroups.data.findIndex(i => i.name === "undefined");
     if(index !== -1) {
       let undefinedGroup = tempGroups.data.splice(index,1);
       tempGroups.data.push(undefinedGroup[0]);
@@ -210,27 +221,30 @@ const Statistics = () => {
   },[])
 
   useEffect(() => {
-    setAttList([])
-    setAttendance({att:0,late:0})
+    let _attlist = [];
+    let _attendance = {att:0,late:0}
     allPeopleData.map((person) => {
-      if(clickedNode.avatar_contraction_data === person.avatar_contraction_data && person.access_time.split(' ')[0] >= date[0] && person.access_time.split(' ')[1] <= date[1]){
-        setAttList([
-          ...attList,
+      if(clickedNode.avatar_contraction_data === person.avatar_contraction_data && person.access_time.split(' ')[0] >= date[0] && person.access_time.split(' ')[0] <= date[1]){
+        _attlist = [
+          ..._attlist,
           person
-        ])
+        ]
         if(person.access_time.split(' ')[1] > '09:00:00'){
-          setAttendance({
-            ...attendance,
-            ["late"] : attendance.late+1
-          })
+          _attendance = {
+            ..._attendance,
+            "late" : _attendance.late+1
+          }
         } else {
-          setAttendance({
-            ...attendance,
-            ["att"] : attendance.att+1
-          })
+          _attendance = {
+            ..._attendance,
+            "att" : _attendance.att+1
+          }
         }
       }
+      return false;
     })
+    setAttendance(_attendance);
+    setAttList(_attlist)
   },[clickedNode,date])
 
   return (
@@ -313,7 +327,7 @@ const Statistics = () => {
           xl={5}
           xs={12}
         >
-          <Attendance attendance={attendance.att} late={attendance.late}/>
+          <Attendance clickedNode={clickedNode} attendance={attendance.att} late={attendance.late}/>
         </Grid>
         <Grid
           item
@@ -322,7 +336,7 @@ const Statistics = () => {
           xl={4}
           xs={12}
         >
-          <Access temp={attList}/>
+          <Access clickedNode={clickedNode} temp={attList}/>
         </Grid>
       </Grid>
       }

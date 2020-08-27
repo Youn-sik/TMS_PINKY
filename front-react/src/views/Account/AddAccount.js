@@ -79,6 +79,7 @@ const AddAccount = (props) => {
       else {
         await axios.post('http://172.16.135.89:3000/account',{
           ...accountInfo,
+          account : props.user_id,
         })
         alert('등록 되었습니다.')
         history.push('/system/account')
@@ -104,7 +105,7 @@ const AddAccount = (props) => {
                         <div style={{width: '100%'}}>
                             <TextField 
                             name="user_name"
-                            value={accountInfo.user_name}
+                            value={accountInfo.user_name || ''}
                             style={{width:'100%'}} 
                             required 
                             id="standard-required" 

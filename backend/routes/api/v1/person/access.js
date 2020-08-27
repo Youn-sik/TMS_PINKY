@@ -12,7 +12,7 @@ router.get('/',async function(req, res) {
         let date = new RegExp(moment().format('YYYY-MM-DD'));
         let today = new RegExp(moment().format('YYYY-MM-DD'));
         if(req.query.type && req.query.type !== 'todayStatistics'&& req.query.type !== 'todayAttendance' && req.query.type !== 'temperature' && req.query.type !== 'attendance') {
-            get_data = await api_v1_person_access.find({avatar_type:req.query.type}).select('-avatar_file -avatar_contraction_data')
+            get_data = await api_v1_person_access.find({avatar_type:req.query.type}).select('-avatar_file -avatar_contraction_data').limit(50000)
         } else if(req.query.type === 'todayStatistics') {
             get_data = await api_v1_person_access.aggregate([
                 {
@@ -58,7 +58,7 @@ router.get('/',async function(req, res) {
                 .where('avatar_temperature').gte(37.5)
                 .sort('-access_time')
                 .select('access_time avatar_file_url avatar_temperature avatar_type')
-                .limit(4)
+                .limit(5)
         } else if(req.query.type === 'attendance') {
             get_data = await api_v1_person_access.aggregate([
                 {

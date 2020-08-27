@@ -135,6 +135,9 @@ const EditBlack = (props) => {
     })
 
     useEffect(() => {
+      if(!userObject) {
+        history.go(-1);
+      } else {
         let user = JSON.parse(JSON.stringify(userObject[0]))
         let editedUser = {
             name : user.name,
@@ -146,7 +149,8 @@ const EditBlack = (props) => {
             gender : user.gender,
         }
         setUserInfo(editedUser);
-    },[userObject])
+      }
+    },[userObject,history])
 
     const handleChange = (event) => {
         setUserInfo({
@@ -234,7 +238,6 @@ const EditBlack = (props) => {
                     <ImageUploader
                     {...props}
                     withIcon={true}
-                    defaultImages={[userObject[0].avatar_file_url]}
                     onChange={onDrop}
                     imgExtension={[".jpg", ".png"]}
                     label="최대 크기 : 5mb, 허용 확장자: jpg|png"
@@ -312,6 +315,8 @@ const EditBlack = (props) => {
                         >
                             <DialogTitle id="alert-dialog-title">그룹 선택</DialogTitle>
                             <DialogContent>
+                                {
+                                  userObject ? 
                                 <TreeView
                                 defaultExpanded={selectedNode}
                                 defaultSelected={userObject[0].groups_obids}
@@ -321,7 +326,8 @@ const EditBlack = (props) => {
                                 defaultEndIcon={<div style={{ width: 24 }} />}
                                 >
                                 {props.location.groups.length ? props.location.groups.map(group => renderTree(group)) : <div></div>}
-                                </TreeView>
+                                </TreeView> : null
+                                } 
                             </DialogContent>
                             <DialogActions>
                             <Button onClick={handleClose} color="primary">

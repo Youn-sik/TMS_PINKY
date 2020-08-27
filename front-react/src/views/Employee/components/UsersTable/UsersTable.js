@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import Pagination from '@material-ui/lab/Pagination';
@@ -22,8 +22,6 @@ import {
   Paper,
   TableContainer
 } from '@material-ui/core';
-
-import { getInitials } from 'helpers';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -64,10 +62,12 @@ const useStyles = makeStyles(theme => ({
 
 const UsersTable = props => {
   const {userSearch,selectedNode,setUserSearch,setClickedNode,clickedNode,setUsers,deleteUsers,className,users, ...rest } = props;
-
+  useEffect(() => {
+    console.log(props.user_id)
+  },[])
   const classes = useStyles();
 
-  const [rowsPerPage, setRowsPerPage] = useState(7);
+  const rowsPerPage = 7;
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState([]);
   const [selectedObject, setSelectedObject] = useState([]);
@@ -147,7 +147,7 @@ const UsersTable = props => {
           <Grid container justify="flex-end" className={classes.buttonActions}>
             {
               selected.length ? 
-              <Button variant="contained" color="secondary" onClick={() =>{ deleteUsers(selectedObject); setSelectedObject([])}}>삭제</Button> :
+              <Button variant="contained" color="secondary" onClick={() =>{ deleteUsers(selectedObject); setSelectedObject([]); setSelected([])}}>삭제</Button> :
               <Button variant="contained" color="secondary" disabled>삭제</Button>
             }
             {
@@ -160,7 +160,7 @@ const UsersTable = props => {
                 setUsers:props.setUsers,
                 userObject:selectedObject,
                 selectedNode:selectedNode
-                }}><Button variant="contained" color="primary">수정</Button></RouterLink> :
+                }}><Button variant="contained" color="primary" className={classes.buttonStyle}>수정</Button></RouterLink> :
               <Button variant="contained" color="primary" className={classes.buttonStyle} disabled>수정</Button> 
             }
             
@@ -210,6 +210,7 @@ const UsersTable = props => {
                       <TableCell>
                         <div className={classes.nameContainer}>
                           <img
+                            alt="프로필사진"
                             height="90px"
                             width="70px"
                             src={user.avatar_file_url}

@@ -1,21 +1,9 @@
 import React,{ useState,useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
-import MaskedInput from 'react-text-mask';
-import { Grid,Card,CardContent,TextField,Button,Typography } from '@material-ui/core';
+import { Grid,Card,CardContent,TextField,Button } from '@material-ui/core';
 import axios from 'axios';
-import PropTypes from 'prop-types';
-import ImageUploader from "react-images-upload";
-import emailMask from 'text-mask-addons/dist/emailMask'
 import './image.css'
 import InputLabel from '@material-ui/core/InputLabel';
-import TreeItem from '@material-ui/lab/TreeItem';
-import GroupIcon from '@material-ui/icons/FolderShared';
-import PersonIcon from '@material-ui/icons/Person';
-import DialogContent from '@material-ui/core/DialogContent';
-import TreeView from '@material-ui/lab/TreeView';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
@@ -65,37 +53,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const TextMaskCustom = (props) => {
-    const { inputRef, ...other } = props;
-    return (
-        <MaskedInput
-        {...other}
-        ref={(ref) => {
-            inputRef(ref ? ref.inputElement : null);
-        }}
-        guide={false}
-        mask={[ /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
-        placeholderChar={'\u2000'}
-        showMask
-        />
-    ) 
-}
-
-const emailMaskCustom = (props) => {
-    const { inputRef, ...other } = props;
-    return (
-        <MaskedInput
-        {...other}
-        ref={(ref) => {
-            inputRef(ref ? ref.inputElement : null);
-        }}
-        mask={emailMask}
-        placeholderChar={'\u2000'}
-        showMask
-        />
-    ) 
-}
-
 const EditDevice = (props) => {
     const deviceObject = props.location.state;
     const classes = useStyles();
@@ -126,7 +83,7 @@ const EditDevice = (props) => {
     const addDevice = async () => {
         await axios.post('http://172.16.135.89:3000/camera',{
             ...device,
-            account:'admin'
+            account : props.user_id,
         })
         window.alert('단말기 등록 완료.')
         history.push('/device/list')
@@ -146,14 +103,7 @@ const EditDevice = (props) => {
         }
         setDevice(editedUser);
         getGate()
-    },[])
-
-    const handleChange = (event) => {
-        setDevice({
-          ...device,
-          [event.target.name]: event.target.value,
-        });
-    };
+    },[deviceObject])
 
     return (
         <div className={classes.root}>

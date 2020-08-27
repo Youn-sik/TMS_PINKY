@@ -30,9 +30,35 @@ const UserList = () => {
   const [date,setDate] = useState([moment().locale('ko').format('YYYY-MM-DD'), moment().locale('ko').format('YYYY-MM-DD')]);
   const [searchVal, setSearchVal] = useState("");
   const [loading, setLoading] = useState(true);
+
+
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  async function getUsers () {
+    let result = await axios.get('http://172.16.135.89:3000/user?type=1',{cancelToken: source.token})
+    result.data.reverse()
+    result.data.map((user) => {
+      user.late=0
+      user.attendance=0
+      return false;
+    })
+    setUsers(result.data)
+    setLoading(false);
+  }
+
+  async function getAccesses () {
+    let result = await axios.get('http://172.16.135.89:3000/access?type=attendance',{cancelToken: source.token})
+    result.data.reverse()
+    setAccesses(result.data)
+  }
+
   useEffect(() => {
-    getAccesses();
     getUsers();
+    getAccesses();
+    return () => {
+      source.cancel('Operation canceled by the user.');
+    }
   },[])
 
   useEffect(() => {
@@ -47,6 +73,7 @@ const UserList = () => {
           } else if(index !== -1) {
             tempUsers[index].attendance = 1;
           }
+          return false;
         })
         setUsers(tempUsers);
       }
@@ -55,29 +82,15 @@ const UserList = () => {
 
   const classes = useStyles();
 
-  async function getUsers () {
-    let result = await axios.get('http://172.16.135.89:3000/user?type=1')
-    result.data.reverse()
-    result.data.map((user) => {
-      user.late=0
-      user.attendance=0
-    })
-    setUsers(result.data)
-    setLoading(false);
-  }
-
-  async function getAccesses () {
-    let result = await axios.get('http://172.16.135.89:3000/access?type=attendance')
-    result.data.reverse()
-    setAccesses(result.data)
-  }
-
   const searchEvent = (e) => {
     setSearchVal(e.target.value)
     if(e.target.value === '') {
       setFilteredUsers([]);
     } else {
-      setFilteredUsers(users.filter(user => user.name === e.target.value))
+      setFilteredUsers(users.filter(user => user.name.indexOf(e.target.value) !== -1  || 
+        user.location.indexOf(e.target.value) !== -1 ||
+        user.department_id.indexOf(e.target.value) !== -1 || 
+        user.position.indexOf(e.target.value) !== -1))
     }
   }
 
@@ -88,6 +101,7 @@ const UserList = () => {
     tempUsers.map((user) => {
       user.late=0
       user.attendance=0
+      return false;
     })
 
     if(date_accesses.length) {
@@ -98,6 +112,7 @@ const UserList = () => {
         } else if(index !== -1) {
           tempUsers[index].attendance++;
         }
+        return false;
       })
       setUsers(tempUsers);
     }

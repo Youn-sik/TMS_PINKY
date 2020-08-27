@@ -1,4 +1,4 @@
-import React,{ useState,useEffect } from 'react';
+import React,{ useState,useEffect,useCallback } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 import axios from 'axios';
@@ -15,11 +15,21 @@ const Employee = (props) => {
   const [device,setDevice] = useState([]);
   const [filteredDevice,setFilteredDevice] = useState([]);
   const [clickedNode,setClickedNode] = useState({});
-  const [selectedNode , setSelectedNode] = useState([]);
   const [stream,setStream] = useState("");
   const [streamId,setStreamId] = useState("");
   const [loading,setLoading] = useState(true);
   const classes = useStyles();
+
+  const filterDevice = useCallback((device) => {
+    let temp = []
+    device.map((device) => {
+      if(device.name.indexOf(search) > -1) {
+        temp.push(device)
+      }
+      return false;
+    })
+    return temp
+  },[search])
 
   useEffect(() => {
     if(search !== '') {
@@ -27,7 +37,7 @@ const Employee = (props) => {
       let tempFilteredDevice = filterDevice(copyUsers);
       setFilteredDevice(tempFilteredDevice);
     }
-  },[search])
+  },[search,device,filterDevice])
 
   useEffect(() => {
     getDevcie()
@@ -65,31 +75,6 @@ const Employee = (props) => {
     setLoading(false)
   }
 
-  const _setSelectedNode = (nodeId) => {
-    let node = JSON.parse(JSON.stringify(selectedNode));
-    nodeId = nodeId.split('/');
-    let nodeDepth = parseInt(nodeId[1]);
-    if(nodeDepth === 0) {
-      node = [nodeId[0]];
-    } else if(nodeDepth === 1) {
-      node[1] = nodeId[0];
-      node[2] = '';
-    } else {
-      node[2] = nodeId[0];
-    }
-    setSelectedNode(node);
-  }
-
-  const filterDevice = (device) => {
-    let temp = []
-    device.map((device) => {
-      if(device.name.indexOf(search) > -1) {
-        temp.push(device)
-      }
-    })
-    return temp
-  }
-
   const deleteDevice = async (selectedDevice) => {
     if(window.confirm('정말 삭제 하시겠습니까?')) {
       await axios.delete('http://172.16.135.89:3000/camera/'+selectedDevice._id,{
@@ -108,8 +93,7 @@ const Employee = (props) => {
     controls: true,
     sources: [
       {
-        // src: streamId === '' ? './sample.m3u8' :'http://172.16.135.89:4000/stream/'+streamId+'/'+streamId+'.m3u8',
-        src:'./sample.m3u8'
+        src: streamId === '' ? './sample.m3u8' :'http://172.16.135.89:4000/stream/'+streamId+'/'+streamId+'.m3u8',
       },
     ],
   };
@@ -145,8 +129,7 @@ const Employee = (props) => {
           setStream={_setStream}
           setClickedNode={_setClickedNode} 
           clickedNode={clickedNode} 
-          setDevice={_setDevice}  
-          selectedNode={selectedNode}
+          setDevice={_setDevice}
           deleteDevice={deleteDevice} 
           device={search === '' ?  device : filteredDevice } 
           search={search}

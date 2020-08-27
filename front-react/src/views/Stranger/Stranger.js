@@ -34,12 +34,18 @@ const Stranger = () => {
   
   useEffect(() => {
     getAccesses();
+    return () => {
+      source.cancel('Operation canceled by the user.');
+    }
   },[])
 
   const classes = useStyles();
 
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
   async function getAccesses () {
-    let result = await axios.get('http://172.16.135.89:3000/access?type=3')
+    let result = await axios.get('http://172.16.135.89:3000/access?type=3',{cancelToken: source.token})
     result.data.reverse()
     setOriginAcc(result.data)
     setAccesses(result.data.filter(i => i.access_time.split(' ')[0] === date[0]))
@@ -77,6 +83,7 @@ const Stranger = () => {
       setTemp('0');
     }
   }
+
 
 
   return (

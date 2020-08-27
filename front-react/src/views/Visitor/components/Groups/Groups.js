@@ -92,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AccountProfile = props => {
+const Groups = props => {
   const {clickedNode,setSelectedNode,setClickedNode,deleteGroupNode,setUsers, search,searchNode,groups,className, ...rest } = props;
   // const [clickedNode,setClickedNode] = useState([]);
   const [open, setOpen] = useState(false);
@@ -108,15 +108,21 @@ const AccountProfile = props => {
   };
 
   const clickAddGroup = async () => {
-    let parent = clickedNode
+    let parent = Object.keys(clickedNode).length === 0 ? undefined : clickedNode
     let result = await axios.post('http://219.255.217.140:3000/group',{
       name : groupName,
       type : 1,
       parent,
+      account : props.user_id,
     })
-    let childrenSize = clickedNode.children.length;
-    let userSize = clickedNode.user_obids.length;
-    clickedNode.children.splice(childrenSize-userSize,0,result.data)
+    if(Object.keys(clickedNode).length !== 0){
+      let childrenSize = clickedNode.children.length;
+      let userSize = clickedNode.user_obids.length;
+      clickedNode.children.splice(childrenSize-userSize,0,result.data)
+    } else {
+      groups.splice(groups.length-1,0,result.data);
+    }
+    setGroupName('');
     setOpen(false);
   }
 
@@ -244,7 +250,7 @@ const AccountProfile = props => {
   );
 };
 
-AccountProfile.propTypes = {
+Groups.propTypes = {
   className: PropTypes.string,
   groups : PropTypes.array,
   clickedNode : PropTypes.object,
@@ -256,4 +262,4 @@ AccountProfile.propTypes = {
   setSelectedNode : PropTypes.func,
 };
 
-export default AccountProfile;
+export default Groups;

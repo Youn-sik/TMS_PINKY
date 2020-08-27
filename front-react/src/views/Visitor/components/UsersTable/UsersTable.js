@@ -157,7 +157,7 @@ const UsersTable = props => {
                 setUsers:props.setUsers,
                 userObject:selectedObject,
                 selectedNode:selectedNode
-                }}><Button variant="contained" color="primary">수정</Button></RouterLink> :
+                }}><Button variant="contained" color="primary" className={classes.buttonStyle}>수정</Button></RouterLink> :
               <Button variant="contained" color="primary" className={classes.buttonStyle} disabled>수정</Button> 
             }
             
@@ -207,6 +207,7 @@ const UsersTable = props => {
                       <TableCell>
                         <div className={classes.nameContainer}>
                           <img
+                            alt="프로필사진"
                             height="90px"
                             width="70px"
                             src={user.avatar_file_url}

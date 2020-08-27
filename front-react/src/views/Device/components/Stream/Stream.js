@@ -3,8 +3,6 @@ import videojs from 'video.js';
 import 'video.js/dist/video-js.css'
 import axios from 'axios';
 import {
-  Card,
-  CardHeader,
   Accordion,
   AccordionSummary,
   AccordionDetails,
@@ -34,9 +32,10 @@ export default class Stream extends React.Component {
       this.setState({
         preStream : this.props.stream
       });
-      try{
+      // try{
         let result = await axios.post('http://172.16.135.89:4000/start',{
-          "uri" : "rtsp://"+this.props.stream+":9096"
+          "uri" : "rtsp://"+this.props.stream+":9096",
+          account : this.props.user_id,
         })
         if(result.data.error) {
           throw result.data.error
@@ -46,11 +45,12 @@ export default class Stream extends React.Component {
           this.player.play();
         },5000)
         this.props.setStreamId(result.data.id);
-      } catch(e) {
-        this.player.createModal('스트리밍 연결 실패!');
-        this.player.src('./sample.m3u8');
-        this.player.pause();
-      }
+      // } 
+      // catch(e) {
+      //   this.player.createModal('스트리밍 연결 실패!');
+      //   this.player.src('./sample.m3u8');
+      //   this.player.pause();
+      // }
     }
   }
 

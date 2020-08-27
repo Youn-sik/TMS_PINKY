@@ -106,7 +106,7 @@ const AddDevice = (props) => {
   const addDevice = async () => {
     await axios.post('http://172.16.135.89:3000/camera',{
       ...device,
-      account:'admin'
+      account : props.user_id,
     })
     window.alert('단말기 등록 완료.')
     history.push('/device/list')
@@ -117,7 +117,7 @@ const AddDevice = (props) => {
     await axios.post('http://172.16.135.89:3000/gateway',{
       ...gate,
       [port] : parseInt(gate.port),
-      account:'admin'
+      account : props.user_id,
     })
     window.alert('게이트웨이 등록 완료.')
     history.push('/device/list')

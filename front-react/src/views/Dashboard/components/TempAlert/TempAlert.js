@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
@@ -47,6 +47,7 @@ const TempAlert = props => {
     <Card
       {...rest}
       className={clsx(classes.root, className),classes.cardStyle}
+      style={{overflow: 'auto'}}
     >
       <CardHeader
         title="온도 경고"
@@ -74,7 +75,7 @@ const TempAlert = props => {
                         className={classes.image}
                         src={person.avatar_file_url}
                       /></TableCell>
-                    <TableCell>{person.avatar_temperature}</TableCell>
+                    <TableCell>{String(person.avatar_temperature).substring(0,4)}</TableCell>
                     <TableCell>
                       <ListItemText
                         primary={person.avatar_type === 1 ? "사원" :

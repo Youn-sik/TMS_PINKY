@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Attendance = props => {
-  const { className, ...rest } = props;
+  const { clickedNode,className, ...rest } = props;
 
   const classes = useStyles();
   const theme = useTheme();
@@ -49,7 +49,7 @@ const Attendance = props => {
   const data = {
     datasets: [
       {
-        data: [props.attendance,props.late],
+        data: [props.attendance+2,props.late],
         backgroundColor: [
           theme.palette.primary.main,
           theme.palette.error.main,
@@ -87,7 +87,7 @@ const Attendance = props => {
   const attendancees = [
     {
         title: '9시 이전 출입',
-        value: props.attendance,
+        value: props.attendance+2,
         icon: <Alarm />,
         color: theme.palette.primary.main
     },
@@ -117,10 +117,15 @@ const Attendance = props => {
           alignItems="center"
         >
           <div className={classes.chartContainer}>
+            {
+            Object.keys(clickedNode).length ?
             <Doughnut
               data={data}
               options={options}
-            />
+            /> 
+            :
+            <Typography variant="body1">그룹에서 사용자를 선택해주세요.</Typography>
+            }
           </div> 
         <div className={classes.stats}>
           {attendancees.map(attendance => (
@@ -134,7 +139,7 @@ const Attendance = props => {
                 style={{ color: attendance.color }}
                 variant="h2"
               >
-                {attendance.value}명
+                {attendance.value}번
               </Typography>
             </div>
           ))}

@@ -70,11 +70,13 @@ const EditAccount = (props) => {
     };
 
     useEffect(() => {
-        if(selectedAccounts.length > 0){
+        if(selectedAccounts && selectedAccounts.length > 0){
         setAccountInfo({
             ...selectedAccounts[0]
-        })}
-    },[selectedAccounts])
+        })} else {
+          history.go(-1);
+        }
+    },[selectedAccounts,history])
 
     const addUser = async () => {
       await axios.put('http://172.16.135.89:3000/account/'+selectedAccounts[0]._id,{

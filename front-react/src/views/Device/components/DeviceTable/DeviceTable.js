@@ -1,4 +1,4 @@
-import React, { useState,useEffect,forwardRef } from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import Pagination from '@material-ui/lab/Pagination';
@@ -22,14 +22,12 @@ import {
   TableRow,
   Button,
   DialogContent,
-  DialogContentText,
   DialogActions,
   LinearProgress,
   TableContainer,
   Paper
 } from '@material-ui/core';
 
-import { getInitials } from 'helpers';
 import mqtt from 'mqtt'
 
 const client = mqtt.connect('ws://172.16.135.89:8083/mqtt')
@@ -91,7 +89,7 @@ const DeviceTable = props => {
   // const history = props.history;
   const classes = useStyles();
 
-  const [rowsPerPage, setRowsPerPage] = useState(7);
+  const rowsPerPage = 7;
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState([]);
   const [selectedObject, setSelectedObject] = useState([]);
@@ -102,22 +100,8 @@ const DeviceTable = props => {
   });
   const [temp,setTemp] = useState();
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
   const handleClose = () => {
     setOpen(false);
-  };
-
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = device.map((n) => n._id);
-      setSelected(newSelecteds);
-      setSelectedObject(device)
-      return;
-    }
-    setSelected([]);
   };
 
   const handlePageChange = (event, page) => {

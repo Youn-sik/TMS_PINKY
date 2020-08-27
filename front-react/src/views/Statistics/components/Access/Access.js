@@ -39,7 +39,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const Access = props => {
-  const { className, ...rest } = props;
+  const { clickedNode,className, ...rest } = props;
 
   const classes = useStyles();
 
@@ -61,6 +61,54 @@ const Access = props => {
       <Divider />
       <CardContent className={classes.content}>
         <List>
+          {Object.keys(clickedNode).length ?
+          null:<div style={{textAlign: 'center'}}>그룹에서 사용자를 선택해주세요.</div>}
+          {props.temp.slice((page-1) * rowsPerPage, (page-1) * rowsPerPage + rowsPerPage).map((people, i) => (
+            <ListItem
+              divider={i < props.temp.length - 1}
+              key={people._id}
+            >
+              <ListItemAvatar>
+                <img
+                  alt="Product"
+                  className={classes.image}
+                  src={people.avatar_file_url}
+                />
+              </ListItemAvatar>
+              <ListItemText
+                primary={people.avatar_type === 1 ? "사원" :
+                        people.avatar_type === 2 ? '방문자' :
+                        people.avatar_type === 3 ? '미등록자' : '블랙리스트'}
+                secondary={`2020-08-24 08:55:26 출입`}
+              />
+              <div>
+                {`${String(people.avatar_temperature).substring(0,4)}℃`}
+              </div>
+            </ListItem>
+          ))}
+          {props.temp.slice((page-1) * rowsPerPage, (page-1) * rowsPerPage + rowsPerPage).map((people, i) => (
+            <ListItem
+              divider={i < props.temp.length - 1}
+              key={people._id}
+            >
+              <ListItemAvatar>
+                <img
+                  alt="Product"
+                  className={classes.image}
+                  src={people.avatar_file_url}
+                />
+              </ListItemAvatar>
+              <ListItemText
+                primary={people.avatar_type === 1 ? "사원" :
+                        people.avatar_type === 2 ? '방문자' :
+                        people.avatar_type === 3 ? '미등록자' : '블랙리스트'}
+                secondary={`2020-08-25 08:58:55 출입`}
+              />
+              <div>
+                {`${String(people.avatar_temperature).substring(0,4)}℃`}
+              </div>
+            </ListItem>
+          ))}
           {props.temp.slice((page-1) * rowsPerPage, (page-1) * rowsPerPage + rowsPerPage).map((people, i) => (
             <ListItem
               divider={i < props.temp.length - 1}

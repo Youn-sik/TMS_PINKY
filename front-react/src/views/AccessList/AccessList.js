@@ -32,18 +32,25 @@ const AccessList = () => {
   const [type,setType] = useState('0');
   const [temp,setTemp] = useState('0');
   const [loading, setLoading] = useState(true);
+
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
   
   useEffect(() => {
     getAccesses();
+    return () => {
+      source.cancel('Operation canceled by the user.');
+    }
   },[])
 
   const classes = useStyles();
 
   async function getAccesses () {
-    let result = await axios.get('http://172.16.135.89:3000/access')
+    let result = await axios.get('http://172.16.135.89:3000/access',{cancelToken: source.token})
     result.data.reverse()
     setOriginAcc(result.data)
     setAccesses(result.data.filter(i => i.access_time.split(' ')[0] === date[0]))
+    setAllAcc(result.data.filter(i => i.access_time.split(' ')[0] === date[0]))
     setLoading(false)
   }
 
@@ -77,7 +84,6 @@ const AccessList = () => {
   const handleTemp = (temp) => {
     setTemp(temp)
     setAccesses(allAcc.filter((i) => {
-      console.log(handleAllAccTemp(i,temp) && handleAllAccType(i))
       return handleAllAccTemp(i,temp) && handleAllAccType(i);
     }))
   }

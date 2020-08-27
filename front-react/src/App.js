@@ -27,7 +27,8 @@ validate.validators = {
 
 export default class App extends React.Component {
   state = {
-    auth : false
+    auth : false,
+    user_id : '',
   }
   componentDidMount() {
     this.unlisten = browserHistory.listen((location, action) => { //클릭을 통한 페이지 이동 감지
@@ -45,7 +46,8 @@ export default class App extends React.Component {
               return false;
             } else {
               this.setState({
-                auth: true
+                auth: true,
+                user_id: res.data.user_id
               });
               return false;
             }
@@ -69,6 +71,11 @@ export default class App extends React.Component {
             if(res.data.auth === false) {
               document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
               browserHistory.push('/sign-in')
+            } else if( res.data.auth === true ) {
+              this.setState({
+                auth: true,
+                user_id: res.data.user_id
+              });
             }
           })
       } else {
@@ -80,7 +87,7 @@ export default class App extends React.Component {
     return (
       <ThemeProvider theme={theme}>
         <Router history={browserHistory}>
-          <Routes />
+          <Routes user_id={this.state.user_id} />
         </Router>
       </ThemeProvider>
     );

@@ -120,6 +120,12 @@ const AddBlack = (props) => {
         setOpen(true);
     };
 
+    useEffect(() => {
+      if(!groups) {
+        history.go(-1);
+      }
+    },[groups,history])
+
     const handleClose = () => {
         setOpen(false);
     };
@@ -196,7 +202,7 @@ const AddBlack = (props) => {
             ...userInfo,
             type:5,
             groups_obids:[node._id ? node._id : groups[groups.length - 1]],
-            account:'admin',
+            account : props.user_id,
             avatar_file:base64
         })
         alert('등록 되었습니다.')
@@ -305,7 +311,7 @@ const AddBlack = (props) => {
                                 defaultExpandIcon={<ArrowRightIcon />}
                                 defaultEndIcon={<div style={{ width: 24 }} />}
                                 >
-                                {props.location.groups.length ? props.location.groups.map(group => renderTree(group)) : <div></div>}
+                                {props.location.groups ? props.location.groups.map(group => renderTree(group)) : <div></div>}
                                 </TreeView>
                             </DialogContent>
                             <DialogActions>

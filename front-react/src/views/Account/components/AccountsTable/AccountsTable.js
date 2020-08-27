@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import Pagination from '@material-ui/lab/Pagination';
@@ -11,9 +11,7 @@ import { Grid } from '@material-ui/core';
 import {
   Card,
   CardActions,
-  CardHeader,
   CardContent,
-  Avatar,
   Checkbox,
   Table,
   TableBody,
@@ -21,14 +19,10 @@ import {
   TableHead,
   TableRow,
   Button,
-  Typography,
-  TablePagination,
   LinearProgress,
   Paper,
   TableContainer
 } from '@material-ui/core';
-
-import { getInitials } from 'helpers';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -74,7 +68,7 @@ const AccountsTable = props => {
 
   const classes = useStyles();
 
-  const [rowsPerPage, setRowsPerPage] = useState(7);
+  const rowsPerPage= 7;
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState([]);
   const [selectedObject, setSelectedObject] = useState([]);

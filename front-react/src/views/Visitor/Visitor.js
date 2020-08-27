@@ -1,8 +1,8 @@
-import React,{ useState,useEffect } from 'react';
+import React,{ useState,useEffect,useCallback } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 import axios from 'axios';
-import { AccountProfile, UsersTable } from './components';
+import { Groups, UsersTable } from './components';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -22,13 +22,44 @@ const Employee = (props) => {
   const [selectedNode , setSelectedNode] = useState([]);
   const classes = useStyles();
 
+  const filterGroup = useCallback((groups) => {
+    let temp = []
+    groups.map((group) => {
+      let tempChild = []
+      if(group.name.indexOf(search) > -1) {
+        temp.push(group)
+      } else if(Array.isArray(group.children)){
+        tempChild = filterGroup(group.children)
+        if(tempChild.length > 0) {
+          temp.push(group)
+          temp[temp.length - 1].filteredChildren = tempChild
+        }
+      }
+      return false;
+    })
+    return temp
+  },[search])
+
+  const filterUsers = useCallback((users) => {
+    let temp = []
+    users.map((user) => {
+      if(user.name.indexOf(userSearch) > -1 ||
+      user.guest_company.indexOf(userSearch) > -1 || 
+      user.guest_purpose.indexOf(userSearch) > -1 || 
+      user.position.indexOf(userSearch) > -1) {
+        temp.push(user)
+      }
+    })
+    return temp
+  },[userSearch])
+
   useEffect(() => {
     if(search !== '') {
       let copyGroups = groups;
       let tempFilteredGroups = filterGroup(copyGroups)
       setFilteredGroups(tempFilteredGroups)
     }
-  },[search])
+  },[search,groups,filterGroup])
 
   useEffect(() => {
     if(userSearch !== '') {
@@ -36,7 +67,7 @@ const Employee = (props) => {
       let tempFilteredUsers = filterUsers(copyUsers);
       setFilteredUsers(tempFilteredUsers);
     }
-  },[userSearch])
+  },[userSearch,users,filterUsers])
 
   const _setClickedNode = (node) => {
     setClickedNode(node);
@@ -70,33 +101,6 @@ const Employee = (props) => {
     setSelectedNode(node);
   }
 
-  const filterGroup = (groups) => {
-    let temp = []
-    groups.map((group) => {
-      let tempChild = []
-      if(group.name.indexOf(search) > -1) {
-        temp.push(group)
-      } else if(Array.isArray(group.children)){
-        tempChild = filterGroup(group.children)
-        if(tempChild.length > 0) {
-          temp.push(group)
-          temp[temp.length - 1].filteredChildren = tempChild
-        }
-      }
-    })
-    return temp
-  }
-
-  const filterUsers = (users) => {
-    let temp = []
-    users.map((user) => {
-      if(user.name.indexOf(userSearch) > -1) {
-        temp.push(user)
-      }
-    })
-    return temp
-  }
-
   const searchNode = (e) => {
     setSearch(e.target.value)
   }
@@ -105,6 +109,7 @@ const Employee = (props) => {
     if(data.children[0] !== undefined) {
         data.children.map((i) => {
             moveUserIds(i)
+            return false;
         })
     }
     if(data.user_obids[0] !== undefined) {
@@ -116,8 +121,9 @@ const Employee = (props) => {
     let tempGroups = await axios.get('http://172.16.135.89:3000/group?type=2')
     tempGroups.data.map((i) => {//user_obids에 있는 데이터 children으로 옮기기
       moveUserIds(i);
+      return false;
     })
-    let index = tempGroups.data.findIndex(i => i.name == "undefined");
+    let index = tempGroups.data.findIndex(i => i.name === "undefined");
     if(index !== -1) {
       let undefinedGroup = tempGroups.data.splice(index,1);
       tempGroups.data.push(undefinedGroup[0]);
@@ -131,8 +137,9 @@ const Employee = (props) => {
       let tempGroups = await axios.get('http://172.16.135.89:3000/group?type=2')
       tempGroups.data.map((i) => {//user_obids에 있는 데이터 children으로 옮기기
         moveUserIds(i);
+        return false;
       })
-      let index = tempGroups.data.findIndex(i => i.name == "undefined");
+      let index = tempGroups.data.findIndex(i => i.name === "undefined");
       if(index !== -1) {
         let undefinedGroup = tempGroups.data.splice(index,1);
         tempGroups.data.push(undefinedGroup[0]);
@@ -166,6 +173,7 @@ const Employee = (props) => {
       } else {
         selectedUsers.map((user,index) => {
           temp.splice(user.index-index,1);
+          return false;
         })
       }
       console.log(temp);
@@ -198,7 +206,8 @@ const Employee = (props) => {
           xl={3}
           xs={12}
         >
-          <AccountProfile 
+          <Groups 
+          user_id={props.user_id}
           setClickedNode={_setClickedNode}
           setSelectedNode={_setSelectedNode}
           clickedNode={clickedNode}

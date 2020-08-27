@@ -151,6 +151,9 @@ const EditEmployee = (props) => {
     })
 
     useEffect(() => {
+      if(!userObject) {
+        history.go(-1);
+      } else {
         let user = JSON.parse(JSON.stringify(userObject[0]))
         let editedUser = {
             name : user.name,
@@ -162,7 +165,8 @@ const EditEmployee = (props) => {
             gender : user.gender,
         }
         setUserInfo(editedUser);
-    },[userObject])
+      }
+    },[userObject,history])
 
     const handleChange = (event) => {
         setUserInfo({
@@ -350,6 +354,8 @@ const EditEmployee = (props) => {
                         >
                             <DialogTitle id="alert-dialog-title">그룹 선택</DialogTitle>
                             <DialogContent>
+                                {
+                                  userObject ? 
                                 <TreeView
                                 defaultExpanded={selectedNode}
                                 defaultSelected={userObject[0].groups_obids}
@@ -359,7 +365,8 @@ const EditEmployee = (props) => {
                                 defaultEndIcon={<div style={{ width: 24 }} />}
                                 >
                                 {props.location.groups.length ? props.location.groups.map(group => renderTree(group)) : <div></div>}
-                                </TreeView>
+                                </TreeView> : null
+                                }
                             </DialogContent>
                             <DialogActions>
                             <Button onClick={handleClose} color="primary">

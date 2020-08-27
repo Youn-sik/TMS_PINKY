@@ -108,15 +108,21 @@ const Groups = props => {
   };
 
   const clickAddGroup = async () => {
-    let parent = clickedNode
+    let parent = Object.keys(clickedNode).length === 0 ? undefined : clickedNode
     let result = await axios.post('http://219.255.217.140:3000/group',{
       name : groupName,
       type : 1,
       parent,
+      account : props.user_id,
     })
-    let childrenSize = clickedNode.children.length;
-    let userSize = clickedNode.user_obids.length;
-    clickedNode.children.splice(childrenSize-userSize,0,result.data)
+    if(Object.keys(clickedNode).length !== 0){
+      let childrenSize = clickedNode.children.length;
+      let userSize = clickedNode.user_obids.length;
+      clickedNode.children.splice(childrenSize-userSize,0,result.data)
+    } else {
+      groups.splice(groups.length-1,0,result.data);
+    }
+    setGroupName('');
     setOpen(false);
   }
 
@@ -177,6 +183,7 @@ const Groups = props => {
             onClick={() => {
               if(Array.isArray(clickedNode.children)) {
                 deleteGroupNode(clickedNode)
+                setClickedNode({});
               } else {
                 window.alert("그룹을 선택해 주세요")
               }

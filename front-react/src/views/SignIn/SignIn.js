@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link as RouterLink, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import validate from 'validate.js';
 import { makeStyles } from '@material-ui/styles';
@@ -7,12 +7,15 @@ import axios from 'axios';
 import {
   Grid,
   Button,
-  IconButton,
   TextField,
-  Typography
+  Typography,
+  Card,
 } from '@material-ui/core';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-
+import CheckCircle from '@material-ui/icons/CheckCircle';
+import {TweenLite,Circ} from 'gsap'
+import './SignIn.css'
+import Slider from 'react-rangeslider'
+import 'react-rangeslider/lib/index.css'
 const schema = {
   id: {
     length: {
@@ -26,13 +29,20 @@ const schema = {
   }
 };
 
+const vh = window.innerHeight;
+document.documentElement.style.setProperty("--vh", `${vh}px`);
+
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.default,
-    height: '100%'
+    backgroundImage:"url('/images/background-space.jpg')",
+    backgroundSize:"cover",
+    backgroundPosition:"0 50%",
+    backgroundRepeat:"no-repeat",
+    height: '100%',
   },
   grid: {
-    height: '100%'
+    height: '100%',
   },
   quoteContainer: {
     [theme.breakpoints.down('md')]: {
@@ -48,7 +58,7 @@ const useStyles = makeStyles(theme => ({
     backgroundImage: 'url(/images/auth.jpg)',
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'center'
+    backgroundPosition: '0 50%'
   },
   quoteInner: {
     textAlign: 'center',
@@ -91,8 +101,8 @@ const useStyles = makeStyles(theme => ({
     }
   },
   form: {
-    paddingLeft: 100,
-    paddingRight: 100,
+    paddingLeft:  theme.spacing(2),
+    paddingRight: theme.spacing(2),
     paddingBottom: 125,
     flexBasis: 700,
     [theme.breakpoints.down('sm')]: {
@@ -116,7 +126,7 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(2)
   },
   signInButton: {
-    margin: theme.spacing(2, 0)
+    marginBottom: theme.spacing(2, 0)
   }
 }));
 
@@ -124,6 +134,16 @@ const SignIn = props => {
   const { history } = props;
 
   const classes = useStyles();
+
+  const [value, setValue] = useState(0);
+
+  const [verify,setVerify] = useState(false);
+  
+  const handleSliderChange = (newValue,event) => {
+    if(event.type === 'mousemove'){
+      setValue(newValue);
+    }
+  };
 
   const [formState, setFormState] = useState({
     isValid: false,
@@ -141,6 +161,192 @@ const SignIn = props => {
       errors: errors || {}
     }));
   }, [formState.values]);
+
+  useEffect(() => {
+    (function() {
+
+      var width, height, canvas, ctx, points, target, animateHeader = true;
+      
+      // Main
+      initHeader();
+      initAnimation();
+      addListeners();
+      
+      function initHeader() {
+          width = window.innerWidth;
+          height = window.innerHeight;
+          target = {x: width/2, y: height/2};
+      
+          canvas = document.getElementById('demo-canvas');
+          canvas.width = width;
+          canvas.height = height;
+          ctx = canvas.getContext('2d');
+      
+          // create points
+          points = [];
+          for(var x = 0; x < width; x = x + width/20) {
+              for(var y = 0; y < height; y = y + height/20) {
+                  var px = x + Math.random()*width/20;
+                  var py = y + Math.random()*height/20;
+                  var p = {x: px, originX: px, y: py, originY: py };
+                  points.push(p);
+              }
+          }
+      
+          // for each point find the 5 closest points
+          for(var i = 0; i < points.length; i++) {
+              var closest = [];
+              var p1 = points[i];
+              for(var j = 0; j < points.length; j++) {
+                  var p2 = points[j]
+                  if(!(p1 == p2)) {
+                      var placed = false;
+                      for(var k = 0; k < 5; k++) {
+                          if(!placed) {
+                              if(closest[k] == undefined) {
+                                  closest[k] = p2;
+                                  placed = true;
+                              }
+                          }
+                      }
+      
+                      for(var k = 0; k < 5; k++) {
+                          if(!placed) {
+                              if(getDistance(p1, p2) < getDistance(p1, closest[k])) {
+                                  closest[k] = p2;
+                                  placed = true;
+                              }
+                          }
+                      }
+                  }
+              }
+              p1.closest = closest;
+          }
+      
+          // assign a circle to each point
+          for(var i in points) {
+              var c = new Circle(points[i], 2+Math.random()*2, 'rgba(255,255,255,0.3)');
+              points[i].circle = c;
+          }
+      }
+      
+      // Event handling
+      function addListeners() {
+          if(!('ontouchstart' in window)) {
+              window.addEventListener('mousemove', mouseMove);
+          }
+          window.addEventListener('scroll', scrollCheck);
+          window.addEventListener('resize', resize);
+      }
+      
+      function mouseMove(e) {
+          var posx = 0
+          var posy = 0;
+          if (e.pageX || e.pageY) {
+              posx = e.pageX;
+              posy = e.pageY;
+          }
+          else if (e.clientX || e.clientY)    {
+              posx = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+              posy = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+          }
+          target.x = posx;
+          target.y = posy;
+      }
+      
+      function scrollCheck() {
+          if(document.body.scrollTop > height) animateHeader = false;
+          else animateHeader = true;
+      }
+      
+      function resize() {
+          width = window.innerWidth;
+          height = window.innerHeight;
+          console.log(width, height)
+          canvas.width = width;
+          canvas.height = height;
+      }
+      
+      // animation
+      function initAnimation() {
+          animate();
+          for(var i in points) {
+              shiftPoint(points[i]);
+          }
+      }
+      
+      function animate() {
+          if(animateHeader) {
+              ctx.clearRect(0,0,width,height);
+              for(var i in points) {
+                  // detect points in range
+                  if(Math.abs(getDistance(target, points[i])) < 4000) {
+                      points[i].active = 0.3;
+                      points[i].circle.active = 0.6;
+                  } else if(Math.abs(getDistance(target, points[i])) < 20000) {
+                      points[i].active = 0.1;
+                      points[i].circle.active = 0.3;
+                  } else if(Math.abs(getDistance(target, points[i])) < 40000) {
+                      points[i].active = 0.02;
+                      points[i].circle.active = 0.1;
+                  } else {
+                      points[i].active = 0;
+                      points[i].circle.active = 0;
+                  }
+      
+                  drawLines(points[i]);
+                  points[i].circle.draw();
+              }
+          }
+          requestAnimationFrame(animate);
+      }
+      
+      function shiftPoint(p) {
+          TweenLite.to(p, 1+1*Math.random(), {x:p.originX-50+Math.random()*100,
+              y: p.originY-50+Math.random()*100, ease:Circ.easeInOut,
+              onComplete: function() {
+                  shiftPoint(p);
+              }});
+      }
+      
+      // Canvas manipulation
+      function drawLines(p) {
+          if(!p.active) return;
+          for(var i in p.closest) {
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(p.closest[i].x, p.closest[i].y);
+              ctx.strokeStyle = 'rgba(156,217,249,'+ p.active+')';
+              ctx.stroke();
+          }
+      }
+      
+      function Circle(pos,rad,color) {
+          var _this = this;
+      
+          // constructor
+          (function() {
+              _this.pos = pos || null;
+              _this.radius = rad || null;
+              _this.color = color || null;
+          })();
+      
+          this.draw = function() {
+              if(!_this.active) return;
+              ctx.beginPath();
+              ctx.arc(_this.pos.x, _this.pos.y, _this.radius, 0, 2 * Math.PI, false);
+              ctx.fillStyle = 'rgba(156,217,249,'+ _this.active+')';
+              ctx.fill();
+          };
+      }
+      
+      // Util
+      function getDistance(p1, p2) {
+          return Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2);
+      }
+      
+      })();
+  },[])
 
   const handleBack = () => {
     history.goBack();
@@ -173,6 +379,9 @@ const SignIn = props => {
     } else if(formState.values.password === undefined) {
       alert('패스워드를 입력해주세요.')
       return false;
+    } else if (verify === false) {
+      alert("밀어서 확인을 해주세요.")
+      return false;
     } else {
         let result = await axios.post('http://172.16.135.89:3000/login',{
           user_id : formState.values.id,
@@ -191,36 +400,37 @@ const SignIn = props => {
     formState.touched[field] && formState.errors[field] ? true : false;
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} id="large-header">
+      <canvas id="demo-canvas" style={{position: 'absolute'}}></canvas>
       <Grid
         className={classes.grid}
+        alignItems="center"
         container
       >
         <Grid
           className={classes.quoteContainer}
           item
-          lg={5}
+          lg={8}
         >
-          <div className={classes.quote}>
-            <div className={classes.quoteInner}>
-              <div className={classes.person}>
+          {/* <div className={classes.quote}> */}
+            {/* <div className={classes.quoteInner}> */}
+              {/* <div className={classes.person}>
+              </div> */}
+              <div style={{fontSize:'6em',textAlign: 'center',fontWeight: 'bold'}}>
+                <span style={{color: 'white'}}>K</span>oolsign&nbsp;
               </div>
-            </div>
-          </div>
+            {/* </div> */}
+          {/* </div> */}
         </Grid>
         <Grid
           className={classes.content}
           item
-          lg={7}
+          lg={4}
           xs={12}
         >
           <div className={classes.content}>
-            <div className={classes.contentHeader}>
-              <IconButton onClick={handleBack}>
-                <ArrowBackIcon />
-              </IconButton>
-            </div>
             <div className={classes.contentBody}>
+              <Card style={{backgroundColor:"rgba(255,255,255,.8)",width:"350px",height:'300px'}}>
               <form
                 className={classes.form}
                 onSubmit={handleSignIn}
@@ -259,6 +469,43 @@ const SignIn = props => {
                   value={formState.values.password || ''}
                   variant="outlined"
                 />
+                {/* <IonRangeSlider 
+                skin={"square"} 
+                extra_classes={"captcha"} 
+                min={0} 
+                max={1000} 
+                keyboard={false} 
+                hide_min_max={true} 
+                hide_from_to={true} 
+                onFinish={(v) => {
+                  console.log(v);
+                }}/> */}
+                {/* <Slider value={value} onChange={handleSliderChange} aria-labelledby="continuous-slider" /> */}
+                <div className='slider orientation-reversed'>
+                  <div className='slider-group'>
+                    <div className='slider-horizontal'>
+                      {
+                        verify ? 
+                        <div style={{textAlign: 'center',height:30,margin:"10px 0",lineHeight:"35px"}}>
+                          <CheckCircle style={{position:"relative",top:3,height:16 ,color:"#82b54b"}}/>
+                          확인.
+                        </div> 
+                        :
+                        <Slider
+                        min={0}
+                        max={50}
+                        tooltip={false}
+                        value={value}
+                        orientation='horizontal'
+                        onChange={handleSliderChange}
+                        onChangeComplete={() => {if(value < 50) {setValue(0);} else {setVerify(true)}}}
+                        handleLabel={">>>"}
+                        />
+                      }
+                    </div>
+                  </div>
+                </div>
+
                 <Button
                   className={classes.signInButton}
                   color="primary"
@@ -271,6 +518,7 @@ const SignIn = props => {
                   로그인
                 </Button>
               </form>
+              </Card>
             </div>
           </div>
         </Grid>
@@ -278,7 +526,6 @@ const SignIn = props => {
     </div>
   );
 };
-
 SignIn.propTypes = {
   history: PropTypes.object
 };

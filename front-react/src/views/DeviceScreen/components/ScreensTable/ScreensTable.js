@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import axios from 'axios';
@@ -14,8 +14,6 @@ import {
   Button,
   CircularProgress,
 } from '@material-ui/core';
-
-import { getInitials } from 'helpers';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -58,18 +56,14 @@ const ScreensTable = props => {
 
   const classes = useStyles();
 
-  const [rowsPerPage, setRowsPerPage] = useState(6);
+  const rowsPerPage = 6;
   const [page, setPage] = useState(1);
-  const [detailRowsPerPage, setDetailRowsPerPage] = useState(6);
+  const detailRowsPerPage = 6;
   const [detailPage, setDetailPage] = useState(1);
   const [modalScreens,setModalScreens] = useState([])
   const [open, setOpen] = useState(false);
   const [dialogLoding,setDialogLoding] = useState(true);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
+  
   const handleClose = () => {
     setOpen(false);
     setDialogLoding(true)

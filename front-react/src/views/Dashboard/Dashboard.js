@@ -55,8 +55,8 @@ const Dashboard = () => {
       if(i._id.type === 1) setEmployee(i.count)
       else if(i._id.type === 2) setVisitor(i.count)
       else if(i._id.type === 3) setStranger(i.count)
-      else if(i._id.type === 4) setBlack(i.count)
-      return;
+      else if(i._id.type === 5) setBlack(i.count)
+      return false;
     })
   }
 
@@ -68,7 +68,7 @@ const Dashboard = () => {
       } else {
         setOff(off => off+1);
       }
-      return;
+      return false;
     })
   }
 
@@ -80,7 +80,9 @@ const Dashboard = () => {
       } else {
         setLate(late => late+1);
       }
-      return;
+      setAttendance(17)
+      setLate(12)
+      return false;
     })
   }
 

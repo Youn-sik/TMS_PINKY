@@ -1,5 +1,5 @@
-import React, { useState,useEffect } from 'react';
-import { makeStyles, useTheme } from '@material-ui/styles';
+import React, { useState,useEffect,useCallback } from 'react';
+import { makeStyles } from '@material-ui/styles';
 import axios from 'axios';
 import { OperToolbar, OperTable } from './components';
 import Card from '@material-ui/core/Card';
@@ -25,23 +25,26 @@ const useStyles = makeStyles(theme => ({
 
 const Operation = () => {
   const [oper,setOper] = useState([]);
+  const [allOper,setAllOper] = useState([]);
   // const [originUsers,setOriginUsers] = useState([]);
   const [date,setDate] = useState([moment().locale('ko').format('YYYY-MM-DD'), moment().locale('ko').format('YYYY-MM-DD')]);
   const [searchVal, setSearchVal] = useState("");
   const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    getOper();
-  },[])
-
-  const classes = useStyles();
-
-  async function getOper () {
+  
+  const getOper = useCallback(async () => {
     let result = await axios.get('http://172.16.135.89:3000/operation')
     result.data.reverse()
     // setOriginUsers(result.data)
+    setAllOper(result.data)
     setOper(result.data.filter(user => user.date.split(' ')[0] >= date[0] && user.date.split(' ')[0] <= date[1]))
     setLoading(false);
-  }
+  },[date])
+  
+  useEffect(() => {
+    getOper();
+  },[getOper])
+
+  const classes = useStyles();
 
   const searchEvent = (e) => {
     setSearchVal(e.target.value)
@@ -49,7 +52,7 @@ const Operation = () => {
 
   const handleDate = (val) => {
     setDate(val);
-    let date_oper = oper.filter(user => user.date.split(' ')[0] >= val[0] && user.date.split(' ')[0] <= val[1])
+    let date_oper = allOper.filter(user => user.date.split(' ')[0] >= val[0] && user.date.split(' ')[0] <= val[1])
     setOper(date_oper);
   }
 

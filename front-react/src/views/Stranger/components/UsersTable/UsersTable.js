@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import Pagination from '@material-ui/lab/Pagination';
 import { NavLink as RouterLink } from 'react-router-dom';
 import { makeStyles } from '@material-ui/styles';
@@ -11,21 +10,15 @@ import {
   Card,
   CardActions,
   CardContent,
-  Avatar,
-  Checkbox,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  Typography,
   Button,
-  TablePagination,
   TableContainer,
   Paper
 } from '@material-ui/core';
-
-import { getInitials } from 'helpers';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -63,8 +56,7 @@ const UsersTable = props => {
 
   const classes = useStyles();
 
-  const [selectedUsers, setSelectedUsers] = useState([]);
-  const [rowsPerPage, setRowsPerPage] = useState(7);
+  const rowsPerPage = 7;
   const [page, setPage] = useState(1);
 
   const handlePageChange = (event, page) => {
@@ -101,6 +93,7 @@ const UsersTable = props => {
                           <TableCell>
                             <div className={classes.nameContainer}>
                               <img
+                                alt="프로필사진"
                                 height="90px"
                                 width="70px"
                                 className={classes.hightTempAvatar}
@@ -131,6 +124,7 @@ const UsersTable = props => {
                           <TableCell>
                             <div className={classes.nameContainer}>
                               <img
+                                alt="프로필사진"
                                 height="90px"
                                 width="70px"
                                 className={classes.avatar}

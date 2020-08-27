@@ -151,6 +151,9 @@ const EditVisitor = (props) => {
     })
 
     useEffect(() => {
+      if(!userObject) {
+        history.go(-1);
+      } else {
         let user = JSON.parse(JSON.stringify(userObject[0]))
         let editedUser = {
             name : user.name,
@@ -162,7 +165,8 @@ const EditVisitor = (props) => {
             gender : user.gender,
         }
         setUserInfo(editedUser);
-    },[userObject])
+      }
+    },[userObject,history])
 
     const handleChange = (event) => {
         setUserInfo({
@@ -219,6 +223,7 @@ const EditVisitor = (props) => {
         if(pictures.length !== 0) {
             base64 = await toBase64(pictures[0][0])
             base64 = base64.replace('data:image/jpeg;base64,','')
+            base64 = base64.replace('data:image/png;base64,','')
         }
         await axios.put('http://172.16.135.89:3000/user/'+userObject[0]._id,{
             ...userObject[0],
@@ -250,7 +255,6 @@ const EditVisitor = (props) => {
                     <ImageUploader
                     {...props}
                     withIcon={true}
-                    defaultImages={[userObject[0].avatar_file_url]}
                     onChange={onDrop}
                     imgExtension={[".jpg", ".png"]}
                     label="최대 크기 : 5mb, 허용 확장자: jpg|png"
@@ -295,8 +299,8 @@ const EditVisitor = (props) => {
                         </div>
                         <div style={{width: '100%'}}>
                             <TextField 
-                            name="guest_purpose"
-                            value={userInfo.guest_purpose} 
+                            name="guest_company"
+                            value={userInfo.guest_company} 
                             style={{width:'100%'}} 
                             required 
                             onChange={handleChange}
@@ -351,6 +355,8 @@ const EditVisitor = (props) => {
                         >
                             <DialogTitle id="alert-dialog-title">그룹 선택</DialogTitle>
                             <DialogContent>
+                                {
+                                  userObject ? 
                                 <TreeView
                                 defaultExpanded={selectedNode}
                                 defaultSelected={userObject[0].groups_obids}
@@ -360,7 +366,8 @@ const EditVisitor = (props) => {
                                 defaultEndIcon={<div style={{ width: 24 }} />}
                                 >
                                 {props.location.groups.length ? props.location.groups.map(group => renderTree(group)) : <div></div>}
-                                </TreeView>
+                                </TreeView> : null 
+                                }
                             </DialogContent>
                             <DialogActions>
                             <Button onClick={handleClose} color="primary">

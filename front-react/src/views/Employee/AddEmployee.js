@@ -1,4 +1,4 @@
-import React,{ useState } from 'react';
+import React,{ useState,useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import MaskedInput from 'react-text-mask';
 import { Grid,Card,CardContent,TextField,Button,Typography } from '@material-ui/core';
@@ -140,6 +140,12 @@ const AddEmployee = (props) => {
         setOpen(false);
     };
 
+    useEffect(() => {
+      if(!groups) {
+        history.go(-1);
+      }
+    },[groups,history])
+
     const [userInfo, setUserInfo] = useState({
         name : '',
         location : '',
@@ -213,7 +219,7 @@ const AddEmployee = (props) => {
             ...userInfo,
             type:1,
             groups_obids:[node._id ? node._id : groups[groups.length - 1]],
-            account:'admin',
+            account : props.user_id,
             avatar_file:base64
         })
         alert('등록 되었습니다.')
@@ -345,7 +351,7 @@ const AddEmployee = (props) => {
                                 defaultExpandIcon={<ArrowRightIcon />}
                                 defaultEndIcon={<div style={{ width: 24 }} />}
                                 >
-                                {props.location.groups.length ? props.location.groups.map(group => renderTree(group)) : <div></div>}
+                                {props.location.groups ? props.location.groups.map(group => renderTree(group)) : <div></div>}
                                 </TreeView>
                             </DialogContent>
                             <DialogActions>

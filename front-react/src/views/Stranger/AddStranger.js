@@ -113,7 +113,6 @@ const AddStranger = (props) => {
     const {userObject} = props.location;
     const classes = useStyles();
     const history = props.history;
-    const [pictures, setPictures] = useState([]);
     const [open, setOpen] = useState(false);
     const [groups, setGroups] = useState([]);
     const [type,setType] = useState(1);
@@ -206,13 +205,6 @@ const AddStranger = (props) => {
         </TreeItem>
     )
 
-    const toBase64 = file => new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-    });
-
     const addUser = async () => {
         if(type === 1) {
           if(userInfo.name === '') alert("이름을 입력해주세요")
@@ -232,7 +224,7 @@ const AddStranger = (props) => {
                 mail:userInfo.mail,
                 type:type,
                 groups_obids:[selectedGroup._id ? selectedGroup._id : groups[groups.length - 1]],
-                account:'admin',
+                account : props.user_id,
             })
             alert('등록 되었습니다.')
             history.push('/users/employee')
@@ -255,14 +247,13 @@ const AddStranger = (props) => {
                 mail:userInfo.mail,
                 type:type,
                 groups_obids:[selectedGroup._id ? selectedGroup._id : groups[groups.length - 1]],
-                account:'admin',
+                account : props.user_id,
             })
             alert('등록 되었습니다.')
             history.push('/users/visitor')
           }
         } else {
-          if(pictures.length === 0) alert("사진을 등록해주세요")
-          else if(userInfo.name === '') alert("이름을 입력해주세요")
+          if(userInfo.name === '') alert("이름을 입력해주세요")
           else if(userInfo.location === '') alert('장소를 입력해주세요')
           else if(userInfo.position === '') alert('사유를 입력해주세요')
           else {
@@ -277,7 +268,7 @@ const AddStranger = (props) => {
               mail:userInfo.mail,
               type:type,
               groups_obids:[selectedGroup._id ? selectedGroup._id : groups[groups.length - 1]],
-              account:'admin',
+              account : props.user_id,
             })
             alert('등록 되었습니다.')
             history.push('/users/black')

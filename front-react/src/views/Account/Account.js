@@ -1,4 +1,4 @@
-import React,{ useState,useEffect } from 'react';
+import React,{ useState,useEffect,useCallback } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 import axios from 'axios';
@@ -17,37 +17,24 @@ const Account = (props) => {
   const [loading,setLoading] = useState(true);
   const classes = useStyles();
 
+  const filterAccount = useCallback((accounts) => {
+    let temp = []
+    accounts.map((account) => {
+      if(account.account_name.indexOf(accountsSearch) > -1 || account.account_id.indexOf(accountsSearch) > -1) {
+        temp.push(account)
+      }
+      return false;
+    })
+    return temp
+  },[accountsSearch])
+
   useEffect(() => {
     if(accountsSearch !== '') {
       let copyAccounts = accounts;
       let tempFilteredAccounts = filterAccount(copyAccounts);
       setFilteredAccounts(tempFilteredAccounts);
     }
-  },[accountsSearch])
-
-
-  const _setAccounts = (node,length) => {
-    let groupLength = 0
-    let children = JSON.parse(JSON.stringify(node.children))
-    for(let i = 0; i<children.length; i++) {
-      if(Array.isArray(children[i].children)) {
-        groupLength++;
-      } else {
-        break;
-      }
-    }
-    setAccounts(children.splice(groupLength))
-  }
-
-  const filterAccount = (accounts) => {
-    let temp = []
-    accounts.map((account) => {
-      if(account.account_name.indexOf(accountsSearch) > -1 || account.account_id.indexOf(accountsSearch) > -1) {
-        temp.push(account)
-      }
-    })
-    return temp
-  }
+  },[accountsSearch,accounts,filterAccount])
 
   async function getAccounts() {
     let result = await axios.get('http://172.16.135.89:3000/account')
@@ -77,6 +64,7 @@ const Account = (props) => {
       } else {
         selectedAccounts.map((account,index) => {
           temp.splice(account.index-index,1);
+          return false;
         })
       }
       await setAccounts(temp);

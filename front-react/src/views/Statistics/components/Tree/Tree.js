@@ -1,30 +1,19 @@
-import React,{useState,useEffect} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
-import TextField from '@material-ui/core/TextField';
-import Search from '@material-ui/icons/Search';
-import InputAdornment from '@material-ui/core/InputAdornment';
 import TreeView from '@material-ui/lab/TreeView';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import TreeItem from '@material-ui/lab/TreeItem';
 import GroupIcon from '@material-ui/icons/FolderShared';
 import PersonIcon from '@material-ui/icons/Person';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import axios from 'axios';
 import {
   Card,
-  CardActions,
   CardContent,
   CardHeader,
   Typography,
   Divider,
-  Button,
-  Checkbox
 } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
@@ -98,12 +87,7 @@ const useStyles = makeStyles(theme => ({
 
 const Tree = props => {
   const {clickedNode,setSelectedNode,setClickedNode,deleteGroupNode,setUsers, search,searchNode,groups,className, ...rest } = props;
-  const [groupName, setGroupName] = useState('');
   const classes = useStyles();
-
-  useEffect(() => {
-    
-  },[])
 
   const renderTree = (node,depth) => (
       <TreeItem
@@ -185,6 +169,8 @@ const Tree = props => {
               (group) => {
                 if(group.type === 1) {
                   return renderTree(group,0)
+                } else {
+                  return false;
                 }
               }) : <div></div>}
           </TreeItem>
@@ -215,6 +201,8 @@ const Tree = props => {
               (group) => {
                 if(group.type === 2) {
                   return renderTree(group,0)
+                } else {
+                  return false;
                 }
               }) : <div></div>}
           </TreeItem>
@@ -245,6 +233,8 @@ const Tree = props => {
               (group) => {
                 if(group.type === 5) {
                   return renderTree(group,0)
+                } else {
+                  return false;
                 }
               }) : <div></div>}
           </TreeItem>

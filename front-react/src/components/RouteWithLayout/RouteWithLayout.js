@@ -8,11 +8,13 @@ const RouteWithLayout = props => {
   return (
     <Route
       {...rest}
-      render={matchProps => (
-        <Layout>
-          <Component {...matchProps} />
-        </Layout>
-      )}
+      render={matchProps => 
+        Layout ? 
+        (
+          <Layout>
+            <Component user_id={props.user_id} {...matchProps} />
+          </Layout>
+        ) : (<Component user_id={props.user_id} {...matchProps} />)}
     />
   );
 };
