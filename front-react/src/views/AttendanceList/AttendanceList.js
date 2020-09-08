@@ -67,7 +67,7 @@ const UserList = () => {
       let tempUsers = JSON.parse(JSON.stringify( users ));
       if(todayAccesses.length) {
         todayAccesses.map((access) => {
-          let index = users.findIndex(j => j.avatar_contraction_data === access.avatar_contraction_data);
+          let index = users.findIndex(j => j._id === access.user_obid);
           if(access.access_time.split(' ')[1] > '09:00:00' && index !== -1){
             tempUsers[index].late = 1;
           } else if(index !== -1) {
@@ -106,7 +106,7 @@ const UserList = () => {
 
     if(date_accesses.length) {
       date_accesses.map((access) => {
-        let index = users.findIndex(j => j.avatar_contraction_data === access.avatar_contraction_data);
+        let index = users.findIndex(j => j._id === access.user_obid);
         if(access.access_time.split(' ')[1] > '09:00:00' && index !== -1){
           tempUsers[index].late++;
         } else if(index !== -1) {

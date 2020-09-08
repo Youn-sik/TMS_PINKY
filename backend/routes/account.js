@@ -10,7 +10,14 @@ moment.tz.setDefault("Asia/Seoul");
 
 router.get('/',async function(req, res) {
     try {
-        const users = await User.find().select('user_id user_lang user_name')
+        let users;
+        if(req.query.authority === 'admin') {
+            users = await User.find().select('user_id user_lang user_name authority')
+        } else {
+            let auth = req.query.authority+"-user";
+            let regex = new RegExp(auth);
+            users = await User.find().select('user_id user_lang user_name authority').regex('authority', regex);
+        }
         res.send(users)
     } catch (err) {
         throw boom.boomify(err)
@@ -20,7 +27,7 @@ router.get('/',async function(req, res) {
 router.get('/:id',async function(req, res) {
     try {
         const id = req.params === undefined ? req.id : req.params.id
-        const user = await User.findById(id).select('user_id user_lang user_name')
+        const user = await User.findById(id).select('user_id user_lang user_name authority')
         res.send(user)
     } catch (err) {
         throw boom.boomify(err)

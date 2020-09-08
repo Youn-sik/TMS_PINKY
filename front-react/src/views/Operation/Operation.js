@@ -50,6 +50,10 @@ const Operation = () => {
     setSearchVal(e.target.value)
   }
 
+  useEffect(() => {
+    
+  },[searchVal])
+
   const handleDate = (val) => {
     setDate(val);
     let date_oper = allOper.filter(user => user.date.split(' ')[0] >= val[0] && user.date.split(' ')[0] <= val[1])

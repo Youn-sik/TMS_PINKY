@@ -20,9 +20,6 @@ const useStyles = makeStyles(theme => ({
   content: {
     padding: 0
   },
-  inner: {
-    minWidth: 1050
-  },
   statusContainer: {
     display: 'flex',
     alignItems: 'center'
@@ -87,6 +84,7 @@ const DeviceErrors = props => {
                 {props.errors.map(error => (
                   <TableRow
                     hover
+                    onClick={() => {props.history.push('device/error')}}
                     key={error._id}
                   >
                     <TableCell>{error.stb_sn}</TableCell>

@@ -60,7 +60,7 @@ const Stranger = props => {
             </Typography>
           </Grid>
           <Grid item>
-            <Avatar className={classes.avatar}>
+            <Avatar style={{"cursor" : "pointer"}} onClick={() => {props.history.push("access/records")}} className={classes.avatar}>
               <AttachMoneyIcon className={classes.icon} />
             </Avatar>
           </Grid>

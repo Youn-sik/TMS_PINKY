@@ -16,11 +16,14 @@ import AlarmOff from '@material-ui/icons/AlarmOff';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    height: '100%'
+    height: '100%',
+    maxHeight: '385px',
   },
   chartContainer: {
     position: 'relative',
-    height: '300px'
+    height: '300px',
+    maxHeight: '300px',
+    textAlign: 'center'
   },
   stats: {
     marginTop: theme.spacing(2),
@@ -36,7 +39,7 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.icon
   },
   cardContent: {
-    height:"85%"
+    height:"100%"
   }
 }));
 
@@ -49,10 +52,10 @@ const Attendance = props => {
   const data = {
     datasets: [
       {
-        data: [props.attendance+2,props.late],
+        data: [props.late,props.attendance],
         backgroundColor: [
+          "#f17808",
           theme.palette.primary.main,
-          theme.palette.error.main,
           theme.palette.success.main
         ],
         borderWidth: 8,
@@ -60,12 +63,23 @@ const Attendance = props => {
         hoverBorderColor: theme.palette.white
       }
     ],
-    labels: ['9시 이전 출입', '9시 이후 출입']
+    labels: ['9시 이후 출입','9시 이전 출입' ]
   };
 
   const options = {
     legend: {
-      display: false
+      display: false,
+      onHover: function(e) {
+        console.log(e.target.style)
+        e.target.style.cursor = 'pointer';
+     }
+    },
+    hover: {
+      onHover: function(e) {
+         var point = this.getElementAtEvent(e);
+         if (point.length) e.target.style.cursor = 'pointer';
+         else e.target.style.cursor = 'default';
+      }
     },
     responsive: true,
     maintainAspectRatio: false,
@@ -87,7 +101,7 @@ const Attendance = props => {
   const attendancees = [
     {
         title: '9시 이전 출입',
-        value: props.attendance+2,
+        value: props.attendance,
         icon: <Alarm />,
         color: theme.palette.primary.main
     },
@@ -95,7 +109,7 @@ const Attendance = props => {
         title: '9시 이후 출입',
         value: props.late,
         icon: <AlarmOff />,
-        color: theme.palette.error.main
+        color: "#f17808"
     },
   ];
 
@@ -108,26 +122,14 @@ const Attendance = props => {
         title="출입통계"
       />
       <Divider />
-      <CardContent className={classes.cardContent}>
-        <Grid 
-          className={classes.cardContent} 
-          container
-          direction="row"
-          justify="center"
-          alignItems="center"
-        >
           <div className={classes.chartContainer}>
-            {
-            Object.keys(clickedNode).length ?
             <Doughnut
+              onElementsClick={() => {props.history.push('/access/attendance')}}
               data={data}
               options={options}
             /> 
-            :
-            <Typography variant="body1">그룹에서 사용자를 선택해주세요.</Typography>
-            }
           </div> 
-        <div className={classes.stats}>
+        <div className={classes.stats} style={{position:'relative',bottom:220}}>
           {attendancees.map(attendance => (
             <div
               className={classes.attendance}
@@ -144,8 +146,8 @@ const Attendance = props => {
             </div>
           ))}
         </div>
-        </Grid>
-      </CardContent>
+        {/* </Grid> */}
+      {/* </CardContent> */}
     </Card>
   );
 };

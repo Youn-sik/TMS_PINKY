@@ -100,7 +100,11 @@ const Groups = props => {
   const classes = useStyles();
 
   const handleClickOpen = () => {
-    setOpen(true);
+    if(clickedNode.rootParent !== undefined) {
+      window.alert('3차 그룹까지만 생성 가능합니다.')
+    } else {
+      setOpen(true);
+    }
   };
 
   const handleClose = () => {

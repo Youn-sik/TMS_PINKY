@@ -223,12 +223,13 @@ const EditEmployee = (props) => {
         if(pictures.length !== 0) {
             base64 = await toBase64(pictures[0][0])
             base64 = base64.replace('data:image/jpeg;base64,','')
+            base64 = base64.replace('data:image/png;base64,','')
         }
         await axios.put('http://172.16.135.89:3000/user/'+userObject[0]._id,{
             ...userObject[0],
             ...userInfo,
             type:1,
-            account:'admin',
+            account:props.user_id,
             clicked_groups: node._id !== undefined ? [node._id] : userObject[0].groups_obids,
             avatar_file: base64 ? base64 : userObject[0].avatar_file
         })
@@ -344,7 +345,7 @@ const EditEmployee = (props) => {
                         </div>
                         <div style={{width: '100%',textAlign:'center',marginTop:"15px"}}>
                             <Button style={{marginRight:'4px'}} variant="contained" color="secondary" onClick={handleClickOpen}>그룹 선택</Button>    
-                            <Button variant="contained" color="primary" onClick={addUser}>추가</Button>
+                            <Button variant="contained" color="primary" onClick={addUser}>수정</Button>
                         </div>
                         <Dialog
                             open={open}

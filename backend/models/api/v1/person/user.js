@@ -32,6 +32,7 @@ const api_v1_person_user_Schema = new mongoose.Schema({
     create_ut : { type: String, default: Date.now()},
     update_at : { type: String },
     update_ut : { type: String },
+    face_detection : {type: String}
 });
 api_v1_person_user_Schema.index({ user_id: 1, name: 1, avatar_file_checksum: 1, type: 1 });
 

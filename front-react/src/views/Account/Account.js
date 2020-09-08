@@ -17,10 +17,10 @@ const Account = (props) => {
   const [loading,setLoading] = useState(true);
   const classes = useStyles();
 
-  const filterAccount = useCallback((accounts) => {
+  const filterAccount = useCallback(() => {
     let temp = []
     accounts.map((account) => {
-      if(account.account_name.indexOf(accountsSearch) > -1 || account.account_id.indexOf(accountsSearch) > -1) {
+      if(account.user_name.indexOf(accountsSearch) > -1 || account.user_id.indexOf(accountsSearch) > -1) {
         temp.push(account)
       }
       return false;
@@ -37,7 +37,7 @@ const Account = (props) => {
   },[accountsSearch,accounts,filterAccount])
 
   async function getAccounts() {
-    let result = await axios.get('http://172.16.135.89:3000/account')
+    let result = await axios.get('http://172.16.135.89:3000/account?authority='+props.authority)
     setAccounts(result.data);
     setLoading(false)
   }
@@ -46,7 +46,7 @@ const Account = (props) => {
     if(window.confirm('정말 삭제 하시겠습니까?')) {
       await axios.delete('http://172.16.135.89:3000/account/'+accounts[0]._id,{
         data:{
-          account : 'admin' // to do :나중에 계정 정보 넣을것
+          account : props.user_id // to do :나중에 계정 정보 넣을것
         }
       })
 

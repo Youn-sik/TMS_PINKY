@@ -159,7 +159,7 @@ const AddStranger = (props) => {
  
     useEffect(() => {
       getGroups()
-    })
+    },[])
 
     useEffect(() => {
       if(allGroups.length !== 0) {  
@@ -167,16 +167,14 @@ const AddStranger = (props) => {
         setGroups(filteredGroups)
         setSelectedGroup({})
       }
-    },[type,allGroups])
+    },[type])
 
     const renderTree = (node) => (
         <TreeItem 
         onIconClick={() =>{
-        //   if(Array.isArray(node.children)) setUsers(node.user_obids)
           setSelectedGroup(node)
         }} 
         onLabelClick={() =>{
-        //   if(Array.isArray(node.children))setUsers(node.user_obids)
           setSelectedGroup(node)
         }} 
         className={classes.treeItem} key={node._id} nodeId={node._id} 
@@ -474,20 +472,6 @@ const AddStranger = (props) => {
             xs={12}
             >
                 <Card>
-                    {/* <ImageUploader
-                    {...props}
-                    defaultImages={[userObject.avatar_file_url]}
-                    withIcon={true}
-                    onChange={onDrop}
-                    imgExtension={[".jpg", ".png"]}
-                    label="최대 크기 : 5mb, 허용 확장자: jpg|png"
-                    fileSizeError="파일의 크기가 너무 큽니다."
-                    fileTypeError="지원하지 않는 타입의 파일 입니다."
-                    buttonText="프로필 사진 업로드"
-                    maxFileSize={5242880}
-                    // singleImage={true}
-                    withPreview={true}
-                    /> */}
                     <CardContent style={{width: '50%', margin:'0 auto'}}>
                       <div style={{textAlign: 'center'}}>
                         <img
@@ -538,74 +522,6 @@ const AddStranger = (props) => {
                         </div>
                         {type === 1 ? renderEmployee() :
                         type === 2 ? renderVisitor() : renderBlack()}
-                        {/* <div style={{width: '100%'}}>
-                            <TextField 
-                            name="name"
-                            value={userInfo.name}
-                            style={{width:'100%'}} 
-                            required 
-                            id="standard-required" 
-                            label="이름"
-                            onChange={handleChange}
-                            />
-                        </div>
-                        <div style={{width: '100%'}}>
-                            <TextField 
-                            name="location"
-                            value={userInfo.location}
-                            style={{width:'100%'}} 
-                            required 
-                            id="standard-required" 
-                            label="근무지"
-                            onChange={handleChange}
-                            />
-                        </div>
-                        <div style={{width: '100%'}}>
-                            <TextField 
-                            name="department_id"
-                            value={userInfo.department_id} 
-                            style={{width:'100%'}} 
-                            required 
-                            onChange={handleChange}
-                            id="standard-required" 
-                            label="부서"
-                            />
-                        </div>
-                        <div style={{width: '100%'}}>
-                            <TextField 
-                            name="position"
-                            value={userInfo.position} 
-                            style={{width:'100%'}} 
-                            required 
-                            id="standard-required" 
-                            onChange={handleChange}
-                            label="직급"
-                            />
-                        </div>
-                        <div style={{width: '100%'}}>
-                            <TextField
-                            name="mobile"
-                            value={userInfo.mobile}
-                            style={{width:'100%'}}
-                            label="핸드폰 번호*"
-                            onChange={handleChange}
-                            InputProps={{
-                                inputComponent: TextMaskCustom,
-                            }}
-                            />
-                        </div>
-                        <div style={{width: '100%'}}>
-                            <TextField
-                            name="mail"
-                            value={userInfo.mail}
-                            style={{width:'100%'}}
-                            label="이메일*"
-                            onChange={handleChange}
-                            InputProps={{
-                                inputComponent: emailMaskCustom,
-                            }}
-                            />
-                        </div> */}
                         <div style={{width: '100%',textAlign:'center',marginTop:"15px"}}>
                             <Button style={{marginRight:'4px'}} variant="contained" color="secondary" onClick={handleClickOpen}>그룹 선택</Button>    
                             <Button variant="contained" color="primary" onClick={addUser}>추가</Button>

@@ -74,8 +74,8 @@ const ErrorsTable = props => {
                 <TableRow>
                   <TableCell>단말기 명</TableCell>
                   <TableCell>시리얼 넘버</TableCell>
-                  <TableCell>날짜</TableCell>
                   <TableCell>로그 메세지</TableCell>
+                  <TableCell>날짜</TableCell>
                 </TableRow>
               </TableHead>
               {
@@ -90,8 +90,8 @@ const ErrorsTable = props => {
                           {error.stb_id}
                         </TableCell>
                         <TableCell>{error.stb_sn}</TableCell>
-                        <TableCell>{error.create_dt}</TableCell>
                         <TableCell>{error.log_message}</TableCell>
+                        <TableCell>{error.create_dt}</TableCell>
                       </TableRow>
                     ))}
                 </TableBody>

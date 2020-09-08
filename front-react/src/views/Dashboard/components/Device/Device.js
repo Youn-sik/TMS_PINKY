@@ -44,10 +44,10 @@ const Device = props => {
   const data = {
     datasets: [
       {
-        data: [props.on, props.off],
+        data: [props.off,props.on],
         backgroundColor: [
-          theme.palette.success.main,
           theme.palette.error.main,
+          theme.palette.success.main,
           theme.palette.warning.main
         ],
         borderWidth: 8,
@@ -60,7 +60,18 @@ const Device = props => {
 
   const options = {
     legend: {
-      display: false
+      display: false,
+      onHover: function(e) {
+        console.log(e.target.style)
+        e.target.style.cursor = 'pointer';
+     }
+    },
+    hover: {
+      onHover: function(e) {
+         var point = this.getElementAtEvent(e);
+         if (point.length) e.target.style.cursor = 'pointer';
+         else e.target.style.cursor = 'default';
+      }
     },
     responsive: true,
     maintainAspectRatio: false,
@@ -107,6 +118,7 @@ const Device = props => {
         {props.on+props.off !== 0 ?
           <div className={classes.chartContainer}>
           <Doughnut
+            onElementsClick={() => {props.history.push('device/list')}}
             data={data}
             options={options}
           />

@@ -229,7 +229,7 @@ const EditVisitor = (props) => {
             ...userObject[0],
             ...userInfo,
             type:2,
-            account:'admin',
+            account:'props.user_id',
             clicked_groups: node._id !== undefined ? [node._id] : userObject[0].groups_obids,
             avatar_file: base64 ? base64 : userObject[0].avatar_file
         })
@@ -345,7 +345,7 @@ const EditVisitor = (props) => {
                         </div>
                         <div style={{width: '100%',textAlign:'center',marginTop:"15px"}}>
                             <Button style={{marginRight:'4px'}} variant="contained" color="secondary" onClick={handleClickOpen}>그룹 선택</Button>    
-                            <Button variant="contained" color="primary" onClick={addUser}>추가</Button>
+                            <Button variant="contained" color="primary" onClick={addUser}>수정</Button>
                         </div>
                         <Dialog
                             open={open}

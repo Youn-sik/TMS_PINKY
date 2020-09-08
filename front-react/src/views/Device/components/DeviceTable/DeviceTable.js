@@ -133,7 +133,7 @@ const DeviceTable = props => {
   }
 
   const handleChange = (e) => {
-    if(e.target.value.length < 3 && (e.target.value < 61)) {
+    if(e.target.value < 999) {
       setCaptureTime({
         ...captureTime,
         [e.target.name]: e.target.value
@@ -142,7 +142,7 @@ const DeviceTable = props => {
   }
 
   const handleTempChange = (e) => {
-    if(e.target.value.length < 3 && (e.target.value < 40)) {
+    if(e.target.value.length < 5 && (e.target.value < 40)) {
       setTemp(e.target.value)
     }
   }
@@ -161,7 +161,12 @@ const DeviceTable = props => {
     else if(name==="reboot") client.publish('/control/reboot/'+selectedObject.serial_number,JSON.stringify({stb_sn:selectedObject.serial_number, "message":"reboot"}));
     else if(name==="contents") client.publish('/control/get_device_file_list/'+selectedObject.serial_number,JSON.stringify({stb_sn:selectedObject.serial_number, "message":"get_device_file_list"}));
     else if(name==="reset") client.publish('/control/reset/'+selectedObject.serial_number,JSON.stringify({stb_sn:selectedObject.serial_number}));
-    else if (name==='temp') client.publish('/control/temperature/' + selectedObject.serial_number,JSON.stringify({type:1,stb_sn : selectedObject.serial_number,temperature_max : temp}));
+    else if (name==='temp') {
+      if(temp.split('.')[1] === ''){
+        setTemp(temp+"0");
+      }
+      client.publish('/control/temperature/' + selectedObject.serial_number,JSON.stringify({type:1,stb_sn : selectedObject.serial_number,temperature_max : temp}));
+    }
     alert('제어성공')
   }
 
@@ -177,50 +182,54 @@ const DeviceTable = props => {
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
+        maxWidth={"sm"}
+        fullWidth={true}
       >
         <DialogTitle id="alert-dialog-title">{"Mqtt 제어"}</DialogTitle>
-        <DialogContent style={{textAlign: "center"}}>
+        <DialogContent style={{textAlign: "center",width:'70%', margin:"0 auto"}}>
           {/* <DialogContentText style={{textAlign: "center"}} id="alert-dialog-description"> */}
+            <div style={{marginLeft:15}}>
             <TextField
               id="standard-start-adornment"
-              style={{width:40}}
-              value={captureTime.min}
+              style={{width:70}}
+              value={captureTime.min || "1"}
               name="min"
               onChange={handleChange}
               InputProps={{
                 endAdornment: <InputAdornment position="end">분</InputAdornment>,
               }}
             />
-            <span style={{margin:"0px 3px 0px 3px"}}>:</span>
+            <span style={{margin:"0px 10px 0px 10px",position:"relative",top:6}}>:</span>
             <TextField
               id="standard-start-adornment"
-              style={{width:40}}
+              style={{width:70,margin:'0 15px 0 0'}}
               name="sec"
-              value={captureTime.sec}
+              value={captureTime.sec || "0"}
               onChange={handleChange}
               InputProps={{
                 endAdornment: <InputAdornment position="end">초</InputAdornment>,
               }}
-            /><br/><br/>
-            <Button variant="contained" onClick={() => {mqttPubl("capture_start")}} style={{margin:'0 3px 0 0'}} color="primary">캡쳐 시작</Button>
-            <Button variant="contained" onClick={() => {mqttPubl("capture_end")}} style={{margin:'0 0 0 3px'}} color="primary">캡쳐 종료</Button><br/><br/>
-            <Button variant="contained" onClick={() => {mqttPubl("log")}} style={{margin:'0 3px 0 0'}} color="primary">단말기 로그 요청</Button>
-            <Button variant="contained" onClick={() => {mqttPubl("sd")}} style={{margin:'0 0 0 3px'}} color="primary">SD카드 삭제</Button><br/><br/>
-            <Button variant="contained" onClick={() => {mqttPubl("sd_unused")}} style={{margin:'0 3px 0 0'}} color="primary">SD카드 미사용 파일 삭제</Button>
-            <Button variant="contained" onClick={() => {mqttPubl("reboot")}} style={{margin:'0 0 0 3px'}} color="primary">재부팅</Button><br/><br/>
-            <Button variant="contained" onClick={() => {mqttPubl("contents")}} style={{margin:'0 3px 0 0'}} color="primary">단말 컨텐츠 목록 요청</Button>
-            <Button variant="contained" onClick={() => {mqttPubl("reset")}} style={{margin:'0 0 0 3px'}} color="primary">시스템 초기화</Button><br/><br/>
+            />
+            </div><br/>
+            <Button variant="contained" onClick={() => {mqttPubl("capture_start")}} style={{margin:'0 4px 0 0'}} color="primary">캡쳐 시작</Button>
+            <Button variant="contained" onClick={() => {mqttPubl("capture_end")}} style={{margin:'0 0 0 4px'}} color="primary">캡쳐 종료</Button><br/><br/>
             <TextField
               id="standard-start-adornment"
-              style={{width:40}}
+              style={{width:70}}
               name="temp"
-              value={temp}
+              value={temp || '36.5'}
               onChange={handleTempChange}
               InputProps={{
                 endAdornment: <InputAdornment position="end">℃</InputAdornment>,
               }}
             />
-            <Button variant="contained" onClick={() => {mqttPubl("temp")}} style={{margin:'0 0 0 3px'}} color="primary">온도 조절</Button>
+            <Button variant="contained" onClick={() => {mqttPubl("temp")}} style={{margin:'0 0 0 25px'}} color="primary">온도 조절</Button><br/><br/>
+            <Button variant="contained" onClick={() => {mqttPubl("reboot")}} style={{width:"181.58px"}} color="primary">재부팅</Button><br/><br/>
+            <Button variant="contained" onClick={() => {mqttPubl("sd")}} style={{width:"181.58px"}} color="primary">SD카드 삭제</Button><br/><br/>
+            <Button variant="contained" onClick={() => {mqttPubl("reset")}} style={{width:"181.58px"}} color="primary">시스템 초기화</Button><br/><br/>
+            <Button variant="contained" onClick={() => {mqttPubl("log")}} style={{width:"181.58px"}} color="primary">단말기 로그 요청</Button><br/><br/>
+            <Button variant="contained" onClick={() => {mqttPubl("contents")}} style={{width:"181.58px"}} color="primary">단말 컨텐츠 목록 요청</Button><br/><br/>
+            <Button variant="contained" onClick={() => {mqttPubl("sd_unused")}} style={{width:"181.58px"}} color="primary">SD카드 미사용 파일 삭제</Button><br/><br/>
           {/* </DialogContentText> */}
         </DialogContent>
         <DialogActions>
@@ -294,10 +303,9 @@ const DeviceTable = props => {
                   <TableCell>시리얼 넘버</TableCell>
                   <TableCell>버전</TableCell>
                   <TableCell>IP</TableCell>
-                  <TableCell>포트</TableCell>
                   <TableCell>위치</TableCell>
                   <TableCell>연결상태</TableCell>
-                  <TableCell>스트리밍</TableCell>
+                  {/* <TableCell>스트리밍</TableCell> */}
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -317,13 +325,12 @@ const DeviceTable = props => {
                       <TableCell>{device.serial_number}</TableCell>
                       <TableCell>{device.app_version}</TableCell>
                       <TableCell>{device.ip}</TableCell>
-                      <TableCell>{device.port}</TableCell>
                       <TableCell>{device.location}</TableCell>
                       <TableCell>{device.status}</TableCell>
-                      <TableCell>
+                      {/* <TableCell>
                         {stream === device.ip ? <Button size="small" disabled variant="contained" color="primary" onClick={() => {setStream(device.ip)}}>스트리밍 재생</Button> :
                         <Button size="small" variant="contained" color="primary" onClick={() => {setStream(device.ip)}}>스트리밍 재생</Button>}
-                      </TableCell>
+                      </TableCell> */}
                     </TableRow>
                   )
                   })}

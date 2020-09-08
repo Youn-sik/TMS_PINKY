@@ -23,6 +23,8 @@ export { AddDevice } from './Device';
 export { EditDevice } from './Device';
 export { default as DeviceError } from './DeviceError';
 export { default as DeviceScreen } from './DeviceScreen';
-export { default as Statistics } from './Statistics';
+export { DeviceStat } from './Statistics';
+export { UsersStat } from './Statistics';
 export { default as Operation } from './Operation';
+export { default as FaceDetection } from './FaceDetection';
 

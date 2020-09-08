@@ -139,6 +139,7 @@ const AccountsTable = props => {
                   <TableCell padding="checkbox">
                   </TableCell>
                   <TableCell>아이디</TableCell>
+                  <TableCell>권한</TableCell>
                   <TableCell>이름</TableCell>
                   <TableCell>언어</TableCell>
                 </TableRow>
@@ -157,6 +158,10 @@ const AccountsTable = props => {
                         />
                       </TableCell>
                       <TableCell>{account.user_id}</TableCell>
+                      <TableCell>{account.authority.split('-').length > 3 || account.authority.split('-')[1] === 'user' ? 
+                      "사용자" : 
+                      account.authority === 'admin' ? 
+                      "관리자" : "매니저"}</TableCell>
                       <TableCell>{account.user_name}</TableCell>
                       <TableCell>{account.user_lang}</TableCell>
                     </TableRow>

@@ -3,7 +3,7 @@ const moment = require('moment');
 const ObjectId = mongoose.Schema.Types.ObjectId
 
 const cameraSchema = new mongoose.Schema({
-    gateway_obid : { type:ObjectId, ref: 'Gateway', required: true },
+    // gateway_obid : { type:ObjectId, ref: 'Gateway', required: true },
     serial_number : { type: String, required: true },
     name : { type: String, required: true },
     protocol : { type: Number, required: true },
@@ -13,6 +13,7 @@ const cameraSchema = new mongoose.Schema({
     app_version : { type: String },
     url : { type: String },
     ip : { type: String },
+    authority : { type: String },
     port : { type: Number },
     description : { type: String },
     groups_obids : [{type:ObjectId, ref: 'Group'}],

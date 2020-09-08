@@ -156,7 +156,7 @@ const Employee = (props) => {
         data:{
           type:1,
           selectedData:selectedUsers,
-          account : 'admin' // to do :나중에 계정 정보 넣을것
+          account : props.user_id // to do :나중에 계정 정보 넣을것
         }
       })
 
@@ -177,9 +177,9 @@ const Employee = (props) => {
           return false;
         })
       }
-      console.log(temp);
       await setUsers(temp);
       
+      console.log(clickedNode);
       let groups_list = clickedNode.children.filter(child => Array.isArray(child.children))
       let groups_length = groups_list.length
       clickedNode.children.splice(groups_length)

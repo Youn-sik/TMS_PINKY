@@ -47,7 +47,7 @@ router.get('/',async function(req, res) {
                 },
                 {
                     $group: {
-                        _id: {"avatar_contraction_data":"$avatar_contraction_data","avatar_type":"$avatar_type"},
+                        _id: {"user_obid":"$user_obid","avatar_type":"$avatar_type"},
                         access_time : {$first:'$access_time'},
                         count: { $sum: 1 }
                     },
@@ -55,9 +55,9 @@ router.get('/',async function(req, res) {
             ])
         } else if(req.query.type === 'temperature') {
             get_data = await api_v1_person_access.find()
-                .where('avatar_temperature').gte(37.5)
+                .where('avatar_temperature')
                 .sort('-access_time')
-                .select('access_time avatar_file_url avatar_temperature avatar_type')
+                .select('access_time avatar_file_url avatar_temperature avatar_type name')
                 .limit(5)
         } else if(req.query.type === 'attendance') {
             get_data = await api_v1_person_access.aggregate([

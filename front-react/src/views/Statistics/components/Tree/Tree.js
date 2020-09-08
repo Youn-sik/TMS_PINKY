@@ -4,6 +4,8 @@ import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 import TreeView from '@material-ui/lab/TreeView';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import Search from '@material-ui/icons/Search';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import TreeItem from '@material-ui/lab/TreeItem';
 import GroupIcon from '@material-ui/icons/FolderShared';
@@ -14,6 +16,7 @@ import {
   CardHeader,
   Typography,
   Divider,
+  TextField
 } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
@@ -57,13 +60,17 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(2)
   },
   search: {
-    width:"100%"
+    position: 'relative',
+    bottom:"7px",
+    height:"20px",
+    width:"40%",
+    float:'right'
   },
   action: {
     padding:"10px 20px"
   },
   tree: {
-    height: '436px',
+    height: '300px',
     flexGrow: 1,
     maxWidth: "100%",
   },
@@ -86,7 +93,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Tree = props => {
-  const {clickedNode,setSelectedNode,setClickedNode,deleteGroupNode,setUsers, search,searchNode,groups,className, ...rest } = props;
+  const {clickedNode,setSelectedNode,setClickedNode,handleSearch,deleteGroupNode,setUsers, search,searchNode,groups,className, ...rest } = props;
   const classes = useStyles();
 
   const renderTree = (node,depth) => (
@@ -121,15 +128,30 @@ const Tree = props => {
       }}>
         {Array.isArray(node.children) ? node.children.map((child) => renderTree(child,depth+1)) : null}
       </TreeItem>
-  ) 
-
+  )
   return (
     <Card
       {...rest}
       className={clsx(classes.root, className)}
     >
       <CardHeader
-        title="그룹 목록"
+        title={
+          <div>
+            그룹 목록
+            <TextField
+            className={classes.search}
+            id="input-with-icon-textfield"
+            value={search}
+            onChange={handleSearch}
+            placeholder="검색"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end"><Search></Search></InputAdornment>
+              ),
+            }}
+            />
+          </div>
+        }
       />
       <Divider />
       <CardContent>

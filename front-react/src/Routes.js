@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import { Switch, Redirect } from 'react-router-dom';
 
 import { RouteWithLayout } from './components';
@@ -28,10 +28,12 @@ import {
   EditDevice as EditDeviceView,
   DeviceError as DeviceErrorView,
   DeviceScreen as DeviceScreenView,
-  Statistics as StatisticsView,
+  DeviceStat as DeviceStatView,
+  UsersStat as UsersStatView,
   AddAccount as AddAccountView,
   EditAccount as EditAccountView,
   Operation as OperationView,
+  FaceDetection as FaceDetectionView,
 } from './views';
 
 const Routes = (props) => {
@@ -46,20 +48,31 @@ const Routes = (props) => {
         component={DashboardView}
         exact
         user_id={props.user_id}
+        authority={props.authority}
         layout={MainLayout}
         path="/dashboard"
       />
       <RouteWithLayout
-        component={StatisticsView}
+        component={DeviceStatView}
         exact
         user_id={props.user_id}
+        authority={props.authority}
         layout={MainLayout}
         path="/stats/device"
+      />
+      <RouteWithLayout
+        component={UsersStatView}
+        exact
+        user_id={props.user_id}
+        authority={props.authority}
+        layout={MainLayout}
+        path="/stats/users"
       />
       <RouteWithLayout
         component={DeviceView}
         exact
         user_id={props.user_id}
+        authority={props.authority}
         layout={MainLayout}
         path="/device/list"
       />
@@ -67,6 +80,7 @@ const Routes = (props) => {
         component={DeviceScreenView}
         exact
         user_id={props.user_id}
+        authority={props.authority}
         layout={MainLayout}
         path="/device/screen"
       />
@@ -74,6 +88,7 @@ const Routes = (props) => {
         component={DeviceErrorView}
         exact
         user_id={props.user_id}
+        authority={props.authority}
         layout={MainLayout}
         path="/device/error"
       />
@@ -81,6 +96,7 @@ const Routes = (props) => {
         component={AddDeviceView}
         exact
         user_id={props.user_id}
+        authority={props.authority}
         layout={MainLayout}
         path="/device/add"
       />
@@ -88,6 +104,7 @@ const Routes = (props) => {
         component={EditDeviceView}
         exact
         user_id={props.user_id}
+        authority={props.authority}
         layout={MainLayout}
         path="/device/edit"
       />
@@ -95,6 +112,7 @@ const Routes = (props) => {
         component={AccessListView}
         exact
         user_id={props.user_id}
+        authority={props.authority}
         layout={MainLayout}
         path="/access/records"
       />
@@ -102,6 +120,7 @@ const Routes = (props) => {
         component={AttendanceListView}
         exact
         user_id={props.user_id}
+        authority={props.authority}
         layout={MainLayout}
         path="/access/attendance"
       />
@@ -109,6 +128,7 @@ const Routes = (props) => {
         component={StrangerView}
         exact
         user_id={props.user_id}
+        authority={props.authority}
         layout={MainLayout}
         path="/users/Stranger"
       />
@@ -116,6 +136,7 @@ const Routes = (props) => {
         component={AddStrangerView}
         exact
         user_id={props.user_id}
+        authority={props.authority}
         layout={MainLayout}
         path="/users/Stranger/add"
       />
@@ -123,6 +144,7 @@ const Routes = (props) => {
         component={EmployeeView}
         exact
         user_id={props.user_id}
+        authority={props.authority}
         layout={MainLayout}
         path="/users/employee"
       />
@@ -130,6 +152,7 @@ const Routes = (props) => {
         component={AddEmployeeView}
         exact
         user_id={props.user_id}
+        authority={props.authority}
         layout={MainLayout}
         path="/users/employee/add"
       />
@@ -137,6 +160,7 @@ const Routes = (props) => {
         component={EditEmployeeView}
         exact
         user_id={props.user_id}
+        authority={props.authority}
         layout={MainLayout}
         path="/users/employee/edit"
       />
@@ -144,6 +168,7 @@ const Routes = (props) => {
         component={BlackView}
         exact
         user_id={props.user_id}
+        authority={props.authority}
         layout={MainLayout}
         path="/users/black"
       />
@@ -151,6 +176,7 @@ const Routes = (props) => {
         component={AddBlackView}
         exact
         user_id={props.user_id}
+        authority={props.authority}
         layout={MainLayout}
         path="/users/black/add"
       />
@@ -158,6 +184,7 @@ const Routes = (props) => {
         component={EditBlackView}
         exact
         user_id={props.user_id}
+        authority={props.authority}
         layout={MainLayout}
         path="/users/black/edit"
       />
@@ -165,6 +192,7 @@ const Routes = (props) => {
         component={VisitorView}
         exact
         user_id={props.user_id}
+        authority={props.authority}
         layout={MainLayout}
         path="/users/visitor"
       />
@@ -172,6 +200,7 @@ const Routes = (props) => {
         component={AddVisitorView}
         exact
         user_id={props.user_id}
+        authority={props.authority}
         layout={MainLayout}
         path="/users/visitor/add"
       />
@@ -179,13 +208,23 @@ const Routes = (props) => {
         component={EditVisitorView}
         exact
         user_id={props.user_id}
+        authority={props.authority}
         layout={MainLayout}
         path="/users/visitor/edit"
+      />
+      <RouteWithLayout
+        component={FaceDetectionView}
+        exact
+        user_id={props.user_id}
+        authority={props.authority}
+        layout={MainLayout}
+        path="/users/face-detection"
       />
       <RouteWithLayout
         component={AccountView}
         exact
         user_id={props.user_id}
+        authority={props.authority}
         layout={MainLayout}
         path="/system/account"
       />
@@ -193,6 +232,7 @@ const Routes = (props) => {
         component={AddAccountView}
         exact
         user_id={props.user_id}
+        authority={props.authority}
         layout={MainLayout}
         path="/system/account/add"
       />
@@ -200,6 +240,7 @@ const Routes = (props) => {
         component={EditAccountView}
         exact
         user_id={props.user_id}
+        authority={props.authority}
         layout={MainLayout}
         path="/system/account/Edit"
       />
@@ -207,6 +248,7 @@ const Routes = (props) => {
         component={OperationView}
         exact
         user_id={props.user_id}
+        authority={props.authority}
         layout={MainLayout}
         path="/system/operation"
       />
@@ -214,6 +256,7 @@ const Routes = (props) => {
         component={SignUpView}
         exact
         user_id={props.user_id}
+        authority={props.authority}
         layout={MinimalLayout}
         path="/sign-up"
       />
@@ -221,6 +264,8 @@ const Routes = (props) => {
         component={SignInView}
         exact
         user_id={props.user_id}
+        authority={props.authority}
+        getAuth={props.getAuth}
         // layout={MinimalLayout}
         path="/sign-in"
       />
@@ -228,6 +273,7 @@ const Routes = (props) => {
         component={NotFoundView}
         exact
         user_id={props.user_id}
+        authority={props.authority}
         layout={MinimalLayout}
         path="/not-found"
       />

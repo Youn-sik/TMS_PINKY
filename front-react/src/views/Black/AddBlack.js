@@ -198,6 +198,7 @@ const AddBlack = (props) => {
       else {
         let base64 = await toBase64(pictures[0][0])
         base64 = base64.replace('data:image/jpeg;base64,','')
+        base64 = base64.replace('data:image/png;base64,','')
         await axios.post('http://172.16.135.89:3000/user',{
             ...userInfo,
             type:5,

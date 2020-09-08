@@ -60,6 +60,12 @@ const EditAccount = (props) => {
         user_id:"",
         user_lang:"",
         user_name:"",
+        authority:"",
+        authority : props.authority === 'admin' ? 
+        'admin' : 
+        props.authority === 'user' ? 
+        'user' : 
+        'manager'
     })
 
     const handleChange = (event) => {
@@ -135,6 +141,7 @@ const EditAccount = (props) => {
                               style={{width:'100%'}} 
                               required 
                               onChange={handleChange}
+                              type="password"
                               id="standard-required" 
                               label="비밀번호"
                               />
@@ -147,6 +154,7 @@ const EditAccount = (props) => {
                               required 
                               id="standard-required" 
                               onChange={handleChange}
+                              type="password"
                               label="비밀번호 확인"
                             />
                             </div>
@@ -160,6 +168,7 @@ const EditAccount = (props) => {
                               name="user_pw"
                               value={accountInfo.user_pw} 
                               style={{width:'100%'}} 
+                              type="password"
                               required 
                               onChange={handleChange}
                               id="standard-required" 
@@ -174,6 +183,7 @@ const EditAccount = (props) => {
                               value={accountInfo.pw_chk} 
                               style={{width:'100%'}} 
                               required 
+                              type="password"
                               id="standard-required" 
                               onChange={handleChange}
                               label="비밀번호 확인"
@@ -181,7 +191,17 @@ const EditAccount = (props) => {
                             </div> 
                           </div>
                         }
-
+                        <Select
+                        name="authority"
+                        value={accountInfo.authority}
+                        style={{width:'100%',marginTop:15}} 
+                        onChange={handleChange}
+                        >
+                          {props.authority === 'admin' ? <MenuItem value={"admin"}>관리자</MenuItem> : null}
+                          {props.authority.split('-')[0] === 'manager' || 
+                          props.authority === 'admin' ? <MenuItem value={"manager-"+accountInfo.user_id}>매니저</MenuItem> : null}
+                          <MenuItem value={props.authority+"-user-"+accountInfo.user_id}>사용자</MenuItem>
+                        </Select>
                         <Select
                         name="user_lang"
                         value={accountInfo.user_lang} 
@@ -195,7 +215,7 @@ const EditAccount = (props) => {
                         container justify="center"
                         alignItems="center"
                         >
-                        <Button style={{marginTop: 10}} variant="contained" color="primary" onClick={addUser}>등록</Button>
+                        <Button style={{marginTop: 10}} variant="contained" color="primary" onClick={addUser}>수정</Button>
                         </Grid>
                     </CardContent>
                 </Card>

@@ -29,41 +29,11 @@ export default class App extends React.Component {
   state = {
     auth : false,
     user_id : '',
+    authority : '',
   }
-  componentDidMount() {
-    this.unlisten = browserHistory.listen((location, action) => { //클릭을 통한 페이지 이동 감지
-      if(location.pathname !== '/sign-in' && location.pathname !== '/') {
-        var value = document.cookie.match('(^|;) ?token=([^;]*)(;|$)');
-        if(Array.isArray(value)) {
-          axios.get('http://172.16.135.89:3000/auth?token='+value[2])
-          .then((res) => {
-            if(res.data.auth === false) {
-              browserHistory.push('/sign-in')
-              document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
-              this.setState({
-                auth: false
-              });
-              return false;
-            } else {
-              this.setState({
-                auth: true,
-                user_id: res.data.user_id
-              });
-              return false;
-            }
-          })
-        } else {
-          browserHistory.push('/sign-in')
-          document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
-          this.setState({
-            auth: false
-          });
-          return false;
-        }
-      }
-    });
 
-    if(browserHistory.location.pathname !== '/sign-in' && browserHistory.location.pathname !== '/') { //URL 직접 변경 감지
+  componentWillMount() {
+    if(browserHistory.location.pathname !== '/sign-in') { //URL 직접 변경 감지
       var value = document.cookie.match('(^|;) ?token=([^;]*)(;|$)');
       if(Array.isArray(value)) {
         axios.get('http://172.16.135.89:3000/auth?token='+value[2])
@@ -74,7 +44,8 @@ export default class App extends React.Component {
             } else if( res.data.auth === true ) {
               this.setState({
                 auth: true,
-                user_id: res.data.user_id
+                user_id: res.data.user_id,
+                authority : res.data.authority
               });
             }
           })
@@ -83,13 +54,60 @@ export default class App extends React.Component {
       }
     }
   }
+
+  componentDidMount () {
+    this.unlisten = browserHistory.listen((location, action) => { //클릭을 통한 페이지 이동 감지
+      if(location.pathname !== '/sign-in') {
+        var value = document.cookie.match('(^|;) ?token=([^;]*)(;|$)');
+        if(Array.isArray(value)) {
+          axios.get('http://172.16.135.89:3000/auth?token='+value[2])
+          .then((res) => {
+            if(res.data.auth === false) {
+              browserHistory.push('/sign-in')
+              document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
+              this.setState({
+                auth: false,
+                authority: '',
+                user_id: ''
+              });
+              return false;
+            } else {
+              this.setState({
+                auth: true,
+                user_id: res.data.user_id,
+                authority : res.data.authority
+              });
+              return false;
+            }
+          })
+        } else {
+          console.log('test');
+          browserHistory.push('/sign-in')
+          document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
+          this.setState({
+            auth: false,
+            authority:'',
+            user_id: ''
+          });
+          return false;
+        }
+      }
+    });
+  }
+
   render() {
-    return (
+    const getAuth = (_auth) => {
+        this.setState({
+          authority : _auth
+        })
+    }
+
+    return browserHistory.location.pathname === '/sign-in' || this.state.authority !== '' ?
       <ThemeProvider theme={theme}>
         <Router history={browserHistory}>
-          <Routes user_id={this.state.user_id} />
+          <Routes getAuth={getAuth} user_id={this.state.user_id} authority={this.state.authority} />
         </Router>
       </ThemeProvider>
-    );
+      : <div></div>;
   }
 }

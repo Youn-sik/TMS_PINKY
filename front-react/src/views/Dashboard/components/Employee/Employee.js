@@ -66,7 +66,7 @@ const Employee = props => {
             <Typography variant="h3">{props.count}명</Typography>
           </Grid>
           <Grid item>
-            <Avatar className={classes.avatar}>
+            <Avatar style={{"cursor" : "pointer"}} onClick={() => {props.history.push("access/records")}} className={classes.avatar}>
               <PermIdentity className={classes.icon} />
             </Avatar>
           </Grid>

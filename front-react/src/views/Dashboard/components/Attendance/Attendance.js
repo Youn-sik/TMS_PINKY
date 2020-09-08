@@ -49,10 +49,10 @@ const Attendance = props => {
   const data = {
     datasets: [
       {
-        data: [props.attendance,props.late],
+        data: [props.late,props.attendance],
         backgroundColor: [
+          "#f17808",
           theme.palette.primary.main,
-          theme.palette.error.main,
           theme.palette.success.main
         ],
         borderWidth: 8,
@@ -60,12 +60,23 @@ const Attendance = props => {
         hoverBorderColor: theme.palette.white
       }
     ],
-    labels: ['출근', '지각']
+    labels: ['지각', '출근']
   };
 
   const options = {
     legend: {
-      display: false
+      display: false,
+      onHover: function(e) {
+        console.log(e.target.style)
+        e.target.style.cursor = 'pointer';
+     }
+    },
+    hover: {
+      onHover: function(e) {
+         var point = this.getElementAtEvent(e);
+         if (point.length) e.target.style.cursor = 'pointer';
+         else e.target.style.cursor = 'default';
+      }
     },
     responsive: true,
     maintainAspectRatio: false,
@@ -95,7 +106,7 @@ const Attendance = props => {
         title: '지각',
         value: props.late,
         icon: <AlarmOff />,
-        color: theme.palette.error.main
+        color: "#f17808"
     },
   ];
 
@@ -119,6 +130,7 @@ const Attendance = props => {
         { props.attendance + props.late !== 0 ?
           <div className={classes.chartContainer}>
             <Doughnut
+              onElementsClick={() => {props.history.push('access/attendance')}}
               data={data}
               options={options}
             />

@@ -69,9 +69,11 @@ const Employee = (props) => {
   }
 
   const getDevcie = async () => {
-    let result = await axios.get('http://172.16.135.89:3000/camera')
-    setStream(result.data[0].ip);
-    setDevice(result.data);
+    let result = await axios.get('http://172.16.135.89:3000/camera?authority='+props.authority)
+    if(result.data.length > 0){
+      setStream(result.data[0].ip);
+      setDevice(result.data);
+    }
     setLoading(false)
   }
 
@@ -79,7 +81,7 @@ const Employee = (props) => {
     if(window.confirm('정말 삭제 하시겠습니까?')) {
       await axios.delete('http://172.16.135.89:3000/camera/'+selectedDevice._id,{
         data:{
-          account : 'admin' // to do :나중에 계정 정보 넣을것
+          account : props.user_id // to do :나중에 계정 정보 넣을것
         }
       })
   
@@ -105,16 +107,15 @@ const Employee = (props) => {
         container
         spacing={4}
       >
-        <Grid
+        {/* <Grid
           item
           lg={12}
           md={12}
           xl={12}
           xs={12}
         >
-          {/* <AccountDetails users={users}/> */}
           <Stream setStreamId={_setStreamId} stream={stream} {...videoJsOptions}/>
-        </Grid>
+        </Grid> */}
         <Grid
           item
           lg={12}

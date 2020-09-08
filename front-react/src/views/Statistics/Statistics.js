@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-const Statistics = () => {
+const Statistics = (props) => {
   const classes = useStyles();
   const {allowedDays} = DateRangePicker;
   const [date,setDate] = useState([moment().subtract(6, 'days').format('YYYY-MM-DD'),moment().format('YYYY-MM-DD')])
@@ -45,13 +45,7 @@ const Statistics = () => {
   const [count,setCount] = useState(0);
   const [errorData,setErrorData] = useState({});
   const [allErrorData,setAllErrorData] = useState({});
-  const [groups,setGroups] = useState([]);
-  const [clickedNode,setClickedNode] = useState({});
   const [loading,setLoading] = useState(true);
-  const [attendance,setAttendance] = useState({
-    att:0,
-    late:0
-  });
   const [attList,setAttList] = useState([]);
 
   const statsData = (employee,visitor,stranger,black,dates) => {
@@ -122,24 +116,6 @@ const Statistics = () => {
     }
   }
 
-  const _setClickedNode = (node) => {
-    setClickedNode(node);
-  }
-  
-  async function getGroups() {
-    let tempGroups = await axios.get('http://172.16.135.89:3000/group')
-    tempGroups.data.map((i) => {//user_obids에 있는 데이터 children으로 옮기기
-      moveUserIds(i);
-      return false;
-    })
-    let index = tempGroups.data.findIndex(i => i.name === "undefined");
-    if(index !== -1) {
-      let undefinedGroup = tempGroups.data.splice(index,1);
-      tempGroups.data.push(undefinedGroup[0]);
-    }
-    setGroups(tempGroups.data);
-  }
-
   const filterAccesses = (result) => {
     let employee = result.filter(access => (access.avatar_type === 1 && access.stb_sn === device))
     let visitor = result.filter(access => (access.avatar_type === 2 && access.stb_sn === device))
@@ -181,9 +157,11 @@ const Statistics = () => {
   }
 
   async function getDevices() {
-    let result = await axios.get('http://172.16.135.89:3000/camera')
-    setDevices(result.data);
-    setDevice(result.data[0].serial_number);
+    let result = await axios.get('http://172.16.135.89:3000/camera?authority='+props.authority)
+    if(result.data.length > 0) {
+      setDevices(result.data);
+      setDevice(result.data[0].serial_number);
+    }
   }
 
   async function getErrors() {
@@ -217,35 +195,7 @@ const Statistics = () => {
     getDevices()
     getAccesses()
     getErrors()
-    getGroups()
   },[])
-
-  useEffect(() => {
-    let _attlist = [];
-    let _attendance = {att:0,late:0}
-    allPeopleData.map((person) => {
-      if(clickedNode.avatar_contraction_data === person.avatar_contraction_data && person.access_time.split(' ')[0] >= date[0] && person.access_time.split(' ')[0] <= date[1]){
-        _attlist = [
-          ..._attlist,
-          person
-        ]
-        if(person.access_time.split(' ')[1] > '09:00:00'){
-          _attendance = {
-            ..._attendance,
-            "late" : _attendance.late+1
-          }
-        } else {
-          _attendance = {
-            ..._attendance,
-            "att" : _attendance.att+1
-          }
-        }
-      }
-      return false;
-    })
-    setAttendance(_attendance);
-    setAttList(_attlist)
-  },[clickedNode,date])
 
   return (
     <div className={classes.root}>
@@ -262,7 +212,7 @@ const Statistics = () => {
       </Grid> :
       <Grid
         container
-        spacing={4}
+        spacing={3}
       >
         <Grid
         item
@@ -291,52 +241,21 @@ const Statistics = () => {
         </Grid>
         <Grid
           item
-          lg={6}
-          md={6}
-          xl={6}
+          lg={12}
+          md={12}
+          xl={12}
           xs={12}
         >
         <DeviceStats chartData={peopleData} date={[date[0],dateChange(date[0],1),dateChange(date[0],2),dateChange(date[0],3),dateChange(date[0],4),dateChange(date[0],5),date[1]]}/>
         </Grid>
         <Grid
           item
-          lg={6}
-          md={6}
-          xl={6}
+          lg={12}
+          md={12}
+          xl={12}
           xs={12}
         >
         <DeviceError chartData={errorData} date={[date[0],dateChange(date[0],1),dateChange(date[0],2),dateChange(date[0],3),dateChange(date[0],4),dateChange(date[0],5),date[1]]}/>
-        </Grid>
-        <Grid
-          item
-          lg={3}
-          md={3}
-          xl={3}
-          xs={12}
-        >
-          <Tree 
-          setClickedNode={_setClickedNode}
-          clickedNode={clickedNode}
-          groups={groups} 
-          />
-        </Grid>
-        <Grid
-          item
-          lg={5}
-          md={5}
-          xl={5}
-          xs={12}
-        >
-          <Attendance clickedNode={clickedNode} attendance={attendance.att} late={attendance.late}/>
-        </Grid>
-        <Grid
-          item
-          lg={4}
-          md={4}
-          xl={4}
-          xs={12}
-        >
-          <Access clickedNode={clickedNode} temp={attList}/>
         </Grid>
       </Grid>
       }

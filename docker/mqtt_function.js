@@ -8,6 +8,21 @@ require('moment-timezone');
 moment.tz.setDefault("Asia/Seoul"); 
 const mkdirp = require('mkdirp');
 const client = require('./mqtt_load');
+const canvas = require("canvas");
+const { loadImage, Canvas, Image, ImageData } = canvas;
+const fetch = require('node-fetch')
+var asyncJSON = require('async-json');
+const tf = require('@tensorflow/tfjs-node');
+//require('@tensorflow/tfjs-backend-webgl');
+const faceapi = require('@vladmandic/face-api');
+
+Promise.all([
+    // tf.setBackend('webgl'),
+    faceapi.nets.ssdMobilenetv1.loadFromDisk(`${__dirname}/schema/face-models/`),
+    faceapi.nets.faceRecognitionNet.loadFromDisk(`${__dirname}/schema/face-models/`),
+    faceapi.nets.faceLandmark68Net.loadFromDisk(`${__dirname}/schema/face-models/`),
+    faceapi.env.monkeyPatch({ Canvas, Image, ImageData,fetch: fetch }),
+])
 
 const mqtt_option = {
     retain: false,
@@ -316,20 +331,24 @@ module.exports = {
         try {
             let insert_array = [];
             let camera = await Camera.findOne( { serial_number : json.stb_sn });
-
+            let Users = await User.find();
             let empCnt = 0;
             let visitorCnt = 0;
             let blackCnt = 0;
             let strangerCnt = 0;
             
-            json.values.forEach(function(element){
+            json.values.forEach(async function(element){
                 let folder_date_path = "/uploads/accesss/temp/" + moment().format('YYYYMMDD');
                 let file_name = json.stb_sn + "_" + moment().format('YYYYMMDDHHmmss') + ".png";
                 //let upload_file_path = site.base_server_document + folder_date_path;
                 let file_path = site.base_server_document + folder_date_path + "/" + json.stb_sn + "/";
                 let upload_url = site.base_local_url+ ':3000' + folder_date_path + "/" + json.stb_sn + "/" + file_name;
                 let buff = Buffer.from(element.avatar_file, 'base64');
-                element.avatar_obid = '5ee9db4360497f4ee3dd0f4f'
+                
+                if(element.avatar_distance === undefined) {
+                    element.avatar_distance = 0
+                }
+
                 if(element.avatar_type === 1) {
                     empCnt++;
                 } else if(element.avatar_type === 2) {
@@ -341,13 +360,58 @@ module.exports = {
                 }
                 
                 mkdirp.sync(file_path);
-                fs.promises.writeFile(file_path + file_name, buff, 'utf-8')
-                if(element.avatar_obid === ""){
+                fs.writeFileSync(file_path + file_name, buff, 'utf-8')
+                // const imageDir = await canvas.loadImage(file_path + file_name)
+                const img = new Image();
+                img.src = "data:image/png;base64,"+element.avatar_file
+                console.time()
+                const detections = await faceapi.detectAllFaces(img)
+                .withFaceLandmarks()
+                .withFaceDescriptors();
+                console.timeEnd()
+                let userName = "unknown";
+                let user_obid = '';
+                if(detections.length > 0 && Users.length > 0) {
+                    const labeledDescriptors = await Promise.all(
+                        Users.map(async user => {
+                            return (
+                                new faceapi.LabeledFaceDescriptors(
+                                    user.name+"|"
+                                    +user.location+"|"
+                                    +user.department_id+"|"
+                                    +user.position+"|"
+                                    +user.mobile+"|"
+                                    +user.mail+"|"
+                                    +user.gender+"|"
+                                    +user.type+"|"
+                                    +user.avatar_file_url+"|"
+                                    +user.create_at+"|"
+                                    +user._id,
+                                    [new Float32Array(Object.values(JSON.parse(user.face_detection)))]
+                                )
+                            )
+                        })
+                    );
+    
+                    const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.6)
+                    const bestMatch = detections.map(d => faceMatcher.findBestMatch(d.descriptor))
+                    const filteredMatch = bestMatch.filter(match => match._distance < 0.5)
+                    if(filteredMatch.length > 0 && filteredMatch[0]._label !== 'unknown') {
+                        let userData = filteredMatch[0]._label.split('|')
+                        userName = userData[0]
+                        element.avatar_type = parseInt(userData[7])
+                        user_obid = userData[10]
+                    }
+                }
+
+                if(user_obid === ""){
                     insert_data = {
+                        name : userName,
                         avatar_file : element.avatar_file,
                         avatar_file_checksum : element.avatar_file_checksum,
                         avatar_type : element.avatar_type,
                         avatar_contraction_data : element.avatar_contraction_data,
+                        avatar_distance : element.avatar_distance,
                         avatar_file_url : upload_url,
                         avatar_temperature : element.avatar_temperature,
                         access_time : moment().format('YYYY-MM-DD HH:mm:ss'),
@@ -356,18 +420,21 @@ module.exports = {
                     };
                 }else{
                     insert_data = {
+                        name : userName,
                         avatar_file : element.avatar_file,
                         avatar_file_checksum : element.avatar_file_checksum,
                         avatar_type : element.avatar_type,
+                        avatar_distance : element.avatar_distance,
                         avatar_contraction_data : element.avatar_contraction_data,
                         avatar_file_url : upload_url,
-                        user_obid : element.avatar_obid, 
+                        user_obid : user_obid, 
                         avatar_temperature : element.avatar_temperature,
                         access_time : moment().format('YYYY-MM-DD HH:mm:ss'),
                         stb_sn : json.stb_sn,
                         stb_obid : camera._id
                     };
                 }
+
                 //new mongoose.Types.ObjectId()
                 insert_array.push(insert_data);
             })
@@ -411,6 +478,7 @@ module.exports = {
                 stb_sn: json.stb_sn,
                 values: insert_array
             };
+            // avatar_temperature name avatar_file_url access_time avatar_type
             client.publish('/access/realtime/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
 
             let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 7, log_message: 'realtime_access', create_dt: json.create_time });

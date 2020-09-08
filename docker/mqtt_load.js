@@ -6,7 +6,7 @@ const site = JSON.parse(site_info_json);
 
 const client = mqtt.connect({
     clientId: "core-mqtt-demon",
-    clean: false,
+    clean: true,
     keepalive: 60,
     reconnectPeriod: 5000,
     connectTimeout: 15000,

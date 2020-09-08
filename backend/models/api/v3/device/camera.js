@@ -5,7 +5,7 @@ moment.tz.setDefault("Asia/Seoul");
 const ObjectId = mongoose.Schema.Types.ObjectId
 
 const api_v3_device_camera_Schema = new mongoose.Schema({
-    gateway_obid : {type:ObjectId, ref: 'gateway', required: true},
+    // gateway_obid : {type:ObjectId, ref: 'gateway', required: false},
     serial_number : { type: String, required: true },
     name : { type: String, required: true },
     protocol : { type: Number, required: true },
@@ -16,6 +16,7 @@ const api_v3_device_camera_Schema = new mongoose.Schema({
     url : { type: String },
     ip : { type: String },
     port : { type: Number },
+    authority : { type: String },
     description : { type: String },
     groups_obids : [{type:ObjectId, ref: 'group'}],
     group_count : { type: Number },

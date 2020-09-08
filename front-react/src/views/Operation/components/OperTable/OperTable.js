@@ -65,7 +65,7 @@ const OperTable = props => {
                 <TableRow>
                   <TableCell>아이디</TableCell>
                   <TableCell>날짜</TableCell>
-                  <TableCell>행동</TableCell>
+                  <TableCell>동작</TableCell>
                   <TableCell>상세</TableCell>
                 </TableRow>
               </TableHead>

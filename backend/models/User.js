@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
     user_lang: String,
     user_name: String,
     salt : String,
+    authority : String,
 })
 
 module.exports = mongoose.model('account', userSchema)

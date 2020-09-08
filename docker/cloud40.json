@@ -5,12 +5,12 @@
     "base_local_url": "http://172.16.135.89",
     "local_url": "172.16.135.89",
 
-    "mongodb_host": "mongodb",
+    "mongodb_host": "172.16.135.89",
     "mongodb_user": "kool",
     "mongodb_passwd": "master",
     "mongodb_database": "cloud40",
 
-    "mqtt_host": "emq-master1",
+    "mqtt_host": "172.16.135.89",
     "mqtt_user": "cloud40_core_web",
     "mqtt_passwd" : "masterQ!W@E#R$",
     "mqtt_port": 1883,

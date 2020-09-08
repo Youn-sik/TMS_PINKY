@@ -84,6 +84,7 @@ const EditDevice = (props) => {
         await axios.post('http://172.16.135.89:3000/camera',{
             ...device,
             account : props.user_id,
+            authority : props.authority
         })
         window.alert('단말기 등록 완료.')
         history.push('/device/list')
@@ -182,7 +183,7 @@ const EditDevice = (props) => {
                             />
                             </div>
                             <div style={{width: '100%',textAlign:'center',marginTop:"15px"}}>    
-                                <Button variant="contained" color="primary" onClick={addDevice}>추가</Button>
+                                <Button variant="contained" color="primary" onClick={addDevice}>수정</Button>
                             </div>
                         </div>
                     </CardContent>

@@ -80,6 +80,10 @@ const Sidebar = props => {
         {
           title:'미등록자 관리',
           href:'/users/stranger'
+        },
+        {
+          title:'얼굴 인식',
+          href:'/users/face-detection'
         }
       ],
       icon: <PeopleIcon />
@@ -104,7 +108,17 @@ const Sidebar = props => {
     },
     {
       title: '통계',
-      href:'/stats/device',
+      // href:'/stats/device',
+      children:[
+        {
+          title:"단말기 통계",
+          href:'/stats/device'
+        },
+        {
+          title:'사용자 통계',
+          href:'/stats/users'
+        },
+      ],
       icon: <InsertChartIcon />
     },
     {

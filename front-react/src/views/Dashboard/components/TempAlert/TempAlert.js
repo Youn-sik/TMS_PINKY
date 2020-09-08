@@ -35,7 +35,14 @@ const useStyles = makeStyles(() => ({
   },
   temp:{
     width:"15px"
-  }
+  },
+  highTempRow:{
+    borderLeft:'3px solid red',
+    background : 'rgba(255, 204, 204, 0.575)',
+  },
+  redFont:{
+    color:'red'
+  },
 }));
 
 const TempAlert = props => {
@@ -50,7 +57,7 @@ const TempAlert = props => {
       style={{overflow: 'auto'}}
     >
       <CardHeader
-        title="온도 경고"
+        title="실시간 출입 정보"
       />
       <Divider />
       <CardContent className={classes.content}>
@@ -59,31 +66,53 @@ const TempAlert = props => {
               <TableHead>
                 <TableRow>
                   <TableCell>사진</TableCell>
+                  <TableCell>이름</TableCell>
                   <TableCell>온도</TableCell>
-                  <TableCell>타입,날짜</TableCell>
+                  <TableCell>타입</TableCell>
+                  <TableCell>날짜</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {props.temp.map(person => (
+                {props.temp.map(access => (
+                  access.avatar_temperature >= 37.5 ?
+                  <TableRow
+                  className={classes.highTempRow}
+                  key={access._id}
+                >
+                  <TableCell>                
+                    <img
+                      alt="picture"
+                      className={classes.image}
+                      src={access.avatar_file_url}
+                  /></TableCell>
+                  <TableCell className={classes.redFont}>{access.name === 'unknown' ? null : access.name}</TableCell>
+                  <TableCell className={classes.redFont}>{String(access.avatar_temperature).substring(0,4)}</TableCell>
+                  <TableCell className={classes.redFont}>
+                    {access.avatar_type === 1 ? "사원" :
+                    access.avatar_type === 2 ? '방문자' :
+                    access.avatar_type === 3 ? '미등록자' : '블랙리스트'} 
+                  </TableCell>
+                  <TableCell className={classes.redFont}>{access.access_time}</TableCell>
+                </TableRow>
+                :
                   <TableRow
                     hover
-                    key={person._id}
+                    key={access._id}
                   >
                     <TableCell>                
                       <img
                         alt="Product"
                         className={classes.image}
-                        src={person.avatar_file_url}
-                      /></TableCell>
-                    <TableCell>{String(person.avatar_temperature).substring(0,4)}</TableCell>
+                        src={access.avatar_file_url}
+                    /></TableCell>
+                    <TableCell>{access.name === 'unknown' ? null : access.name}</TableCell>
+                    <TableCell>{String(access.avatar_temperature).substring(0,4)}</TableCell>
                     <TableCell>
-                      <ListItemText
-                        primary={person.avatar_type === 1 ? "사원" :
-                                person.avatar_type === 2 ? '방문자' :
-                                person.avatar_type === 3 ? '미등록자' : '블랙리스트'}
-                        secondary={`${person.access_time} 출입`}
-                      />  
+                      {access.avatar_type === 1 ? "사원" :
+                      access.avatar_type === 2 ? '방문자' :
+                      access.avatar_type === 3 ? '미등록자' : '블랙리스트'} 
                     </TableCell>
+                    <TableCell>{access.access_time}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

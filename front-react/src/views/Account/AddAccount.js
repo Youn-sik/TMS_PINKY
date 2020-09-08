@@ -60,7 +60,9 @@ const AddAccount = (props) => {
         user_id : '',
         user_lang : 'KOR',
         user_pw : '',
-        pw_chk : ''
+        pw_chk : '',
+        authority : props.authority === 'admin' ? 
+        'admin' : 'user'
     })
 
     const handleChange = (event) => {
@@ -77,6 +79,7 @@ const AddAccount = (props) => {
       else if(accountInfo.pw_chk === '') alert('직급을 입력해주세요')
       else if(accountInfo.user_pw !== accountInfo.pw_chk) alert('비밀번호가 다릅니다')
       else {
+
         await axios.post('http://172.16.135.89:3000/account',{
           ...accountInfo,
           account : props.user_id,
@@ -135,6 +138,7 @@ const AddAccount = (props) => {
                               required 
                               onChange={handleChange}
                               id="standard-required" 
+                              type="password"
                               label="비밀번호"
                               />
                             </div>
@@ -146,6 +150,7 @@ const AddAccount = (props) => {
                               required 
                               id="standard-required" 
                               onChange={handleChange}
+                              type="password"
                               label="비밀번호 확인"
                             />
                             </div>
@@ -160,6 +165,7 @@ const AddAccount = (props) => {
                               value={accountInfo.user_pw} 
                               style={{width:'100%'}} 
                               required 
+                              type="password"
                               onChange={handleChange}
                               id="standard-required" 
                               label="비밀번호"
@@ -173,6 +179,7 @@ const AddAccount = (props) => {
                               value={accountInfo.pw_chk} 
                               style={{width:'100%'}} 
                               required 
+                              type="password"
                               id="standard-required" 
                               onChange={handleChange}
                               label="비밀번호 확인"
@@ -180,7 +187,17 @@ const AddAccount = (props) => {
                             </div> 
                           </div>
                         }
-
+                        <Select
+                        name="authority"
+                        value={accountInfo.authority}
+                      style={{width:'100%',marginTop:15}} 
+                        onChange={handleChange}
+                        >
+                          {props.authority === 'admin' ? <MenuItem value={"admin"}>관리자</MenuItem> : null}
+                          {props.authority.split('-')[0] === 'manager' || 
+                          props.authority === 'admin' ? <MenuItem value={"manager-"+accountInfo.user_id}>매니저</MenuItem> : null}
+                          <MenuItem value={props.authority+"-user-"+accountInfo.user_id}>사용자</MenuItem>
+                        </Select>
                         <Select
                         name="user_lang"
                         value={accountInfo.user_lang}

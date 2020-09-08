@@ -49,7 +49,7 @@ const Stranger = () => {
     result.data.reverse()
     setOriginAcc(result.data)
     setAccesses(result.data.filter(i => i.access_time.split(' ')[0] === date[0]))
-    console.log(result.data);
+    setAllAcc(result.data.filter(i => i.access_time.split(' ')[0] === date[0]))
     setLoading(false);
   }
 

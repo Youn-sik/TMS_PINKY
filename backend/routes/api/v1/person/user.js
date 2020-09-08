@@ -7,10 +7,26 @@ const Access = require('../../../../models/api/v1/person/access')
 const History = require('../../../../models/api/v1/person/history')
 const Operation = require('../../../../models/api/v1/person/operation')
 const crypto = require('crypto');
+
+const canvas = require("canvas");
+const { loadImage, Canvas, Image, ImageData } = canvas;
+const tf = require('@tensorflow/tfjs-node');
+const faceapi = require('@vladmandic/face-api');
+const fetch = require('node-fetch')
+var asyncJSON = require('async-json');
+
 var fs = require('fs')
 var moment = require('moment');
 require('moment-timezone'); 
 moment.tz.setDefault("Asia/Seoul"); 
+
+Promise.all([
+    // tf.setBackend('webgl'),
+    faceapi.nets.ssdMobilenetv1.loadFromDisk(`${__dirname}/face-models/`),
+    faceapi.nets.faceRecognitionNet.loadFromDisk(`${__dirname}/face-models/`),
+    faceapi.nets.faceLandmark68Net.loadFromDisk(`${__dirname}/face-models/`),
+    faceapi.env.monkeyPatch({ Canvas, Image, ImageData,fetch: fetch }),
+])
 
 router.get('/',async function(req, res) {
     try {
@@ -54,10 +70,22 @@ router.post('/',async function(req, res) {
             add.avatar_file_url = overlap_check.avatar_file_url;
             add.avatar_file_checksum = overlap_check.avatar_file_checksum;
             add.avatar_contraction_data = overlap_check.avatar_contraction_data;
+            add.face_detection = overlap_check.face_detection;
         } else {
             fs.writeFileSync('image/'+add._id+'profile.jpg',add.avatar_file,'base64')
-            add.avatar_file_url = 'http://172.16.135.89:3000/image/'+add._id+'profile.jpg';
+            const imageDir = await canvas.loadImage('image/'+add._id+'profile.jpg')
+            
+            const detections = await faceapi.detectAllFaces(imageDir)
+            .withFaceLandmarks()
+            .withFaceDescriptors();
 
+            console.log(detections);
+            asyncJSON.stringify(detections[0].descriptor,function(err, jsonValue) {
+                add.face_detection = jsonValue;
+            })
+            
+            
+            add.avatar_file_url = 'http://172.16.135.89:3000/image/'+add._id+'profile.jpg';
             //sha256 checksum
             let file_buffer = fs.readFileSync(__dirname+'/../../../../image/'+add._id+'profile.jpg');
             let sum = crypto.createHash('sha256');
@@ -139,6 +167,15 @@ router.put('/:id',async function(req, res) {
 
         const id = req.params === undefined ? req.id : req.params.id
         const update_data = req.body === undefined ? req : req.body
+
+        const imageDir = await canvas.loadImage('image/'+req.body._id+'profile_updated_'+moment().format('YYYY-MM-DD_HH:mm:ss')+'.jpg')
+        const detections = await faceapi.detectSingleFace(imageDir)
+        .withFaceLandmarks()
+        .withFaceDescriptor();
+        asyncJSON.stringify(detections.descriptor,function(err, jsonValue) {
+            update_data.face_detection = jsonValue;
+        })
+        
         update_data.groups_obids = req.body.clicked_groups;
         update_data.update_at = moment().format('YYYY-MM-DD HH:mm:ss');
         update_data.update_ut = Date.now();

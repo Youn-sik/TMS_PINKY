@@ -12,9 +12,9 @@ const RouteWithLayout = props => {
         Layout ? 
         (
           <Layout>
-            <Component user_id={props.user_id} {...matchProps} />
-          </Layout>
-        ) : (<Component user_id={props.user_id} {...matchProps} />)}
+            <Component authority={props.authority} getAuth={props.getAuth} user_id={props.user_id} {...matchProps} />
+          </Layout> 
+        ) : (<Component authority={props.authority} getAuth={props.getAuth} user_id={props.user_id} {...matchProps} />)}
     />
   );
 };

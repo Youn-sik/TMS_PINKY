@@ -51,12 +51,12 @@ const Access = props => {
   const data = {
     datasets: [
       {
-        data: [props.employee,props.visitor,props.black,props.stranger],
+        data: [props.stranger,props.employee,props.visitor,props.black],
         backgroundColor: [
+          '#bdbdbd',
           theme.palette.primary.main,
-          theme.palette.success.main,
           theme.palette.error.main,
-          '#bdbdbd'
+          theme.palette.success.main,
         ],
         borderWidth: 8,
         borderColor: theme.palette.white,
@@ -68,7 +68,18 @@ const Access = props => {
 
   const options = {
     legend: {
-      display: false
+      display: false,
+      onHover: function(e) {
+        console.log(e.target.style)
+        e.target.style.cursor = 'pointer';
+     }
+    },
+    hover: {
+      onHover: function(e) {
+         var point = this.getElementAtEvent(e);
+         if (point.length) e.target.style.cursor = 'pointer';
+         else e.target.style.cursor = 'default';
+      }
     },
     responsive: true,
     maintainAspectRatio: false,
@@ -134,6 +145,7 @@ const Access = props => {
        {props.employee + props.visitor + props.black + props.stranger !== 0 ?
         <div className={classes.chartContainer}>
           <Doughnut
+            onElementsClick={() => {props.history.push('access/records')}}
             data={data}
             options={options}
           />

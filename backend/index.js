@@ -11,9 +11,17 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const path = require('path');
 const crypto = require('crypto')
+const tf = require('@tensorflow/tfjs-node');
+const faceapi = require('@vladmandic/face-api');
 const { spawn } = require('child_process');
+const fetch = require('node-fetch')
+const multer = require('multer');
+const canvas = require("canvas");
+const { loadImage, Canvas, Image, ImageData } = canvas;
+const fs = require('fs');
 //model
 const User = require('./models/User')
+const Users = require('./models/api/v1/person/user')//등록된 사용자 목록
 
 //router
 const usersRouter = require('./routes/api/v1/person/user');
@@ -66,18 +74,78 @@ const swaggerUi = require('swagger-ui-express');
  
 fastify.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// fastify.get('/strea',function(req,res) {
-//     var parser = m3u8.createStream();
-//     var file   = fs.createReadStream('/media/jeon/data/stream/index.m3u8');
-//     file.pipe(parser);
+Promise.all([
+    // tf.setBackend('webgl'),
+    faceapi.nets.ssdMobilenetv1.loadFromDisk(`${__dirname}/face-models/`),
+    faceapi.nets.faceRecognitionNet.loadFromDisk(`${__dirname}/face-models/`),
+    faceapi.nets.faceLandmark68Net.loadFromDisk(`${__dirname}/face-models/`),
+    faceapi.env.monkeyPatch({ Canvas, Image, ImageData,fetch: fetch }),
+])
 
-//     parser.on('item', function(item) {
-//     // emits PlaylistItem, MediaItem, StreamItem, and IframeStreamItem
-//     });
-//     parser.on('m3u', function(m3u) {
-//     // fully parsed m3u file
-//     });
-// })
+const upload = multer({ storage: multer.memoryStorage() });
+
+fastify.post('/face-detect',upload.single('image'),async function (req, res) {
+    const UserList = await Users.find();
+    const imageBase64 = await req.file.buffer.toString('base64'); //사진 데이터 base64로 변경
+    
+    const img = new Image();
+    img.src = await "data:"+req.file.type+";base64,"+imageBase64 //이미지 태그 생성
+
+    console.time()
+    const detections = await faceapi.detectAllFaces(img) //얼굴 인식
+    .withFaceLandmarks()
+    .withFaceDescriptors();
+    console.timeEnd();
+    
+
+    // const labeledDescriptors = await Promise.all(
+    //     UserList.map(async user => {
+    //         const imageDir = await canvas.loadImage(user.avatar_file_url.replace('http://172.16.135.89:3000','.'))
+    //         const detections = await faceapi.detectSingleFace(imageDir)
+    //         .withFaceLandmarks()
+    //         .withFaceDescriptor();
+    //         return (
+    //             new faceapi.LabeledFaceDescriptors(
+    //                 String(user._id),
+    //                 [detections.descriptor]
+    //             )
+    //         )
+    //     })
+    // ); //db에서 얼굴 데이터 가져오기
+
+    const labeledDescriptors = await Promise.all(
+        UserList.map(async user => {
+            return (
+                new faceapi.LabeledFaceDescriptors(
+                    user.name+"|"
+                    +user.location+"|"
+                    +user.department_id+"|"
+                    +user.position+"|"
+                    +user.mobile+"|"
+                    +user.mail+"|"
+                    +user.gender+"|"
+                    +user.type+"|"
+                    +user.avatar_file_url+"|"
+                    +user.create_at,
+                    [new Float32Array(Object.values(JSON.parse(user.face_detection)))]
+                    
+                )
+            )
+        })
+    ); //db에서 얼굴 데이터 가져오기
+
+    // console.log(labeledDescriptors);
+    // console.log(JSON.stringify(labeledDescriptors[0]),new Float32Array(Object.values(JSON.parse(JSON.stringify(labeledDescriptors[0])))));
+
+    //얼굴,라벨 매치
+    const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.6)
+    const bestMatch = detections.map(d => faceMatcher.findBestMatch(d.descriptor)) 
+    
+    const filteredMatch = bestMatch.filter(d => d._distance < 0.5)
+
+    res.send(filteredMatch);
+})
+
 let child;
 fastify.post('/strat', async function(req, res) {
     let temp = '-v info -i '+req.body.uri+' -c:v copy -c:a copy -bufsize 1835k -pix_fmt yuv420p -flags -global_header -hls_time 10 -hls_list_size 6 -hls_wrap 10 -start_number 1 /var/www/backend/videos/'+req.body.sn+'.m3u8'
@@ -92,14 +160,15 @@ fastify.post('/login', async function(req, res) {
         crypto.pbkdf2(user_pw, user.salt, 105614, 64, 'sha512', (err, key) => {
             if(key.toString('base64') === user.user_pw) {
                 let token = jwt.sign({
-                        user_id:user.id
+                        user_id:user.id,
+                        authority: user.authority,
                     },
-                    'jjh',//시크릿 키 배포시 가려야 함
+                    'jjh',
                     {
                         expiresIn:'10h'
                     }
                 )
-                res.send({"token":token})
+                res.send({"token":token,authority : user.authority})
             } else {
                 res.status(400)
                 res.send({err:"존재하지 않는 계정입니다"})
@@ -130,93 +199,15 @@ fastify.get('/auth', async function(req, res) {
             auth = false;
         }
     }
-    res.send({auth,user_id:tokenAuth.user_id});
+    res.send({auth, user_id:tokenAuth.user_id, authority : tokenAuth.authority});
 });
 
-// new hls(server, {
-//     provider: {
-//         exists: (req, cb) => {
-//             const ext = req.url.split('.').pop();
 
-//             if (ext !== 'm3u8' && ext !== 'ts') {
-//                 return cb(null, true);
-//             }
-
-//             fs.access(__dirname + req.url, fs.constants.F_OK, function (err) {
-//                 if (err) {
-//                     console.log('File not exist');
-//                     return cb(null, false);
-//                 }
-//                 cb(null, true);
-//             });
-//         },
-//         getManifestStream: (req, cb) => {
-//             const stream = fs.createReadStream(__dirname + req.url);
-//             cb(null, stream);
-//         },
-//         getSegmentStream: (req, cb) => {
-//             const stream = fs.createReadStream(__dirname + req.url);
-//             cb(null, stream);
-//         }
-//     }
-// });
-// const context = (req) => {
-//     let token = req.headers.authorization;
-//     if(token === undefined && req.headers.cookie !== undefined) {
-//         token = cookie.parse(req.headers.cookie).token;
-//     }
-//     let auth;
-//     if(token === ''){
-//         auth = false;
-//     } else {
-//         try {
-//             let tokenAuth = jwt.verify(token,'jjh');
-//             auth = true;
-//         } catch(err) {
-//             auth = false;
-//         }
-//     }
-//     return {auth};
-// }
-
-// fastify.use('/graphiql', 
-//     graphqlHTTP( (req,res) =>({
-//         schema: schema,
-//         graphiql: true,
-//         context : context(req),
-//     }))
-// );
-
-// fastify.route({
-//     method: 'GET',
-//     url: '/token_auth',
-//     handler: function (request, reply) {
-//         let auth
-//         try {
-//             let tokenAuth = jwt.verify(request.query.token,'jjh');
-//             auth = true;
-//         } catch (err) {
-//             auth = false;
-//         }
-        
-//         reply.send({ auth: auth });
-//     }
-//   })
 
 //const mongoose = require('mongoose')
 const routes = require('./routes')
 const swagger = require('./config/swagger')
-// fastify.register(require('fastify-swagger'), swagger.options)
 
-// Connect to DB
-/*mongoose.connect(`mongodb://localhost/cloud40`)
-.then(() => console.log(`MongoDB connected…`))
-.catch(err => console.log(err))
-*/
-
-// routes.forEach((route, index) => {
-//     fastify.route(route)
-// })
 // Run the server!
 const start = async () => {
     try {

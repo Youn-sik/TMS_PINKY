@@ -131,7 +131,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const SignIn = props => {
-  const { history } = props;
+  const { history,getAuth } = props;
 
   const classes = useStyles();
 
@@ -154,7 +154,6 @@ const SignIn = props => {
 
   useEffect(() => {
     const errors = validate(formState.values, schema);
-
     setFormState(formState => ({
       ...formState,
       isValid: errors ? false : true,
@@ -387,8 +386,10 @@ const SignIn = props => {
           user_id : formState.values.id,
           user_pw : formState.values.password
         })
+        // props.getAuth(result.data.authority);
         if(result.data.token) {
           document.cookie = 'token=' + result.data.token;
+          props.getAuth(result.data.authority);
           history.push('/');
         } else {
           alert('존재하지 않는 계정 입니다');
@@ -525,9 +526,6 @@ const SignIn = props => {
       </Grid>
     </div>
   );
-};
-SignIn.propTypes = {
-  history: PropTypes.object
 };
 
 export default withRouter(SignIn);

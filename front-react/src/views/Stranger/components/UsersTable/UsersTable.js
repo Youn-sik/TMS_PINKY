@@ -110,7 +110,7 @@ const UsersTable = props => {
                           <TableCell>
                             <RouterLink style={{ textDecoration: 'none' }} to={{
                             pathname:"/users/stranger/add",
-                            userObject:access,
+                            userObject:{avatar_file_url : access.avatar_file_url , _id : access.avatar_file_url},
                             }}><Button variant="contained" color="primary">등록</Button></RouterLink>
                           </TableCell>
                         </TableRow>

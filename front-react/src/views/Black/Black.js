@@ -155,7 +155,7 @@ const Black = (props) => {
         data:{
           type:5,
           selectedData:selectedUsers,
-          account : 'admin' // to do :나중에 계정 정보 넣을것
+          account : props.user_id // to do :나중에 계정 정보 넣을것
         }
       })
 

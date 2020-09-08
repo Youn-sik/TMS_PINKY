@@ -58,7 +58,7 @@ const useStyles = makeStyles(theme => ({
 const AddDevice = (props) => {
   const classes = useStyles();
   const history = props.history;
-  const [selectedValue, setSelectedValue] = useState('gate');
+  const [selectedValue, setSelectedValue] = useState('device');
   const [gateway,setGateway] = useState([])
   const [device, setDevice] = useState({
     name : '',
@@ -107,6 +107,7 @@ const AddDevice = (props) => {
     await axios.post('http://172.16.135.89:3000/camera',{
       ...device,
       account : props.user_id,
+      authority : props.authority
     })
     window.alert('단말기 등록 완료.')
     history.push('/device/list')
@@ -126,7 +127,7 @@ const AddDevice = (props) => {
   const renderDevice = () => {
     return (
       <div>
-        <FormControl style={{width: '100%'}}>
+        {/* <FormControl style={{width: '100%'}}>
           <InputLabel id="gatewaySelector">게이트웨이</InputLabel>
           <Select
             name="gateway_obid"
@@ -139,7 +140,7 @@ const AddDevice = (props) => {
                 <MenuItem value={i._id}>{i.name}</MenuItem>
               ))}
           </Select>
-        </FormControl>
+        </FormControl> */}
         <div style={{width: '100%'}}>
           <TextField 
           name="name"
@@ -267,7 +268,7 @@ const AddDevice = (props) => {
           >
               <Card>
                   <CardContent style={{width: '50%', margin:'0 auto'}}>
-                    <div style={{width: '100%',textAlign:'center'}}>
+                    {/* <div style={{width: '100%',textAlign:'center'}}>
                       <Radio
                         checked={selectedValue === 'gate'}
                         onChange={handleRadioChange}
@@ -282,7 +283,7 @@ const AddDevice = (props) => {
                         name="radio-button-demo"
                         inputProps={{ 'aria-label': 'Device' }}
                       />단말기
-                    </div>
+                    </div> */}
                       {selectedValue === 'gate' ? renderGate() : renderDevice()}
                       {/* <Select
                           name="gender"

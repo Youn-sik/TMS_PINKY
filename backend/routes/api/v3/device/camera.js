@@ -9,7 +9,13 @@ moment.tz.setDefault("Asia/Seoul");
 
 router.get('/',async function(req, res) {
     try {
-        const get_data = await api_v3_device_camera.find().populate('gateway_obid')
+        let get_data;
+        if(req.query.authority === 'admin') {
+            get_data = await api_v3_device_camera.find().populate('gateway_obid')
+        } else {
+            get_data = await api_v3_device_camera.find().populate('gateway_obid')
+                .where('authority').equals(req.query.authority);
+        }
         res.send(get_data)
     } catch (err) {
         throw boom.boomify(err)
