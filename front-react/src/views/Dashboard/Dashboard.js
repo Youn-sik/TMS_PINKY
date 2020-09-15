@@ -48,7 +48,7 @@ const Dashboard = (props) => {
   const [late,setLate] = useState(0)
 
   //에러
-  const [errors,setErrors] = useState([{}])
+  const [errors,setErrors] = useState([])
 
   //온도 경고
   const [temp,setTemp] = useState([{}])
@@ -269,7 +269,7 @@ const Dashboard = (props) => {
           xl={6}
           xs={12}
         >
-          <TempAlert history={props.history} temp={temp}/>
+          <TempAlert tempType={props.tempType} tempLimit={props.tempLimit} history={props.history} temp={temp}/>
         </Grid>
       </Grid>}
     </div>

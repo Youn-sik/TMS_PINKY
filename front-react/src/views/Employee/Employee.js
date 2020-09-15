@@ -20,6 +20,7 @@ const Employee = (props) => {
   const [clickedNode,setClickedNode] = useState({});
   const [count,setCount] = useState(true);
   const [selectedNode , setSelectedNode] = useState([]);
+  const [activeType,setActiveType] = useState('create_at');
   const classes = useStyles();
 
   const filterGroup = useCallback((groups) => {
@@ -39,6 +40,239 @@ const Employee = (props) => {
     })
     return temp
   },[search])
+
+  const sortAccesses = (type,headerType) => {
+    setActiveType(headerType)
+    if(search === ''){
+      if(headerType === 'name') {
+        if(type === 'asc'){
+          setUsers(users.sort((a,b) => {
+            if (a.name < b.name) return -1;
+            else if (b.name < a.name) return 1;
+            else return 0;
+          }))
+        } else {
+          setUsers(users.sort((a,b) => {
+            if (a.name > b.name) return -1;
+            else if (b.name > a.name) return 1;
+            else return 0;
+          }))
+        }
+      } else if(headerType === 'gender') {
+        if(type === 'asc'){
+          setUsers(users.sort((a,b) => {
+            if (a.gender < b.gender) return -1;
+            else if (b.gender < a.gender) return 1;
+            else return 0;
+          }))
+        } else {
+          setUsers(users.sort((a,b) => {
+            if (a.gender > b.gender) return -1;
+            else if (b.gender > a.gender) return 1;
+            else return 0;
+          }))
+        }
+      } else if(headerType === 'location') {
+        if(type === 'asc'){
+          setUsers(users.sort((a,b) => {
+            if (a.location < b.location) return -1;
+            else if (b.location < a.location) return 1;
+            else return 0;
+          }))
+        } else {
+          setUsers(users.sort((a,b) => {
+            if (a.location > b.location) return -1;
+            else if (b.location > a.location) return 1;
+            else return 0;
+          }))
+        }
+      } else if(headerType === 'depart') {
+        if(type === 'asc'){
+          setUsers(users.sort((a,b) => {
+            if (a.department_id < b.department_id) return -1;
+            else if (b.department_id < a.department_id) return 1;
+            else return 0;
+          }))
+        } else {
+          setUsers(users.sort((a,b) => {
+            if (a.department_id > b.department_id) return -1;
+            else if (b.department_id > a.department_id) return 1;
+            else return 0;
+          }))
+        }
+      }else if(headerType === 'position') {
+        if(type === 'asc'){
+          setUsers(users.sort((a,b) => {
+            if (a.position < b.position) return -1;
+            else if (b.position < a.position) return 1;
+            else return 0;
+          }))
+        } else {
+          setUsers(users.sort((a,b) => {
+            if (a.position > b.position) return -1;
+            else if (b.position > a.position) return 1;
+            else return 0;
+          }))
+        }
+      } else if(headerType === 'mobile') {
+        if(type === 'asc'){
+          setUsers(users.sort((a,b) => {
+            if (a.mobile < b.mobile) return -1;
+            else if (b.mobile < a.mobile) return 1;
+            else return 0;
+          }))
+        } else {
+          setUsers(users.sort((a,b) => {
+            if (a.mobile > b.mobile) return -1;
+            else if (b.mobile > a.mobile) return 1;
+            else return 0;
+          }))
+        }
+      }else if(headerType === 'mail') {
+        if(type === 'asc'){
+          setUsers(users.sort((a,b) => {
+            if (a.mail < b.mail) return -1;
+            else if (b.mail < a.mail) return 1;
+            else return 0;
+          }))
+        } else {
+          setUsers(users.sort((a,b) => {
+            if (a.mail > b.mail) return -1;
+            else if (b.mail > a.mail) return 1;
+            else return 0;
+          }))
+        }
+      }else if(headerType === 'create_at') {
+        if(type === 'asc'){
+          setUsers(users.sort((a,b) => {
+            if (a.create_at < b.create_at) return -1;
+            else if (b.create_at < a.create_at) return 1;
+            else return 0;
+          }))
+        } else {
+          setUsers(users.sort((a,b) => {
+            if (a.create_at > b.create_at) return -1;
+            else if (b.create_at > a.create_at) return 1;
+            else return 0;
+          }))
+        }
+      }
+    } else {
+      if(headerType === 'name') {
+        if(type === 'asc'){
+          setFilteredUsers(filteredUsers.sort((a,b) => {
+            if (a.name < b.name) return -1;
+            else if (b.name < a.name) return 1;
+            else return 0;
+          }))
+        } else {
+          setFilteredUsers(filteredUsers.sort((a,b) => {
+            if (a.name > b.name) return -1;
+            else if (b.name > a.name) return 1;
+            else return 0;
+          }))
+        }
+      } else if(headerType === 'gender') {
+        if(type === 'asc'){
+          setFilteredUsers(filteredUsers.sort((a,b) => {
+            if (a.gender < b.gender) return -1;
+            else if (b.gender < a.gender) return 1;
+            else return 0;
+          }))
+        } else {
+          setFilteredUsers(filteredUsers.sort((a,b) => {
+            if (a.gender > b.gender) return -1;
+            else if (b.gender > a.gender) return 1;
+            else return 0;
+          }))
+        } 
+      } else if(headerType === 'location') {
+        if(type === 'asc'){
+          setFilteredUsers(filteredUsers.sort((a,b) => {
+            if (a.location < b.location) return -1;
+            else if (b.location < a.location) return 1;
+            else return 0;
+          }))
+        } else {
+          setFilteredUsers(filteredUsers.sort((a,b) => {
+            if (a.location > b.location) return -1;
+            else if (b.location > a.location) return 1;
+            else return 0;
+          }))
+        }
+      } else if(headerType === 'depart') {
+        if(type === 'asc'){
+          setFilteredUsers(filteredUsers.sort((a,b) => {
+            if (a.department_id < b.department_id) return -1;
+            else if (b.department_id < a.department_id) return 1;
+            else return 0;
+          }))
+        } else {
+          setFilteredUsers(filteredUsers.sort((a,b) => {
+            if (a.department_id > b.department_id) return -1;
+            else if (b.department_id > a.department_id) return 1;
+            else return 0;
+          }))
+        }
+      }else if(headerType === 'position') {
+        if(type === 'asc'){
+          setFilteredUsers(filteredUsers.sort((a,b) => {
+            if (a.position < b.position) return -1;
+            else if (b.position < a.position) return 1;
+            else return 0;
+          }))
+        } else {
+          setFilteredUsers(filteredUsers.sort((a,b) => {
+            if (a.position > b.position) return -1;
+            else if (b.position > a.position) return 1;
+            else return 0;
+          }))
+        }
+      } else if(headerType === 'mobile') {
+        if(type === 'asc'){
+          setFilteredUsers(filteredUsers.sort((a,b) => {
+            if (a.mobile < b.mobile) return -1;
+            else if (b.mobile < a.mobile) return 1;
+            else return 0;
+          }))
+        } else {
+          setFilteredUsers(filteredUsers.sort((a,b) => {
+            if (a.mobile > b.mobile) return -1;
+            else if (b.mobile > a.mobile) return 1;
+            else return 0;
+          }))
+        }
+      }else if(headerType === 'mail') {
+        if(type === 'asc'){
+          setFilteredUsers(filteredUsers.sort((a,b) => {
+            if (a.mail < b.mail) return -1;
+            else if (b.mail < a.mail) return 1;
+            else return 0;
+          }))
+        } else {
+          setFilteredUsers(filteredUsers.sort((a,b) => {
+            if (a.mail > b.mail) return -1;
+            else if (b.mail > a.mail) return 1;
+            else return 0;
+          }))
+        }
+      }else if(headerType === 'create_at') {
+        if(type === 'asc'){
+          setFilteredUsers(filteredUsers.sort((a,b) => {
+            if (a.create_at < b.create_at) return -1;
+            else if (b.create_at < a.create_at) return 1;
+            else return 0;
+          }))
+        } else {
+          setFilteredUsers(filteredUsers.sort((a,b) => {
+            if (a.create_at > b.create_at) return -1;
+            else if (b.create_at > a.create_at) return 1;
+            else return 0;
+          }))
+        }
+      }
+    }
+  }
 
   const filterUsers = useCallback((users) => {
     let temp = []
@@ -156,7 +390,7 @@ const Employee = (props) => {
         data:{
           type:1,
           selectedData:selectedUsers,
-          account : props.user_id // to do :나중에 계정 정보 넣을것
+          account : props.user_id
         }
       })
 
@@ -179,7 +413,6 @@ const Employee = (props) => {
       }
       await setUsers(temp);
       
-      console.log(clickedNode);
       let groups_list = clickedNode.children.filter(child => Array.isArray(child.children))
       let groups_length = groups_list.length
       clickedNode.children.splice(groups_length)
@@ -227,7 +460,8 @@ const Employee = (props) => {
           xs={12}
         >
           {/* <AccountDetails users={users}/> */}
-          <UsersTable 
+          <UsersTable
+          activeType={activeType} sortAccesses={sortAccesses}
           setClickedNode={_setClickedNode} 
           clickedNode={clickedNode} 
           setUsers={_setUsers}  

@@ -1,6 +1,5 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import clsx from 'clsx';
-import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { Drawer } from '@material-ui/core';
 import DashboardIcon from '@material-ui/icons/Dashboard';
@@ -81,15 +80,16 @@ const Sidebar = props => {
           title:'미등록자 관리',
           href:'/users/stranger'
         },
-        {
-          title:'얼굴 인식',
-          href:'/users/face-detection'
-        }
+        // {
+        //   title:'얼굴 인식',
+        //   href:'/users/face-detection'
+        // }
       ],
       icon: <PeopleIcon />
     },
     {
       title: '단말 관리',
+      href: '/device',
       children:[
         {
           title:'단말기 목록',
@@ -108,7 +108,7 @@ const Sidebar = props => {
     },
     {
       title: '통계',
-      // href:'/stats/device',
+      href:'/stats',
       children:[
         {
           title:"단말기 통계",
@@ -118,11 +118,16 @@ const Sidebar = props => {
           title:'사용자 통계',
           href:'/stats/users'
         },
+        {
+          title:"출입 통계",
+          href:'/stats/access'
+        }
       ],
       icon: <InsertChartIcon />
     },
     {
       title: '시스템',
+      href: '/system',
       children:[
         {
           title:"계정 관리",
@@ -131,6 +136,10 @@ const Sidebar = props => {
         {
           title:'작업 기록',
           href:'/system/operation'
+        },
+        {
+          title:'설정',
+          href:'/system/settings'
         },
       ],
       icon: <SettingsIcon />
@@ -182,19 +191,13 @@ const Sidebar = props => {
         {/* <Profile />
         <Divider className={classes.divider} /> */}
         <SidebarNav
+          path={props.path}
           className={classes.nav}
           pages={pages}
         />
       </div>
     </Drawer>
   );
-};
-
-Sidebar.propTypes = {
-  className: PropTypes.string,
-  onClose: PropTypes.func,
-  open: PropTypes.bool.isRequired,
-  variant: PropTypes.string.isRequired
 };
 
 export default Sidebar;

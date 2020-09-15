@@ -130,7 +130,7 @@ const AddVisitor = (props) => {
     const [open, setOpen] = useState(false);
     const [node,setNode] = useState({});
     const onDrop = picture => {
-        setPictures([...pictures, picture]);
+        setPictures([picture,...pictures]);
     };
     const handleClickOpen = () => {
         setOpen(true);
@@ -178,7 +178,7 @@ const AddVisitor = (props) => {
           <div className={classes.labelRoot}>
             {Array.isArray(node.children) ? <GroupIcon color="inherit" className={classes.labelIcon}/> : <PersonIcon color="inherit" className={classes.labelIcon}/>}
             <Typography color="inherit" variant="body2" className={classes.labelText}>
-              {node.name}
+              {node.name === 'undefined' ? "미분류" : node.name}
             </Typography>
           </div>
         }
@@ -200,7 +200,6 @@ const AddVisitor = (props) => {
     )
 
     const toBase64 = file => new Promise((resolve, reject) => {
-        console.log(file)
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = () => resolve(reader.result);
@@ -315,7 +314,7 @@ const AddVisitor = (props) => {
                             name="mobile"
                             value={userInfo.mobile}
                             style={{width:'100%'}}
-                            label="핸드폰 번호*"
+                            label="핸드폰 번호"
                             onChange={handleChange}
                             InputProps={{
                                 inputComponent: TextMaskCustom,
@@ -327,7 +326,7 @@ const AddVisitor = (props) => {
                             name="mail"
                             value={userInfo.mail}
                             style={{width:'100%'}}
-                            label="이메일*"
+                            label="이메일"
                             onChange={handleChange}
                             InputProps={{
                                 inputComponent: emailMaskCustom,

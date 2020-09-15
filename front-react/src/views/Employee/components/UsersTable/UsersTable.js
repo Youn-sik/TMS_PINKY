@@ -5,6 +5,7 @@ import Pagination from '@material-ui/lab/Pagination';
 import TextField from '@material-ui/core/TextField';
 import Search from '@material-ui/icons/Search';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import TableSortLabel from '@material-ui/core/TableSortLabel';
 import { NavLink as RouterLink } from 'react-router-dom';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
@@ -61,17 +62,26 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const UsersTable = props => {
-  const {userSearch,selectedNode,setUserSearch,setClickedNode,clickedNode,setUsers,deleteUsers,className,users, ...rest } = props;
-  useEffect(() => {
-    console.log(props.user_id)
-  },[])
+  const {sortAccesses,activeType,userSearch,selectedNode,setUserSearch,setClickedNode,clickedNode,setUsers,deleteUsers,className,users, ...rest } = props;
+
   const classes = useStyles();
 
   const rowsPerPage = 7;
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState([]);
   const [selectedObject, setSelectedObject] = useState([]);
+  const [sort, setSort] = useState('desc')
 
+  const createSortHandler = (headerType) => {
+    if(sort === 'desc'){
+      setSort('asc')
+      sortAccesses('asc',headerType)
+    }
+    else{
+      setSort('desc')
+      sortAccesses('desc',headerType)
+    }
+  }
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
@@ -184,14 +194,102 @@ const UsersTable = props => {
                     <Checkbox checked={(selected.length === users.length) && users.length !== 0 ? true : false} onChange={handleSelectAllClick}/>
                   </TableCell>
                   <TableCell>사진</TableCell>
-                  <TableCell>이름</TableCell>
-                  <TableCell>성별</TableCell>
-                  <TableCell>근무지</TableCell>
-                  <TableCell>부서</TableCell>
-                  <TableCell>직급</TableCell>
-                  <TableCell>휴대폰 번호</TableCell>
-                  <TableCell>이메일</TableCell>
-                  <TableCell>생성일</TableCell>
+                  <TableCell>
+                    {
+                      props.users.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'name'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('name')}}
+                      >
+                        이름
+                      </TableSortLabel> : "이름"
+                    }
+                  </TableCell>
+                  <TableCell>
+                    {
+                      props.users.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'gender'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('gender')}}
+                      >
+                        성별
+                      </TableSortLabel> : "성별"
+                    }
+                  </TableCell>
+                  <TableCell>
+                    {
+                      props.users.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'location'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('location')}}
+                      >
+                        근무지
+                      </TableSortLabel> : "근무지"
+                    }
+                  </TableCell>
+                  <TableCell>
+                    {
+                      props.users.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'depart'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('depart')}}
+                      >
+                        부서
+                      </TableSortLabel> : "부서"
+                    }
+                  </TableCell>
+                  <TableCell>
+                    {
+                      props.users.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'position'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('position')}}
+                      >
+                        직급
+                      </TableSortLabel> : "직급"
+                    }
+                  </TableCell>
+                  <TableCell>
+                    {
+                      props.users.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'mobile'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('mobile')}}
+                      >
+                        휴대폰번호
+                      </TableSortLabel> : "휴대폰번호"
+                    }
+                  </TableCell>
+                  <TableCell>
+                    {
+                      props.users.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'mail'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('mail')}}
+                      >
+                        이메일
+                      </TableSortLabel> : "이메일"
+                    }
+                  </TableCell>
+                  <TableCell>
+                    {
+                      props.users.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'create_at'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('create_at')}}
+                      >
+                        생성일
+                      </TableSortLabel> : "생성일"
+                    }
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -199,7 +297,7 @@ const UsersTable = props => {
                   const isItemSelected = isSelected(user._id);
                   return(
                     <TableRow
-                      key={props.users._id}
+                      key={user._id}
                     >
                       <TableCell padding="checkbox">
                         <Checkbox

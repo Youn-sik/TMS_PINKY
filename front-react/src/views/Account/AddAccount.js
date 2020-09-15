@@ -80,12 +80,16 @@ const AddAccount = (props) => {
       else if(accountInfo.user_pw !== accountInfo.pw_chk) alert('비밀번호가 다릅니다')
       else {
 
-        await axios.post('http://172.16.135.89:3000/account',{
+        let result = await axios.post('http://172.16.135.89:3000/account',{
           ...accountInfo,
           account : props.user_id,
         })
-        alert('등록 되었습니다.')
-        history.push('/system/account')
+        if(result.data.success){
+          alert('등록 되었습니다.')
+          history.push('/system/account')
+        } else {
+          alert("중복된 아이디 입니다");
+        }
       }
     }
     return (

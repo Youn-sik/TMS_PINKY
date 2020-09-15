@@ -70,7 +70,6 @@ const TempChart = props => {
     legend: {
       display: false,
       onHover: function(e) {
-        console.log(e.target.style)
         e.target.style.cursor = 'pointer';
      }
     },

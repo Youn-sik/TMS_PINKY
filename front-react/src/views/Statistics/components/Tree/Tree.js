@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState} from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
@@ -93,12 +93,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Tree = props => {
-  const {clickedNode,setSelectedNode,setClickedNode,handleSearch,deleteGroupNode,setUsers, search,searchNode,groups,className, ...rest } = props;
+  const {setOpenNode,openNode,clickedNode,setSelectedNode,setClickedNode,handleSearch,deleteGroupNode,setUsers, search,searchNode,groups,className, ...rest } = props;
   const classes = useStyles();
-
-  const renderTree = (node,depth) => (
+  let test = []
+  const renderTree = (node,depth) => {
+    return (
       <TreeItem
-      nodeId={node._id + "/"+depth}
+      nodeId={node._id}
       onIconClick={() =>{
         if(!Array.isArray(node.children)) setClickedNode(node)
       }} 
@@ -110,7 +111,7 @@ const Tree = props => {
         <div className={classes.labelRoot}>
           {Array.isArray(node.children) ? <GroupIcon color="inherit" className={classes.labelIcon}/> : <PersonIcon color="inherit" className={classes.labelIcon}/>}
           <Typography color="inherit" variant="body2" className={classes.labelText}>
-            {node.name}
+            {node.name === 'undefined' ? "미분류" : node.name}
           </Typography>
         </div>
       }
@@ -128,7 +129,7 @@ const Tree = props => {
       }}>
         {Array.isArray(node.children) ? node.children.map((child) => renderTree(child,depth+1)) : null}
       </TreeItem>
-  )
+  )}
   return (
     <Card
       {...rest}
@@ -158,6 +159,8 @@ const Tree = props => {
         <div className={classes.details}>
         <TreeView
           className={classes.tree}
+          expanded={openNode}
+          onNodeToggle={setOpenNode}
           defaultCollapseIcon={<ArrowDropDownIcon />}
           defaultExpandIcon={<ArrowRightIcon />}
           defaultEndIcon={<div style={{ width: 24 }} />}

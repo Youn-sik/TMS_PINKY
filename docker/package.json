@@ -11,6 +11,7 @@
   "dependencies": {
     "@tensorflow/tfjs-node": "^2.3.0",
     "@vladmandic/face-api": "^0.4.5",
+    "archiver": "^5.0.2",
     "async-json": "0.0.2",
     "async-mqtt": "^2.6.1",
     "bull": "^3.18.0",
@@ -33,6 +34,7 @@
     "node-datetime": "^2.1.2",
     "node-fetch": "^2.6.0",
     "node.date-time": "^1.2.2",
+    "request": "^2.88.2",
     "socket.io": "^2.3.0"
   }
 }

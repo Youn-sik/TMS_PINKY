@@ -157,18 +157,29 @@ fastify.post('/login', async function(req, res) {
         const user_id = req.body === undefined ? req.user_id : req.body.user_id
         const user_pw = req.body === undefined ? req.user_pw : req.body.user_pw
         const user = await User.findOne({ user_id: user_id })
+        if(!user) {
+            res.send({err:"존재하지 않는 계정입니다"})
+            return 0;
+        }
         crypto.pbkdf2(user_pw, user.salt, 105614, 64, 'sha512', (err, key) => {
             if(key.toString('base64') === user.user_pw) {
                 let token = jwt.sign({
                         user_id:user.id,
                         authority: user.authority,
+                        tempLimit : user.tempLimit,
+                        tempType : user.tempType,
                     },
                     'jjh',
                     {
                         expiresIn:'10h'
                     }
                 )
-                res.send({"token":token,authority : user.authority})
+                res.send({
+                    "token":token,
+                    authority : user.authority,
+                    tempLimit : user.tempLimit,
+                    tempType : user.tempType,
+                })
             } else {
                 res.status(400)
                 res.send({err:"존재하지 않는 계정입니다"})
@@ -182,7 +193,7 @@ fastify.post('/login', async function(req, res) {
 //유효한 토큰인지 검사
 fastify.get('/auth', async function(req, res) {
     let token = req.query.token;
-    let tokenAuth = {user_id:null};;
+    let tokenAuth = {user_id:null};
     if(token === undefined && req.headers.cookie !== undefined) {
         token = cookie.parse(req.headers.cookie).token;
     }
@@ -199,7 +210,13 @@ fastify.get('/auth', async function(req, res) {
             auth = false;
         }
     }
-    res.send({auth, user_id:tokenAuth.user_id, authority : tokenAuth.authority});
+    res.send({
+        auth, 
+        user_id:tokenAuth.user_id, 
+        authority : tokenAuth.authority,
+        tempLimit : tokenAuth.tempLimit,
+        tempType : tokenAuth.tempType,
+    });
 });
 
 

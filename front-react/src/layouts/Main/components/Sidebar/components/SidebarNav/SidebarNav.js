@@ -1,6 +1,6 @@
 /* eslint-disable react/no-multi-comp */
 /* eslint-disable react/display-name */
-import React, { forwardRef } from 'react';
+import React, { forwardRef,useEffect } from 'react';
 import { NavLink as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
@@ -56,7 +56,11 @@ const CustomRouterLink = forwardRef((props, ref) => (
 
 const SidebarNav = props => {
   const { pages, className, ...rest } = props;
-  const [open, setOpen] = React.useState('');
+  const [open, setOpen] = React.useState(props.path.split('/')[1] === 'device' ? '단말 관리' :
+  props.path.split('/')[1] === 'access' ? '출입, 출근 관리' : 
+  props.path.split('/')[1] === 'users' ? '인사관리' : 
+  props.path.split('/')[1] === 'stats' ? '통계' :  
+  props.path.split('/')[1] === 'system' ? '시스템' : '');
   const classes = useStyles();
 
   const handleClick = (title) => (event) => {

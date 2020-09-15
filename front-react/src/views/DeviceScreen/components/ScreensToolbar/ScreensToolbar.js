@@ -1,9 +1,12 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
+import axios from 'axios';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
-import {TextField,InputAdornment} from '@material-ui/core'
+import {TextField,InputAdornment,Button} from '@material-ui/core'
 import Search from '@material-ui/icons/Search';
+import moment from 'moment';
+import 'moment/locale/ko'
 import 'rsuite/dist/styles/rsuite-default.css'
 
 const useStyles = makeStyles(theme => ({
@@ -34,8 +37,48 @@ const useStyles = makeStyles(theme => ({
 
 const ScreensToolbar = props => {
   const {search,handleSearch,className, ...rest } = props;
-
+  const [data,setData] = useState([]);
   const classes = useStyles();
+
+  const getPictures = async () => {
+    let result = await axios.get('http://172.16.135.89:3000/camera_monitor')
+    setData(result.data)
+  }
+
+  const deleteOldPic = async () => {
+    if(window.confirm("현재 단말의 일주일 전 파일을 삭제 합니다 \n삭제 하시겠습니다?")){
+      let old = data.filter(screen => screen.regdate.split(' ')[0] < moment().subtract(7, 'days').format('YYYY-MM-DD'))
+      let list = old.map(screen => screen._id)
+      // console.log(list);
+      await axios.delete('http://172.16.135.89:3000/camera_monitor/'+list[0]._id,{
+        data:{
+          list : list,
+          data : old
+        }
+      })
+      props.getScreens()
+      alert('삭제 되었습니다')
+    }
+  }
+  
+  const deleteAll = async () => {
+    if(window.confirm("현재 단말의 모든 파일을 삭제 합니다 \n삭제 하시겠습니다?")){
+      let list = data.map(screen => screen._id)
+      // console.log(list);
+      await axios.delete('http://172.16.135.89:3000/camera_monitor/'+list[0]._id,{
+        data:{
+          list : list,
+          data : data
+        }
+      })
+      props.getScreens()
+      alert('삭제 되었습니다')
+    }
+  }
+
+  useEffect(() => {
+    getPictures()
+  },[])
 
   return (
     <div
@@ -54,6 +97,8 @@ const ScreensToolbar = props => {
         ),
       }}
       />
+      <Button style={{margin:"0px 10px",float:"right"}} disabled={props.screens.length === 0} variant="contained" onClick={deleteOldPic} color="primary">오래된 사진 삭제</Button>
+      <Button style={{float:"right"}} variant="contained" disabled={props.screens.length === 0} onClick={deleteAll} color="secondary">전체 삭제</Button>
     </div>
   );
 };

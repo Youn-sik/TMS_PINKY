@@ -130,7 +130,7 @@ const AddEmployee = (props) => {
     const [open, setOpen] = useState(false);
     const [node,setNode] = useState({});
     const onDrop = picture => {
-        setPictures([...pictures, picture]);
+        setPictures([picture,...pictures]);
     };
     const handleClickOpen = () => {
         setOpen(true);
@@ -178,7 +178,7 @@ const AddEmployee = (props) => {
           <div className={classes.labelRoot}>
             {Array.isArray(node.children) ? <GroupIcon color="inherit" className={classes.labelIcon}/> : <PersonIcon color="inherit" className={classes.labelIcon}/>}
             <Typography variant="body2" className={classes.labelText}>
-              {node.name}
+              {node.name === 'undefined' ? "미분류" : node.name}
             </Typography>
           </div>
         }
@@ -315,7 +315,7 @@ const AddEmployee = (props) => {
                             name="mobile"
                             value={userInfo.mobile}
                             style={{width:'100%'}}
-                            label="핸드폰 번호*"
+                            label="핸드폰 번호"
                             onChange={handleChange}
                             InputProps={{
                                 inputComponent: TextMaskCustom,
@@ -327,7 +327,7 @@ const AddEmployee = (props) => {
                             name="mail"
                             value={userInfo.mail}
                             style={{width:'100%'}}
-                            label="이메일*"
+                            label="이메일"
                             onChange={handleChange}
                             InputProps={{
                                 inputComponent: emailMaskCustom,

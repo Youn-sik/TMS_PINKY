@@ -91,16 +91,13 @@ const EditDevice = (props) => {
     }
 
     useEffect(() => {
-      console.log(props.location)
         let device = JSON.parse(JSON.stringify(deviceObject))
         let editedUser = {
             name : device.name,
             location : device.location,
-            gateway_obid : device.gateway_obid._id,
             description: device.description,
             serial_number:device.serial_number,
             status : 'N',
-            protocol : '1',
         }
         setDevice(editedUser);
         getGate()
@@ -124,20 +121,6 @@ const EditDevice = (props) => {
                 <Card>
                     <CardContent style={{width: '50%', margin:'0 auto'}}>
                         <div>
-                            <FormControl style={{width: '100%'}}>
-                                <InputLabel id="gatewaySelector">게이트웨이</InputLabel>
-                                <Select
-                                name="gateway_obid"
-                                value={device.gateway_obid}
-                                labelId="gatewaySelector"
-                                style={{width:'100%'}} 
-                                onChange={handleDeviceChange}
-                                >
-                                    {gate.map((i) => (
-                                    <MenuItem value={i._id}>{i.name}</MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
                             <div style={{width: '100%'}}>
                             <TextField 
                             name="name"
@@ -176,7 +159,6 @@ const EditDevice = (props) => {
                             name="description"
                             value={device.description}
                             style={{width:'100%'}} 
-                            required 
                             id="standard-required" 
                             label="비고"
                             onChange={handleDeviceChange}

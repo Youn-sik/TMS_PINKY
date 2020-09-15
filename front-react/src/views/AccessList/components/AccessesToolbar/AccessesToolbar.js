@@ -8,6 +8,9 @@ import kor from 'rsuite/lib/IntlProvider/locales/ko_KR';
 import 'rsuite/dist/styles/rsuite-default.css'
 import MenuItem from '@material-ui/core/MenuItem';
 import 'moment/locale/ko'
+import TextField from '@material-ui/core/TextField';
+import Search from '@material-ui/icons/Search';
+import InputAdornment from '@material-ui/core/InputAdornment';
 // eslint-disable-next-line no-extend-native
 Date.prototype.yyyymmdd = function()
 {
@@ -45,7 +48,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const AccessesToolbar = props => {
-  const {temp,temp_change,type,type_change,typeCange,dateChange,className, ...rest } = props;
+  const {accesses,search,setSearch,temp,temp_change,type,type_change,typeCange,dateChange,className, ...rest } = props;
 
   const handleTypeChange = (event) => {
     // setType(event.target.value);
@@ -59,9 +62,9 @@ const AccessesToolbar = props => {
 
   const classes = useStyles();
 
-  useEffect(() => {
-    
-  },[])
+  const handleSearch = (e) => {
+    setSearch(e);
+  }
 
   return (
     <div
@@ -101,6 +104,22 @@ const AccessesToolbar = props => {
           <MenuItem value="1">정상 온도</MenuItem>
           <MenuItem value="2">비정상 온도</MenuItem>
         </Select>
+        <div style={{width: '100%'}}>
+          <TextField
+            style={{float:"right",marginRight:"30px"}}
+            className={classes.search}
+            id="input-with-icon-textfield"
+            // label="검색"
+            value={search}
+            onChange={handleSearch}
+            placeholder="검색"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end"><Search></Search></InputAdornment>
+              ),
+            }}
+            />
+        </div>
       </div>
     </div>
   );

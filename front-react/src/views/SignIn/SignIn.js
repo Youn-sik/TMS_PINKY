@@ -261,7 +261,6 @@ const SignIn = props => {
       function resize() {
           width = window.innerWidth;
           height = window.innerHeight;
-          console.log(width, height)
           canvas.width = width;
           canvas.height = height;
       }
@@ -385,13 +384,16 @@ const SignIn = props => {
         let result = await axios.post('http://172.16.135.89:3000/login',{
           user_id : formState.values.id,
           user_pw : formState.values.password
+        }).catch((err) => {
+          alert("존재하지 않는 계정입니다.");
+          return false;
         })
         // props.getAuth(result.data.authority);
-        if(result.data.token) {
+        if(result.data&&result.data.token) {
           document.cookie = 'token=' + result.data.token;
           props.getAuth(result.data.authority);
           history.push('/');
-        } else {
+        } else if(result.data){
           alert('존재하지 않는 계정 입니다');
         }
     }

@@ -5,6 +5,7 @@ import Pagination from '@material-ui/lab/Pagination';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import TableSortLabel from '@material-ui/core/TableSortLabel';
 import {
   Card,
   CardActions,
@@ -42,16 +43,27 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const UsersTable = props => {
-  const { loading,className,users, ...rest } = props;
+  const {sortAccesses,activeType,loading,className,users, ...rest } = props;
 
   const classes = useStyles();
 
   const rowsPerPage = 7;
   const [page, setPage] = useState(1);
-
+  const [sort, setSort] = useState('desc')
   const handlePageChange = (event, page) => {
     setPage(page);
   };
+
+  const createSortHandler = (headerType) => {
+    if(sort === 'desc'){
+      setSort('asc')
+      sortAccesses('asc',headerType)
+    }
+    else{
+      setSort('desc')
+      sortAccesses('desc',headerType)
+    }
+  }
 
   return (
     <Card
@@ -65,19 +77,85 @@ const UsersTable = props => {
               <TableHead>
                 <TableRow>
                   <TableCell>사진</TableCell>
-                  <TableCell>이름</TableCell>
-                  <TableCell>근무지</TableCell>
-                  <TableCell>부서</TableCell>
-                  <TableCell>직급</TableCell>
-                  <TableCell>출근</TableCell>
-                  <TableCell>지각</TableCell>
+                  <TableCell>
+                    {
+                      users.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'name'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('name')}}
+                      >
+                        이름
+                      </TableSortLabel> : "이름"
+                    }
+                  </TableCell>
+                  <TableCell>
+                    {
+                      users.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'location'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('location')}}
+                      >
+                        근무지
+                      </TableSortLabel> : "근무지"
+                    }
+                  </TableCell>
+                  <TableCell>
+                    {
+                      users.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'depart'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('depart')}}
+                      >
+                        부서
+                      </TableSortLabel> : "부서"
+                    }
+                  </TableCell>
+                  <TableCell>
+                    {
+                      users.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'position'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('position')}}
+                      >
+                        직급
+                      </TableSortLabel> : "직급"
+                    }
+                  </TableCell>
+                  <TableCell>
+                    {
+                      users.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'att'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('att')}}
+                      >
+                        출근
+                      </TableSortLabel> : "출근"
+                    }
+                  </TableCell>
+                  <TableCell>
+                    {
+                      users.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'late'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('late')}}
+                      >
+                        지각
+                      </TableSortLabel> : "지각"
+                    }
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {props.users.slice((page-1) * rowsPerPage, (page-1) * rowsPerPage + rowsPerPage).map(user => {
                   return(
                     <TableRow
-                      key={props.users._id}
+                      key={user._id}
                     >
                       <TableCell>
                         <div className={classes.nameContainer}>

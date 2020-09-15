@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const boom = require('boom')
+const fs = require('fs')
 const api_v3_device_camera_monitor = require('../../../../models/api/v3/device/camera_monitor')
 
 router.get('/',async function(req, res) {
@@ -67,9 +68,18 @@ router.put('/:id',async function(req, res) {
 
 router.delete('/:id',async function(req, res) {
     try {
-        const id = req.params === undefined ? req.id : req.params.id
-        const delete_data = await api_v3_device_camera_monitor.findByIdAndRemove(id)
-        res.send(delete_data)
+        if(req.body.list) {
+            let deleted_data = await api_v3_device_camera_monitor.deleteMany({ _id: { $in: req.body.list} })
+            // fs.unlink(__dirname+'/test.txt',() => {})
+            req.body.data.map((i) => {
+                fs.unlink(i.upload_url.replace('http://172.16.135.89:3000/','/var/www/backend/'),() => {})
+            })
+            res.send(deleted_data)
+        } else {
+            const id = req.params === undefined ? req.id : req.params.id
+            const delete_data = await api_v3_device_camera_monitor.findByIdAndRemove(id)
+            res.send(delete_data)
+        }
     } catch (err) {
         throw boom.boomify(err)
     }

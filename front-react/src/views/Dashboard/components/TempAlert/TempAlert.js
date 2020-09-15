@@ -46,7 +46,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const TempAlert = props => {
-  const { className, ...rest } = props;
+  const {temp,tempLimit,tempType, className, ...rest } = props;
 
   const classes = useStyles();
 
@@ -73,8 +73,8 @@ const TempAlert = props => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {props.temp.map(access => (
-                  access.avatar_temperature >= 37.5 ?
+                {temp.map(access => (
+                  access.avatar_temperature >= tempLimit ?
                   <TableRow
                   className={classes.highTempRow}
                   key={access._id}
@@ -86,7 +86,7 @@ const TempAlert = props => {
                       src={access.avatar_file_url}
                   /></TableCell>
                   <TableCell className={classes.redFont}>{access.name === 'unknown' ? null : access.name}</TableCell>
-                  <TableCell className={classes.redFont}>{String(access.avatar_temperature).substring(0,4)}</TableCell>
+                  <TableCell className={classes.redFont}>{tempType === 1 ? String(access.avatar_temperature).substring(0,4) : "비정상 체온"}</TableCell>
                   <TableCell className={classes.redFont}>
                     {access.avatar_type === 1 ? "사원" :
                     access.avatar_type === 2 ? '방문자' :
@@ -106,7 +106,7 @@ const TempAlert = props => {
                         src={access.avatar_file_url}
                     /></TableCell>
                     <TableCell>{access.name === 'unknown' ? null : access.name}</TableCell>
-                    <TableCell>{String(access.avatar_temperature).substring(0,4)}</TableCell>
+                    <TableCell>{tempType === 1 ? String(access.avatar_temperature).substring(0,4) : "정상 체온"}</TableCell>
                     <TableCell>
                       {access.avatar_type === 1 ? "사원" :
                       access.avatar_type === 2 ? '방문자' :

@@ -37,19 +37,22 @@ router.get('/:id',async function(req, res) {
 router.post('/',async function(req, res) {
     try {
         const add = new User(req.body)
-        const operation = new Operation({
-            id:req.body.account,
-            description: add.user_id+' 계정 생성',
-            action: '계정 생성',
-            date: moment().format('YYYY-MM-DD HH:mm:ss'),
-        })
-        operation.save();
         
         crypto.randomBytes(64,(err,buf) => {
             crypto.pbkdf2(req.body.user_pw, buf.toString('base64'), 105614, 64, 'sha512', (err,key) => {
                 add.user_pw = key.toString('base64');
                 add.salt = buf.toString('base64');
-                res.send(add.save())
+                add.save(function(err,re) {
+                    if(err) return res.send({})
+                    const operation = new Operation({
+                        id:req.body.account,
+                        description: add.user_id+' 계정 생성',
+                        action: '계정 생성',
+                        date: moment().format('YYYY-MM-DD HH:mm:ss'),
+                    })
+                    operation.save();
+                    res.send({"success":"계정 생성 완료"})
+                })
             })
         })
     } catch (err) {

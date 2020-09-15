@@ -157,7 +157,7 @@ const Access = props => {
               {
                 <TableBody>
                   {props.temp.slice((page-1) * rowsPerPage, (page-1) * rowsPerPage + rowsPerPage).map(access => {
-                    if(access.avatar_temperature >= 37.5){ //출입 기록 37.5도 이상일때
+                    if(access.avatar_temperature >= props.tempLimit){ //출입 기록 37.5도 이상일때
                       return(
                         <TableRow
                           className={classes.highTempRow}
@@ -180,7 +180,7 @@ const Access = props => {
                                       access.avatar_type === 2 ? "방문자" : 
                                       access.avatar_type === 4 ? '블랙리스트' : '미등록자'}</TableCell>
                           <TableCell className={classes.redFont}>{access.avatar_distance ? String(access.avatar_distance).substr(0,3) : 0}M</TableCell>
-                          <TableCell className={classes.redFont}>{String(access.avatar_temperature).substring(0,4)}</TableCell>
+                          <TableCell className={classes.redFont}>{props.tempType === 1 ? String(access.avatar_temperature).substring(0,4) : "비정상 체온"}</TableCell>
                           <TableCell className={classes.redFont}>{access.access_time}</TableCell>
                         </TableRow>
                       )
@@ -207,7 +207,7 @@ const Access = props => {
                                       access.avatar_type === 2 ? "방문자" : 
                                       access.avatar_type === 4 ? '블랙리스트' : '미등록자'}</TableCell>
                           <TableCell>{access.avatar_distance ? String(access.avatar_distance).substr(0,3) : 0}M</TableCell>
-                          <TableCell>{String(access.avatar_temperature).substring(0,4)}</TableCell>
+                          <TableCell>{props.tempType === 1 ? String(access.avatar_temperature).substring(0,4) : "정상 체온"}</TableCell>
                           <TableCell>{access.access_time}</TableCell>
                         </TableRow>
                       )

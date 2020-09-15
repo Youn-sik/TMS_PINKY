@@ -1,0 +1,21 @@
+.arrow_box {
+    padding:10px;
+	position: relative;
+    background: rgba( 0, 0, 0, 0.8 );
+    border: 1px solid rgba( 0, 0, 0, 0.8);
+    border-radius: 10px;
+}
+.arrow_box:after {
+	right: 100%;
+	top: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(0, 0, 0, 0);
+	border-right-color: rgba(0, 0, 0, 0.8);
+	border-width: 10px;
+	margin-top: -10px;
+}

@@ -9,19 +9,31 @@ const RouteWithLayout = props => {
     <Route
       {...rest}
       render={matchProps => 
-        Layout ? 
+        Layout !== null ? 
         (
-          <Layout>
-            <Component authority={props.authority} getAuth={props.getAuth} user_id={props.user_id} {...matchProps} />
+          <Layout path={props.path}>
+            <Component 
+            authority={props.authority} 
+            getAuth={props.getAuth} 
+            user_id={props.user_id}
+            tempLimit={props.tempLimit} 
+            tempType={props.tempType}
+            {...matchProps} />
           </Layout> 
-        ) : (<Component authority={props.authority} getAuth={props.getAuth} user_id={props.user_id} {...matchProps} />)}
+        ) : (<Component 
+          authority={props.authority} 
+          getAuth={props.getAuth} 
+          user_id={props.user_id}
+          tempLimit={props.tempLimit} 
+          tempType={props.tempType}
+          {...matchProps} />)}
     />
   );
 };
 
 RouteWithLayout.propTypes = {
-  component: PropTypes.any.isRequired,
-  layout: PropTypes.any.isRequired,
+  component: PropTypes.any,
+  layout: PropTypes.any,
   path: PropTypes.string
 };
 

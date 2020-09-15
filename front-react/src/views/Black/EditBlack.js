@@ -114,7 +114,7 @@ const EditBlack = (props) => {
     const [open, setOpen] = useState(false);
     const [node,setNode] = useState({});
     const onDrop = picture => {
-        setPictures([...pictures, picture]);
+        setPictures([picture,...pictures]);
     };
     const handleClickOpen = () => {
         setOpen(true);
@@ -173,7 +173,7 @@ const EditBlack = (props) => {
           <div className={classes.labelRoot}>
             {Array.isArray(node.children) ? <GroupIcon color="inherit" className={classes.labelIcon}/> : <PersonIcon color="inherit" className={classes.labelIcon}/>}
             <Typography color="inherit" variant="body2" className={classes.labelText}>
-              {node.name}
+              {node.name === 'undefined' ? "미분류" : node.name}
             </Typography>
           </div>
         }
@@ -249,6 +249,21 @@ const EditBlack = (props) => {
                     singleImage={true}
                     withPreview={true}
                     />
+                    {
+                      pictures.length < 1 ? <div style={{width:"25%",
+                      margin:"3% auto",
+                      padding:"15px",
+                      background:"#edf2f6",
+                      display:"flex",
+                      alignItems: "center",
+                      justifyContent:'center',
+                      height:'inherit',
+                      boxShadow:'0 0 8px 2px rgba(0, 0, 0, 0.1)',
+                      border: '1px solid #d0dbe4',
+                      position: 'relative'}}>
+                        <img style={{width: "100%",verticalAlign:"middle"}} src={userObject[0].avatar_file_url}></img>
+                        </div> : null
+                    }
                     <CardContent style={{width: '50%', margin:'0 auto'}}>
                         <Select
                             name="gender"
@@ -297,7 +312,7 @@ const EditBlack = (props) => {
                             name="mobile"
                             value={userInfo.mobile}
                             style={{width:'100%'}}
-                            label="핸드폰 번호*"
+                            label="핸드폰 번호"
                             onChange={handleChange}
                             InputProps={{
                                 inputComponent: TextMaskCustom,

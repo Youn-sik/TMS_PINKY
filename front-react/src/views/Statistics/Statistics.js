@@ -224,10 +224,10 @@ const Statistics = (props) => {
         <IntlProvider locale={kor}>
           <DateRangePicker 
             cleanable={false}
-            showOneCalendar 
             disabledDate={allowedDays(7)}
             defaultValue={[new Date(moment().subtract(6, 'days').format('YYYY-MM-DD')), new Date()]}
             onChange={(val) => {handleDate([val[0].yyyymmdd(),val[1].yyyymmdd()])}}
+            ranges={[]}
           />
         </IntlProvider>
         <Select

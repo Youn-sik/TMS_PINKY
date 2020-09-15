@@ -25,6 +25,8 @@ export { default as DeviceError } from './DeviceError';
 export { default as DeviceScreen } from './DeviceScreen';
 export { DeviceStat } from './Statistics';
 export { UsersStat } from './Statistics';
+export { AccessStat } from './Statistics';
 export { default as Operation } from './Operation';
 export { default as FaceDetection } from './FaceDetection';
+export { default as Settings } from './Settings';
 

@@ -15,6 +15,7 @@ const Account = (props) => {
   const [accounts,setAccounts] = useState([]);
   const [filteredAccounts,setFilteredAccounts] = useState([]);
   const [loading,setLoading] = useState(true);
+  const [activeType,setActiveType] = useState('');
   const classes = useStyles();
 
   const filterAccount = useCallback(() => {
@@ -28,6 +29,213 @@ const Account = (props) => {
     return temp
   },[accountsSearch])
 
+  const sortAccesses = (type,headerType) => {
+    setActiveType(headerType)
+    if(accountsSearch === ''){
+      if(headerType === 'user_id') {
+        if(type === 'asc'){
+          setAccounts(accounts.sort((a,b) => {
+            if (a.user_id < b.user_id) return -1;
+            else if (b.user_id < a.user_id) return 1;
+            else return 0;
+          }))
+        } else {
+          setAccounts(accounts.sort((a,b) => {
+            if (a.user_id > b.user_id) return -1;
+            else if (b.user_id > a.user_id) return 1;
+            else return 0;
+          }))
+        }
+      } else if(headerType === 'authority') {
+        if(type === 'asc'){
+          setAccounts(accounts.sort((a,b) => {
+            let a_auth = '관리자'
+            let b_auth = '관리자'
+            if(a.authority !== 'admin') {
+              a_auth = a.authority.split("-")
+              a_auth = a_auth[a_auth.length-2];
+            }
+
+            if(b.authority !== 'admin') {
+              b_auth = b.authority.split("-")
+              b_auth = b_auth[b_auth.length-2];
+            }
+
+            if(a_auth === 'manager')
+              a_auth = '매니저'
+            else if(a_auth === 'user')
+              a_auth = '사용자'
+
+            if(b_auth === 'manager')
+              b_auth = '매니저'
+            else if(b_auth === 'user')
+              b_auth = '사용자'
+            if (a_auth < b_auth) return -1;
+            else if (b_auth < a_auth) return 1;
+            else return 0;
+          }))
+        } else {
+          setAccounts(accounts.sort((a,b) => {
+            let a_auth = '관리자'
+            let b_auth = '관리자'
+            if(a.authority !== 'admin') {
+              a_auth = a.authority.split("-")
+              a_auth = a_auth[a_auth.length-2];
+            }
+
+            if(b.authority !== 'admin') {
+              b_auth = b.authority.split("-")
+              b_auth = b_auth[b_auth.length-2];
+            }
+
+            if(a_auth === 'manager')
+              a_auth = '매니저'
+            else if(a_auth === 'user')
+              a_auth = '사용자'
+
+            if(b_auth === 'manager')
+              b_auth = '매니저'
+            else if(b_auth === 'user')
+              b_auth = '사용자'
+            
+            if (a_auth > b_auth) return -1;
+            else if (b_auth > a_auth) return 1;
+            else return 0;
+          }))
+        }
+      } else if(headerType === 'user_name') {
+        if(type === 'asc'){
+          setAccounts(accounts.sort((a,b) => {
+            if (a.user_name < b.user_name) return -1;
+            else if (b.user_name < a.user_name) return 1;
+            else return 0;
+          }))
+        } else {
+          setAccounts(accounts.sort((a,b) => {
+            if (a.user_name > b.user_name) return -1;
+            else if (b.user_name > a.user_name) return 1;
+            else return 0;
+          }))
+        }
+      } else if(headerType === 'user_lang') {
+        if(type === 'asc'){
+          setAccounts(accounts.sort((a,b) => {
+            if (a.user_lang < b.user_lang) return -1;
+            else if (b.user_lang < a.user_lang) return 1;
+            else return 0;
+          }))
+        } else {
+          setAccounts(accounts.sort((a,b) => {
+            if (a.user_lang > b.user_lang) return -1;
+            else if (b.user_lang > a.user_lang) return 1;
+            else return 0;
+          }))
+        }
+      }
+    } else {
+      if(headerType === 'user_id') {
+        if(type === 'asc'){
+          setFilteredAccounts(filteredAccounts.sort((a,b) => {
+            if (a.user_id < b.user_id) return -1;
+            else if (b.user_id < a.user_id) return 1;
+            else return 0;
+          }))
+        } else {
+          setFilteredAccounts(filteredAccounts.sort((a,b) => {
+            if (a.user_id > b.user_id) return -1;
+            else if (b.user_id > a.user_id) return 1;
+            else return 0;
+          }))
+        }
+      } else if(headerType === 'authority') {
+        if(type === 'asc'){
+          setFilteredAccounts(filteredAccounts.sort((a,b) => {
+            let a_auth = '관리자'
+            let b_auth = '관리자'
+            if(a.authority !== 'admin') {
+              a_auth = a.authority.split("-")
+              a_auth = a_auth[a_auth.length-2];
+            }
+
+            if(b.authority !== 'admin') {
+              b_auth = b.authority.split("-")
+              b_auth = b_auth[b_auth.length-2];
+            }
+
+            if(a_auth === 'manager')
+              a_auth = '매니저'
+            else if(a_auth === 'user')
+              a_auth = '사용자'
+
+            if(b_auth === 'manager')
+              b_auth = '매니저'
+            else if(b_auth === 'user')
+              b_auth = '사용자'
+            
+            if (a_auth < b_auth) return -1;
+            else if (b_auth < a_auth) return 1;
+            else return 0;
+          }))
+        } else {
+          setFilteredAccounts(filteredAccounts.sort((a,b) => {
+            let a_auth = '관리자'
+            let b_auth = '관리자'
+            if(a.authority !== 'admin') {
+              a_auth = a.authority.split("-")
+              a_auth = a_auth[a_auth.length-2];
+            }
+
+            if(b.authority !== 'admin') {
+              b_auth = b.authority.split("-")
+              b_auth = b_auth[b_auth.length-2];
+            }
+
+            if(a_auth === 'manager')
+              a_auth = '매니저'
+            else if(a_auth === 'user')
+              a_auth = '사용자'
+
+            if(b_auth === 'manager')
+              b_auth = '매니저'
+            else if(b_auth === 'user')
+              b_auth = '사용자'
+            if (a_auth > b_auth) return -1;
+            else if (b_auth > a_auth) return 1;
+            else return 0;
+          }))
+        } 
+      } else if(headerType === 'user_name') {
+        if(type === 'asc'){
+          setFilteredAccounts(filteredAccounts.sort((a,b) => {
+            if (a.user_name < b.user_name) return -1;
+            else if (b.user_name < a.user_name) return 1;
+            else return 0;
+          }))
+        } else {
+          setFilteredAccounts(filteredAccounts.sort((a,b) => {
+            if (a.user_name > b.user_name) return -1;
+            else if (b.user_name > a.user_name) return 1;
+            else return 0;
+          }))
+        }
+      } else if(headerType === 'user_lang') {
+        if(type === 'asc'){
+          setFilteredAccounts(filteredAccounts.sort((a,b) => {
+            if (a.user_lang < b.user_lang) return -1;
+            else if (b.user_lang < a.user_lang) return 1;
+            else return 0;
+          }))
+        } else {
+          setFilteredAccounts(filteredAccounts.sort((a,b) => {
+            if (a.user_lang > b.user_lang) return -1;
+            else if (b.user_lang > a.user_lang) return 1;
+            else return 0;
+          }))
+        }
+      }
+    }
+  }
+
   useEffect(() => {
     if(accountsSearch !== '') {
       let copyAccounts = accounts;
@@ -40,13 +248,14 @@ const Account = (props) => {
     let result = await axios.get('http://172.16.135.89:3000/account?authority='+props.authority)
     setAccounts(result.data);
     setLoading(false)
+    setAccountsSearch('');
   }
 
   const deleteAccounts = async (selectedAccounts) => {
     if(window.confirm('정말 삭제 하시겠습니까?')) {
-      await axios.delete('http://172.16.135.89:3000/account/'+accounts[0]._id,{
+      await axios.delete('http://172.16.135.89:3000/account/'+selectedAccounts[0]._id,{
         data:{
-          account : props.user_id // to do :나중에 계정 정보 넣을것
+          account : props.user_id
         }
       })
 
@@ -90,6 +299,7 @@ const Account = (props) => {
           xs={12}
         >
           <AccountsTable
+          activeType={activeType} sortAccesses={sortAccesses}
           deleteAccounts={deleteAccounts} 
           accounts={accountsSearch === '' ?  accounts : filteredAccounts } 
           accountsSearch={accountsSearch}

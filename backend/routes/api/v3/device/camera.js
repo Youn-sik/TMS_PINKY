@@ -11,9 +11,9 @@ router.get('/',async function(req, res) {
     try {
         let get_data;
         if(req.query.authority === 'admin') {
-            get_data = await api_v3_device_camera.find().populate('gateway_obid')
+            get_data = await api_v3_device_camera.find().populate('gateway_obid').sort('status')
         } else {
-            get_data = await api_v3_device_camera.find().populate('gateway_obid')
+            get_data = await api_v3_device_camera.find().populate('gateway_obid').sort('status')
                 .where('authority').equals(req.query.authority);
         }
         res.send(get_data)
@@ -70,16 +70,33 @@ router.put('/:id',async function(req, res) {
 
 router.delete('/:id',async function(req, res) {
     try {
-        const id = req.params === undefined ? req.id : req.params.id
-        const delete_data = await api_v3_device_camera.findByIdAndRemove(id)
-        const operation = new Operation({
-            id:req.body.account,
-            action: '단말기 삭제',
-            date : moment().format('YYYY-MM-DD HH:mm:ss'),
-            description : delete_data.serial_number +' 단말기 삭제'
-        })
-        operation.save();
-        res.send(delete_data) 
+        if(req.body.devices === undefined) {
+            const id = req.params === undefined ? req.id : req.params.id
+            const delete_data = await api_v3_device_camera.findByIdAndRemove(id)
+            const operation = new Operation({
+                id:req.body.account,
+                action: '단말기 삭제',
+                date : moment().format('YYYY-MM-DD HH:mm:ss'),
+                description : delete_data.serial_number +' 단말기 삭제'
+            })
+            operation.save();
+            res.send(delete_data) 
+        } else {
+            let operations = []
+            let result = await api_v3_device_camera.deleteMany({ _id: { $in: req.body.list} })
+            req.body.devices.map((i) => {
+                operations.push(
+                    new Operation({
+                        id:req.body.account,
+                        action: '단말기 삭제',
+                        date : moment().format('YYYY-MM-DD HH:mm:ss'),
+                        description : i.serial_number +' 단말기 삭제'
+                    })
+                )
+            })
+            Operation.insertMany(operations)
+            res.send(result);
+        }
     } catch (err) {
         throw boom.boomify(err)
     }

@@ -113,7 +113,6 @@ const Groups = props => {
 
   const clickAddGroup = async () => {
     let parent = Object.keys(clickedNode).length === 0 ? undefined : clickedNode
-    console.log(props.user_id)
     let result = await axios.post('http://219.255.217.140:3000/group',{
       name : groupName,
       type : 1,
@@ -147,7 +146,7 @@ const Groups = props => {
         <div className={classes.labelRoot}>
           {Array.isArray(node.children) ? <GroupIcon color="inherit" className={classes.labelIcon}/> : <PersonIcon color="inherit" className={classes.labelIcon}/>}
           <Typography color="inherit" variant="body2" className={classes.labelText}>
-            {node.name}
+            {node.name === "undefined" ? "미분류" : node.name}
           </Typography>
         </div>
       }

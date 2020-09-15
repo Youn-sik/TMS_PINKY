@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Pagination from '@material-ui/lab/Pagination';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
+import TableSortLabel from '@material-ui/core/TableSortLabel';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import {
   Card,
@@ -50,17 +51,29 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const AccessesTable = props => {
-  const { loading,className,accesses, ...rest } = props;
+  const {tempType,tempLimit,sortAccesses,activeType, loading,className,accesses, ...rest } = props;
 
   const classes = useStyles();
 
   const rowsPerPage = 7;
   const [page, setPage] = useState(1);
   
+  const [sort, setSort] = useState('desc')
 
   const handlePageChange = (event, page) => {
     setPage(page);
   };
+
+  const createSortHandler = (headerType) => {
+    if(sort === 'desc'){
+      setSort('asc')
+      sortAccesses('asc',headerType)
+    }
+    else{
+      setSort('desc')
+      sortAccesses('desc',headerType)
+    }
+  }
 
   return (
     <Card
@@ -74,21 +87,76 @@ const AccessesTable = props => {
               <TableHead>
                 <TableRow>
                   <TableCell>사진</TableCell>
-                  <TableCell>이름</TableCell>
-                  <TableCell>타입</TableCell>
-                  <TableCell>거리</TableCell>
-                  <TableCell>온도</TableCell>
-                  <TableCell>출입시간</TableCell>
+                  <TableCell>
+                    {
+                      accesses.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'name'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('name')}}
+                      >
+                        이름
+                      </TableSortLabel> : "이름"
+                    }
+                  </TableCell>
+                  <TableCell>
+                    {
+                      accesses.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'type'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('type')}}
+                      >
+                        타입
+                      </TableSortLabel> : "타입"
+                    }
+                  </TableCell>
+                  <TableCell>
+                    {
+                      accesses.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'distance'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('distance')}}
+                      >
+                        거리
+                      </TableSortLabel> : "거리"
+                    }
+                  </TableCell>
+                  <TableCell>
+                    {
+                      accesses.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'temp'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('temp')}}
+                      >
+                        온도
+                      </TableSortLabel> : "온도"
+                    }
+                  </TableCell>
+                  <TableCell>
+                    {
+                      accesses.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'time'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('time')}}
+                      >
+                        출입시간
+                      </TableSortLabel> : "출입시간"
+                    }
+                  </TableCell>
                 </TableRow>
               </TableHead>
               {
                 <TableBody>
                   {props.accesses.slice((page-1) * rowsPerPage, (page-1) * rowsPerPage + rowsPerPage).map(access => {
-                    if(access.avatar_temperature >= 37.5){ //출입 기록 37.5도 이상일때
+                    if(access.avatar_temperature >= tempLimit){ //출입 기록 37.5도 이상일때
                       return(
                         <TableRow
                           className={classes.highTempRow}
-                          key={props.accesses._id}
+                          key={access._id}
                         >
                           <TableCell>
                             <div className={classes.nameContainer}>
@@ -107,7 +175,7 @@ const AccessesTable = props => {
                                       access.avatar_type === 2 ? "방문자" : 
                                       access.avatar_type === 4 ? '블랙리스트' : '미등록자'}</TableCell>
                           <TableCell className={classes.redFont}>{access.avatar_distance ? String(access.avatar_distance).substr(0,3) : 0}M</TableCell>
-                          <TableCell className={classes.redFont}>{String(access.avatar_temperature).substring(0,4)}</TableCell>
+                          <TableCell className={classes.redFont}>{tempType === 1 ? String(access.avatar_temperature).substring(0,4) : "비정상 체온"}</TableCell>
                           <TableCell className={classes.redFont}>{access.access_time}</TableCell>
                         </TableRow>
                       )
@@ -115,7 +183,7 @@ const AccessesTable = props => {
                       return(
                         <TableRow
                           className={classes.tableRow}
-                          key={props.accesses._id}
+                          key={access._id}
                         >
                           <TableCell>
                             <div className={classes.nameContainer}>
@@ -134,7 +202,7 @@ const AccessesTable = props => {
                                       access.avatar_type === 2 ? "방문자" : 
                                       access.avatar_type === 4 ? '블랙리스트' : '미등록자'}</TableCell>
                           <TableCell>{access.avatar_distance ? String(access.avatar_distance).substr(0,3) : 0}M</TableCell>
-                          <TableCell>{String(access.avatar_temperature).substring(0,4)}</TableCell>
+                          <TableCell>{tempType === 1 ? String(access.avatar_temperature).substring(0,4) : "정상 체온"}</TableCell>
                           <TableCell>{access.access_time}</TableCell>
                         </TableRow>
                       )

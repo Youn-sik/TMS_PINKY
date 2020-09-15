@@ -5,6 +5,8 @@ import axios from 'axios';
 import Pagination from '@material-ui/lab/Pagination';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
+import moment from 'moment';
+import 'moment/locale/ko'
 import {
   Card,
   CardActions,
@@ -63,7 +65,8 @@ const ScreensTable = props => {
   const [modalScreens,setModalScreens] = useState([])
   const [open, setOpen] = useState(false);
   const [dialogLoding,setDialogLoding] = useState(true);
-  
+  const [nowDevice,setNowDevice] = useState();
+
   const handleClose = () => {
     setOpen(false);
     setDialogLoding(true)
@@ -83,6 +86,40 @@ const ScreensTable = props => {
     let result = await axios.get("http://172.16.135.89:3000/camera_monitor?id="+device._id.camera_obids)
     setModalScreens(result.data)
     setDialogLoding(false);
+    setNowDevice(device._id.camera_obids)
+  }
+
+  const deleteOldPic = async () => {
+    if(window.confirm("현재 단말의 일주일 전 파일을 삭제 합니다 \n삭제 하시겠습니다?")){
+      let old = modalScreens.filter(screen => screen.regdate.split(' ')[0] < moment().subtract(7, 'days').format('YYYY-MM-DD'))
+      let list = old.map(screen => screen._id)
+      // console.log(list);
+      await axios.delete('http://172.16.135.89:3000/camera_monitor/'+list[0]._id,{
+        data:{
+          list : list,
+          data : old
+        }
+      })
+      clickImage(nowDevice)
+      props.getScreens()
+      alert('삭제 되었습니다')
+    }
+  }
+  
+  const deleteAll = async () => {
+    if(window.confirm("현재 단말의 모든 파일을 삭제 합니다 \n삭제 하시겠습니다?")){
+      let list = modalScreens.map(screen => screen._id)
+      // console.log(list);
+      await axios.delete('http://172.16.135.89:3000/camera_monitor/'+list[0]._id,{
+        data:{
+          list : list,
+          data : modalScreens
+        }
+      })
+      clickImage(nowDevice)
+      props.getScreens()
+      alert('삭제 되었습니다')
+    }
   }
 
   return (
@@ -104,9 +141,9 @@ const ScreensTable = props => {
             <div style={{ textAlign: 'center',marginTop:"20px"}}>
               <img 
               src={screen.upload_url} 
-              alt="" 
-              onError={() => {return "http://172.16.135.89:3000/image/noImage.png"}}
-              style={{maxWidth:"250px", maxHeight:"200px",cursor:"pointer",boxShadow:"2px 2px 2px 2px gray"}}
+              alt="스크린샷" 
+              onError={(e) => {e.target.src="http://172.16.135.89:3000/image/noImage.svg"}}
+              style={{maxWidth:"250px", maxHeight:"auto",cursor:"pointer"}}
               onClick={() => {clickImage(screen)}}
               />
               <p 
@@ -145,6 +182,10 @@ const ScreensTable = props => {
         // maxWidth={'xl'}
         scroll={'body'}
       >
+      <div style={{margin:"10px 10px"}}>
+        <Button style={{margin:"0px 10px"}} variant="contained" onClick={deleteOldPic} color="primary">오래된 사진 삭제</Button>
+        <Button variant="contained" onClick={deleteAll} color="secondary">전체 삭제</Button>
+      </div>
       {dialogLoding ? <CircularProgress style={{margin:100}}/> : null}
         <Card>
           <Grid
@@ -161,12 +202,12 @@ const ScreensTable = props => {
               xs={12}
               ket={screen._id}
               >
-                <div style={{ textAlign: 'center',marginTop:"20px"}}>
+                <div style={{textAlign: 'center',marginTop:"20px"}}>
                   <img 
                   src={screen.upload_url} 
                   alt="" 
-                  onError={() => {return "http://172.16.135.89:3000/image/noImage.png"}}
-                  style={{width:"250px",height:"auto",boxShadow:"2px 2px 2px 2px gray"}}
+                  onError={(e) => {e.target.src="http://172.16.135.89:3000/image/noImage.svg"}}
+                  style={{width:"250px",height:"auto"}}
                   />
                   <p 
                   style={{margin:"0 auto",position:'relative',minWidth:"250px",maxWidth:"250px", bottom:'38px', backgroundColor:' rgba( 0, 0, 0, 0.5 )', color: '#dddddd', cursor:'pointer'}} 

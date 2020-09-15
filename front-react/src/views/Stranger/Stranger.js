@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Stranger = () => {
+const Stranger = (props) => {
 
   const [accesses,setAccesses] = useState([]);//화면에 보여질 출입 데이터
   const [originAcc,setOriginAcc] = useState([]);//모든 출입 데이터
@@ -31,6 +31,7 @@ const Stranger = () => {
   const [date,setDate] = useState([moment().locale('ko').format('YYYY-MM-DD'), moment().locale('ko').format('YYYY-MM-DD')]);
   const [temp,setTemp] = useState('0');
   const [loading,setLoading] = useState(true);
+  const [activeType,setActiveType] = useState('access_time');
   
   useEffect(() => {
     getAccesses();
@@ -51,6 +52,8 @@ const Stranger = () => {
     setAccesses(result.data.filter(i => i.access_time.split(' ')[0] === date[0]))
     setAllAcc(result.data.filter(i => i.access_time.split(' ')[0] === date[0]))
     setLoading(false);
+    setDate([moment().locale('ko').format('YYYY-MM-DD'), moment().locale('ko').format('YYYY-MM-DD')]);
+    setTemp('0');
   }
 
   const handleAllAccTemp = (i,_temp) => {
@@ -84,14 +87,45 @@ const Stranger = () => {
     }
   }
 
-
+  const sortAccesses = (type,headerType) => {
+    setActiveType(headerType)
+      if(headerType === 'avatar_temperature') {
+        if(type === 'asc'){
+          setAccesses(accesses.sort((a,b) => {
+            if (a.avatar_temperature < b.avatar_temperature) return -1;
+            else if (b.avatar_temperature < a.avatar_temperature) return 1;
+            else return 0;
+          }))
+        } else {
+          setAccesses(accesses.sort((a,b) => {
+            if (a.avatar_temperature > b.avatar_temperature) return -1;
+            else if (b.avatar_temperature > a.avatar_temperature) return 1;
+            else return 0;
+          }))
+        }
+      } else if(headerType === 'access_time') {
+        if(type === 'asc'){
+          setAccesses(accesses.sort((a,b) => {
+            if (a.access_time < b.access_time) return -1;
+            else if (b.access_time < a.access_time) return 1;
+            else return 0;
+          }))
+        } else {
+          setAccesses(accesses.sort((a,b) => {
+            if (a.access_time > b.access_time) return -1;
+            else if (b.access_time > a.access_time) return 1;
+            else return 0;
+          }))
+        }
+      }
+  }
 
   return (
     <div className={classes.root}>
       <Card className={classes.root,classes.cardcontent}>
         <UsersToolbar className={classes.toolbar} dateChange={handleDate} temp_change={handleTemp} temp={temp}/>
         <div className={classes.content}>
-          <UsersTable loading={loading} accesses={accesses} />
+          <UsersTable tempLimit={props.tempLimit} tempType={props.tempType} activeType={activeType} sortAccesses={sortAccesses} loading={loading} accesses={accesses} />
         </div>
       </Card>
     </div>

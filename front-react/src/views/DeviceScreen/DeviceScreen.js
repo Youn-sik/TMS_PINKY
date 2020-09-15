@@ -49,14 +49,15 @@ const DeviceScreen = () => {
     let result = await axios.get('http://172.16.135.89:3000/camera_monitor?id=one_device')
     setScreens(result.data)
     setLoading(false)
+    setSearch('');
   }
 
   return (
     <div className={classes.root}>
       <Card className={classes.root,classes.cardcontent}>
-        <ScreensToolbar handleSearch={handleSearch} search={search} className={classes.toolbar}/>
+        <ScreensToolbar getScreens={getScreens} handleSearch={handleSearch} screens={search.length > 0  ? filtered : screens } search={search} className={classes.toolbar}/>
         <div className={classes.content}>
-          <ScreensTable loading={loading} screens={search.length > 0  ? filtered : screens } />
+          <ScreensTable getScreens={getScreens} loading={loading} screens={search.length > 0  ? filtered : screens } />
         </div>
       </Card>
     </div>

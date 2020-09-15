@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Pagination from '@material-ui/lab/Pagination';
 import TextField from '@material-ui/core/TextField';
 import Search from '@material-ui/icons/Search';
+import TableSortLabel from '@material-ui/core/TableSortLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { NavLink as RouterLink } from 'react-router-dom';
 import { makeStyles } from '@material-ui/styles';
@@ -64,7 +65,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const AccountsTable = props => {
-  const {loading,accountsSearch,selectedNode,setAccountsSearch,setClickedNode,clickedNode,setAccounts,deleteAccounts,className,users, ...rest } = props;
+  const {sortAccesses,activeType,loading,accountsSearch,selectedNode,setAccountsSearch,setClickedNode,clickedNode,setAccounts,deleteAccounts,className,users, ...rest } = props;
 
   const classes = useStyles();
 
@@ -72,6 +73,18 @@ const AccountsTable = props => {
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState([]);
   const [selectedObject, setSelectedObject] = useState([]);
+  const [sort, setSort] = useState('desc')
+
+  const createSortHandler = (headerType) => {
+    if(sort === 'desc'){
+      setSort('asc')
+      sortAccesses('asc',headerType)
+    }
+    else{
+      setSort('desc')
+      sortAccesses('desc',headerType)
+    }
+  }
 
   const handlePageChange = (event, page) => {
     setPage(page);
@@ -138,10 +151,54 @@ const AccountsTable = props => {
                 <TableRow>
                   <TableCell padding="checkbox">
                   </TableCell>
-                  <TableCell>아이디</TableCell>
-                  <TableCell>권한</TableCell>
-                  <TableCell>이름</TableCell>
-                  <TableCell>언어</TableCell>
+                  <TableCell>
+                    {
+                      props.accounts.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'user_id'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('user_id')}}
+                      >
+                        아이디
+                      </TableSortLabel> : "아이디"
+                    }
+                  </TableCell>
+                  <TableCell>
+                    {
+                      props.accounts.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'authority'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('authority')}}
+                      >
+                        권한
+                      </TableSortLabel> : "권한"
+                    }
+                  </TableCell>
+                  <TableCell>
+                    {
+                      props.accounts.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'user_name'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('user_name')}}
+                      >
+                        이름
+                      </TableSortLabel> : "이름"
+                    }
+                  </TableCell>
+                  <TableCell>
+                    {
+                      props.accounts.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'user_lang'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('user_lang')}}
+                      >
+                        언어
+                      </TableSortLabel> : "언어"
+                    }
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>

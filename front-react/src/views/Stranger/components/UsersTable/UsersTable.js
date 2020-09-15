@@ -6,6 +6,7 @@ import { NavLink as RouterLink } from 'react-router-dom';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import TableSortLabel from '@material-ui/core/TableSortLabel';
 import {
   Card,
   CardActions,
@@ -52,7 +53,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const UsersTable = props => {
-  const { loading,className,accesses, ...rest } = props;
+  const { sortAccesses,activeType,loading,className,accesses, ...rest } = props;
 
   const classes = useStyles();
 
@@ -62,6 +63,18 @@ const UsersTable = props => {
   const handlePageChange = (event, page) => {
     setPage(page);
   };
+
+  const [sort, setSort] = useState('desc')
+  const createSortHandler = (headerType) => {
+    if(sort === 'desc'){
+      setSort('asc')
+      sortAccesses('asc',headerType)
+    }
+    else{
+      setSort('desc')
+      sortAccesses('desc',headerType)
+    }
+  }
 
   return (
     <Card
@@ -76,19 +89,42 @@ const UsersTable = props => {
                 <TableRow>
                   <TableCell>사진</TableCell>
                   <TableCell>타입</TableCell>
-                  <TableCell>온도</TableCell>
-                  <TableCell>출입시간</TableCell>
+                  <TableCell>거리</TableCell>
+                  <TableCell>
+                    {
+                      props.accesses.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'avatar_temperature'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('avatar_temperature')}}
+                      >
+                        온도
+                      </TableSortLabel> : "온도"
+                    }
+                  </TableCell>
+                  <TableCell>
+                    {
+                      props.accesses.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'access_time'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('access_time')}}
+                      >
+                        출입시간
+                      </TableSortLabel> : "출입시간"
+                    }
+                  </TableCell>
                   <TableCell>등록</TableCell>
                 </TableRow>
               </TableHead>
               {
                 <TableBody>
                   {props.accesses.slice((page-1) * rowsPerPage, (page-1) * rowsPerPage + rowsPerPage).map(access => {
-                    if(access.avatar_temperature >= 37.5){ //출입 기록 37.5도 이상일때
+                    if(access.avatar_temperature >= props.tempLimit){ //출입 기록 37.5도 이상일때
                       return(
                         <TableRow
                           className={classes.highTempRow}
-                          key={props.accesses._id}
+                          key={access._id}
                         >
                           <TableCell>
                             <div className={classes.nameContainer}>
@@ -105,12 +141,14 @@ const UsersTable = props => {
                           <TableCell className={classes.redFont}>{access.avatar_type === 1 ? "사원" :
                                       access.avatar_type === 2 ? "방문자" : 
                                       access.avatar_type === 4 ? '블랙리스트' : '미등록자'}</TableCell>
-                          <TableCell className={classes.redFont}>{String(access.avatar_temperature).substring(0,4)}</TableCell>
+                          <TableCell>{access.avatar_distance ? String(access.avatar_distance).substr(0,3) : 0}</TableCell>
+                          <TableCell className={classes.redFont}>{props.tempType === 1 ? String(access.avatar_temperature).substring(0,4)
+                                : access.avatar_temperature < props.tempLimit ? "정상체온" : "비정상 체온"}</TableCell>
                           <TableCell>{access.access_time}</TableCell>
                           <TableCell>
                             <RouterLink style={{ textDecoration: 'none' }} to={{
                             pathname:"/users/stranger/add",
-                            userObject:{avatar_file_url : access.avatar_file_url , _id : access.avatar_file_url},
+                            userObject:{avatar_file_url : access.avatar_file_url,avatar_file : access.avatar_file , _id : access.avatar_file_url},
                             }}><Button variant="contained" color="primary">등록</Button></RouterLink>
                           </TableCell>
                         </TableRow>
@@ -119,7 +157,7 @@ const UsersTable = props => {
                       return(
                         <TableRow
                           className={classes.tableRow}
-                          key={props.accesses._id}
+                          key={access._id}
                         >
                           <TableCell>
                             <div className={classes.nameContainer}>
@@ -136,7 +174,9 @@ const UsersTable = props => {
                           <TableCell>{access.avatar_type === 1 ? "사원" :
                                       access.avatar_type === 2 ? "방문자" : 
                                       access.avatar_type === 4 ? '블랙리스트' : '미등록자'}</TableCell>
-                          <TableCell>{String(access.avatar_temperature).substring(0,4)}</TableCell>
+                          <TableCell>{access.avatar_distance ? String(access.avatar_distance).substr(0,3) : 0}</TableCell>
+                          <TableCell>{props.tempType === 1 ? String(access.avatar_temperature).substring(0,4)
+                                : access.avatar_temperature < props.tempLimit ? "정상체온" : "비정상 체온"}</TableCell>
                           <TableCell>{access.access_time}</TableCell>
                           <TableCell>
                             <RouterLink style={{ textDecoration: 'none' }} to={{

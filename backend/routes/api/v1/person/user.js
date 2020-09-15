@@ -58,11 +58,6 @@ router.get('/:id',async function(req, res) {
 
 router.post('/',async function(req, res) {
     try {
-        if(req.query.type === 'stranger') {
-            let temp = await Access.findOne({_id : req.body.stranger_id})
-            req.body.avatar_file = temp.avatar_file;
-            req.body.avatar_contraction_data = temp.avatar_contraction_data;
-        }
         let group = null
         let add = new api_v1_person_user(req.body)
         let overlap_check = await api_v1_person_user.findOne({avatar_file_checksum : add.avatar_file_checksum})
@@ -72,14 +67,26 @@ router.post('/',async function(req, res) {
             add.avatar_contraction_data = overlap_check.avatar_contraction_data;
             add.face_detection = overlap_check.face_detection;
         } else {
-            fs.writeFileSync('image/'+add._id+'profile.jpg',add.avatar_file,'base64')
-            const imageDir = await canvas.loadImage('image/'+add._id+'profile.jpg')
-            
-            const detections = await faceapi.detectAllFaces(imageDir)
-            .withFaceLandmarks()
-            .withFaceDescriptors();
+            let detections
+            if(req.body.avatar_file === undefined) {
+                let imageDir = await canvas.loadImage(req.body.avatar_file_url)
+                detections = await faceapi.detectAllFaces(imageDir)
+                .withFaceLandmarks()
+                .withFaceDescriptors();
+            } else {
+                fs.writeFileSync('image/'+add._id+'profile.jpg',req.body.avatar_file,'base64')
+                let imageDir = await canvas.loadImage('image/'+add._id+'profile.jpg')
+                detections = await faceapi.detectAllFaces(imageDir)
+                .withFaceLandmarks()
+                .withFaceDescriptors();
+            }
 
-            console.log(detections);
+            if(detections.length === 0) {
+                res.send({
+                    result:"인식할수 없는 사진."
+                })
+                return false;
+            }
             asyncJSON.stringify(detections[0].descriptor,function(err, jsonValue) {
                 add.face_detection = jsonValue;
             })

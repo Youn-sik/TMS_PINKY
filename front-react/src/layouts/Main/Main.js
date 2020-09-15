@@ -52,6 +52,7 @@ const Main = props => {
     >
       <Topbar onSidebarOpen={handleSidebarOpen} />
       <Sidebar
+        path={props.path}
         onClose={handleSidebarClose}
         open={shouldOpenSidebar}
         variant={isDesktop ? 'persistent' : 'temporary'}

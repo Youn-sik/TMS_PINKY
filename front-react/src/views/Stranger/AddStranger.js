@@ -5,7 +5,8 @@ import { Grid,Card,CardContent,TextField,Button,Typography } from '@material-ui/
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import emailMask from 'text-mask-addons/dist/emailMask'
-// import './image.css'
+import './image.css'
+import ImageUploader from "react-images-upload";
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import TreeItem from '@material-ui/lab/TreeItem';
@@ -118,6 +119,7 @@ const AddStranger = (props) => {
     const [type,setType] = useState(1);
     const [allGroups,setAllGroups] = useState([]);
     const [selectedGroup,setSelectedGroup] = useState({});
+    const [pictures, setPictures] = useState([]);
 
     const handleClickOpen = () => {
       setOpen(true);
@@ -182,7 +184,7 @@ const AddStranger = (props) => {
           <div className={classes.labelRoot}>
             {Array.isArray(node.children) ? <GroupIcon color="inherit" className={classes.labelIcon}/> : <PersonIcon color="inherit" className={classes.labelIcon}/>}
             <Typography color="inherit" variant="body2" className={classes.labelText}>
-            {node.name}
+              {node.name === 'undefined' ? "미분류" : node.name}
           </Typography>
         </div>
       }
@@ -204,15 +206,22 @@ const AddStranger = (props) => {
     )
 
     const addUser = async () => {
+        let base64
+        if(pictures.length !== 0) {
+            base64 = await toBase64(pictures[0][0])
+            base64 = base64.replace('data:image/jpeg;base64,','')
+            base64 = base64.replace('data:image/png;base64,','')
+        }
         if(type === 1) {
           if(userInfo.name === '') alert("이름을 입력해주세요")
           else if(userInfo.location === '') alert('근무지를 입력해주세요')
           else if(userInfo.position === '') alert('직급을 입력해주세요')
           else if(userInfo.department_id === '') alert('부서를 입력해주세요')
           else {
-            await axios.post('http://172.16.135.89:3000/user?type=stranger',{
+            let result = await axios.post('http://172.16.135.89:3000/user?type=stranger',{
                 name:userInfo.name,
-                avatar_file_url : userObject.avatar_file_url,
+                avatar_file: base64,
+                avatar_file_url: base64 === undefined ? userObject.avatar_file_url : undefined,
                 stranger_id : userObject._id,
                 gender:userInfo.gender,
                 location:userInfo.location,
@@ -224,8 +233,12 @@ const AddStranger = (props) => {
                 groups_obids:[selectedGroup._id ? selectedGroup._id : groups[groups.length - 1]],
                 account : props.user_id,
             })
-            alert('등록 되었습니다.')
-            history.push('/users/employee')
+            if(result.data.result === '인식할수 없는 사진.') {
+              alert("인식 할 수 없는 사진입니다 다른 사진으로 시도해 주세요.")
+            } else {
+              alert('등록 되었습니다.')
+              history.push('/users/employee')
+            }
           }
         } else if(type === 2) {
           if(userInfo.name === '') alert("이름을 입력해주세요")
@@ -239,7 +252,8 @@ const AddStranger = (props) => {
                 guest_company:userInfo.guest_company,
                 guest_purpose:userInfo.guest_purpose,
                 position:userInfo.position,
-                avatar_file_url : userObject.avatar_file_url,
+                avatar_file: base64,
+                avatar_file_url: base64 === undefined ? userObject.avatar_file_url : undefined,
                 stranger_id : userObject._id,
                 mobile:userInfo.mobile,
                 mail:userInfo.mail,
@@ -260,7 +274,8 @@ const AddStranger = (props) => {
               gender:userInfo.gender,
               location:userInfo.location,
               position:userInfo.position,
-              avatar_file_url : userObject.avatar_file_url,
+              avatar_file: base64,
+              avatar_file_url: base64 === undefined ? userObject.avatar_file_url : undefined,
               stranger_id : userObject._id,
               mobile:userInfo.mobile,
               mail:userInfo.mail,
@@ -316,7 +331,7 @@ const AddStranger = (props) => {
               name="mobile"
               value={userInfo.mobile}
               style={{width:'100%'}}
-              label="핸드폰 번호*"
+              label="핸드폰 번호"
               onChange={handleChange}
               InputProps={{
                   inputComponent: TextMaskCustom,
@@ -328,7 +343,7 @@ const AddStranger = (props) => {
               name="mail"
               value={userInfo.mail}
               style={{width:'100%'}}
-              label="이메일*"
+              label="이메일"
               onChange={handleChange}
               InputProps={{
                   inputComponent: emailMaskCustom,
@@ -380,7 +395,7 @@ const AddStranger = (props) => {
               name="mobile"
               value={userInfo.mobile}
               style={{width:'100%'}}
-              label="핸드폰 번호*"
+              label="핸드폰 번호"
               onChange={handleChange}
               InputProps={{
                   inputComponent: TextMaskCustom,
@@ -392,7 +407,7 @@ const AddStranger = (props) => {
               name="mail"
               value={userInfo.mail}
               style={{width:'100%'}}
-              label="이메일*"
+              label="이메일"
               onChange={handleChange}
               InputProps={{
                   inputComponent: emailMaskCustom,
@@ -456,6 +471,17 @@ const AddStranger = (props) => {
       )
     }
 
+    const onDrop = picture => {
+      setPictures([picture,...pictures]);
+    };
+
+    const toBase64 = file => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+
     return (
         <div className={classes.root}>
         <Grid
@@ -472,15 +498,43 @@ const AddStranger = (props) => {
             xs={12}
             >
                 <Card>
+                <ImageUploader
+                    {...props}
+                    withIcon={true}
+                    onChange={onDrop}
+                    imgExtension={[".jpg", ".png"]}
+                    label="최대 크기 : 5mb, 허용 확장자: jpg|png"
+                    fileSizeError="파일의 크기가 너무 큽니다."
+                    fileTypeError="지원하지 않는 타입의 파일 입니다."
+                    buttonText="프로필 사진 업로드"
+                    maxFileSize={5242880}
+                    singleImage={true}
+                    withPreview={true}
+                    />
+                    {
+                      pictures.length < 1 ? <div style={{width:"25%",
+                      margin:"3% auto",
+                      padding:"15px",
+                      background:"#edf2f6",
+                      display:"flex",
+                      alignItems: "center",
+                      justifyContent:'center',
+                      height:'inherit',
+                      boxShadow:'0 0 8px 2px rgba(0, 0, 0, 0.1)',
+                      border: '1px solid #d0dbe4',
+                      position: 'relative'}}>
+                        <img style={{width: "100%",verticalAlign:"middle"}} src={userObject.avatar_file_url}></img>
+                        </div> : null
+                    }
                     <CardContent style={{width: '50%', margin:'0 auto'}}>
-                      <div style={{textAlign: 'center'}}>
+                      {/* <div style={{textAlign: 'center'}}>
                         <img
                           alt="profile"
                           width="50%"
                           height="auto"
                           src={userObject.avatar_file_url}
                         />
-                      </div>
+                      </div> */}
                         <InputLabel shrink id="type">
                           타입
                         </InputLabel>

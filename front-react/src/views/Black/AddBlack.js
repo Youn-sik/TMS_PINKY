@@ -114,7 +114,7 @@ const AddBlack = (props) => {
     const [open, setOpen] = useState(false);
     const [node,setNode] = useState({});
     const onDrop = picture => {
-        setPictures([...pictures, picture]);
+        setPictures([picture,...pictures]);
     };
     const handleClickOpen = () => {
         setOpen(true);
@@ -162,7 +162,7 @@ const AddBlack = (props) => {
           <div className={classes.labelRoot}>
             {Array.isArray(node.children) ? <GroupIcon color="inherit" className={classes.labelIcon}/> : <PersonIcon color="inherit" className={classes.labelIcon}/>}
             <Typography variant="body2" className={classes.labelText}>
-              {node.name}
+              {node.name === 'undefined' ? "미분류" : node.name}
             </Typography>
           </div>
         }
@@ -287,7 +287,7 @@ const AddBlack = (props) => {
                             name="mobile"
                             value={userInfo.mobile}
                             style={{width:'100%'}}
-                            label="핸드폰 번호*"
+                            label="핸드폰 번호"
                             onChange={handleChange}
                             InputProps={{
                                 inputComponent: TextMaskCustom,

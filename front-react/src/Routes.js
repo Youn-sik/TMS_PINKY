@@ -34,6 +34,8 @@ import {
   EditAccount as EditAccountView,
   Operation as OperationView,
   FaceDetection as FaceDetectionView,
+  AccessStat as AccessStatsView,
+  Settings as SettingsView,
 } from './views';
 
 const Routes = (props) => {
@@ -49,6 +51,8 @@ const Routes = (props) => {
         exact
         user_id={props.user_id}
         authority={props.authority}
+        tempLimit={props.tempLimit} 
+        tempType={props.tempType}
         layout={MainLayout}
         path="/dashboard"
       />
@@ -59,6 +63,14 @@ const Routes = (props) => {
         authority={props.authority}
         layout={MainLayout}
         path="/stats/device"
+      />
+      <RouteWithLayout
+        component={AccessStatsView}
+        exact
+        user_id={props.user_id}
+        authority={props.authority}
+        layout={MainLayout}
+        path="/stats/access"
       />
       <RouteWithLayout
         component={UsersStatView}
@@ -114,6 +126,8 @@ const Routes = (props) => {
         user_id={props.user_id}
         authority={props.authority}
         layout={MainLayout}
+        tempLimit={props.tempLimit} 
+        tempType={props.tempType}
         path="/access/records"
       />
       <RouteWithLayout
@@ -130,6 +144,8 @@ const Routes = (props) => {
         user_id={props.user_id}
         authority={props.authority}
         layout={MainLayout}
+        tempLimit={props.tempLimit} 
+        tempType={props.tempType}
         path="/users/Stranger"
       />
       <RouteWithLayout
@@ -212,14 +228,14 @@ const Routes = (props) => {
         layout={MainLayout}
         path="/users/visitor/edit"
       />
-      <RouteWithLayout
+      {/* <RouteWithLayout
         component={FaceDetectionView}
         exact
         user_id={props.user_id}
         authority={props.authority}
         layout={MainLayout}
         path="/users/face-detection"
-      />
+      /> */}
       <RouteWithLayout
         component={AccountView}
         exact
@@ -235,6 +251,16 @@ const Routes = (props) => {
         authority={props.authority}
         layout={MainLayout}
         path="/system/account/add"
+      />
+      <RouteWithLayout
+        component={SettingsView}
+        exact
+        tempLimit={props.tempLimit}
+        tempType={props.tempType}
+        user_id={props.user_id}
+        authority={props.authority}
+        layout={MainLayout}
+        path="/system/settings"
       />
       <RouteWithLayout
         component={EditAccountView}
@@ -266,7 +292,7 @@ const Routes = (props) => {
         user_id={props.user_id}
         authority={props.authority}
         getAuth={props.getAuth}
-        // layout={MinimalLayout}
+        layout={null}
         path="/sign-in"
       />
       <RouteWithLayout

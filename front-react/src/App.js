@@ -30,6 +30,8 @@ export default class App extends React.Component {
     auth : false,
     user_id : '',
     authority : '',
+    tempLimit : 0,
+    tempType : 0
   }
 
   componentWillMount() {
@@ -45,7 +47,9 @@ export default class App extends React.Component {
               this.setState({
                 auth: true,
                 user_id: res.data.user_id,
-                authority : res.data.authority
+                authority : res.data.authority,
+                tempLimit : res.data.tempLimit,
+                tempType : res.data.tempType
               });
             }
           })
@@ -68,26 +72,31 @@ export default class App extends React.Component {
               this.setState({
                 auth: false,
                 authority: '',
-                user_id: ''
+                user_id: '',
+                tempLimit : 0,
+                tempType : 0
               });
               return false;
             } else {
               this.setState({
                 auth: true,
                 user_id: res.data.user_id,
-                authority : res.data.authority
+                authority : res.data.authority,
+                tempLimit : res.data.tempLimit,
+                tempType : res.data.tempType
               });
               return false;
             }
           })
         } else {
-          console.log('test');
           browserHistory.push('/sign-in')
           document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
           this.setState({
             auth: false,
             authority:'',
-            user_id: ''
+            user_id: '',
+            tempLimit : 0,
+            tempType : 0
           });
           return false;
         }
@@ -104,8 +113,14 @@ export default class App extends React.Component {
 
     return browserHistory.location.pathname === '/sign-in' || this.state.authority !== '' ?
       <ThemeProvider theme={theme}>
-        <Router history={browserHistory}>
-          <Routes getAuth={getAuth} user_id={this.state.user_id} authority={this.state.authority} />
+        <Router  history={browserHistory}>
+          <Routes 
+          tempLimit={this.state.tempLimit} 
+          tempType={this.state.tempType} 
+          path={browserHistory.location.pathname} 
+          getAuth={getAuth} 
+          user_id={this.state.user_id} 
+          authority={this.state.authority} />
         </Router>
       </ThemeProvider>
       : <div></div>;

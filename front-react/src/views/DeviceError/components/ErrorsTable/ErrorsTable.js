@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import Pagination from '@material-ui/lab/Pagination';
+import TableSortLabel from '@material-ui/core/TableSortLabel';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 import {
@@ -50,17 +51,26 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ErrorsTable = props => {
-  const { loading,className,errors, ...rest } = props;
+  const { sortAccesses,activeType,loading,className,errors, ...rest } = props;
 
   const classes = useStyles();
 
   const rowsPerPage = 10;
   const [page, setPage] = useState(1);
-
+  const [sort, setSort] = useState('desc')
   const handlePageChange = (event, page) => {
     setPage(page);
   };
-
+  const createSortHandler = (headerType) => {
+    if(sort === 'desc'){
+      setSort('asc')
+      sortAccesses('asc',headerType)
+    }
+    else{
+      setSort('desc')
+      sortAccesses('desc',headerType)
+    }
+  }
   return (
     <Card
       {...rest}
@@ -72,10 +82,54 @@ const ErrorsTable = props => {
             <Table className={classes.inner} size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell>단말기 명</TableCell>
-                  <TableCell>시리얼 넘버</TableCell>
-                  <TableCell>로그 메세지</TableCell>
-                  <TableCell>날짜</TableCell>
+                <TableCell>
+                    {
+                      errors.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'stb_id'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('stb_id')}}
+                      >
+                        단말명
+                      </TableSortLabel> : "단말명"
+                    }
+                  </TableCell>
+                  <TableCell>
+                    {
+                      errors.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'stb_sn'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('stb_sn')}}
+                      >
+                        시리얼 번호
+                      </TableSortLabel> : "시리얼 번호"
+                    }
+                  </TableCell>
+                  <TableCell>
+                    {
+                      errors.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'log_message'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('log_message')}}
+                      >
+                        로그 메세지
+                      </TableSortLabel> : "로그 메세지"
+                    }
+                  </TableCell>
+                  <TableCell>
+                    {
+                      errors.length > 0 ? 
+                      <TableSortLabel
+                      active={activeType === 'create_dt'}
+                      direction={sort}
+                      onClick={() => {createSortHandler('create_dt')}}
+                      >
+                        날짜
+                      </TableSortLabel> : "날짜"
+                    }
+                  </TableCell>
                 </TableRow>
               </TableHead>
               {

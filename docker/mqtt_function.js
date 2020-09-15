@@ -108,6 +108,73 @@ newUser.save(function (error, data2){
 */
 
 module.exports = {
+    async capture_start(json) {
+        json.stb_sn.map((i) => {
+            client.publish('/control/capture/start/'+i,
+                JSON.stringify({stb_sn:i,
+                    "capture_time":json.capture_time,
+                    "capture_size":json.capture_size, 
+                    "capture_status":json.capture_status
+            }))
+        })
+    },
+
+    async capture_end(json) {
+        json.stb_sn.map((i) => {
+            client.publish('/control/capture/end/'+i,
+            JSON.stringify({stb_sn:i,
+                "stb_id":"", 
+                "capture_time":json.capture_time,
+                "capture_size":json.capture_size, 
+                "capture_status":json.capture_status
+            }))
+        })
+    },
+
+    async log(json) {
+        json.stb_sn.map((i) => {
+            client.publish('/control/log/'+i,
+                JSON.stringify({stb_sn:i})
+            );
+        })
+    },
+
+    async sdcard_delete(json) {
+        json.stb_sn.map((i) => {
+            client.publish('/control/sdcard/delete/'+i,JSON.stringify({stb_sn:i}));
+        })
+    },
+
+    async sdcard_part_delete(json) {
+        json.stb_sn.map((i) => {
+            client.publish('/control/sdcard/part/delete/'+i,JSON.stringify({stb_sn:i}));
+        })
+    },
+
+    async reboot(json) {
+        json.stb_sn.map((i) => {
+            client.publish('/control/reboot/'+i,JSON.stringify({stb_sn:i, "message":"reboot"}));
+        })
+    },
+
+    async get_device_file_list(json) {
+        json.stb_sn.map((i) => {
+            client.publish('/control/get_device_file_list/'+i,JSON.stringify({stb_sn:i, "message":"get_device_file_list"}));
+        })
+    },
+
+    async reset(json) {
+        json.stb_sn.map((i) => {
+            client.publish('/control/reset/'+i,JSON.stringify({stb_sn:i}));
+        })
+    },
+
+    async temperature(json) {
+        json.stb_sn.map((i) => {
+            client.publish('/control/temperature/' + i,JSON.stringify({type:1,stb_sn : i,temperature_max : json.temp}));
+        })
+    },
+
     async login(json) {
         await Camera.findOne( { serial_number : json.stb_sn }, (err, camera) => {
             if (err) {

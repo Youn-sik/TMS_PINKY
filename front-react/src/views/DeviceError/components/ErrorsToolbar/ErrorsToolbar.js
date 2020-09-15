@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 import {DateRangePicker,IntlProvider} from 'rsuite'
+import TextField from '@material-ui/core/TextField';
+import Search from '@material-ui/icons/Search';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import kor from 'rsuite/lib/IntlProvider/locales/ko_KR';
 import 'rsuite/dist/styles/rsuite-default.css'
 import 'moment/locale/ko'
@@ -43,10 +46,12 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ErrorsToolbar = props => {
-  const {dateChange,className, ...rest } = props;
+  const {setSearch,search,dateChange,className, ...rest } = props;
 
   const classes = useStyles();
-
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+  }
   return (
     <div
       {...rest}
@@ -61,6 +66,22 @@ const ErrorsToolbar = props => {
             onChange={(val) => {dateChange([val[0].yyyymmdd(),val[1].yyyymmdd()])}}
           />
         </IntlProvider>
+        <div style={{width:"100%"}}>
+          <TextField
+          className={classes.search}
+          style={{float:"right",marginRight:"20px"}}
+          id="input-with-icon-textfield"
+          // label="검색"
+          value={search}
+          onChange={handleSearch}
+          placeholder="검색"
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end"><Search></Search></InputAdornment>
+            ),
+          }}
+          />
+        </div>
       </div>
     </div>
   );

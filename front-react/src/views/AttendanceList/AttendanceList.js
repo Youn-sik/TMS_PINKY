@@ -30,10 +30,146 @@ const UserList = () => {
   const [date,setDate] = useState([moment().locale('ko').format('YYYY-MM-DD'), moment().locale('ko').format('YYYY-MM-DD')]);
   const [searchVal, setSearchVal] = useState("");
   const [loading, setLoading] = useState(true);
+  const [activeType,setActiveType] = useState('create_at');
 
 
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
+
+  const sortAccesses = (type,headerType) => {
+    setActiveType(headerType)
+    if(searchVal === ''){
+      if(headerType === 'name') {
+        if(type === 'asc'){
+          setUsers(users.sort((a,b) => {
+            if (a.name < b.name) return -1;
+            else if (b.name < a.name) return 1;
+            else return 0;
+          }))
+        } else {
+          setUsers(users.sort((a,b) => {
+            if (a.name > b.name) return -1;
+            else if (b.name > a.name) return 1;
+            else return 0;
+          }))
+        }
+      } else if(headerType === 'location') {
+        if(type === 'asc'){
+          setUsers(users.sort((a,b) => {
+            if (a.location < b.location) return -1;
+            else if (b.location < a.location) return 1;
+            else return 0;
+          }))
+        } else {
+          setUsers(users.sort((a,b) => {
+            if (a.location > b.location) return -1;
+            else if (b.location > a.location) return 1;
+            else return 0;
+          }))
+        }
+      } else if(headerType === 'depart') {
+        if(type === 'asc'){
+          setUsers(users.sort((a,b) => {
+            if (a.department_id < b.department_id) return -1;
+            else if (b.department_id < a.department_id) return 1;
+            else return 0;
+          }))
+        } else {
+          setUsers(users.sort((a,b) => {
+            if (a.department_id > b.department_id) return -1;
+            else if (b.department_id > a.department_id) return 1;
+            else return 0;
+          }))
+        }
+      }else if(headerType === 'position') {
+        if(type === 'asc'){
+          setUsers(users.sort((a,b) => {
+            if (a.position < b.position) return -1;
+            else if (b.position < a.position) return 1;
+            else return 0;
+          }))
+        } else {
+          setUsers(users.sort((a,b) => {
+            if (a.position > b.position) return -1;
+            else if (b.position > a.position) return 1;
+            else return 0;
+          }))
+        }
+      } else if(headerType === 'attendance') {
+        if(type === 'asc'){
+          setUsers(users.sort((a,b) => {
+            if (a.attendance < b.attendance) return -1;
+            else if (b.attendance < a.attendance) return 1;
+            else return 0;
+          }))
+        } else {
+          setUsers(users.sort((a,b) => {
+            if (a.attendance > b.attendance) return -1;
+            else if (b.attendance > a.attendance) return 1;
+            else return 0;
+          }))
+        }
+      }else if(headerType === 'late') {
+        if(type === 'asc'){
+          setUsers(users.sort((a,b) => {
+            if (a.late < b.late) return -1;
+            else if (b.late < a.late) return 1;
+            else return 0;
+          }))
+        } else {
+          setUsers(users.sort((a,b) => {
+            if (a.late > b.late) return -1;
+            else if (b.late > a.late) return 1;
+            else return 0;
+          }))
+        }
+      }
+    } else {
+      if(headerType === 'time') {
+        if(type === 'asc'){
+          setFilteredUsers(filteredUsers.sort((a,b) => {
+            if (a.access_time < b.access_time) return -1;
+            else if (b.access_time < a.access_time) return 1;
+            else return 0;
+          }))
+        } else {
+          setFilteredUsers(filteredUsers.sort((a,b) => {
+            if (a.access_time > b.access_time) return -1;
+            else if (b.access_time > a.access_time) return 1;
+            else return 0;
+          }))
+        }
+      }else if(headerType === 'attendance') {
+        if(type === 'asc'){
+          setFilteredUsers(filteredUsers.sort((a,b) => {
+            if (a.attendance < b.attendance) return -1;
+            else if (b.attendance < a.attendance) return 1;
+            else return 0;
+          }))
+        } else {
+          setFilteredUsers(filteredUsers.sort((a,b) => {
+            if (a.attendance > b.attendance) return -1;
+            else if (b.attendance > a.attendance) return 1;
+            else return 0;
+          }))
+        }
+      }else if(headerType === 'late') {
+        if(type === 'asc'){
+          setFilteredUsers(filteredUsers.sort((a,b) => {
+            if (a.late < b.late) return -1;
+            else if (b.late < a.late) return 1;
+            else return 0;
+          }))
+        } else {
+          setFilteredUsers(filteredUsers.sort((a,b) => {
+            if (a.late > b.late) return -1;
+            else if (b.late > a.late) return 1;
+            else return 0;
+          }))
+        }
+      }
+    }
+  }
 
   async function getUsers () {
     let result = await axios.get('http://172.16.135.89:3000/user?type=1',{cancelToken: source.token})
@@ -51,6 +187,8 @@ const UserList = () => {
     let result = await axios.get('http://172.16.135.89:3000/access?type=attendance',{cancelToken: source.token})
     result.data.reverse()
     setAccesses(result.data)
+    setDate([moment().locale('ko').format('YYYY-MM-DD'), moment().locale('ko').format('YYYY-MM-DD')]);
+    setSearchVal("");
   }
 
   useEffect(() => {
@@ -124,7 +262,7 @@ const UserList = () => {
       <Card className={classes.root,classes.cardcontent}>
         <UsersToolbar className={classes.toolbar} dateChange={handleDate} search_val={searchVal} search_event={searchEvent}/>
         <div className={classes.content}>
-          <UsersTable loading={loading} users={searchVal !== '' ? filteredUsers : users} />
+          <UsersTable activeType={activeType} sortAccesses={sortAccesses} loading={loading} users={searchVal !== '' ? filteredUsers : users} />
         </div>
       </Card>
     </div>

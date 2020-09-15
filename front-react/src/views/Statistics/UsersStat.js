@@ -19,7 +19,7 @@ Date.prototype.yyyymmdd = function()
     var yyyy = this.getFullYear().toString();
     var mm = (this.getMonth() + 1).toString();
     var dd = this.getDate().toString();
- 
+
     return yyyy +'-'+ (mm[1] ? mm : '0'+mm[0]) +'-'+ (dd[1] ? dd : '0'+dd[0]);
 }
 
@@ -62,8 +62,14 @@ const UsersStat = (props) => {
 
   const [activeType,setActiveType] = useState('time');
 
+  const [openNode,setOpenNode] = useState(['사원','방문자','블랙리스트']);
+
   const filteringGroups = (search,group) => {
     if(group.children.length > 0) { //자식이 있는 그룹 노드만 검색
+      setOpenNode((node) => ([
+        ...node,
+        group._id
+      ]))
       group.children = group.children.filter((child) =>  {
         if(child.children === undefined && child.name.indexOf(search) !== -1) { //검색 중 user를 만나면 이름 비교후 return
           return true
@@ -82,6 +88,7 @@ const UsersStat = (props) => {
 
   const handleSearch = (e) => {
     let _groups = JSON.parse(JSON.stringify(groups));
+    setOpenNode(['사원','방문자','블랙리스트']);
     setSearch(e.target.value);
     if(e.target.value !== '') {
       let _filteredGroups = JSON.parse(JSON.stringify(_groups.map(group => filteringGroups(e.target.value,group))))
@@ -90,6 +97,10 @@ const UsersStat = (props) => {
     } else {
       setFilteredGroups([])
     }
+  }
+
+  const _setOpenNode = (e,nodeIds) => {
+    setOpenNode(nodeIds)
   }
 
   const sortAccesses = (type,headerType) => {
@@ -291,11 +302,13 @@ const UsersStat = (props) => {
           style={{maxHeight:"410px"}}
         >
           <Tree 
+          openNode={openNode}
           search={search}
           handleSearch={handleSearch}
           setClickedNode={_setClickedNode}
+          setOpenNode={_setOpenNode}
           clickedNode={clickedNode}
-          groups={filteredGroups.length > 0 ? filteredGroups : groups} 
+          groups={search !== '' ? filteredGroups : groups} 
           />
         </Grid>
         <Grid
@@ -326,7 +339,7 @@ const UsersStat = (props) => {
           xl={7}
           xs={12}
         >
-          <Access activeType={activeType} sortAccesses={sortAccesses} clickedNode={clickedNode} temp={attList}/>
+          <Access tempLimit={props.tempLimit} tempType={props.tempType} activeType={activeType} sortAccesses={sortAccesses} clickedNode={clickedNode} temp={attList}/>
         </Grid>
       </Grid>
       }

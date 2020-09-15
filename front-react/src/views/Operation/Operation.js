@@ -23,14 +23,17 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Operation = () => {
+const Operation = (props) => {
   const [oper,setOper] = useState([]);
   const [allOper,setAllOper] = useState([]);
+  const [filteredOper,setFilteredOper] = useState([]);
   // const [originUsers,setOriginUsers] = useState([]);
   const [date,setDate] = useState([moment().locale('ko').format('YYYY-MM-DD'), moment().locale('ko').format('YYYY-MM-DD')]);
   const [searchVal, setSearchVal] = useState("");
   const [loading, setLoading] = useState(true);
-  
+  const [activeType,setActiveType] = useState('');
+  const [search,setSearch] = useState('');
+
   const getOper = useCallback(async () => {
     let result = await axios.get('http://172.16.135.89:3000/operation')
     result.data.reverse()
@@ -38,8 +41,57 @@ const Operation = () => {
     setAllOper(result.data)
     setOper(result.data.filter(user => user.date.split(' ')[0] >= date[0] && user.date.split(' ')[0] <= date[1]))
     setLoading(false);
+    setDate([moment().locale('ko').format('YYYY-MM-DD'), moment().locale('ko').format('YYYY-MM-DD')]);
+    setSearchVal("");
   },[date])
   
+  const sortAccesses = (type,headerType) => {
+    setActiveType(headerType)
+      if(headerType === 'user_id') {
+        if(type === 'asc'){
+          setOper(oper.sort((a,b) => {
+            if (a.id.user_id < b.id.user_id) return -1;
+            else if (b.id.user_id < a.id.user_id) return 1;
+            else return 0;
+          }))
+        } else {
+          setOper(oper.sort((a,b) => {
+            if (a.id.user_id > b.id.user_id) return -1;
+            else if (b.id.user_id > a.id.user_id) return 1;
+            else return 0;
+          }))
+        }
+      } else if(headerType === 'date') {
+        if(type === 'asc'){
+          setOper(oper.sort((a,b) => {
+            if (a.date < b.date) return -1;
+            else if (b.date < a.date) return 1;
+            else return 0;
+          }))
+        } else {
+          setOper(oper.sort((a,b) => {
+            if (a.date > b.date) return -1;
+            else if (b.date > a.date) return 1;
+            else return 0;
+          }))
+        }
+      } else if(headerType === 'action') {
+        if(type === 'asc'){
+          setOper(oper.sort((a,b) => {
+            if (a.action < b.action) return -1;
+            else if (b.action < a.action) return 1;
+            else return 0;
+          }))
+        } else {
+          setOper(oper.sort((a,b) => {
+            if (a.action > b.action) return -1;
+            else if (b.action > a.action) return 1;
+            else return 0;
+          }))
+        }
+      }
+  }
+
   useEffect(() => {
     getOper();
   },[getOper])

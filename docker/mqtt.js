@@ -25,6 +25,15 @@ client.on('connect', function() {
         '/control/temperature/result/+',
         '/control/rrd/+',
         '/log/status/+',
+        '/control/capture/start/devices',
+        '/control/capture/end/devices',
+        '/control/log/devices',
+        '/control/sdcard/delete/devices',
+        '/control/sdcard/part/delete/devices',
+        '/control/reboot/devices',
+        '/control/get_device_file_list/devices',
+        '/control/reset/devices',
+        '/control/temperature/devices'
     ], (error, result) => {
         if (error) {
             console.log('MQTT subscribe error.');
@@ -39,6 +48,67 @@ client.on('message', async function(topic, message) {
     try {
         let context = message.toString();
         let json = JSON.parse(context);
+        
+        if (topic === '/control/capture/start/devices') {
+            if (json.stb_sn[0] != undefined) {
+                fn.capture_start(json);
+            }
+        }
+
+        if (topic === '/control/capture/end/devices') {
+            if (json.stb_sn[0] != undefined) {
+                fn.capture_end(json);
+            }
+        }
+
+        if (topic === '/control/log/devices') {
+            if (json.stb_sn[0] != undefined) {
+                fn.log(json);
+            }
+        }
+
+        if (topic === '/control/sdcard/delete/devices') {
+            if (json.stb_sn[0] != undefined) {
+                fn.sdcard_delete(json);
+            }
+        }
+
+        if (topic === '/control/sdcard/part/delete/devices') {
+            if (json.stb_sn[0] != undefined) {
+                fn.sdcard_part_delete(json);
+            }
+        }
+
+        if (topic === '/control/reboot/devices') {
+            if (json.stb_sn[0] != undefined) {
+                fn.reboot(json);
+            }
+        }
+
+        if (topic === '/control/get_device_file_list/devices') {
+            if (json.stb_sn[0] != undefined) {
+                fn.get_device_file_list(json);
+            }
+        }
+
+        if (topic === '/control/reset/devices') {
+            if (json.stb_sn[0] != undefined) {
+                fn.reset(json);
+            }
+        }
+
+        if (topic === '/control/temperature/devices') {
+            if (json.stb_sn[0] != undefined) {
+                fn.temperature(json);
+            }
+        }
+
+        // if (topic === '/control/capture/start/devices') {
+        //     if (json.stb_sn[0] != undefined) {
+        //         fn.login(json);
+        //     }
+        // }
+        
         /* 로그인 > 로그인 시도 */
         if (topic === "/login/" + json.stb_sn) {
             if (json.stb_sn != undefined) {

@@ -11,7 +11,7 @@ router.get('/',async function(req, res) {
         let get_data;
         let date = new RegExp(moment().format('YYYY-MM-DD'));
         let today = new RegExp(moment().format('YYYY-MM-DD'));
-        if(req.query.type && req.query.type !== 'todayStatistics'&& req.query.type !== 'todayAttendance' && req.query.type !== 'temperature' && req.query.type !== 'attendance') {
+        if(req.query.type && req.query.type !== 'todayStatistics'&& req.query.type !== 'todayAttendance' && req.query.type !== 'temperature' && req.query.type !== 'attendance' && req.query.type !== 'deviceGroupAccesses') {
             get_data = await api_v1_person_access.find({avatar_type:req.query.type}).select('-avatar_file -avatar_contraction_data').limit(50000)
         } else if(req.query.type === 'todayStatistics') {
             get_data = await api_v1_person_access.aggregate([
@@ -32,7 +32,73 @@ router.get('/',async function(req, res) {
                     }   
                 }
             ])
-        } else if(req.query.type === 'todayAttendance') {
+        } 
+        else if(req.query.type === 'deviceGroupAccesses') {
+            get_data = await api_v1_person_access.aggregate([
+                {
+                    $sort:{"avatar_temperature" : -1}
+                },
+                { 
+                    $project : { 
+                        date_time : { 
+                            $split: ["$access_time", " "] 
+                        },
+                        stb_sn:"$stb_sn",
+                        avatar_temperature : "$avatar_temperature", 
+                        avatar_file_url : "$avatar_file_url", 
+                        name : "$name",
+                        avatar_type : "$avatar_type"
+                    } 
+                },
+                {
+                    $project : {
+                        date : {$arrayElemAt:["$date_time",0]},
+                        time : {$arrayElemAt:["$date_time",1]},
+                        stb_sn : 1,
+                        avatar_temperature : 1,
+                        avatar_file_url : 1,
+                        name : 1, 
+                        avatar_type: 1
+                    }
+                },
+                { 
+                    $project : { 
+                        timeArr : { 
+                            $split: ["$time", ":"] 
+                        },
+                        date : 1,
+                        stb_sn : 1,
+                        avatar_temperature : 1,
+                        avatar_file_url : 1,
+                        name : 1, 
+                        avatar_type: 1
+                    } 
+                },
+                { 
+                    $project : { 
+                        hour :  {
+                            $arrayElemAt:["$timeArr",0]
+                        },
+                        date : 1,
+                        stb_sn : 1,
+                        avatar_temperature : 1,
+                        avatar_file_url : 1,
+                        name : 1, 
+                        avatar_type: 1
+                    } 
+                },
+                {
+                    $group : {
+                        _id : "$hour",
+                        accesses : {$push:"$$ROOT"},
+                    }
+                },
+                {
+                    $sort: {_id:1}
+                }
+            ])
+        } 
+        else if(req.query.type === 'todayAttendance') {
             get_data = await api_v1_person_access.aggregate([
                 {
                     $match: {

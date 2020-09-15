@@ -146,7 +146,7 @@ const Groups = props => {
         <div className={classes.labelRoot}>
           {Array.isArray(node.children) ? <GroupIcon color="inherit" className={classes.labelIcon}/> : <PersonIcon color="inherit" className={classes.labelIcon}/>}
           <Typography color="inherit" variant="body2" className={classes.labelText}>
-            {node.name}
+            {node.name === 'undefined' ? "미분류" : node.name}
           </Typography>
         </div>
       }

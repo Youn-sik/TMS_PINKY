@@ -24,7 +24,7 @@ const FaceDetection = (props) => {
     const classes = useStyles();
     
     const onDrop = async  picture => {
-        setPictures([...pictures, picture]);
+        setPictures([picture,...pictures]);
         const fd = new FormData();
         fd.append('image', picture[0])
         let result = await axios.post('http://172.16.135.89:3000/face-detect',fd);
