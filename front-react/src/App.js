@@ -14,6 +14,8 @@ import validators from './common/validators';
 import Routes from './Routes';
 import axios from 'axios'
 
+import SignIn from './views/SignIn'
+
 const browserHistory = createBrowserHistory();
 
 Chart.helpers.extend(Chart.elements.Rectangle.prototype, {
@@ -123,6 +125,6 @@ export default class App extends React.Component {
           authority={this.state.authority} />
         </Router>
       </ThemeProvider>
-      : <div></div>;
+      : <div></div>
   }
 }

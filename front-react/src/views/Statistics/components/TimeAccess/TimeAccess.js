@@ -107,8 +107,8 @@ const TimeAccess = props => {
 
         const position = chart.chartInstance.canvas.getBoundingClientRect();
 
-        const left = tooltipModel.caretX + window.pageXOffset;
-        const top = position.top + 20 + window.pageYOffset;
+        const left = tooltipModel.caretX + window.pageXOffset + window.outerWidth/6;
+        const top = position.top + 20 + window.pageYOffset - window.outerWidth/100;
 
         const date = tooltipModel.dataPoints[0].xLabel;
         const value = tooltipModel.dataPoints[0].yLabel;
@@ -192,13 +192,14 @@ const TimeAccess = props => {
               options={options}
               ref={_chartRef}
             />
-            { tooltip.accessCount !== 0 ?
+          </div>
+          { tooltip.accessCount !== 0 ?
                 <div style={{position:"absolute" ,top: tooltip.top, left: tooltip.left}}>
                   <div className="arrow_box">
                     <div style={{color:"white"}}>출입자 수: {tooltip.accessCount}명</div>
                     <div style={{color:"white"}}>
-                      최고 발열자 :
-                      <img style={{width:"80%",height:"auto"}} src={tooltip.accessData.avatar_file_url}></img><br/>
+                      최고 발열자 :<br/>
+                      <img style={{width:"80px",height:"auto"}} src={tooltip.accessData.avatar_file_url}></img><br/>
                       타입 :{tooltip.accessData.avatar_type === 1 ? "사원" : 
                              tooltip.accessData.avatar_type === 2 ? "방문자" :
                              tooltip.accessData.avatar_type === 3 ? "미등록자" : "블랙리스트"}<br/>
@@ -209,7 +210,6 @@ const TimeAccess = props => {
                 </div>
               : null
             }
-          </div>
        {/* {props.employee + props.visitor + props.black + props.stranger !== 0 ?
         <div className={classes.chartContainer}>
           <Line

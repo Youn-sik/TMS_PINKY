@@ -171,7 +171,9 @@ fastify.post('/login', async function(req, res) {
                     },
                     'jjh',
                     {
-                        expiresIn:'10h'
+                        expiresIn:'7d',
+                        issuer: 'koolsign_access_control',
+                        subject:'userInfo'
                     }
                 )
                 res.send({
@@ -194,6 +196,7 @@ fastify.post('/login', async function(req, res) {
 fastify.get('/auth', async function(req, res) {
     let token = req.query.token;
     let tokenAuth = {user_id:null};
+    console.log(token);
     if(token === undefined && req.headers.cookie !== undefined) {
         token = cookie.parse(req.headers.cookie).token;
     }
