@@ -8,25 +8,10 @@ const History = require('../../../../models/api/v1/person/history')
 const Operation = require('../../../../models/api/v1/person/operation')
 const crypto = require('crypto');
 
-// const canvas = require("canvas");
-// const { loadImage, Canvas, Image, ImageData } = canvas;
-// const tf = require('@tensorflow/tfjs-node');
-// const faceapi = require('@vladmandic/face-api');
-// const fetch = require('node-fetch')
-// var asyncJSON = require('async-json');
-
 var fs = require('fs')
 var moment = require('moment');
 require('moment-timezone'); 
 moment.tz.setDefault("Asia/Seoul"); 
-
-Promise.all([
-    // tf.setBackend('webgl'),
-    faceapi.nets.ssdMobilenetv1.loadFromDisk(`${__dirname}/face-models/`),
-    faceapi.nets.faceRecognitionNet.loadFromDisk(`${__dirname}/face-models/`),
-    faceapi.nets.faceLandmark68Net.loadFromDisk(`${__dirname}/face-models/`),
-    faceapi.env.monkeyPatch({ Canvas, Image, ImageData,fetch: fetch }),
-])
 
 router.get('/',async function(req, res) {
     try {
@@ -67,31 +52,6 @@ router.post('/',async function(req, res) {
             add.avatar_contraction_data = overlap_check.avatar_contraction_data;
             add.face_detection = overlap_check.face_detection;
         } else {
-            // let detections
-            // if(req.body.avatar_file === undefined) {
-            //     let imageDir = await canvas.loadImage(req.body.avatar_file_url)
-            //     detections = await faceapi.detectAllFaces(imageDir)
-            //     .withFaceLandmarks()
-            //     .withFaceDescriptors();
-            // } else {
-            //     fs.writeFileSync('image/'+add._id+'profile.jpg',req.body.avatar_file,'base64')
-            //     let imageDir = await canvas.loadImage('image/'+add._id+'profile.jpg')
-            //     detections = await faceapi.detectAllFaces(imageDir)
-            //     .withFaceLandmarks()
-            //     .withFaceDescriptors();
-            // }
-
-            // if(detections.length === 0) {
-            //     res.send({
-            //         result:"인식할수 없는 사진."
-            //     })
-            //     return false;
-            // }
-            // asyncJSON.stringify(detections[0].descriptor,function(err, jsonValue) {
-            //     add.face_detection = jsonValue;
-            // })
-            
-            
             add.avatar_file_url = 'http://172.16.135.89:3000/image/'+add._id+'profile.jpg';
             //sha256 checksum
             let file_buffer = fs.readFileSync(__dirname+'/../../../../image/'+add._id+'profile.jpg');
