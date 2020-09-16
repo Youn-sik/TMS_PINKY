@@ -6,44 +6,44 @@ const moment = require('moment');
 const request = require('request');
 const archiver = require('archiver');
 const CronJob = require('cron').CronJob;
-const mariadb = require('mariadb');
-const pool = mariadb.createPool({
-    timeout: 60 * 60 * 1000,
-    host: site.maria_host,
-    port: site.maria_port,
-    user: site.maria_user,
-    password: site.maria_passwd,
-    database: site.maria_database,
-    collation: 'utf8_general_ci',
-    multipleStatements: true,
-    waitForConnections: true,
-    connectionLimit: 100,
-    queueLimit: 0,
-    pipelining: false
-});
+// const mariadb = require('mariadb');
+// const pool = mariadb.createPool({
+//     timeout: 60 * 60 * 1000,
+//     host: site.maria_host,
+//     port: site.maria_port,
+//     user: site.maria_user,
+//     password: site.maria_passwd,
+//     database: site.maria_database,
+//     collation: 'utf8_general_ci',
+//     multipleStatements: true,
+//     waitForConnections: true,
+//     connectionLimit: 100,
+//     queueLimit: 0,
+//     pipelining: false
+// });
 
-const getConnectionDummy = () => {
-    return new Promise(resolve => {
-        resolve(pool);
-    })
-};
+// const getConnectionDummy = () => {
+//     return new Promise(resolve => {
+//         resolve(pool);
+//     })
+// };
 
-const sleep = (ms = 1000) => {
-    return new Promise(resolve => {
-        setTimeout(() => {
-            resolve();
-        }, ms);
-    });
-};
+// const sleep = (ms = 1000) => {
+//     return new Promise(resolve => {
+//         setTimeout(() => {
+//             resolve();
+//         }, ms);
+//     });
+// };
 
-getConnectionDummy()
-    .then(conn => {
+// getConnectionDummy()
+//     .then(conn => {
         //console.log("connected ! connection info is " + conn.info.threadId);
         //conn.release(); //release to pool
-    })
-    .catch(err => {
+    // })
+    // .catch(err => {
         //console.log("not connected due to error: " + err);
-    });
+    // });
 
 /* AP1 서버에서 돌고 있다면 AP2에서는 돌리지 않는다. 30초마다 체크. */
 //TODO: 도커스웜어떻게될지모르니 나중에 처리
