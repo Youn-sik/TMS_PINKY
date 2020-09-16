@@ -9,15 +9,6 @@ moment.tz.setDefault("Asia/Seoul");
 const mkdirp = require('mkdirp');
 const client = require('./mqtt_load');
 const fetch = require('node-fetch')
-var asyncJSON = require('async-json');
-
-Promise.all([
-    // tf.setBackend('webgl'),
-    faceapi.nets.ssdMobilenetv1.loadFromDisk(`${__dirname}/schema/face-models/`),
-    faceapi.nets.faceRecognitionNet.loadFromDisk(`${__dirname}/schema/face-models/`),
-    faceapi.nets.faceLandmark68Net.loadFromDisk(`${__dirname}/schema/face-models/`),
-    faceapi.env.monkeyPatch({ Canvas, Image, ImageData,fetch: fetch }),
-])
 
 const mqtt_option = {
     retain: false,

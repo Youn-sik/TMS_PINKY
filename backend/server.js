@@ -9,7 +9,7 @@ const config = require("./config/config");
 
 // Connect to DB
 mongoose
-	.connect('mongodb://kool:master@mongodb:27017/cloud40',{ useNewUrlParser: true ,useUnifiedTopology: true})
+	.connect('mongodb://kool:master@127.0.0.1:27017/cloud40',{ useNewUrlParser: true ,useUnifiedTopology: true})
 	.then(() => console.log('MongoDB connected...'))
 	.catch(err => console.log(err))
 

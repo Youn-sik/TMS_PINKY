@@ -1,9 +1,6 @@
 // Require the framework and instantiate it
 const fastify = require('./server.js')
-// const gql = require('fastify-gql')
-// const schema = require('./schema')
 const cors = require('cors')
-// const graphqlHTTP = require( 'express-graphql');
 const boom = require('boom')
 const jwt =  require('jsonwebtoken');
 const cookie = require('cookie');
