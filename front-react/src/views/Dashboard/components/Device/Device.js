@@ -8,7 +8,8 @@ import {
   CardHeader,
   CardContent,
   Divider,
-  Typography
+  Typography,
+  Grid
 } from '@material-ui/core';
 import PowerIcon from '@material-ui/icons/Power';
 import PowerOffIcon from '@material-ui/icons/PowerOff';
@@ -24,7 +25,8 @@ const useStyles = makeStyles(theme => ({
   stats: {
     marginTop: theme.spacing(2),
     display: 'flex',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    width:"100%"
   },
   device: {
     textAlign: 'center',
@@ -32,6 +34,9 @@ const useStyles = makeStyles(theme => ({
   },
   deviceIcon: {
     color: theme.palette.icon
+  },
+  cardContent: {
+    height:"85%",
   }
 }));
 
@@ -113,7 +118,14 @@ const Device = props => {
         title="단말기 상태"
       />
       <Divider />
-      <CardContent>
+      <CardContent className={classes.cardContent}>
+        <Grid 
+          className={classes.cardContent} 
+          container
+          direction="row"
+          justify="center"
+          alignItems="center"
+        >
         {props.on+props.off !== 0 ?
           <div className={classes.chartContainer}>
           <Doughnut
@@ -139,6 +151,7 @@ const Device = props => {
             </div>
           ))}
         </div>
+        </Grid>
       </CardContent>
     </Card>
   );
