@@ -6,6 +6,7 @@ import Pagination from '@material-ui/lab/Pagination';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 import moment from 'moment';
+import {base_url} from 'server.json'
 import 'moment/locale/ko'
 import {
   Card,
@@ -83,7 +84,7 @@ const ScreensTable = props => {
   const clickImage = async (device) => {
     setModalScreens([])
     setOpen(true);
-    let result = await axios.get("http://172.16.135.89:3000/camera_monitor?id="+device._id.camera_obids)
+    let result = await axios.get(base_url+"/camera_monitor?id="+device._id.camera_obids)
     setModalScreens(result.data)
     setDialogLoding(false);
     setNowDevice(device._id.camera_obids)
@@ -94,7 +95,7 @@ const ScreensTable = props => {
       let old = modalScreens.filter(screen => screen.regdate.split(' ')[0] < moment().subtract(7, 'days').format('YYYY-MM-DD'))
       let list = old.map(screen => screen._id)
       // console.log(list);
-      await axios.delete('http://172.16.135.89:3000/camera_monitor/'+list[0]._id,{
+      await axios.delete(base_url+'/camera_monitor/'+list[0]._id,{
         data:{
           list : list,
           data : old
@@ -110,7 +111,7 @@ const ScreensTable = props => {
     if(window.confirm("현재 단말의 모든 파일을 삭제 합니다 \n삭제 하시겠습니다?")){
       let list = modalScreens.map(screen => screen._id)
       // console.log(list);
-      await axios.delete('http://172.16.135.89:3000/camera_monitor/'+list[0]._id,{
+      await axios.delete(base_url+'/camera_monitor/'+list[0]._id,{
         data:{
           list : list,
           data : modalScreens
@@ -142,7 +143,7 @@ const ScreensTable = props => {
               <img 
               src={screen.upload_url} 
               alt="스크린샷" 
-              onError={(e) => {e.target.src="http://172.16.135.89:3000/image/noImage.svg"}}
+              onError={(e) => {e.target.src=base_url+"/image/noImage.svg"}}
               style={{maxWidth:"250px", maxHeight:"auto",cursor:"pointer"}}
               onClick={() => {clickImage(screen)}}
               />
@@ -206,7 +207,7 @@ const ScreensTable = props => {
                   <img 
                   src={screen.upload_url} 
                   alt="" 
-                  onError={(e) => {e.target.src="http://172.16.135.89:3000/image/noImage.svg"}}
+                  onError={(e) => {e.target.src=base_url+"/image/noImage.svg"}}
                   style={{width:"250px",height:"auto"}}
                   />
                   <p 

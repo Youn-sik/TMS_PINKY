@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/styles';
 import { Grid,Card,CardContent,TextField,Button } from '@material-ui/core';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import {base_url} from 'server.json'
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 const useStyles = makeStyles(theme => ({
@@ -80,7 +81,7 @@ const AddAccount = (props) => {
       else if(accountInfo.user_pw !== accountInfo.pw_chk) alert('비밀번호가 다릅니다')
       else {
 
-        let result = await axios.post('http://172.16.135.89:3000/account',{
+        let result = await axios.post(base_url+'/account',{
           ...accountInfo,
           account : props.user_id,
         })

@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import {base_url} from 'server.json'
 import axios from 'axios';
 import mqtt from 'mqtt'
 import {
@@ -60,7 +61,7 @@ const Dashboard = (props) => {
   const [attendanceData,setAttendanceData] = useState([]);
 
   async function countAccess() {
-    let result = await axios.get('http://172.16.135.89:3000/access?type=todayStatistics')
+    let result = await axios.get(base_url+'/access?type=todayStatistics')
     result.data.map((i) => {
       if(i._id.type === 1) setEmployee(i.count)
       else if(i._id.type === 2) setVisitor(i.count)
@@ -71,7 +72,7 @@ const Dashboard = (props) => {
   }
 
   async function deviceState() {
-    let result = await axios.get('http://172.16.135.89:3000/camera',{params:{authority:props.authority}})
+    let result = await axios.get(base_url+'/camera',{params:{authority:props.authority}})
     result.data.map((i) => {
       if(i.status === 'Y') {
         setOn(on => on+1);
@@ -83,7 +84,7 @@ const Dashboard = (props) => {
   }
 
   async function attendanceChart() {
-    let result = await axios.get('http://172.16.135.89:3000/access?type=todayAttendance')
+    let result = await axios.get(base_url+'/access?type=todayAttendance')
     setAttendanceData(result.data)
     result.data.map((i) => {
       if(i.access_time.split(' ')[1] <= '09:00:00') {
@@ -95,12 +96,12 @@ const Dashboard = (props) => {
     })
   }
   async function device_errors() {
-    let result = await axios.get('http://172.16.135.89:3000/glogs?type=limit5errors')
+    let result = await axios.get(base_url+'/glogs?type=limit5errors')
     setErrors(result.data)
   }
 
   async function temp_alerts() {
-    let result = await axios.get("http://172.16.135.89:3000/access?type=temperature")
+    let result = await axios.get(base_url+"/access?type=temperature")
     setTemp(result.data)
     setLoading(false);
   }

@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/styles';
 import {TextField,InputAdornment,Button} from '@material-ui/core'
 import Search from '@material-ui/icons/Search';
 import moment from 'moment';
+import {base_url} from 'server.json'
 import 'moment/locale/ko'
 import 'rsuite/dist/styles/rsuite-default.css'
 
@@ -41,7 +42,7 @@ const ScreensToolbar = props => {
   const classes = useStyles();
 
   const getPictures = async () => {
-    let result = await axios.get('http://172.16.135.89:3000/camera_monitor')
+    let result = await axios.get(base_url+'/camera_monitor')
     setData(result.data)
   }
 
@@ -50,7 +51,7 @@ const ScreensToolbar = props => {
       let old = data.filter(screen => screen.regdate.split(' ')[0] < moment().subtract(7, 'days').format('YYYY-MM-DD'))
       let list = old.map(screen => screen._id)
       // console.log(list);
-      await axios.delete('http://172.16.135.89:3000/camera_monitor/'+list[0]._id,{
+      await axios.delete(base_url+'/camera_monitor/'+list[0]._id,{
         data:{
           list : list,
           data : old
@@ -65,7 +66,7 @@ const ScreensToolbar = props => {
     if(window.confirm("현재 단말의 모든 파일을 삭제 합니다 \n삭제 하시겠습니다?")){
       let list = data.map(screen => screen._id)
       // console.log(list);
-      await axios.delete('http://172.16.135.89:3000/camera_monitor/'+list[0]._id,{
+      await axios.delete(base_url+'/camera_monitor/'+list[0]._id,{
         data:{
           list : list,
           data : data

@@ -6,6 +6,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import ImageUploader from "react-images-upload";
 import './image.css'
+import {base_url} from 'server.json'
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import TreeItem from '@material-ui/lab/TreeItem';
@@ -199,7 +200,7 @@ const AddBlack = (props) => {
         let base64 = await toBase64(pictures[0][0])
         base64 = base64.replace('data:image/jpeg;base64,','')
         base64 = base64.replace('data:image/png;base64,','')
-        await axios.post('http://172.16.135.89:3000/user',{
+        await axios.post(base_url+'/user',{
             ...userInfo,
             type:5,
             groups_obids:[node._id ? node._id : groups[groups.length - 1]],

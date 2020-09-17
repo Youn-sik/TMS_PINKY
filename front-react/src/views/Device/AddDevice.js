@@ -4,11 +4,7 @@ import { Grid,Card,CardContent,TextField,Button } from '@material-ui/core';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import './image.css'
-import Radio from '@material-ui/core/Radio';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
+import {base_url} from 'server.json'
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(4)
@@ -81,7 +77,7 @@ const AddDevice = (props) => {
   },[])
 
   const getGateway = async () => {
-    let result = await axios.get('http://172.16.135.89:3000/gateway')
+    let result = await axios.get(base_url+'/gateway')
     setGateway(result.data)
   }
   
@@ -104,7 +100,7 @@ const AddDevice = (props) => {
   };
 
   const addDevice = async () => {
-    await axios.post('http://172.16.135.89:3000/camera',{
+    await axios.post(base_url+'/camera',{
       ...device,
       account : props.user_id,
       authority : props.authority
@@ -115,7 +111,7 @@ const AddDevice = (props) => {
 
   const addGate = async () => {
     const port = 'port';
-    await axios.post('http://172.16.135.89:3000/gateway',{
+    await axios.post(base_url+'/gateway',{
       ...gate,
       [port] : parseInt(gate.port),
       account : props.user_id,

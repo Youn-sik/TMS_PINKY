@@ -1,6 +1,7 @@
 import React,{ useState,useEffect,useCallback } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
+import {base_url} from 'server.json'
 import axios from 'axios';
 import { AccountsTable } from './components';
 
@@ -245,7 +246,7 @@ const Account = (props) => {
   },[accountsSearch,accounts,filterAccount])
 
   async function getAccounts() {
-    let result = await axios.get('http://172.16.135.89:3000/account?authority='+props.authority)
+    let result = await axios.get(base_url+'/account?authority='+props.authority)
     setAccounts(result.data);
     setLoading(false)
     setAccountsSearch('');
@@ -253,7 +254,7 @@ const Account = (props) => {
 
   const deleteAccounts = async (selectedAccounts) => {
     if(window.confirm('정말 삭제 하시겠습니까?')) {
-      await axios.delete('http://172.16.135.89:3000/account/'+selectedAccounts[0]._id,{
+      await axios.delete(base_url+'/account/'+selectedAccounts[0]._id,{
         data:{
           account : props.user_id
         }

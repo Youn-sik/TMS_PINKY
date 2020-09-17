@@ -4,6 +4,7 @@ import axios from 'axios';
 import { UsersToolbar, UsersTable } from './components';
 import Card from '@material-ui/core/Card';
 import moment from 'moment';
+import {base_url} from 'server.json'
 import 'moment/locale/ko'
 const useStyles = makeStyles(theme => ({
   root: {
@@ -172,7 +173,7 @@ const UserList = () => {
   }
 
   async function getUsers () {
-    let result = await axios.get('http://172.16.135.89:3000/user?type=1',{cancelToken: source.token})
+    let result = await axios.get(base_url+'/user?type=1',{cancelToken: source.token})
     result.data.reverse()
     result.data.map((user) => {
       user.late=0
@@ -184,7 +185,7 @@ const UserList = () => {
   }
 
   async function getAccesses () {
-    let result = await axios.get('http://172.16.135.89:3000/access?type=attendance',{cancelToken: source.token})
+    let result = await axios.get(base_url+'/access?type=attendance',{cancelToken: source.token})
     result.data.reverse()
     setAccesses(result.data)
     setDate([moment().locale('ko').format('YYYY-MM-DD'), moment().locale('ko').format('YYYY-MM-DD')]);

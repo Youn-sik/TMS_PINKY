@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/styles';
 import { Grid,Card,CardContent,TextField,Button } from '@material-ui/core';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import {base_url} from 'server.json'
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 const useStyles = makeStyles(theme => ({
@@ -85,7 +86,7 @@ const EditAccount = (props) => {
     },[selectedAccounts,history])
 
     const addUser = async () => {
-      await axios.put('http://172.16.135.89:3000/account/'+selectedAccounts[0]._id,{
+      await axios.put(base_url+'/account/'+selectedAccounts[0]._id,{
           ...selectedAccounts[0],
           ...accountInfo,
       })

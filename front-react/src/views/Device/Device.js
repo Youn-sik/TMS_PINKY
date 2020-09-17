@@ -2,6 +2,7 @@ import React,{ useState,useEffect,useCallback } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 import axios from 'axios';
+import {base_url} from 'server.json'
 import { Stream, DeviceTable } from './components';
 
 const useStyles = makeStyles(theme => ({
@@ -247,7 +248,7 @@ const Employee = (props) => {
   }
 
   const getDevcie = async () => {
-    let result = await axios.get('http://172.16.135.89:3000/camera?authority='+props.authority)
+    let result = await axios.get(base_url+'/camera?authority='+props.authority)
     if(result.data.length > 0){
       setStream(result.data[0].ip);
       setDevice(result.data);
@@ -259,7 +260,7 @@ const Employee = (props) => {
   const deleteDevice = async (selectedDevice) => {
     if(window.confirm('정말 삭제 하시겠습니까?')) {
       if(selectedDevice.length === 1){
-        await axios.delete('http://172.16.135.89:3000/camera/'+selectedDevice[0]._id,{
+        await axios.delete(base_url+'/camera/'+selectedDevice[0]._id,{
           data:{
             account : props.user_id
           }
@@ -267,7 +268,7 @@ const Employee = (props) => {
         let temp = device.filter(i => i._id !== selectedDevice[0]._id)
         setDevice(temp);
       } else {
-        await axios.delete('http://172.16.135.89:3000/camera/'+selectedDevice[0]._id,{
+        await axios.delete(base_url+'/camera/'+selectedDevice[0]._id,{
           data:{
             account : props.user_id,
             devices : selectedDevice,

@@ -19,6 +19,7 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import {base_url} from 'server.json'
 const useStyles = makeStyles(theme => ({
   root:{
     padding: theme.spacing(4)
@@ -215,7 +216,7 @@ const AddVisitor = (props) => {
         let base64 = await toBase64(pictures[0][0])
         base64 = base64.replace('data:image/jpeg;base64,','')
         base64 = base64.replace('data:image/png;base64,','')
-        await axios.post('http://172.16.135.89:3000/user',{
+        await axios.post(base_url+'/user',{
             ...userInfo,
             type:2,
             groups_obids:[node._id ? node._id : groups[groups.length - 1]],

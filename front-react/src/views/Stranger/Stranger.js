@@ -5,6 +5,7 @@ import { UsersToolbar, UsersTable } from './components';
 import Card from '@material-ui/core/Card';
 import moment from 'moment';
 import 'moment/locale/ko'
+import {base_url} from 'server.json'
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3)
@@ -46,7 +47,7 @@ const Stranger = (props) => {
   const source = CancelToken.source();
 
   async function getAccesses () {
-    let result = await axios.get('http://172.16.135.89:3000/access?type=3',{cancelToken: source.token})
+    let result = await axios.get(base_url+'/access?type=3',{cancelToken: source.token})
     result.data.reverse()
     setOriginAcc(result.data)
     setAccesses(result.data.filter(i => i.access_time.split(' ')[0] === date[0]))

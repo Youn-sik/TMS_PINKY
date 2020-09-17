@@ -5,15 +5,14 @@ import {
     Card,
     CardContent,
     Button,
-    TextField,
     Radio,
     RadioGroup,
     FormControlLabel,
     FormControl,
-    FormHelperText,
     Input,
     InputAdornment
 } from '@material-ui/core/';
+import {base_url} from 'server.json'
 import NumberFormat from 'react-number-format';
 const useStyles = makeStyles(theme => ({
     root: {
@@ -56,7 +55,7 @@ const Settings = (props) => {
     }
 
     const clickEdit = async () => {
-        let result = await axios.put('http://172.16.135.89:3000/account/'+props.user_id,{
+        let result = await axios.put(base_url+'/account/'+props.user_id,{
             tempLimit,
             tempType
         })

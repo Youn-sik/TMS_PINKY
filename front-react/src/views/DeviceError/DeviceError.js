@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/styles';
 import axios from 'axios';
 import { ErrorsToolbar, ErrorsTable } from './components';
 import Card from '@material-ui/core/Card';
+import {base_url} from 'server.json'
 import moment from 'moment';
 import 'moment/locale/ko'
 const useStyles = makeStyles(theme => ({
@@ -34,7 +35,7 @@ const DeviceError = () => {
   const [activeType,setActiveType] = useState('create_dt');
 
   const getErrors = useCallback( async () => {
-    let result = await axios.get('http://172.16.135.89:3000/glogs?type=error')
+    let result = await axios.get(base_url+'/glogs?type=error')
     result.data.reverse()
     setOriginAcc(result.data)
     setErrors(result.data.filter(i => i.create_dt.split(' ')[0] === date[0]))

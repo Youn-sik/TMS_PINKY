@@ -20,6 +20,7 @@ import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
+import {base_url} from 'server.json'
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(4)
@@ -153,7 +154,7 @@ const AddStranger = (props) => {
     }
 
     const getGroups = async () => {
-      let result = await axios('http://172.16.135.89:3000/group')        
+      let result = await axios(base_url+'/group')        
       let filteredGroups = result.data.filter(group => group.type === type)
       setGroups(filteredGroups)
       setAllGroups(result.data);
@@ -218,7 +219,7 @@ const AddStranger = (props) => {
           else if(userInfo.position === '') alert('직급을 입력해주세요')
           else if(userInfo.department_id === '') alert('부서를 입력해주세요')
           else {
-            let result = await axios.post('http://172.16.135.89:3000/user?type=stranger',{
+            let result = await axios.post(base_url+'/user?type=stranger',{
                 name:userInfo.name,
                 avatar_file: base64,
                 avatar_file_url: base64 === undefined ? userObject.avatar_file_url : undefined,
@@ -246,7 +247,7 @@ const AddStranger = (props) => {
           else if(userInfo.guest_purpose === '') alert('방문 목적을 입력해주세요')
           else if(userInfo.position === '') alert('직급을 입력해주세요')
           else {
-            await axios.post('http://172.16.135.89:3000/user?type=stranger',{
+            await axios.post(base_url+'/user?type=stranger',{
                 name:userInfo.name,
                 gender:userInfo.gender,
                 guest_company:userInfo.guest_company,
@@ -269,7 +270,7 @@ const AddStranger = (props) => {
           else if(userInfo.location === '') alert('장소를 입력해주세요')
           else if(userInfo.position === '') alert('사유를 입력해주세요')
           else {
-            await axios.post('http://172.16.135.89:3000/user?type=stranger',{
+            await axios.post(base_url+'/user?type=stranger',{
               name:userInfo.name,
               gender:userInfo.gender,
               location:userInfo.location,

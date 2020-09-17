@@ -3,10 +3,7 @@ import { makeStyles } from '@material-ui/styles';
 import { Grid,Card,CardContent,TextField,Button } from '@material-ui/core';
 import axios from 'axios';
 import './image.css'
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
+import {base_url} from 'server.json'
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(4)
@@ -69,7 +66,7 @@ const EditDevice = (props) => {
     const [gate,setGate] = useState([])
 
     const getGate = async () => {
-        let result = await axios.get('http://172.16.135.89:3000/gateway')
+        let result = await axios.get(base_url+'/gateway')
         setGate(result.data);
     }
 
@@ -81,7 +78,7 @@ const EditDevice = (props) => {
     };
     
     const addDevice = async () => {
-        await axios.post('http://172.16.135.89:3000/camera',{
+        await axios.post(base_url+'/camera',{
             ...device,
             account : props.user_id,
             authority : props.authority

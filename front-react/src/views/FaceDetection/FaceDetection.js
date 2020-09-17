@@ -3,6 +3,7 @@ import ImageUploader from "react-images-upload";
 import { Grid,Card,CardContent,TextField,Button,Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import './image.css'
+import {base_url} from 'server.json'
 import axios from 'axios';
 // import '@tensorflow/tfjs-node';
 // import * as faceapi from 'face-api.js';
@@ -15,7 +16,7 @@ const useStyles = makeStyles(theme => ({
 // Promise.all([
 //     faceapi.nets.faceRecognitionNet.loadFromUri('../../../models'),
 //     faceapi.nets.faceLandmark68Net.loadFromUri('../../../models'),
-//     faceapi.nets.ssdMobilenetv1.loadFromUri('http://172.16.135.89:3000/face-models')
+//     faceapi.nets.ssdMobilenetv1.loadFromUri(base_url+'/face-models')
 // ])
 
 const FaceDetection = (props) => {
@@ -27,7 +28,7 @@ const FaceDetection = (props) => {
         setPictures([picture,...pictures]);
         const fd = new FormData();
         fd.append('image', picture[0])
-        let result = await axios.post('http://172.16.135.89:3000/face-detect',fd);
+        let result = await axios.post(base_url+'/face-detect',fd);
         let filteredData = result.data.filter(i => i._label !== 'unknown')
         let profiles = []
         if(filteredData.length > 0) {

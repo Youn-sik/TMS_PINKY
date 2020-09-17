@@ -4,7 +4,7 @@ import { createBrowserHistory } from 'history';
 import { Chart } from 'react-chartjs-2';
 import { ThemeProvider } from '@material-ui/styles';
 import validate from 'validate.js';
-
+import {base_url} from 'server.json'
 import { chartjs } from './helpers';
 import theme from './theme';
 import 'rsuite/dist/styles/rsuite-default.css'
@@ -37,10 +37,11 @@ export default class App extends React.Component {
   }
 
   componentWillMount() {
+    console.log(base_url);
     if(browserHistory.location.pathname !== '/sign-in') { //URL 직접 변경 감지
       var value = document.cookie.match('(^|;) ?token=([^;]*)(;|$)');
       if(Array.isArray(value)) {
-        axios.get('http://172.16.135.89:3000/auth?token='+value[2])
+        axios.get(base_url+'/auth?token='+value[2])
           .then((res) => {
             if(res.data.auth === false) {
               document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
@@ -66,7 +67,7 @@ export default class App extends React.Component {
       if(location.pathname !== '/sign-in') {
         var value = document.cookie.match('(^|;) ?token=([^;]*)(;|$)');
         if(Array.isArray(value)) {
-          axios.get('http://172.16.135.89:3000/auth?token='+value[2])
+          axios.get(base_url+'/auth?token='+value[2])
           .then((res) => {
             if(res.data.auth === false) {
               browserHistory.push('/sign-in')

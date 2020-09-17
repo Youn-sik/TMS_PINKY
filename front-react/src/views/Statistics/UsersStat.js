@@ -13,6 +13,7 @@ import {
   Attendance,
   Tree,
 } from './components';
+import {base_url} from 'server.json'
 // eslint-disable-next-line no-extend-native
 Date.prototype.yyyymmdd = function()
 {
@@ -149,7 +150,7 @@ const UsersStat = (props) => {
   }
   
   async function getGroups() {
-    let tempGroups = await axios.get('http://172.16.135.89:3000/group')
+    let tempGroups = await axios.get(base_url+'/group')
     tempGroups.data.map((i) => {//user_obids에 있는 데이터 children으로 옮기기
       moveUserIds(i);
       return false;
@@ -163,7 +164,7 @@ const UsersStat = (props) => {
   }
 
   async function getAccesses() {
-    let result = await axios.get('http://172.16.135.89:3000/access')
+    let result = await axios.get(base_url+'/access')
     setAllPeopleData(result.data.reverse())
   }
 

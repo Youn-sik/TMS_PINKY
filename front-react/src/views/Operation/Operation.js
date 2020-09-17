@@ -5,6 +5,7 @@ import { OperToolbar, OperTable } from './components';
 import Card from '@material-ui/core/Card';
 import moment from 'moment';
 import 'moment/locale/ko'
+import {base_url} from 'server.json'
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3)
@@ -35,7 +36,7 @@ const Operation = (props) => {
   const [search,setSearch] = useState('');
 
   const getOper = useCallback(async () => {
-    let result = await axios.get('http://172.16.135.89:3000/operation')
+    let result = await axios.get(base_url+'/operation')
     result.data.reverse()
     // setOriginUsers(result.data)
     setAllOper(result.data)

@@ -10,10 +10,8 @@ import 'moment/locale/ko'
 import {
   DeviceStats,
   DeviceError,
-  Access,
-  Attendance,
-  Tree,
 } from './components';
+import {base_url} from 'server.json'
 // eslint-disable-next-line no-extend-native
 Date.prototype.yyyymmdd = function()
 {
@@ -151,13 +149,13 @@ const Statistics = (props) => {
   }
 
   async function getAccesses() {
-    let result = await axios.get('http://172.16.135.89:3000/access')
+    let result = await axios.get(base_url+'/access')
     setAllPeopleData(result.data)
     filterAccesses(result.data)
   }
 
   async function getDevices() {
-    let result = await axios.get('http://172.16.135.89:3000/camera?authority='+props.authority)
+    let result = await axios.get(base_url+'/camera?authority='+props.authority)
     if(result.data.length > 0) {
       setDevices(result.data);
       setDevice(result.data[0].serial_number);
@@ -165,7 +163,7 @@ const Statistics = (props) => {
   }
 
   async function getErrors() {
-    let result = await axios.get('http://172.16.135.89:3000/glogs?type=error')
+    let result = await axios.get(base_url+'/glogs?type=error')
     setAllErrorData(result.data);
     filterErrors(result.data)
   }

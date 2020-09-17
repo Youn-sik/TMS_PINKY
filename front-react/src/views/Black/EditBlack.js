@@ -6,6 +6,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import ImageUploader from "react-images-upload";
 import './image.css'
+import {base_url} from 'server.json'
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import TreeItem from '@material-ui/lab/TreeItem';
@@ -209,7 +210,7 @@ const EditBlack = (props) => {
             base64 = base64.replace('data:image/jpeg;base64,','')
             base64 = base64.replace('data:image/png;base64,','')
         }
-        await axios.put('http://172.16.135.89:3000/user/'+userObject[0]._id,{
+        await axios.put(base_url+'/user/'+userObject[0]._id,{
             ...userObject[0],
             ...userInfo,
             type:5,

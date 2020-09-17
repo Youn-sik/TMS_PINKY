@@ -2,6 +2,7 @@ import React,{ useState,useEffect,useCallback } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 import axios from 'axios';
+import {base_url} from 'server.json'
 import { Groups, UsersTable } from './components';
 
 const useStyles = makeStyles(theme => ({
@@ -352,7 +353,7 @@ const Black = (props) => {
   }
 
   async function getGroups() {
-    let tempGroups = await axios.get('http://172.16.135.89:3000/group?type=5')
+    let tempGroups = await axios.get(base_url+'/group?type=5')
     tempGroups.data.map((i) => {//user_obids에 있는 데이터 children으로 옮기기
       moveUserIds(i);
       return false;
@@ -367,8 +368,8 @@ const Black = (props) => {
 
   const deleteGroupNode = async (node) => {
     if(window.confirm("삭제시 해당 그룹의 사용자는 undefined 그룹으로 \n변경됩니다 삭제 하시겠습니까?")){
-      await axios.delete('http://172.16.135.89:3000/group/'+node._id)
-      let tempGroups = await axios.get('http://172.16.135.89:3000/group?type=5')
+      await axios.delete(base_url+'/group/'+node._id)
+      let tempGroups = await axios.get(base_url+'/group?type=5')
       tempGroups.data.map((i) => {//user_obids에 있는 데이터 children으로 옮기기
         moveUserIds(i);
         return false;
@@ -385,7 +386,7 @@ const Black = (props) => {
 
   const deleteUsers = async (selectedUsers) => {
     if(window.confirm('정말 삭제 하시겠습니까?')) {
-      await axios.delete('http://172.16.135.89:3000/user/'+users[0]._id,{
+      await axios.delete(base_url+'/user/'+users[0]._id,{
         data:{
           type:5,
           selectedData:selectedUsers,

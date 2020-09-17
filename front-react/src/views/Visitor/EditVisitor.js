@@ -18,6 +18,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import Select from '@material-ui/core/Select';
+import {base_url} from 'server.json'
 import MenuItem from '@material-ui/core/MenuItem';
 const useStyles = makeStyles(theme => ({
   root:{
@@ -225,7 +226,7 @@ const EditVisitor = (props) => {
             base64 = base64.replace('data:image/jpeg;base64,','')
             base64 = base64.replace('data:image/png;base64,','')
         }
-        await axios.put('http://172.16.135.89:3000/user/'+userObject[0]._id,{
+        await axios.put(base_url+'/user/'+userObject[0]._id,{
             ...userObject[0],
             ...userInfo,
             type:2,

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import {base_url} from 'server.json'
 import validate from 'validate.js';
 import { makeStyles } from '@material-ui/styles';
 import axios from 'axios';
@@ -381,7 +381,7 @@ const SignIn = props => {
       alert("밀어서 확인을 해주세요.")
       return false;
     } else {
-        let result = await axios.post('http://172.16.135.89:3000/login',{
+        let result = await axios.post(base_url+'/login',{
           user_id : formState.values.id,
           user_pw : formState.values.password
         }).catch((err) => {

@@ -4,6 +4,7 @@ import axios from 'axios';
 import { ScreensToolbar, ScreensTable } from './components';
 import Card from '@material-ui/core/Card';
 import 'moment/locale/ko'
+import {base_url} from 'server.json'
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3)
@@ -46,7 +47,7 @@ const DeviceScreen = () => {
   const classes = useStyles();
 
   async function getScreens () {
-    let result = await axios.get('http://172.16.135.89:3000/camera_monitor?id=one_device')
+    let result = await axios.get(base_url+'/camera_monitor?id=one_device')
     setScreens(result.data)
     setLoading(false)
     setSearch('');

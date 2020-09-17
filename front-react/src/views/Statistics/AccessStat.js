@@ -10,6 +10,7 @@ import 'moment/locale/ko'
 import {
   TimeAccess
 } from './components';
+import {base_url} from 'server.json'
 // eslint-disable-next-line no-extend-native
 Date.prototype.yyyymmdd = function()
 {
@@ -41,7 +42,7 @@ const AccessStat = (props) => {
   const [accesses,setAccesses] = useState([])
   const [chartData,setChartData] = useState({});
   async function getAccesses() {
-    let result = await axios.get('http://172.16.135.89:3000/access?type=deviceGroupAccesses')
+    let result = await axios.get(base_url+'/access?type=deviceGroupAccesses')
     setPeopleData(result.data);
     setLoading(false)
   }
@@ -76,7 +77,7 @@ const AccessStat = (props) => {
   }
 
   async function getDevices() {
-    let result = await axios.get('http://172.16.135.89:3000/camera?authority='+props.authority)
+    let result = await axios.get(base_url+'/camera?authority='+props.authority)
     if(result.data.length > 0) {
       setDevices(result.data);
       setDevice(result.data[0].serial_number);
