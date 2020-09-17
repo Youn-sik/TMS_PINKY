@@ -380,7 +380,7 @@ module.exports = {
         })
     },
 
-    async access_realtime(json) {
+    async access_realtime(json,server_ip) {
         try {
             let insert_array = [];
             let camera = await Camera.findOne( { serial_number : json.stb_sn });
@@ -395,7 +395,7 @@ module.exports = {
                 let file_name = json.stb_sn + "_" + moment().format('YYYYMMDDHHmmss') + ".png";
                 //let upload_file_path = site.base_server_document + folder_date_path;
                 let file_path = site.base_server_document + folder_date_path + "/" + json.stb_sn + "/";
-                let upload_url = site.base_local_url+ ':3000' + folder_date_path + "/" + json.stb_sn + "/" + file_name;
+                let upload_url = "http://"+server_ip+ ':3000' + folder_date_path + "/" + json.stb_sn + "/" + file_name;
                 let buff = Buffer.from(element.avatar_file, 'base64');
                 
                 if(element.avatar_distance === undefined) {
@@ -504,7 +504,7 @@ module.exports = {
         }
     },
 
-    async access_addpeople(json) {
+    async access_addpeople(json,server_ip) {
         try{
             let insert_array = [];
             let camera = await Camera.findOne( { serial_number : json.stb_sn });
@@ -514,7 +514,7 @@ module.exports = {
                 let file_name = element.avatar_name + "_" + moment().format('YYYYMMDDHHmmss') + ".png";
                 //let upload_file_path = site.base_server_document + folder_date_path;
                 let file_path = site.base_server_document + folder_date_path + "/";
-                let upload_url = site.base_local_url+ ':3000' + folder_date_path + "/" + file_name;
+                let upload_url = "http://"+server_ip+ ':3000' + folder_date_path + "/" + file_name;
                 let buff = Buffer.from(element.avatar_file, 'base64');
                 
                 mkdirp.sync(file_path);
@@ -602,14 +602,14 @@ module.exports = {
         }
     },
 
-    async control_capture_upload(json) {
+    async control_capture_upload(json,server_ip) {
         try {
             let camera = await Camera.findOne( { serial_number : json.stb_sn });
             let folder_date_path = "/uploads/monitor/" + moment().format('YYYYMMDD');
             let file_name = json.stb_sn + "_" + moment().format('YYYYMMDDHHmmss') + ".png";
             //let upload_file_path = site.base_server_document + folder_date_path;
             let file_path = site.base_server_document + folder_date_path + "/" + json.stb_sn + "/";
-            let upload_url = site.base_local_url+ ':3000' + folder_date_path + "/" + json.stb_sn + "/" + file_name;
+            let upload_url = "http://"+server_ip+ ':3000' + folder_date_path + "/" + json.stb_sn + "/" + file_name;
             let buff = Buffer.from(json.data, 'base64');
             mkdirp.sync(file_path);
             fs.promises.writeFile(file_path + file_name, buff, 'utf-8')

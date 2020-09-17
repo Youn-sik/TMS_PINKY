@@ -72,7 +72,7 @@ router.delete('/:id',async function(req, res) {
             let deleted_data = await api_v3_device_camera_monitor.deleteMany({ _id: { $in: req.body.list} })
             // fs.unlink(__dirname+'/test.txt',() => {})
             req.body.data.map((i) => {
-                fs.unlink(i.upload_url.replace('http://172.16.135.89:3000/','/var/www/backend/'),() => {})
+                fs.unlink(i.upload_url.replace('http://'+req.headers.host+':3000/','/var/www/backend/'),() => {})
             })
             res.send(deleted_data)
         } else {

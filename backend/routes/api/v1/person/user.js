@@ -52,13 +52,15 @@ router.post('/',async function(req, res) {
             add.avatar_contraction_data = overlap_check.avatar_contraction_data;
             add.face_detection = overlap_check.face_detection;
         } else {
-            add.avatar_file_url = 'http://172.16.135.89:3000/image/'+add._id+'profile.jpg';
+            
+            fs.writeFileSync('image/'+add._id+'profile.jpg',req.body.avatar_file,'base64')
+            add.avatar_file_url = 'http://'+req.headers.host+':3000/image/'+add._id+'profile.jpg';
             //sha256 checksum
             let file_buffer = fs.readFileSync(__dirname+'/../../../../image/'+add._id+'profile.jpg');
             let sum = crypto.createHash('sha256');
             sum.update(file_buffer);
             const hex = sum.digest('hex');
-            add.avatar_file_checksum = hex;
+            add.avatar_file_checksum = hex;g
         }
         const groups = req.body.groups_obids === undefined ? null : req.body.groups_obids;
         if(groups !== null) {

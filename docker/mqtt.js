@@ -1,9 +1,11 @@
 const moment = require('moment');
 const client = require('./mqtt_load');
 const fn = require('./mqtt_function.js');
-
-client.on('connect', function() {
+var ip = require('ip');
+let server_ip
+client.on('connect', function(test) {
     console.log('MQTT connected.');
+    server_ip = ip.address()
     client.subscribe([
         '/login/+',
         '/logout/+',
@@ -154,14 +156,14 @@ client.on('message', async function(topic, message) {
         /* 출입통제 > 단말 실시간 데이터*/
         if (topic === "/access/realtime/" + json.stb_sn) { 
             if (json.stb_sn != undefined) {
-                fn.access_realtime(json);
+                fn.access_realtime(json,server_ip);
             }
         }
 
         /* 출입통제 > 단말 데이터 등록*/
         if (topic === "/access/addpeople/" + json.stb_sn) { 
             if (json.stb_sn != undefined) {
-                fn.access_addpeople(json);
+                fn.access_addpeople(json,server_ip);
             }
         }
 
@@ -182,7 +184,7 @@ client.on('message', async function(topic, message) {
         /* 제어 > 화면 캡쳐 업로드 */
         if (topic === "/control/capture/upload/" + json.stb_sn) { 
             if (json.stb_sn != undefined) {
-                fn.control_capture_upload(json);
+                fn.control_capture_upload(json,server_ip);
             }
         }
 
