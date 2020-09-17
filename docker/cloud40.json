@@ -9,9 +9,8 @@
     "mongodb_user": "kool",
     "mongodb_passwd": "master",
     "mongodb_database": "cloud40",
-    "mongodb" : "kool:master@127.0.0.1",
 
-    "mqtt_host": "172.16.135.55",
+    "mqtt_host": "127.0.0.1",
     "mqtt_user": "cloud40_core_web",
     "mqtt_passwd" : "masterQ!W@E#R$",
     "mqtt_port": 1883,
