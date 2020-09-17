@@ -9,6 +9,8 @@ moment.tz.setDefault("Asia/Seoul");
 const mkdirp = require('mkdirp');
 const client = require('./mqtt_load');
 const fetch = require('node-fetch')
+var ip = require('ip');
+let server_ip = ip.address()
 
 const mqtt_option = {
     retain: false,
@@ -61,7 +63,7 @@ mongodb.once('open', function () {
     console.log('mongodb open');
 });
 
-mongoose.connect('mongodb://' + site.mongodb_host + ':27017/' + site.mongodb_database + '?poolSize=4', { useNewUrlParser: true, useUnifiedTopology: true ,useCreateIndex: true});
+mongoose.connect('mongodb://' + server_ip + ':27017/' + site.mongodb_database + '?poolSize=4', { useNewUrlParser: true, useUnifiedTopology: true ,useCreateIndex: true});
 
 const Access = require('./schema/access_Schema');
 const Camera = require('./schema/camera_Schema');
