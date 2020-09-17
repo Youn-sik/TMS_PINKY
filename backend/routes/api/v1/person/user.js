@@ -60,7 +60,7 @@ router.post('/',async function(req, res) {
             let sum = crypto.createHash('sha256');
             sum.update(file_buffer);
             const hex = sum.digest('hex');
-            add.avatar_file_checksum = hex;g
+            add.avatar_file_checksum = hex;
         }
         const groups = req.body.groups_obids === undefined ? null : req.body.groups_obids;
         if(groups !== null) {
