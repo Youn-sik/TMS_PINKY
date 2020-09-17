@@ -95,7 +95,7 @@ const Operation = (props) => {
 
   useEffect(() => {
     getOper();
-  },[getOper])
+  },[])
 
   const classes = useStyles();
 

@@ -217,7 +217,6 @@ const UsersStat = (props) => {
         }
         return false;
       })
-      setLoading(false)
     } else {
       allPeopleData.map((person) => {
         if(clickedNode._id === person.user_obid && person.access_time.split(' ')[0] >= date[0] && person.access_time.split(' ')[0] <= date[1]){
@@ -253,6 +252,7 @@ const UsersStat = (props) => {
         return false;
       })
     }
+    setLoading(false)
     setAttendance(_attendance);
     setAttList(_attlist)
     setTemp(_temp);
