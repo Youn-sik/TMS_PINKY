@@ -52,6 +52,7 @@
     "react-dom": "^16.8.6",
     "react-images-upload": "^1.2.8",
     "react-ion-slider": "^1.0.5",
+    "react-lazy-load-image-component": "^1.5.0",
     "react-moment": "^0.9.7",
     "react-number-format": "^4.4.1",
     "react-perfect-scrollbar": "^1.5.3",

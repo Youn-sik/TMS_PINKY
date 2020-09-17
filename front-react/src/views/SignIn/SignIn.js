@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
 import validate from 'validate.js';
 import { makeStyles } from '@material-ui/styles';
@@ -15,6 +15,7 @@ import {TweenLite,Circ} from 'gsap'
 import './SignIn.css'
 import Slider from 'react-rangeslider'
 import 'react-rangeslider/lib/index.css'
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 const schema = {
   id: {
     length: {
@@ -33,11 +34,15 @@ document.documentElement.style.setProperty("--vh", `${vh}px`);
 
 const useStyles = makeStyles(theme => ({
   root: {
-    backgroundColor: theme.palette.background.default,
-    backgroundImage:"url('/images/background-space.jpg')",
+    backgroundImage:"linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ),url('/images/background-space.jpg')",
+    animationDuration: "120s",
+    animationName: "slide-bg",
+    animationTimingFunction: 'linear',
+    animationIterationCount: 'infinite',
+    animationDirection: 'alternate',
+    backgroundRepeat:"no-repeat",
     backgroundSize:"cover",
     backgroundPosition:"0 50%",
-    backgroundRepeat:"no-repeat",
     height: '100%',
   },
   grid: {
@@ -138,6 +143,8 @@ const SignIn = props => {
   const [value, setValue] = useState(0);
 
   const [verify,setVerify] = useState(false);
+
+  const canvas = useRef();
   
   const handleSliderChange = (newValue,event) => {
     if(event.type === 'mousemove'){
@@ -164,7 +171,7 @@ const SignIn = props => {
   useEffect(() => {
     (function() {
 
-      var width, height, canvas, ctx, points, target, animateHeader = true;
+      var width, height, ctx, points, target, animateHeader = true;
       
       // Main
       initHeader();
@@ -175,11 +182,10 @@ const SignIn = props => {
           width = window.innerWidth;
           height = window.innerHeight;
           target = {x: width/2, y: height/2};
-      
-          canvas = document.getElementById('demo-canvas');
-          canvas.width = width;
-          canvas.height = height;
-          ctx = canvas.getContext('2d');
+
+          canvas.current.width = width;
+          canvas.current.height = height;
+          ctx = canvas.current.getContext('2d');
       
           // create points
           points = [];
@@ -261,8 +267,8 @@ const SignIn = props => {
       function resize() {
           width = window.innerWidth;
           height = window.innerHeight;
-          canvas.width = width;
-          canvas.height = height;
+          canvas.current.width = width;
+          canvas.current.height = height;
       }
       
       // animation
@@ -403,8 +409,9 @@ const SignIn = props => {
     formState.touched[field] && formState.errors[field] ? true : false;
 
   return (
+    // <div style={{transition: 'opacity .75s',opacity: 1}}>
     <div className={classes.root} id="large-header">
-      <canvas id="demo-canvas" style={{position: 'absolute'}}></canvas>
+      <canvas ref={canvas} id="demo-canvas" style={{position: 'absolute',zIndex:'0'}}></canvas>
       <Grid
         className={classes.grid}
         alignItems="center"
@@ -419,13 +426,14 @@ const SignIn = props => {
             {/* <div className={classes.quoteInner}> */}
               {/* <div className={classes.person}>
               </div> */}
-              <div style={{fontSize:'6em',textAlign: 'center',fontWeight: 'bold'}}>
+              <div style={{position:"relative",zIndex:"1",fontSize:'6em',textAlign: 'center',fontWeight: 'bold'}}>
                 <span style={{color: 'white'}}>K</span>oolsign&nbsp;
               </div>
             {/* </div> */}
           {/* </div> */}
         </Grid>
         <Grid
+          style={{position:"relative",zIndex:"2",}}
           className={classes.content}
           item
           lg={4}
@@ -527,6 +535,7 @@ const SignIn = props => {
         </Grid>
       </Grid>
     </div>
+    // </div>
   );
 };
 

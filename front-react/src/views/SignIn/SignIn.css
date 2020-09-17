@@ -98,10 +98,3 @@
 		font-size: 3em;
 	}
 }
-#large-header {
-    animation-duration: 120s;
-    animation-name: slide-bg;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
-}
