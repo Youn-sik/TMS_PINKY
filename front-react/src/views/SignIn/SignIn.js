@@ -381,7 +381,7 @@ const SignIn = props => {
       alert("밀어서 확인을 해주세요.")
       return false;
     } else {
-        let result = await axios.post(base_url+':3000/login',{
+        let result = await axios.post(base_url+'/login',{
           user_id : formState.values.id,
           user_pw : formState.values.password
         }).catch((err) => {
