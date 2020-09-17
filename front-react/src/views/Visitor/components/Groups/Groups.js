@@ -93,6 +93,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Groups = props => {
+  const base_url = "http://"+window.location.href.split('/')[2]+":3000"
   const {clickedNode,setSelectedNode,setClickedNode,deleteGroupNode,setUsers, search,searchNode,groups,className, ...rest } = props;
   // const [clickedNode,setClickedNode] = useState([]);
   const [open, setOpen] = useState(false);
@@ -113,7 +114,7 @@ const Groups = props => {
 
   const clickAddGroup = async () => {
     let parent = Object.keys(clickedNode).length === 0 ? undefined : clickedNode
-    let result = await axios.post('http://219.255.217.140:3000/group',{
+    let result = await axios.post(base_url+':3000/group',{
       name : groupName,
       type : 1,
       parent,

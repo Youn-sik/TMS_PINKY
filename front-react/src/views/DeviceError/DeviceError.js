@@ -3,7 +3,6 @@ import { makeStyles } from '@material-ui/styles';
 import axios from 'axios';
 import { ErrorsToolbar, ErrorsTable } from './components';
 import Card from '@material-ui/core/Card';
-import {base_url} from 'server.json'
 import moment from 'moment';
 import 'moment/locale/ko'
 const useStyles = makeStyles(theme => ({
@@ -26,6 +25,7 @@ const useStyles = makeStyles(theme => ({
 
 const DeviceError = () => {
 
+  const base_url = "http://"+window.location.href.split('/')[2]+":3000"
   const [errors,setErrors] = useState([]);
   const [search,setSearch] = useState('');
   const [originAcc,setOriginAcc] = useState([]);

@@ -6,7 +6,6 @@ import { makeStyles } from '@material-ui/styles';
 import {TextField,InputAdornment,Button} from '@material-ui/core'
 import Search from '@material-ui/icons/Search';
 import moment from 'moment';
-import {base_url} from 'server.json'
 import 'moment/locale/ko'
 import 'rsuite/dist/styles/rsuite-default.css'
 
@@ -37,6 +36,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ScreensToolbar = props => {
+  const base_url = "http://"+window.location.href.split('/')[2]+":3000"
   const {search,handleSearch,className, ...rest } = props;
   const [data,setData] = useState([]);
   const classes = useStyles();

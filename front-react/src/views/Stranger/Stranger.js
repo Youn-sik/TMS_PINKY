@@ -5,7 +5,6 @@ import { UsersToolbar, UsersTable } from './components';
 import Card from '@material-ui/core/Card';
 import moment from 'moment';
 import 'moment/locale/ko'
-import {base_url} from 'server.json'
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3)
@@ -26,6 +25,7 @@ const useStyles = makeStyles(theme => ({
 
 const Stranger = (props) => {
 
+  const base_url = "http://"+window.location.href.split('/')[2]+":3000"
   const [accesses,setAccesses] = useState([]);//화면에 보여질 출입 데이터
   const [originAcc,setOriginAcc] = useState([]);//모든 출입 데이터
   const [allAcc,setAllAcc] = useState([]);//해당 날짜의 모든 출입 데이터

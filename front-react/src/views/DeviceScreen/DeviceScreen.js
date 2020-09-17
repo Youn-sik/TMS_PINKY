@@ -4,7 +4,6 @@ import axios from 'axios';
 import { ScreensToolbar, ScreensTable } from './components';
 import Card from '@material-ui/core/Card';
 import 'moment/locale/ko'
-import {base_url} from 'server.json'
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3)
@@ -25,6 +24,7 @@ const useStyles = makeStyles(theme => ({
 
 const DeviceScreen = () => {
 
+const base_url = "http://"+window.location.href.split('/')[2]+":3000"
   const [screens,setScreens] = useState([]);
   const [filtered,setFiltered] = useState([]);
   const [search, setSearch] = useState('');

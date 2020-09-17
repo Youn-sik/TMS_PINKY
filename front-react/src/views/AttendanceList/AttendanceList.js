@@ -4,7 +4,6 @@ import axios from 'axios';
 import { UsersToolbar, UsersTable } from './components';
 import Card from '@material-ui/core/Card';
 import moment from 'moment';
-import {base_url} from 'server.json'
 import 'moment/locale/ko'
 const useStyles = makeStyles(theme => ({
   root: {
@@ -25,6 +24,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const UserList = () => {
+  const base_url = "http://"+window.location.href.split('/')[2]+":3000"
   const [accesses,setAccesses] = useState([]);//출입 기록
   const [filteredUsers,setFilteredUsers] = useState([]);//검색된 유저 리스트
   const [users,setUsers] = useState([]);//유저 리스트

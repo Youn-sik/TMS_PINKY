@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
-import {base_url} from 'server.json'
 import validate from 'validate.js';
 import { makeStyles } from '@material-ui/styles';
 import axios from 'axios';
@@ -131,6 +130,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const SignIn = props => {
+  const base_url = "http://"+window.location.href.split('/')[2]+":3000"
   const { history,getAuth } = props;
 
   const classes = useStyles();
@@ -381,7 +381,7 @@ const SignIn = props => {
       alert("밀어서 확인을 해주세요.")
       return false;
     } else {
-        let result = await axios.post(base_url+'/login',{
+        let result = await axios.post(base_url+':3000/login',{
           user_id : formState.values.id,
           user_pw : formState.values.password
         }).catch((err) => {

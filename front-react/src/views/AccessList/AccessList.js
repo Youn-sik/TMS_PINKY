@@ -2,7 +2,6 @@ import React, { useState,useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import axios from 'axios';
 import { AccessesToolbar, AccessesTable } from './components';
-
 import Card from '@material-ui/core/Card';
 import moment from 'moment';
 import 'moment/locale/ko'
@@ -25,6 +24,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const AccessList = (props) => {
+  const base_url = "http://"+window.location.href.split('/')[2]+":3000"
   const {tempLimit,tempType} = props
   const [accesses,setAccesses] = useState([]);//화면에 보여질 출입 데이터
   const [originAcc,setOriginAcc] = useState([]);//모든 출입 데이터
@@ -202,7 +202,7 @@ const AccessList = (props) => {
   }
 
   async function getAccesses () {
-    let result = await axios.get('http://172.16.135.89:3000/access',{cancelToken: source.token})
+    let result = await axios.get(base_url+'/access',{cancelToken: source.token})
     result.data.reverse()
     setOriginAcc(result.data)
     setAccesses(result.data.filter(i => i.access_time.split(' ')[0] === date[0]))

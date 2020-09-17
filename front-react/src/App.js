@@ -4,7 +4,6 @@ import { createBrowserHistory } from 'history';
 import { Chart } from 'react-chartjs-2';
 import { ThemeProvider } from '@material-ui/styles';
 import validate from 'validate.js';
-import {base_url} from 'server.json'
 import { chartjs } from './helpers';
 import theme from './theme';
 import 'rsuite/dist/styles/rsuite-default.css'
@@ -27,6 +26,7 @@ validate.validators = {
   ...validators
 };
 
+const base_url = "http://"+window.location.href.split('/')[2]+":3000"
 export default class App extends React.Component {
   state = {
     auth : false,
@@ -35,9 +35,8 @@ export default class App extends React.Component {
     tempLimit : 0,
     tempType : 0
   }
-
+  
   componentWillMount() {
-    console.log(base_url);
     if(browserHistory.location.pathname !== '/sign-in') { //URL 직접 변경 감지
       var value = document.cookie.match('(^|;) ?token=([^;]*)(;|$)');
       if(Array.isArray(value)) {

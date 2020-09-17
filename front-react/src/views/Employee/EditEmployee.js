@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 import ImageUploader from "react-images-upload";
 import emailMask from 'text-mask-addons/dist/emailMask'
 import './image.css'
-import {base_url} from 'server.json'
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import TreeItem from '@material-ui/lab/TreeItem';
@@ -124,6 +123,7 @@ const emailMaskCustom = (props) => {
 }
 
 const EditEmployee = (props) => {
+  const base_url = "http://"+window.location.href.split('/')[2]+":3000"
     const {userObject,selectedNode} = props.location;
     const classes = useStyles();
     const history = props.history;

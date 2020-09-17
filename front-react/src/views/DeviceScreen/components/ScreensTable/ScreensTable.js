@@ -6,7 +6,6 @@ import Pagination from '@material-ui/lab/Pagination';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 import moment from 'moment';
-import {base_url} from 'server.json'
 import 'moment/locale/ko'
 import {
   Card,
@@ -55,6 +54,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ScreensTable = props => {
+  const base_url = "http://"+window.location.href.split('/')[2]+":3000"
   const { loading,className,screens, ...rest } = props;
 
   const classes = useStyles();

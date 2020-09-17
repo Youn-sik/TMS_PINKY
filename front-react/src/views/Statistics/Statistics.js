@@ -11,7 +11,6 @@ import {
   DeviceStats,
   DeviceError,
 } from './components';
-import {base_url} from 'server.json'
 // eslint-disable-next-line no-extend-native
 Date.prototype.yyyymmdd = function()
 {
@@ -33,6 +32,7 @@ const useStyles = makeStyles(theme => ({
 
 
 const Statistics = (props) => {
+  const base_url = "http://"+window.location.href.split('/')[2]+":3000"
   const classes = useStyles();
   const {allowedDays} = DateRangePicker;
   const [date,setDate] = useState([moment().subtract(6, 'days').format('YYYY-MM-DD'),moment().format('YYYY-MM-DD')])

@@ -2,7 +2,6 @@ import React,{ useState,useEffect,useCallback } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 import axios from 'axios';
-import {base_url} from 'server.json'
 import { Stream, DeviceTable } from './components';
 
 const useStyles = makeStyles(theme => ({
@@ -12,6 +11,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Employee = (props) => {
+
+const base_url = "http://"+window.location.href.split('/')[2]+":3000"
   const [search,setSearch] = useState('');
   const [device,setDevice] = useState([]);
   const [filteredDevice,setFilteredDevice] = useState([]);

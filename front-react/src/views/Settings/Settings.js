@@ -12,7 +12,6 @@ import {
     Input,
     InputAdornment
 } from '@material-ui/core/';
-import {base_url} from 'server.json'
 import NumberFormat from 'react-number-format';
 const useStyles = makeStyles(theme => ({
     root: {
@@ -43,6 +42,7 @@ function NumberFormatCustom(props) {
 }
 
 const Settings = (props) => {
+    const base_url = "http://"+window.location.href.split('/')[2]+":3000"
     const [tempType, setTempType] = React.useState(String(props.tempType));
     const [tempLimit, setTempLimit] = React.useState(String(props.tempLimit));
     const classes = useStyles();

@@ -13,7 +13,6 @@ import TreeItem from '@material-ui/lab/TreeItem';
 import GroupIcon from '@material-ui/icons/FolderShared';
 import PersonIcon from '@material-ui/icons/Person';
 import DialogContent from '@material-ui/core/DialogContent';
-import {base_url} from 'server.json'
 import TreeView from '@material-ui/lab/TreeView';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
@@ -124,6 +123,7 @@ const emailMaskCustom = (props) => {
 }
 
 const AddEmployee = (props) => {
+  const base_url = "http://"+window.location.href.split('/')[2]+":3000"
     const {groups} = props.location;
     const classes = useStyles();
     const history = props.history;

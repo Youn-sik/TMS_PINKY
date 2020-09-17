@@ -3,7 +3,6 @@ import { makeStyles } from '@material-ui/styles';
 import { Grid,Card,CardContent,TextField,Button } from '@material-ui/core';
 import axios from 'axios';
 import './image.css'
-import {base_url} from 'server.json'
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(4)
@@ -51,6 +50,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const EditDevice = (props) => {
+  const base_url = "http://"+window.location.href.split('/')[2]+":3000"
     const deviceObject = props.location.state;
     const classes = useStyles();
     const history = props.history;

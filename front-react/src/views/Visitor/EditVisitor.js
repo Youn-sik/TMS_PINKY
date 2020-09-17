@@ -18,7 +18,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import Select from '@material-ui/core/Select';
-import {base_url} from 'server.json'
 import MenuItem from '@material-ui/core/MenuItem';
 const useStyles = makeStyles(theme => ({
   root:{
@@ -124,6 +123,7 @@ const emailMaskCustom = (props) => {
 }
 
 const EditVisitor = (props) => {
+  const base_url = "http://"+window.location.href.split('/')[2]+":3000"
     const {userObject,selectedNode} = props.location;
     const classes = useStyles();
     const history = props.history;

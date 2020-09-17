@@ -20,7 +20,6 @@ import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
-import {base_url} from 'server.json'
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(4)
@@ -112,6 +111,7 @@ const emailMaskCustom = (props) => {
 }
 
 const AddStranger = (props) => {
+  const base_url = "http://"+window.location.href.split('/')[2]+":3000"
     const {userObject} = props.location;
     const classes = useStyles();
     const history = props.history;

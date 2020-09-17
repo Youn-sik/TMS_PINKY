@@ -4,7 +4,7 @@ import { Grid,Card,CardContent,TextField,Button } from '@material-ui/core';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import './image.css'
-import {base_url} from 'server.json'
+const base_url = "http://"+window.location.href.split('/')[2]+":3000"
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(4)
