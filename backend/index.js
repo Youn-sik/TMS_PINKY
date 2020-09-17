@@ -1,5 +1,5 @@
 // Require the framework and instantiate it
-const fastify = require('./server.js')
+const app = require('./server.js')
 const cors = require('cors')
 const boom = require('boom')
 const jwt =  require('jsonwebtoken');
@@ -28,42 +28,36 @@ const historyRouter = require('./routes/api/v1/person/history');
 const operationRouter = require('./routes/api/v1/person/operation');
 const accountRouter = require('./routes/account');
 
-// Register Fastify GraphQL
-// fastify.register(graphqlHTTP, {
-//     schema,
-//     graphiql: true
-// })
-fastify.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
-fastify.use(bodyParser.json({limit: '50mb'}));
-fastify.use(cors())
-fastify.use('/user',usersRouter);
-fastify.use('/account',accountRouter);
-fastify.use('/access',accessRouter);
-fastify.use('/alarm',alarmRouter);
-fastify.use('/camera',cameraRouter);
-fastify.use('/camera_fail',cameraFailRouter);
-fastify.use('/camera_filelist',cameraFilelistRouter);
-fastify.use('/camera_monitor',cameraMonitorRouter);
-fastify.use('/gateway',gatewayRouter);
-fastify.use('/group',groupRouter);
-fastify.use('/glogs',glogsRouter);
-fastify.use('/statistics',statisticsRouter);
-fastify.use('/history',historyRouter);
-fastify.use('/operation',operationRouter);
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(cors())
+app.use('/user',usersRouter);
+app.use('/account',accountRouter);
+app.use('/access',accessRouter);
+app.use('/alarm',alarmRouter);
+app.use('/camera',cameraRouter);
+app.use('/camera_fail',cameraFailRouter);
+app.use('/camera_filelist',cameraFilelistRouter);
+app.use('/camera_monitor',cameraMonitorRouter);
+app.use('/gateway',gatewayRouter);
+app.use('/group',groupRouter);
+app.use('/glogs',glogsRouter);
+app.use('/statistics',statisticsRouter);
+app.use('/history',historyRouter);
+app.use('/operation',operationRouter);
 
-// fastify.use(express.static(path.join(__dirname, 'uploads')));
-fastify.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-fastify.use('/image',express.static('./image'));
-fastify.use('/stream',express.static('./videos'));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/image',express.static('./image'));
+app.use('/stream',express.static('./videos'));
 
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerOption = require('./routes/swagger');
 const swaggerSpec = swaggerJSDoc(swaggerOption);
 const swaggerUi = require('swagger-ui-express');
 
-fastify.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-fastify.post('/login', async function(req, res) {
+app.post('/login', async function(req, res) {
     try {   
         const user_id = req.body === undefined ? req.user_id : req.body.user_id
         const user_pw = req.body === undefined ? req.user_pw : req.body.user_pw
@@ -104,7 +98,7 @@ fastify.post('/login', async function(req, res) {
 });
 
 //유효한 토큰인지 검사
-fastify.get('/auth', async function(req, res) {
+app.get('/auth', async function(req, res) {
     let token = req.query.token;
     let tokenAuth = {user_id:null};
     console.log(token);
@@ -142,11 +136,11 @@ const swagger = require('./config/swagger')
 // Run the server!
 const start = async () => {
     try {
-        await fastify.listen(3000,'0.0.0.0')
-        fastify.swagger()
-        fastify.log.info(`server listening on ${fastify.server.address().port}`)
+        await app.listen(3000,'0.0.0.0')
+        app.swagger()
+        app.log.info(`server listening on ${app.server.address().port}`)
     } catch (err) {
-        fastify.log.error(err)
+        app.log.error(err)
         process.exit(1)
     }
 }
