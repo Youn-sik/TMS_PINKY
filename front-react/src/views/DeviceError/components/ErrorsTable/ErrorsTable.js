@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center'
   },
   avatar: {
-    margin:"0 0 0 3px",
+    margin: '0 0 0 3px',
     marginRight: theme.spacing(2)
   },
   hightTempAvatar: {
@@ -41,131 +41,139 @@ const useStyles = makeStyles(theme => ({
   actions: {
     justifyContent: 'flex-end'
   },
-  highTempRow:{
-    borderLeft:'3px solid red',
-    background : 'rgba(255, 204, 204, 0.575)',
+  highTempRow: {
+    borderLeft: '3px solid red',
+    background: 'rgba(255, 204, 204, 0.575)'
   },
-  redFont:{
-    color:'red'
-  },
+  redFont: {
+    color: 'red'
+  }
 }));
 
 const ErrorsTable = props => {
-  const { sortAccesses,activeType,loading,className,errors, ...rest } = props;
+  const {
+    sortAccesses,
+    activeType,
+    loading,
+    className,
+    errors,
+    ...rest
+  } = props;
 
   const classes = useStyles();
 
   const rowsPerPage = 10;
   const [page, setPage] = useState(1);
-  const [sort, setSort] = useState('desc')
+  const [sort, setSort] = useState('desc');
   const handlePageChange = (event, page) => {
     setPage(page);
   };
-  const createSortHandler = (headerType) => {
-    if(sort === 'desc'){
-      setSort('asc')
-      sortAccesses('asc',headerType)
+  const createSortHandler = headerType => {
+    if (sort === 'desc') {
+      setSort('asc');
+      sortAccesses('asc', headerType);
+    } else {
+      setSort('desc');
+      sortAccesses('desc', headerType);
     }
-    else{
-      setSort('desc')
-      sortAccesses('desc',headerType)
-    }
-  }
+  };
   return (
-    <Card
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
+    <Card {...rest} className={clsx(classes.root, className)}>
       <CardContent className={classes.content}>
-        {loading ? <LinearProgress style={{width: '100%'}}/> : null}
+        {loading ? <LinearProgress style={{ width: '100%' }} /> : null}
         <TableContainer component={Paper}>
-            <Table className={classes.inner} size="small">
-              <TableHead>
-                <TableRow>
+          <Table className={classes.inner} size="small">
+            <TableHead>
+              <TableRow>
                 <TableCell>
-                    {
-                      errors.length > 0 ? 
-                      <TableSortLabel
+                  {errors.length > 0 ? (
+                    <TableSortLabel
                       active={activeType === 'stb_id'}
                       direction={sort}
-                      onClick={() => {createSortHandler('stb_id')}}
-                      >
-                        단말명
-                      </TableSortLabel> : "단말명"
-                    }
-                  </TableCell>
-                  <TableCell>
-                    {
-                      errors.length > 0 ? 
-                      <TableSortLabel
+                      onClick={() => {
+                        createSortHandler('stb_id');
+                      }}>
+                      단말명
+                    </TableSortLabel>
+                  ) : (
+                    '단말명'
+                  )}
+                </TableCell>
+                <TableCell>
+                  {errors.length > 0 ? (
+                    <TableSortLabel
                       active={activeType === 'stb_sn'}
                       direction={sort}
-                      onClick={() => {createSortHandler('stb_sn')}}
-                      >
-                        시리얼 번호
-                      </TableSortLabel> : "시리얼 번호"
-                    }
-                  </TableCell>
-                  <TableCell>
-                    {
-                      errors.length > 0 ? 
-                      <TableSortLabel
+                      onClick={() => {
+                        createSortHandler('stb_sn');
+                      }}>
+                      시리얼 번호
+                    </TableSortLabel>
+                  ) : (
+                    '시리얼 번호'
+                  )}
+                </TableCell>
+                <TableCell>
+                  {errors.length > 0 ? (
+                    <TableSortLabel
                       active={activeType === 'log_message'}
                       direction={sort}
-                      onClick={() => {createSortHandler('log_message')}}
-                      >
-                        로그 메세지
-                      </TableSortLabel> : "로그 메세지"
-                    }
-                  </TableCell>
-                  <TableCell>
-                    {
-                      errors.length > 0 ? 
-                      <TableSortLabel
+                      onClick={() => {
+                        createSortHandler('log_message');
+                      }}>
+                      로그 메세지
+                    </TableSortLabel>
+                  ) : (
+                    '로그 메세지'
+                  )}
+                </TableCell>
+                <TableCell>
+                  {errors.length > 0 ? (
+                    <TableSortLabel
                       active={activeType === 'create_dt'}
                       direction={sort}
-                      onClick={() => {createSortHandler('create_dt')}}
-                      >
-                        날짜
-                      </TableSortLabel> : "날짜"
-                    }
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              {
-                
-                <TableBody>
-                    {errors.map(error => (
-                      <TableRow
-                        className={classes.tableRow}
-                        key={error._id}
-                      >
-                        <TableCell>
-                          {error.stb_id}
-                        </TableCell>
-                        <TableCell>{error.stb_sn}</TableCell>
-                        <TableCell>{error.log_message}</TableCell>
-                        <TableCell>{error.create_dt}</TableCell>
-                      </TableRow>
-                    ))}
-                </TableBody>
-              }
-            </Table>
-          </TableContainer>
+                      onClick={() => {
+                        createSortHandler('create_dt');
+                      }}>
+                      날짜
+                    </TableSortLabel>
+                  ) : (
+                    '날짜'
+                  )}
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            {
+              <TableBody>
+                {errors.map(error => (
+                  <TableRow className={classes.tableRow} key={error._id}>
+                    <TableCell>{error.stb_id}</TableCell>
+                    <TableCell>{error.stb_sn}</TableCell>
+                    <TableCell>{error.log_message}</TableCell>
+                    <TableCell>{error.create_dt}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            }
+          </Table>
+        </TableContainer>
       </CardContent>
       <CardActions className={classes.actions}>
-        <Grid
-          container
-          alignItems="center"
-          justify="center"
-        >
-         <Pagination
-          count={ errors.length%rowsPerPage === 0 ? parseInt(errors.length/rowsPerPage) :
-            parseInt(errors.length/rowsPerPage+(parseInt(errors.length%rowsPerPage)/parseInt(errors.length%rowsPerPage)))}
-          onChange={handlePageChange}
-          page={page}
-          variant="outlined" 
-          shape="rounded"
+        <Grid container alignItems="center" justify="center">
+          <Pagination
+            count={
+              errors.length % rowsPerPage === 0
+                ? parseInt(errors.length / rowsPerPage)
+                : parseInt(
+                    errors.length / rowsPerPage +
+                      parseInt(errors.length % rowsPerPage) /
+                        parseInt(errors.length % rowsPerPage)
+                  )
+            }
+            onChange={handlePageChange}
+            page={page}
+            variant="outlined"
+            shape="rounded"
           />
         </Grid>
       </CardActions>
@@ -174,9 +182,7 @@ const ErrorsTable = props => {
 };
 
 ErrorsTable.propTypes = {
-  className: PropTypes.string,
+  className: PropTypes.string
 };
-
-
 
 export default ErrorsTable;

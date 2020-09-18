@@ -1,6 +1,6 @@
 /* eslint-disable react/no-multi-comp */
 /* eslint-disable react/display-name */
-import React, { forwardRef,useEffect } from 'react';
+import React, { forwardRef, useEffect } from 'react';
 import { NavLink as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
@@ -41,59 +41,56 @@ const useStyles = makeStyles(theme => ({
     }
   },
   expand: {
-    margin:"0px 0px 0px 10px"
+    margin: '0px 0px 0px 10px'
   }
 }));
 
 const CustomRouterLink = forwardRef((props, ref) => (
-  <div
-    ref={ref}
-    style={{ flexGrow: 1 }}
-  >
-    <RouterLink style={{textDecoration: 'none'}} {...props} />
+  <div ref={ref} style={{ flexGrow: 1 }}>
+    <RouterLink style={{ textDecoration: 'none' }} {...props} />
   </div>
 ));
 
 const SidebarNav = props => {
   const { pages, className, ...rest } = props;
-  const [open, setOpen] = React.useState(props.path.split('/')[1] === 'device' ? '단말 관리' :
-  props.path.split('/')[1] === 'access' ? '출입, 출근 관리' : 
-  props.path.split('/')[1] === 'users' ? '인사관리' : 
-  props.path.split('/')[1] === 'stats' ? '통계' :  
-  props.path.split('/')[1] === 'system' ? '시스템' : '');
+  const [open, setOpen] = React.useState(
+    props.path.split('/')[1] === 'device'
+      ? '단말 관리'
+      : props.path.split('/')[1] === 'access'
+      ? '출입, 출근 관리'
+      : props.path.split('/')[1] === 'users'
+      ? '인사관리'
+      : props.path.split('/')[1] === 'stats'
+      ? '통계'
+      : props.path.split('/')[1] === 'system'
+      ? '시스템'
+      : ''
+  );
   const classes = useStyles();
 
-  const handleClick = (title) => (event) => {
-    if(title === open) {
+  const handleClick = title => event => {
+    if (title === open) {
       setOpen('');
     } else {
       setOpen(title);
     }
   };
   return (
-    <List
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
-      {pages.map((page) => { 
-        if(!page.children){
+    <List {...rest} className={clsx(classes.root, className)}>
+      {pages.map(page => {
+        if (!page.children) {
           return (
-            <ListItem
-              className={classes.item}
-              disableGutters
-              key={page.title}
-            >
+            <ListItem className={classes.item} disableGutters key={page.title}>
               <Button
                 activeClassName={classes.active}
                 className={classes.button}
                 component={CustomRouterLink}
-                to={page.href}
-              >
+                to={page.href}>
                 <div className={classes.icon}>{page.icon}</div>
                 {page.title}
               </Button>
             </ListItem>
-          )
+          );
         } else {
           return (
             <div key={page.title}>
@@ -101,43 +98,38 @@ const SidebarNav = props => {
                 onClick={handleClick(page.title)}
                 className={classes.item}
                 disableGutters
-                key={page.title}
-              >
-                <Button
-                  className={classes.button}
-                  to={page.href}
-                >
+                key={page.title}>
+                <Button className={classes.button} to={page.href}>
                   <div className={classes.icon}>{page.icon}</div>
                   {page.title}
-                  {open === page.title ? <ExpandLess className={classes.expand}/> : <ExpandMore className={classes.expand}/>}
+                  {open === page.title ? (
+                    <ExpandLess className={classes.expand} />
+                  ) : (
+                    <ExpandMore className={classes.expand} />
+                  )}
                 </Button>
               </ListItem>
               <Collapse in={open === page.title} timeout="auto" unmountOnExit>
-                <List 
-                  {...rest}
-                  className={clsx(classes.root, className)}
-                >
+                <List {...rest} className={clsx(classes.root, className)}>
                   {page.children.map(chid => (
-                        <ListItem
-                        className={classes.item}
-                        disableGutters
-                        key={chid.title}
-                        >
-                          <Button
-                            activeClassName={classes.active}
-                            className={classes.button}
-                            component={CustomRouterLink}
-                            to={chid.href}
-                          >
-                            <div className={classes.icon}></div>
-                            {chid.title}
-                          </Button>
-                      </ListItem>
-                    ))}
+                    <ListItem
+                      className={classes.item}
+                      disableGutters
+                      key={chid.title}>
+                      <Button
+                        activeClassName={classes.active}
+                        className={classes.button}
+                        component={CustomRouterLink}
+                        to={chid.href}>
+                        <div className={classes.icon}></div>
+                        {chid.title}
+                      </Button>
+                    </ListItem>
+                  ))}
                 </List>
               </Collapse>
             </div>
-          )
+          );
         }
       })}
     </List>

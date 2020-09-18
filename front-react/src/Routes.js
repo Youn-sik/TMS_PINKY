@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { Switch, Redirect } from 'react-router-dom';
 
 import { RouteWithLayout } from './components';
@@ -35,23 +35,19 @@ import {
   Operation as OperationView,
   FaceDetection as FaceDetectionView,
   AccessStat as AccessStatsView,
-  Settings as SettingsView,
+  Settings as SettingsView
 } from './views';
 
-const Routes = (props) => {
+const Routes = props => {
   return (
     <Switch>
-      <Redirect
-        exact
-        from="/"
-        to="/dashboard"
-      />
+      <Redirect exact from="/" to="/dashboard" />
       <RouteWithLayout
         component={DashboardView}
         exact
         user_id={props.user_id}
         authority={props.authority}
-        tempLimit={props.tempLimit} 
+        tempLimit={props.tempLimit}
         tempType={props.tempType}
         layout={MainLayout}
         path="/dashboard"
@@ -126,7 +122,7 @@ const Routes = (props) => {
         user_id={props.user_id}
         authority={props.authority}
         layout={MainLayout}
-        tempLimit={props.tempLimit} 
+        tempLimit={props.tempLimit}
         tempType={props.tempType}
         path="/access/records"
       />
@@ -144,7 +140,7 @@ const Routes = (props) => {
         user_id={props.user_id}
         authority={props.authority}
         layout={MainLayout}
-        tempLimit={props.tempLimit} 
+        tempLimit={props.tempLimit}
         tempType={props.tempType}
         path="/users/Stranger"
       />
@@ -204,7 +200,7 @@ const Routes = (props) => {
         layout={MainLayout}
         path="/users/black/edit"
       />
-       <RouteWithLayout
+      <RouteWithLayout
         component={VisitorView}
         exact
         user_id={props.user_id}

@@ -7,7 +7,7 @@ import AttachMoneyIcon from '@material-ui/icons/HelpOutline';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    height: '100%',
+    height: '100%'
   },
   content: {
     alignItems: 'center',
@@ -34,33 +34,28 @@ const Stranger = props => {
   const classes = useStyles();
 
   return (
-    <Card
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
+    <Card {...rest} className={clsx(classes.root, className)}>
       <CardContent>
-        <Grid
-          container
-          justify="space-between"
-        >
+        <Grid container justify="space-between">
           <Grid item>
             <Typography
               className={classes.title}
               color="inherit"
               gutterBottom
-              variant="body2"
-            >
+              variant="body2">
               미등록자 출입
             </Typography>
-            <Typography
-              color="inherit"
-              variant="h3"
-            >
+            <Typography color="inherit" variant="h3">
               {props.count}명
             </Typography>
           </Grid>
           <Grid item>
-            <Avatar style={{"cursor" : "pointer"}} onClick={() => {props.history.push("access/records")}} className={classes.avatar}>
+            <Avatar
+              style={{ cursor: 'pointer' }}
+              onClick={() => {
+                props.history.push('access/records');
+              }}
+              className={classes.avatar}>
               <AttachMoneyIcon className={classes.icon} />
             </Avatar>
           </Grid>

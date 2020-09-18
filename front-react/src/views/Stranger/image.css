@@ -1,20 +1,19 @@
-
 .fileContainer {
-    box-shadow:0 0 0 0 rgba(0, 0, 0, 0.05) !important;
+  box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.05) !important;
 }
 
 .fileContainer .deleteImage {
-    position: absolute;
-    color:black !important;
-    top:0px !important;
-    right: -3px !important;
-    background:unset !important;
-    font-size: 17px !important;
-    line-height: 20px !important;
-    width: 20px !important;
-    height: 20px !important;
+  position: absolute;
+  color: black !important;
+  top: 0px !important;
+  right: -3px !important;
+  background: unset !important;
+  font-size: 17px !important;
+  line-height: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
 }
 
-.uploadPicturesWrapper .uploadPictureContainer{
-    padding:15px !important;
+.uploadPicturesWrapper .uploadPictureContainer {
+  padding: 15px !important;
 }

@@ -1,16 +1,11 @@
-import React,{useState} from 'react';
+import React, { useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { Grid, Tooltip } from '@material-ui/core';
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  Divider,
-} from '@material-ui/core';
-import './TimeAccess.css'
+import { Card, CardHeader, CardContent, Divider } from '@material-ui/core';
+import './TimeAccess.css';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -25,7 +20,7 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(2),
     display: 'flex',
     justifyContent: 'center',
-    width:"100%"
+    width: '100%'
   },
   access: {
     textAlign: 'center',
@@ -35,34 +30,35 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.icon
   },
   cardContent: {
-    height:"85%",
+    height: '85%'
   }
 }));
 
 const TimeAccess = props => {
-  const { chartData,className, date, ...rest } = props;
-  const [tooltip,setTooltip] = useState({
+  const { chartData, className, date, ...rest } = props;
+  const [tooltip, setTooltip] = useState({
     top: 0,
     left: 0,
     date: '',
     value: 0,
-    title : '',
-    maxTemp:"",
-    accessCount:0
+    title: '',
+    maxTemp: '',
+    accessCount: 0
   });
   const classes = useStyles();
 
   let _chartRef = React.createRef();
 
-  const setPositionAndData = (data) => {
+  const setPositionAndData = data => {
     setTooltip(data);
   };
 
   const data = {
     // labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-    datasets: [{
+    datasets: [
+      {
         label: '최고 발열자',
-        type:'line',
+        type: 'line',
         data: chartData.maxTemp,
         fill: false,
         borderColor: '#EC932F',
@@ -72,7 +68,8 @@ const TimeAccess = props => {
         pointHoverBackgroundColor: '#EC932F',
         pointHoverBorderColor: '#EC932F',
         yAxisID: 'y-axis-2'
-      },{
+      },
+      {
         type: 'bar',
         label: '출입자 수',
         data: chartData.data,
@@ -82,17 +79,18 @@ const TimeAccess = props => {
         hoverBackgroundColor: '#71B37C',
         hoverBorderColor: '#71B37C',
         yAxisID: 'y-axis-1'
-      }]
+      }
+    ]
   };
-  
+
   const options = {
     responsive: true,
     animation: false,
     tooltips: {
-      "enabled": false,
-      "mode": "x",
-      "intersect": false,
-      "custom": (tooltipModel) => {
+      enabled: false,
+      mode: 'x',
+      intersect: false,
+      custom: tooltipModel => {
         // if chart is not defined, return early
         let chart = _chartRef.current;
         if (!chart) {
@@ -107,22 +105,24 @@ const TimeAccess = props => {
 
         const position = chart.chartInstance.canvas.getBoundingClientRect();
 
-        const left = tooltipModel.caretX + window.pageXOffset + window.outerWidth/6;
-        const top = position.top + 20 + window.pageYOffset - window.outerWidth/100;
+        const left =
+          tooltipModel.caretX + window.pageXOffset + window.outerWidth / 6;
+        const top =
+          position.top + 20 + window.pageYOffset - window.outerWidth / 100;
 
         const date = tooltipModel.dataPoints[0].xLabel;
         const value = tooltipModel.dataPoints[0].yLabel;
         setPositionAndData({
-          top, 
-          left, 
-          date, 
+          top,
+          left,
+          date,
           value,
-          title:tooltipModel.title[0],
-          maxTemp:chartData.maxTemp[tooltipModel.dataPoints[0].index],
-          accessCount:chartData.data[tooltipModel.dataPoints[0].index],
-          accessData : chartData.accessData[tooltipModel.dataPoints[0].index]
+          title: tooltipModel.title[0],
+          maxTemp: chartData.maxTemp[tooltipModel.dataPoints[0].index],
+          accessCount: chartData.data[tooltipModel.dataPoints[0].index],
+          accessData: chartData.accessData[tooltipModel.dataPoints[0].index]
         });
-      },
+      }
     },
     elements: {
       line: {
@@ -136,8 +136,8 @@ const TimeAccess = props => {
           gridLines: {
             display: false
           },
-      
-          labels: chartData.labels,
+
+          labels: chartData.labels
         }
       ],
       yAxes: [
@@ -170,47 +170,54 @@ const TimeAccess = props => {
   };
 
   return (
-    <Card
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
-      <CardHeader
-        title="단말별 출입 통계"
-      />
+    <Card {...rest} className={clsx(classes.root, className)}>
+      <CardHeader title="단말별 출입 통계" />
       <Divider />
       <CardContent className={classes.cardContent}>
-        <Grid 
-          className={classes.cardContent} 
+        <Grid
+          className={classes.cardContent}
           container
           direction="row"
           justify="center"
-          alignItems="center"
-        >
+          alignItems="center">
           <div className={classes.chartContainer}>
-            <Bar
-              data={data}
-              options={options}
-              ref={_chartRef}
-            />
+            <Bar data={data} options={options} ref={_chartRef} />
           </div>
-          { tooltip.accessCount !== 0 ?
-                <div style={{position:"absolute" ,top: tooltip.top, left: tooltip.left}}>
-                  <div className="arrow_box">
-                    <div style={{color:"white"}}>출입자 수: {tooltip.accessCount}명</div>
-                    <div style={{color:"white"}}>
-                      최고 발열자 :<br/>
-                      <img style={{width:"80px",height:"auto"}} src={tooltip.accessData.avatar_file_url}></img><br/>
-                      타입 :{tooltip.accessData.avatar_type === 1 ? "사원" : 
-                             tooltip.accessData.avatar_type === 2 ? "방문자" :
-                             tooltip.accessData.avatar_type === 3 ? "미등록자" : "블랙리스트"}<br/>
-                      {tooltip.accessData.avatar_type === 1 ? "이름 : "+tooltip.accessData.name : null}
-                      온도 : {tooltip.maxTemp}
-                    </div>
-                  </div>
+          {tooltip.accessCount !== 0 ? (
+            <div
+              style={{
+                position: 'absolute',
+                top: tooltip.top,
+                left: tooltip.left
+              }}>
+              <div className="arrow_box">
+                <div style={{ color: 'white' }}>
+                  출입자 수: {tooltip.accessCount}명
                 </div>
-              : null
-            }
-       {/* {props.employee + props.visitor + props.black + props.stranger !== 0 ?
+                <div style={{ color: 'white' }}>
+                  최고 발열자 :<br />
+                  <img
+                    style={{ width: '80px', height: 'auto' }}
+                    src={tooltip.accessData.avatar_file_url}></img>
+                  <br />
+                  타입 :
+                  {tooltip.accessData.avatar_type === 1
+                    ? '사원'
+                    : tooltip.accessData.avatar_type === 2
+                    ? '방문자'
+                    : tooltip.accessData.avatar_type === 3
+                    ? '미등록자'
+                    : '블랙리스트'}
+                  <br />
+                  {tooltip.accessData.avatar_type === 1
+                    ? '이름 : ' + tooltip.accessData.name
+                    : null}
+                  온도 : {tooltip.maxTemp}
+                </div>
+              </div>
+            </div>
+          ) : null}
+          {/* {props.employee + props.visitor + props.black + props.stranger !== 0 ?
         <div className={classes.chartContainer}>
           <Line
             data={data}

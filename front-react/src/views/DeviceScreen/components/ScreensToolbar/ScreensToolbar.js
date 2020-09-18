@@ -1,13 +1,13 @@
-import React,{useState,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
-import {TextField,InputAdornment,Button} from '@material-ui/core'
+import { TextField, InputAdornment, Button } from '@material-ui/core';
 import Search from '@material-ui/icons/Search';
 import moment from 'moment';
-import 'moment/locale/ko'
-import 'rsuite/dist/styles/rsuite-default.css'
+import 'moment/locale/ko';
+import 'rsuite/dist/styles/rsuite-default.css';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -30,82 +30,107 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(1)
   },
   select: {
-    width:100,
-    margin:"0 0 0 30px"
+    width: 100,
+    margin: '0 0 0 30px'
   }
 }));
 
 const ScreensToolbar = props => {
-  const base_url = "http://"+window.location.href.split('/')[2]+":3000"
-  const {search,handleSearch,className, ...rest } = props;
-  const [data,setData] = useState([]);
+  const base_url = 'http://' + window.location.href.split('/')[2] + ':3000';
+  const { search, handleSearch, className, ...rest } = props;
+  const [data, setData] = useState([]);
   const classes = useStyles();
 
   const getPictures = async () => {
-    let result = await axios.get(base_url+'/camera_monitor')
-    setData(result.data)
-  }
+    let result = await axios.get(base_url + '/camera_monitor');
+    setData(result.data);
+  };
 
   const deleteOldPic = async () => {
-    if(window.confirm("현재 단말의 일주일 전 파일을 삭제 합니다 \n삭제 하시겠습니다?")){
-      let old = data.filter(screen => screen.regdate.split(' ')[0] < moment().subtract(7, 'days').format('YYYY-MM-DD'))
-      let list = old.map(screen => screen._id)
+    if (
+      window.confirm(
+        '현재 단말의 일주일 전 파일을 삭제 합니다 \n삭제 하시겠습니다?'
+      )
+    ) {
+      let old = data.filter(
+        screen =>
+          screen.regdate.split(' ')[0] <
+          moment()
+            .subtract(7, 'days')
+            .format('YYYY-MM-DD')
+      );
+      let list = old.map(screen => screen._id);
       // console.log(list);
-      await axios.delete(base_url+'/camera_monitor/'+list[0]._id,{
-        data:{
-          list : list,
-          data : old
+      await axios.delete(base_url + '/camera_monitor/' + list[0]._id, {
+        data: {
+          list: list,
+          data: old
         }
-      })
-      props.getScreens()
-      alert('삭제 되었습니다')
+      });
+      props.getScreens();
+      alert('삭제 되었습니다');
     }
-  }
-  
+  };
+
   const deleteAll = async () => {
-    if(window.confirm("현재 단말의 모든 파일을 삭제 합니다 \n삭제 하시겠습니다?")){
-      let list = data.map(screen => screen._id)
+    if (
+      window.confirm('현재 단말의 모든 파일을 삭제 합니다 \n삭제 하시겠습니다?')
+    ) {
+      let list = data.map(screen => screen._id);
       // console.log(list);
-      await axios.delete(base_url+'/camera_monitor/'+list[0]._id,{
-        data:{
-          list : list,
-          data : data
+      await axios.delete(base_url + '/camera_monitor/' + list[0]._id, {
+        data: {
+          list: list,
+          data: data
         }
-      })
-      props.getScreens()
-      alert('삭제 되었습니다')
+      });
+      props.getScreens();
+      alert('삭제 되었습니다');
     }
-  }
+  };
 
   useEffect(() => {
-    getPictures()
-  },[])
+    getPictures();
+  }, []);
 
   return (
-    <div
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
+    <div {...rest} className={clsx(classes.root, className)}>
       <TextField
-      className={classes.search}
-      id="input-with-icon-textfield"
-      value={search}
-      onChange={handleSearch}
-      placeholder="검색"
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end"><Search></Search></InputAdornment>
-        ),
-      }}
+        className={classes.search}
+        id="input-with-icon-textfield"
+        value={search}
+        onChange={handleSearch}
+        placeholder="검색"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <Search></Search>
+            </InputAdornment>
+          )
+        }}
       />
-      <Button style={{margin:"0px 10px",float:"right"}} disabled={props.screens.length === 0} variant="contained" onClick={deleteOldPic} color="primary">오래된 사진 삭제</Button>
-      <Button style={{float:"right"}} variant="contained" disabled={props.screens.length === 0} onClick={deleteAll} color="secondary">전체 삭제</Button>
+      <Button
+        style={{ margin: '0px 10px', float: 'right' }}
+        disabled={props.screens.length === 0}
+        variant="contained"
+        onClick={deleteOldPic}
+        color="primary">
+        오래된 사진 삭제
+      </Button>
+      <Button
+        style={{ float: 'right' }}
+        variant="contained"
+        disabled={props.screens.length === 0}
+        onClick={deleteAll}
+        color="secondary">
+        전체 삭제
+      </Button>
     </div>
   );
 };
 
 ScreensToolbar.propTypes = {
-  className: PropTypes.string,
+  className: PropTypes.string
 };
 
 export default ScreensToolbar;

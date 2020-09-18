@@ -8,25 +8,29 @@ const RouteWithLayout = props => {
   return (
     <Route
       {...rest}
-      render={matchProps => 
-        Layout !== null ? 
-        (
+      render={matchProps =>
+        Layout !== null ? (
           <Layout path={props.path}>
-            <Component 
-            authority={props.authority} 
-            getAuth={props.getAuth} 
+            <Component
+              authority={props.authority}
+              getAuth={props.getAuth}
+              user_id={props.user_id}
+              tempLimit={props.tempLimit}
+              tempType={props.tempType}
+              {...matchProps}
+            />
+          </Layout>
+        ) : (
+          <Component
+            authority={props.authority}
+            getAuth={props.getAuth}
             user_id={props.user_id}
-            tempLimit={props.tempLimit} 
+            tempLimit={props.tempLimit}
             tempType={props.tempType}
-            {...matchProps} />
-          </Layout> 
-        ) : (<Component 
-          authority={props.authority} 
-          getAuth={props.getAuth} 
-          user_id={props.user_id}
-          tempLimit={props.tempLimit} 
-          tempType={props.tempType}
-          {...matchProps} />)}
+            {...matchProps}
+          />
+        )
+      }
     />
   );
 };

@@ -16,16 +16,10 @@ const Footer = props => {
   const classes = useStyles();
 
   return (
-    <div
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
+    <div {...rest} className={clsx(classes.root, className)}>
       <Typography variant="body1">
         &copy;{' '}
-        <Link
-          component="a"
-          target="_blank"
-        >
+        <Link component="a" target="_blank">
           Koolsign
         </Link>
         . 2019

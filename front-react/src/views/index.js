@@ -1,6 +1,6 @@
-export {Account} from './Account';
-export {AddAccount} from './Account';
-export {EditAccount} from './Account';
+export { Account } from './Account';
+export { AddAccount } from './Account';
+export { EditAccount } from './Account';
 export { default as Dashboard } from './Dashboard';
 export { default as NotFound } from './NotFound';
 export { default as SignIn } from './SignIn';
@@ -29,4 +29,3 @@ export { AccessStat } from './Statistics';
 export { default as Operation } from './Operation';
 export { default as FaceDetection } from './FaceDetection';
 export { default as Settings } from './Settings';
-

@@ -1,22 +1,23 @@
-import React,{useEffect} from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 import Select from '@material-ui/core/Select';
-import {DateRangePicker,IntlProvider} from 'rsuite'
+import { DateRangePicker, IntlProvider } from 'rsuite';
 import kor from 'rsuite/lib/IntlProvider/locales/ko_KR';
-import 'rsuite/dist/styles/rsuite-default.css'
+import 'rsuite/dist/styles/rsuite-default.css';
 import MenuItem from '@material-ui/core/MenuItem';
-import 'moment/locale/ko'
+import 'moment/locale/ko';
 // eslint-disable-next-line no-extend-native
-Date.prototype.yyyymmdd = function()
-{
-    var yyyy = this.getFullYear().toString();
-    var mm = (this.getMonth() + 1).toString();
-    var dd = this.getDate().toString();
- 
-    return yyyy +'-'+ (mm[1] ? mm : '0'+mm[0]) +'-'+ (dd[1] ? dd : '0'+dd[0]);
-}
+Date.prototype.yyyymmdd = function() {
+  var yyyy = this.getFullYear().toString();
+  var mm = (this.getMonth() + 1).toString();
+  var dd = this.getDate().toString();
+
+  return (
+    yyyy + '-' + (mm[1] ? mm : '0' + mm[0]) + '-' + (dd[1] ? dd : '0' + dd[0])
+  );
+};
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -39,34 +40,33 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(1)
   },
   select: {
-    width:100,
-    margin:"0 0 0 30px"
+    width: 100,
+    margin: '0 0 0 30px'
   }
 }));
 
 const UsersToolbar = props => {
-  const {loading,temp,temp_change,dateChange,className, ...rest } = props;
+  const { loading, temp, temp_change, dateChange, className, ...rest } = props;
 
-  const handleTempChange = (event) => {
+  const handleTempChange = event => {
     // setTemp(event.target.value);
-    temp_change(event.target.value)
+    temp_change(event.target.value);
   };
 
   const classes = useStyles();
 
   return (
-    <div
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
+    <div {...rest} className={clsx(classes.root, className)}>
       <div className={classes.row}>
         <IntlProvider locale={kor}>
-          <DateRangePicker 
+          <DateRangePicker
             loading={loading}
             cleanable={false}
-            showOneCalendar 
+            showOneCalendar
             defaultValue={[new Date(), new Date()]}
-            onChange={(val) => {dateChange([val[0].yyyymmdd(),val[1].yyyymmdd()])}}
+            onChange={val => {
+              dateChange([val[0].yyyymmdd(), val[1].yyyymmdd()]);
+            }}
           />
         </IntlProvider>
         <Select
@@ -74,8 +74,7 @@ const UsersToolbar = props => {
           labelId="demo-simple-select-label"
           id="demo-simple-select"
           value={temp}
-          onChange={handleTempChange}
-        >
+          onChange={handleTempChange}>
           <MenuItem value="0">전체</MenuItem>
           <MenuItem value="1">정상 온도</MenuItem>
           <MenuItem value="2">비정상 온도</MenuItem>
@@ -88,8 +87,8 @@ const UsersToolbar = props => {
 UsersToolbar.propTypes = {
   className: PropTypes.string,
   dateChange: PropTypes.func,
-  temp_change : PropTypes.func,
-  temp : PropTypes.string,
+  temp_change: PropTypes.func,
+  temp: PropTypes.string
 };
 
 export default UsersToolbar;

@@ -31,11 +31,7 @@ const SearchInput = props => {
   const classes = useStyles();
 
   return (
-    <Paper
-      {...rest}
-      className={clsx(classes.root, className)}
-      style={style}
-    >
+    <Paper {...rest} className={clsx(classes.root, className)} style={style}>
       <SearchIcon className={classes.icon} />
       <Input
         {...rest}

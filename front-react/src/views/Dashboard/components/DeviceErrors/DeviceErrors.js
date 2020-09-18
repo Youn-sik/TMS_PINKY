@@ -12,7 +12,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  TableContainer,
+  TableContainer
 } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'flex-end'
   },
   cardStyle: {
-    height:"430px"
+    height: '430px'
   }
 }));
 
@@ -52,21 +52,21 @@ const DeviceErrors = props => {
   return (
     <Card
       {...rest}
-      className={clsx(classes.root, className),classes.cardStyle}
-    >
-      <CardHeader
-        title="단말기 에러"
-      />
+      className={(clsx(classes.root, className), classes.cardStyle)}>
+      <CardHeader title="단말기 에러" />
       <Divider />
       <CardContent className={classes.content}>
         <TableContainer>
-            <Table className={classes.inner}>
-              <TableHead>
-                <TableRow onClick={() => {props.history.push('device/error')}}>
-                  <TableCell>시리얼 넘버</TableCell>
-                  <TableCell>에러</TableCell>
-                  <TableCell sortDirection="desc">
-                    {/* <Tooltip
+          <Table className={classes.inner}>
+            <TableHead>
+              <TableRow
+                onClick={() => {
+                  props.history.push('device/error');
+                }}>
+                <TableCell>시리얼 넘버</TableCell>
+                <TableCell>에러</TableCell>
+                <TableCell sortDirection="desc">
+                  {/* <Tooltip
                       enterDelay={300}
                       title="Sort"
                     >
@@ -74,28 +74,34 @@ const DeviceErrors = props => {
                         active
                         direction="desc"
                       > */}
-                        날짜
-                      {/* </TableSortLabel>
+                  날짜
+                  {/* </TableSortLabel>
                     </Tooltip> */}
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {props.errors.map(error => (
+                <TableRow
+                  hover
+                  onClick={() => {
+                    props.history.push('device/error');
+                  }}
+                  key={error._id}>
+                  <TableCell>{error.stb_sn}</TableCell>
+                  <TableCell>
+                    {error.log_no === 3
+                      ? '연결 끊김'
+                      : error.log_no === 32
+                      ? 'CPU과다 사용'
+                      : '메모리 과다 사용'}
                   </TableCell>
+                  <TableCell>{error.create_dt}</TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {props.errors.map(error => (
-                  <TableRow
-                    hover
-                    onClick={() => {props.history.push('device/error')}}
-                    key={error._id}
-                  >
-                    <TableCell>{error.stb_sn}</TableCell>
-                    <TableCell>{error.log_no === 3 ? "연결 끊김" : 
-                                error.log_no === 32 ? "CPU과다 사용" : "메모리 과다 사용"}</TableCell>
-                    <TableCell>{error.create_dt}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </CardContent>
     </Card>
   );

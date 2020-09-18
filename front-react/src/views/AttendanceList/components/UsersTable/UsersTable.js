@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import Pagination from '@material-ui/lab/Pagination';
@@ -16,7 +16,7 @@ import {
   TableHead,
   TableRow,
   Paper,
-  TableContainer,
+  TableContainer
 } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
@@ -39,133 +39,149 @@ const useStyles = makeStyles(theme => ({
   },
   actions: {
     justifyContent: 'flex-end'
-  },
+  }
 }));
 
 const UsersTable = props => {
-  const {sortAccesses,activeType,loading,className,users, ...rest } = props;
+  const {
+    sortAccesses,
+    activeType,
+    loading,
+    className,
+    users,
+    ...rest
+  } = props;
 
   const classes = useStyles();
 
   const rowsPerPage = 7;
   const [page, setPage] = useState(1);
-  const [sort, setSort] = useState('desc')
+  const [sort, setSort] = useState('desc');
   const handlePageChange = (event, page) => {
     setPage(page);
   };
 
-  const createSortHandler = (headerType) => {
-    if(sort === 'desc'){
-      setSort('asc')
-      sortAccesses('asc',headerType)
+  const createSortHandler = headerType => {
+    if (sort === 'desc') {
+      setSort('asc');
+      sortAccesses('asc', headerType);
+    } else {
+      setSort('desc');
+      sortAccesses('desc', headerType);
     }
-    else{
-      setSort('desc')
-      sortAccesses('desc',headerType)
-    }
-  }
+  };
 
   return (
-    <Card
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
+    <Card {...rest} className={clsx(classes.root, className)}>
       <CardContent className={classes.content}>
-        {loading ? <LinearProgress style={{width:'100%'}} /> : null}
+        {loading ? <LinearProgress style={{ width: '100%' }} /> : null}
         <TableContainer component={Paper}>
-            <Table className={classes.inner} size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell>사진</TableCell>
-                  <TableCell>
-                    {
-                      users.length > 0 ? 
-                      <TableSortLabel
+          <Table className={classes.inner} size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>사진</TableCell>
+                <TableCell>
+                  {users.length > 0 ? (
+                    <TableSortLabel
                       active={activeType === 'name'}
                       direction={sort}
-                      onClick={() => {createSortHandler('name')}}
-                      >
-                        이름
-                      </TableSortLabel> : "이름"
-                    }
-                  </TableCell>
-                  <TableCell>
-                    {
-                      users.length > 0 ? 
-                      <TableSortLabel
+                      onClick={() => {
+                        createSortHandler('name');
+                      }}>
+                      이름
+                    </TableSortLabel>
+                  ) : (
+                    '이름'
+                  )}
+                </TableCell>
+                <TableCell>
+                  {users.length > 0 ? (
+                    <TableSortLabel
                       active={activeType === 'location'}
                       direction={sort}
-                      onClick={() => {createSortHandler('location')}}
-                      >
-                        근무지
-                      </TableSortLabel> : "근무지"
-                    }
-                  </TableCell>
-                  <TableCell>
-                    {
-                      users.length > 0 ? 
-                      <TableSortLabel
+                      onClick={() => {
+                        createSortHandler('location');
+                      }}>
+                      근무지
+                    </TableSortLabel>
+                  ) : (
+                    '근무지'
+                  )}
+                </TableCell>
+                <TableCell>
+                  {users.length > 0 ? (
+                    <TableSortLabel
                       active={activeType === 'depart'}
                       direction={sort}
-                      onClick={() => {createSortHandler('depart')}}
-                      >
-                        부서
-                      </TableSortLabel> : "부서"
-                    }
-                  </TableCell>
-                  <TableCell>
-                    {
-                      users.length > 0 ? 
-                      <TableSortLabel
+                      onClick={() => {
+                        createSortHandler('depart');
+                      }}>
+                      부서
+                    </TableSortLabel>
+                  ) : (
+                    '부서'
+                  )}
+                </TableCell>
+                <TableCell>
+                  {users.length > 0 ? (
+                    <TableSortLabel
                       active={activeType === 'position'}
                       direction={sort}
-                      onClick={() => {createSortHandler('position')}}
-                      >
-                        직급
-                      </TableSortLabel> : "직급"
-                    }
-                  </TableCell>
-                  <TableCell>
-                    {
-                      users.length > 0 ? 
-                      <TableSortLabel
+                      onClick={() => {
+                        createSortHandler('position');
+                      }}>
+                      직급
+                    </TableSortLabel>
+                  ) : (
+                    '직급'
+                  )}
+                </TableCell>
+                <TableCell>
+                  {users.length > 0 ? (
+                    <TableSortLabel
                       active={activeType === 'att'}
                       direction={sort}
-                      onClick={() => {createSortHandler('att')}}
-                      >
-                        출근
-                      </TableSortLabel> : "출근"
-                    }
-                  </TableCell>
-                  <TableCell>
-                    {
-                      users.length > 0 ? 
-                      <TableSortLabel
+                      onClick={() => {
+                        createSortHandler('att');
+                      }}>
+                      출근
+                    </TableSortLabel>
+                  ) : (
+                    '출근'
+                  )}
+                </TableCell>
+                <TableCell>
+                  {users.length > 0 ? (
+                    <TableSortLabel
                       active={activeType === 'late'}
                       direction={sort}
-                      onClick={() => {createSortHandler('late')}}
-                      >
-                        지각
-                      </TableSortLabel> : "지각"
-                    }
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {props.users.slice((page-1) * rowsPerPage, (page-1) * rowsPerPage + rowsPerPage).map(user => {
-                  return(
-                    <TableRow
-                      key={user._id}
-                    >
+                      onClick={() => {
+                        createSortHandler('late');
+                      }}>
+                      지각
+                    </TableSortLabel>
+                  ) : (
+                    '지각'
+                  )}
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {props.users
+                .slice(
+                  (page - 1) * rowsPerPage,
+                  (page - 1) * rowsPerPage + rowsPerPage
+                )
+                .map(user => {
+                  return (
+                    <TableRow key={user._id}>
                       <TableCell>
                         <div className={classes.nameContainer}>
                           <img
                             alt="프로필사진"
                             height="90px"
                             width="70px"
-                            src={user.avatar_file_url}
-                          >
-                          </img>
+                            src={user.avatar_file_url}></img>
                         </div>
                       </TableCell>
                       <TableCell>{user.name}</TableCell>
@@ -175,25 +191,28 @@ const UsersTable = props => {
                       <TableCell>{user.attendance}</TableCell>
                       <TableCell>{user.late}</TableCell>
                     </TableRow>
-                  )
-                  })}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </CardContent>
       <CardActions className={classes.actions}>
-        <Grid
-          container
-          alignItems="center"
-          justify="center"
-        >
-         <Pagination
-          count={ props.users.length%rowsPerPage === 0 ? parseInt(props.users.length/rowsPerPage) :
-            parseInt(props.users.length/rowsPerPage+(parseInt(props.users.length%rowsPerPage)/parseInt(props.users.length%rowsPerPage)))}
-          onChange={handlePageChange}
-          page={page}
-          variant="outlined" 
-          shape="rounded"
+        <Grid container alignItems="center" justify="center">
+          <Pagination
+            count={
+              props.users.length % rowsPerPage === 0
+                ? parseInt(props.users.length / rowsPerPage)
+                : parseInt(
+                    props.users.length / rowsPerPage +
+                      parseInt(props.users.length % rowsPerPage) /
+                        parseInt(props.users.length % rowsPerPage)
+                  )
+            }
+            onChange={handlePageChange}
+            page={page}
+            variant="outlined"
+            shape="rounded"
           />
         </Grid>
       </CardActions>
@@ -202,9 +221,7 @@ const UsersTable = props => {
 };
 
 UsersTable.propTypes = {
-  className: PropTypes.string,
+  className: PropTypes.string
 };
-
-
 
 export default UsersTable;

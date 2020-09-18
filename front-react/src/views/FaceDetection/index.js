@@ -1,1 +1,1 @@
-export { default } from './FaceDetection'
+export { default } from './FaceDetection';

@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react';
+import React, { useEffect } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 import { Drawer } from '@material-ui/core';
@@ -46,40 +46,40 @@ const Sidebar = props => {
       icon: <DashboardIcon />
     },
     {
-      title:"출입, 출근 관리",
+      title: '출입, 출근 관리',
       href: '/access',
-      icon: <SyncAltIcon/>,
-      children:[
+      icon: <SyncAltIcon />,
+      children: [
         {
-          title:'출입 관리',
-          href:'/access/records'
+          title: '출입 관리',
+          href: '/access/records'
         },
         {
-          title:'출근 관리',
-          href:'/access/attendance'
+          title: '출근 관리',
+          href: '/access/attendance'
         }
-      ],
+      ]
     },
     {
       title: '인사관리',
       href: '/users',
-      children:[
+      children: [
         {
-          title:'사원 관리',
-          href:'/users/employee'
+          title: '사원 관리',
+          href: '/users/employee'
         },
         {
-          title:'방문자 관리',
-          href:'/users/visitor'
+          title: '방문자 관리',
+          href: '/users/visitor'
         },
         {
-          title:'블랙리스트 관리',
-          href:'/users/black'
+          title: '블랙리스트 관리',
+          href: '/users/black'
         },
         {
-          title:'미등록자 관리',
-          href:'/users/stranger'
-        },
+          title: '미등록자 관리',
+          href: '/users/stranger'
+        }
         // {
         //   title:'얼굴 인식',
         //   href:'/users/face-detection'
@@ -90,37 +90,37 @@ const Sidebar = props => {
     {
       title: '단말 관리',
       href: '/device',
-      children:[
+      children: [
         {
-          title:'단말기 목록',
-          href:'/device/list'
+          title: '단말기 목록',
+          href: '/device/list'
         },
         {
-          title:'단말기 에러 로그',
-          href:'/device/error'
+          title: '단말기 에러 로그',
+          href: '/device/error'
         },
         {
-          title:'단말기 스크린샷',
-          href:'/device/screen'
-        },
+          title: '단말기 스크린샷',
+          href: '/device/screen'
+        }
       ],
       icon: <DnsIcon />
     },
     {
       title: '통계',
-      href:'/stats',
-      children:[
+      href: '/stats',
+      children: [
         {
-          title:"단말기 통계",
-          href:'/stats/device'
+          title: '단말기 통계',
+          href: '/stats/device'
         },
         {
-          title:'사용자 통계',
-          href:'/stats/users'
+          title: '사용자 통계',
+          href: '/stats/users'
         },
         {
-          title:"출입 통계",
-          href:'/stats/access'
+          title: '출입 통계',
+          href: '/stats/access'
         }
       ],
       icon: <InsertChartIcon />
@@ -128,22 +128,22 @@ const Sidebar = props => {
     {
       title: '시스템',
       href: '/system',
-      children:[
+      children: [
         {
-          title:"계정 관리",
-          href:'/system/account'
+          title: '계정 관리',
+          href: '/system/account'
         },
         {
-          title:'작업 기록',
-          href:'/system/operation'
+          title: '작업 기록',
+          href: '/system/operation'
         },
         {
-          title:'설정',
-          href:'/system/settings'
-        },
+          title: '설정',
+          href: '/system/settings'
+        }
       ],
       icon: <SettingsIcon />
-    },
+    }
     // {
     //   title: 'Products',
     //   href: '/products',
@@ -182,19 +182,11 @@ const Sidebar = props => {
       classes={{ paper: classes.drawer }}
       onClose={onClose}
       open={open}
-      variant={variant}
-    >
-      <div
-        {...rest}
-        className={clsx(classes.root, className)}
-      >
+      variant={variant}>
+      <div {...rest} className={clsx(classes.root, className)}>
         {/* <Profile />
         <Divider className={classes.divider} /> */}
-        <SidebarNav
-          path={props.path}
-          className={classes.nav}
-          pages={pages}
-        />
+        <SidebarNav path={props.path} className={classes.nav} pages={pages} />
       </div>
     </Drawer>
   );

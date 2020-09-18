@@ -13,7 +13,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  TableContainer,
+  TableContainer
 } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
@@ -31,95 +31,122 @@ const useStyles = makeStyles(() => ({
     justifyContent: 'flex-end'
   },
   cardStyle: {
-    height:"430px"
+    height: '430px'
   },
-  temp:{
-    width:"15px"
+  temp: {
+    width: '15px'
   },
-  highTempRow:{
-    borderLeft:'3px solid red',
-    background : 'rgba(255, 204, 204, 0.575)',
+  highTempRow: {
+    borderLeft: '3px solid red',
+    background: 'rgba(255, 204, 204, 0.575)'
   },
-  redFont:{
-    color:'red'
-  },
+  redFont: {
+    color: 'red'
+  }
 }));
 
 const TempAlert = props => {
-  const {temp,tempLimit,tempType, className, ...rest } = props;
+  const { temp, tempLimit, tempType, className, ...rest } = props;
 
   const classes = useStyles();
 
   return (
     <Card
       {...rest}
-      className={clsx(classes.root, className),classes.cardStyle}
-      style={{overflow: 'auto'}}
-    >
-      <CardHeader
-        title="실시간 출입 정보"
-      />
+      className={(clsx(classes.root, className), classes.cardStyle)}
+      style={{ overflow: 'auto' }}>
+      <CardHeader title="실시간 출입 정보" />
       <Divider />
       <CardContent className={classes.content}>
-          <TableContainer>
-            <Table className={classes.inner}>
-              <TableHead>
-                <TableRow onClick={() => {props.history.push('access/records')}}>
-                  <TableCell>사진</TableCell>
-                  <TableCell>이름</TableCell>
-                  <TableCell>온도</TableCell>
-                  <TableCell>타입</TableCell>
-                  <TableCell>날짜</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {temp.map(access => (
-                  access.avatar_temperature >= tempLimit ?
+        <TableContainer>
+          <Table className={classes.inner}>
+            <TableHead>
+              <TableRow
+                onClick={() => {
+                  props.history.push('access/records');
+                }}>
+                <TableCell>사진</TableCell>
+                <TableCell>이름</TableCell>
+                <TableCell>온도</TableCell>
+                <TableCell>타입</TableCell>
+                <TableCell>날짜</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {temp.map(access =>
+                access.avatar_temperature >= tempLimit ? (
                   <TableRow
-                  className={classes.highTempRow}
-                  onClick={() => {props.history.push('access/records')}}
-                  key={access._id}
-                >
-                  <TableCell>                
-                    <img
-                      alt="picture"
-                      className={classes.image}
-                      src={access.avatar_file_url}
-                  /></TableCell>
-                  <TableCell className={classes.redFont}>{access.name === 'unknown' ? null : access.name}</TableCell>
-                  <TableCell className={classes.redFont}>{tempType === 1 ? String(access.avatar_temperature).substring(0,4) : "비정상 체온"}</TableCell>
-                  <TableCell className={classes.redFont}>
-                    {access.avatar_type === 1 ? "사원" :
-                    access.avatar_type === 2 ? '방문자' :
-                    access.avatar_type === 3 ? '미등록자' : '블랙리스트'} 
-                  </TableCell>
-                  <TableCell className={classes.redFont}>{access.access_time}</TableCell>
-                </TableRow>
-                :
+                    className={classes.highTempRow}
+                    onClick={() => {
+                      props.history.push('access/records');
+                    }}
+                    key={access._id}>
+                    <TableCell>
+                      <img
+                        alt="picture"
+                        className={classes.image}
+                        src={access.avatar_file_url}
+                      />
+                    </TableCell>
+                    <TableCell className={classes.redFont}>
+                      {access.name === 'unknown' ? null : access.name}
+                    </TableCell>
+                    <TableCell className={classes.redFont}>
+                      {tempType === 1
+                        ? String(access.avatar_temperature).substring(0, 4)
+                        : '비정상 체온'}
+                    </TableCell>
+                    <TableCell className={classes.redFont}>
+                      {access.avatar_type === 1
+                        ? '사원'
+                        : access.avatar_type === 2
+                        ? '방문자'
+                        : access.avatar_type === 3
+                        ? '미등록자'
+                        : '블랙리스트'}
+                    </TableCell>
+                    <TableCell className={classes.redFont}>
+                      {access.access_time}
+                    </TableCell>
+                  </TableRow>
+                ) : (
                   <TableRow
                     hover
                     key={access._id}
-                    onClick={() => {props.history.push('access/records')}}
-                  >
-                    <TableCell>                
+                    onClick={() => {
+                      props.history.push('access/records');
+                    }}>
+                    <TableCell>
                       <img
                         alt="Product"
                         className={classes.image}
                         src={access.avatar_file_url}
-                    /></TableCell>
-                    <TableCell>{access.name === 'unknown' ? null : access.name}</TableCell>
-                    <TableCell>{tempType === 1 ? String(access.avatar_temperature).substring(0,4) : "정상 체온"}</TableCell>
+                      />
+                    </TableCell>
                     <TableCell>
-                      {access.avatar_type === 1 ? "사원" :
-                      access.avatar_type === 2 ? '방문자' :
-                      access.avatar_type === 3 ? '미등록자' : '블랙리스트'} 
+                      {access.name === 'unknown' ? null : access.name}
+                    </TableCell>
+                    <TableCell>
+                      {tempType === 1
+                        ? String(access.avatar_temperature).substring(0, 4)
+                        : '정상 체온'}
+                    </TableCell>
+                    <TableCell>
+                      {access.avatar_type === 1
+                        ? '사원'
+                        : access.avatar_type === 2
+                        ? '방문자'
+                        : access.avatar_type === 3
+                        ? '미등록자'
+                        : '블랙리스트'}
                     </TableCell>
                     <TableCell>{access.access_time}</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                )
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </CardContent>
     </Card>
   );

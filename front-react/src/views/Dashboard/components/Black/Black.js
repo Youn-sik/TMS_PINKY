@@ -2,13 +2,7 @@ import React from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
-import {
-  Card,
-  CardContent,
-  Grid,
-  Typography,
-  Avatar,
-} from '@material-ui/core';
+import { Card, CardContent, Grid, Typography, Avatar } from '@material-ui/core';
 import NotInterested from '@material-ui/icons/NotInterested';
 const useStyles = makeStyles(theme => ({
   root: {
@@ -42,28 +36,26 @@ const Black = props => {
   const classes = useStyles();
 
   return (
-    <Card
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
+    <Card {...rest} className={clsx(classes.root, className)}>
       <CardContent>
-        <Grid
-          container
-          justify="space-between"
-        >
+        <Grid container justify="space-between">
           <Grid item>
             <Typography
               className={classes.title}
               color="textSecondary"
               gutterBottom
-              variant="body2"
-            >
+              variant="body2">
               블랙리스트 출입
             </Typography>
             <Typography variant="h3">{props.count}명</Typography>
           </Grid>
           <Grid item>
-            <Avatar style={{"cursor" : "pointer"}} onClick={() => {props.history.push("access/records")}} className={classes.avatar}>
+            <Avatar
+              style={{ cursor: 'pointer' }}
+              onClick={() => {
+                props.history.push('access/records');
+              }}
+              className={classes.avatar}>
               <NotInterested className={classes.icon} />
             </Avatar>
           </Grid>

@@ -46,44 +46,36 @@ const Visitor = props => {
   const classes = useStyles();
 
   return (
-    <Card
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
+    <Card {...rest} className={clsx(classes.root, className)}>
       <CardContent>
-        <Grid
-          container
-          justify="space-between"
-        >
+        <Grid container justify="space-between">
           <Grid item>
             <Typography
               className={classes.title}
               color="textSecondary"
               gutterBottom
-              variant="body2"
-            >
+              variant="body2">
               방문자 출입
             </Typography>
             <Typography variant="h3">{props.count}명</Typography>
           </Grid>
           <Grid item>
-            <Avatar style={{"cursor" : "pointer"}} onClick={() => {props.history.push("access/records")}} className={classes.avatar}>
+            <Avatar
+              style={{ cursor: 'pointer' }}
+              onClick={() => {
+                props.history.push('access/records');
+              }}
+              className={classes.avatar}>
               <PeopleIcon className={classes.icon} />
             </Avatar>
           </Grid>
         </Grid>
         <div className={classes.difference}>
           <ArrowUpwardIcon className={classes.differenceIcon} />
-          <Typography
-            className={classes.differenceValue}
-            variant="body2"
-          >
+          <Typography className={classes.differenceValue} variant="body2">
             16%
           </Typography>
-          <Typography
-            className={classes.caption}
-            variant="caption"
-          >
+          <Typography className={classes.caption} variant="caption">
             Since last month
           </Typography>
         </div>

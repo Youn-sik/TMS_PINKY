@@ -16,11 +16,11 @@ import Block from '@material-ui/icons/Block';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    height: '199.4%',
+    height: '199.4%'
   },
   chartContainer: {
     position: 'relative',
-    top:120,
+    top: 120,
     height: '400px',
     maxHeight: '400px',
     textAlign: 'center'
@@ -29,7 +29,7 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(2),
     display: 'flex',
     justifyContent: 'center',
-    width:"100%"
+    width: '100%'
   },
   attendance: {
     textAlign: 'center',
@@ -39,12 +39,12 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.icon
   },
   cardContent: {
-    height:"100%"
+    height: '100%'
   }
 }));
 
 const TempChart = props => {
-  const { history,clickedNode,className, ...rest } = props;
+  const { history, clickedNode, className, ...rest } = props;
 
   const classes = useStyles();
   const theme = useTheme();
@@ -52,7 +52,7 @@ const TempChart = props => {
   const data = {
     datasets: [
       {
-        data: [props.late,props.attendance],
+        data: [props.late, props.attendance],
         backgroundColor: [
           theme.palette.error.main,
           theme.palette.success.main,
@@ -63,7 +63,7 @@ const TempChart = props => {
         hoverBorderColor: theme.palette.white
       }
     ],
-    labels: ['정상 온도','비정상 온도']
+    labels: ['정상 온도', '비정상 온도']
   };
 
   const options = {
@@ -71,13 +71,13 @@ const TempChart = props => {
       display: false,
       onHover: function(e) {
         e.target.style.cursor = 'pointer';
-     }
+      }
     },
     hover: {
       onHover: function(e) {
-         var point = this.getElementAtEvent(e);
-         if (point.length) e.target.style.cursor = 'pointer';
-         else e.target.style.cursor = 'default';
+        var point = this.getElementAtEvent(e);
+        if (point.length) e.target.style.cursor = 'pointer';
+        else e.target.style.cursor = 'default';
       }
     },
     responsive: true,
@@ -99,30 +99,25 @@ const TempChart = props => {
 
   const attendancees = [
     {
-        title: '정상 온도',
-        value: props.attendance,
-        icon: <Done />,
-        color: theme.palette.success.main
+      title: '정상 온도',
+      value: props.attendance,
+      icon: <Done />,
+      color: theme.palette.success.main
     },
     {
-        title: '비정상 온도',
-        value: props.late,
-        icon: <Block />,
-        color: theme.palette.error.main
-    },
+      title: '비정상 온도',
+      value: props.late,
+      icon: <Block />,
+      color: theme.palette.error.main
+    }
   ];
 
   return (
-    <Card
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
-      <CardHeader
-        title="온도통계"
-      />
+    <Card {...rest} className={clsx(classes.root, className)}>
+      <CardHeader title="온도통계" />
       <Divider />
       {/* <CardContent className={classes.cardContent}> */}
-        {/* <Grid 
+      {/* <Grid 
           className={classes.cardContent} 
           container
           direction="row"
@@ -130,31 +125,29 @@ const TempChart = props => {
           alignItems="center"
           
         > */}
-          <div className={classes.chartContainer}>
-            <Doughnut
-              onElementsClick={() => {props.history.push('/access/records')}}
-              data={data}
-              options={options}
-            /> 
-          </div> 
-        <div className={classes.stats} style={{position:'relative',bottom:150}}>
-          {attendancees.map(attendance => (
-            <div
-              className={classes.attendance}
-              key={attendance.title}
-            >
-              <span className={classes.attendanceIcon}>{attendance.icon}</span>
-              <Typography variant="body1">{attendance.title}</Typography>
-              <Typography
-                style={{ color: attendance.color }}
-                variant="h2"
-              >
-                {attendance.value}번
-              </Typography>
-            </div>
-          ))}
-        </div>
-        {/* </Grid> */}
+      <div className={classes.chartContainer}>
+        <Doughnut
+          onElementsClick={() => {
+            props.history.push('/access/records');
+          }}
+          data={data}
+          options={options}
+        />
+      </div>
+      <div
+        className={classes.stats}
+        style={{ position: 'relative', bottom: 150 }}>
+        {attendancees.map(attendance => (
+          <div className={classes.attendance} key={attendance.title}>
+            <span className={classes.attendanceIcon}>{attendance.icon}</span>
+            <Typography variant="body1">{attendance.title}</Typography>
+            <Typography style={{ color: attendance.color }} variant="h2">
+              {attendance.value}번
+            </Typography>
+          </div>
+        ))}
+      </div>
+      {/* </Grid> */}
       {/* </CardContent> */}
     </Card>
   );

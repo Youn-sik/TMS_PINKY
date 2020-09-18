@@ -28,7 +28,7 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(2),
     display: 'flex',
     justifyContent: 'center',
-    width:"100%"
+    width: '100%'
   },
   access: {
     textAlign: 'center',
@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.icon
   },
   cardContent: {
-    height:"85%",
+    height: '85%'
   }
 }));
 
@@ -51,19 +51,19 @@ const Access = props => {
   const data = {
     datasets: [
       {
-        data: [props.stranger,props.employee,props.visitor,props.black],
+        data: [props.stranger, props.employee, props.visitor, props.black],
         backgroundColor: [
           '#bdbdbd',
           theme.palette.primary.main,
           theme.palette.error.main,
-          theme.palette.success.main,
+          theme.palette.success.main
         ],
         borderWidth: 8,
         borderColor: theme.palette.white,
         hoverBorderColor: theme.palette.white
       }
     ],
-    labels: ['사원', '방문자','블랙리스트','미등록자']
+    labels: ['사원', '방문자', '블랙리스트', '미등록자']
   };
 
   const options = {
@@ -71,13 +71,13 @@ const Access = props => {
       display: false,
       onHover: function(e) {
         e.target.style.cursor = 'pointer';
-     }
+      }
     },
     hover: {
       onHover: function(e) {
-         var point = this.getElementAtEvent(e);
-         if (point.length) e.target.style.cursor = 'pointer';
-         else e.target.style.cursor = 'default';
+        var point = this.getElementAtEvent(e);
+        if (point.length) e.target.style.cursor = 'pointer';
+        else e.target.style.cursor = 'default';
       }
     },
     responsive: true,
@@ -99,73 +99,67 @@ const Access = props => {
 
   const accesses = [
     {
-        title: '사원',
-        value: props.employee,
-        icon: <PermIdentity />,
-        color: theme.palette.primary.main
+      title: '사원',
+      value: props.employee,
+      icon: <PermIdentity />,
+      color: theme.palette.primary.main
     },
     {
-        title: '방문자',
-        value: props.visitor,
-        icon: <PeopleIcon />,
-        color: theme.palette.success.main
+      title: '방문자',
+      value: props.visitor,
+      icon: <PeopleIcon />,
+      color: theme.palette.success.main
     },
     {
-        title: '블랙리스트',
-        value: props.black,
-        icon: <NotInterested />,
-        color: theme.palette.error.main
+      title: '블랙리스트',
+      value: props.black,
+      icon: <NotInterested />,
+      color: theme.palette.error.main
     },
     {
-        title: '미등록자',
-        value: props.stranger,
-        icon: <AttachMoneyIcon />,
-        color: '#bdbdbd'
-    },
+      title: '미등록자',
+      value: props.stranger,
+      icon: <AttachMoneyIcon />,
+      color: '#bdbdbd'
+    }
   ];
 
   return (
-    <Card
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
-      <CardHeader
-        title="금일 출입"
-      />
+    <Card {...rest} className={clsx(classes.root, className)}>
+      <CardHeader title="금일 출입" />
       <Divider />
       <CardContent className={classes.cardContent}>
-        <Grid 
-          className={classes.cardContent} 
+        <Grid
+          className={classes.cardContent}
           container
           direction="row"
           justify="center"
-          alignItems="center"
-        >
-       {props.employee + props.visitor + props.black + props.stranger !== 0 ?
-        <div className={classes.chartContainer}>
-          <Doughnut
-            onElementsClick={() => {props.history.push('access/records')}}
-            data={data}
-            options={options}
-          />
-        </div> : <div></div>}
-        <div className={classes.stats}>
-          {accesses.map(access => (
-            <div
-              className={classes.access}
-              key={access.title}
-            >
-              <span className={classes.accessIcon}>{access.icon}</span>
-              <Typography variant="body1">{access.title}</Typography>
-              <Typography
-                style={{ color: access.color }}
-                variant="h2"
-              >
-                {access.value}명
-              </Typography>
+          alignItems="center">
+          {props.employee + props.visitor + props.black + props.stranger !==
+          0 ? (
+            <div className={classes.chartContainer}>
+              <Doughnut
+                onElementsClick={() => {
+                  props.history.push('access/records');
+                }}
+                data={data}
+                options={options}
+              />
             </div>
-          ))}
-        </div>
+          ) : (
+            <div></div>
+          )}
+          <div className={classes.stats}>
+            {accesses.map(access => (
+              <div className={classes.access} key={access.title}>
+                <span className={classes.accessIcon}>{access.icon}</span>
+                <Typography variant="body1">{access.title}</Typography>
+                <Typography style={{ color: access.color }} variant="h2">
+                  {access.value}명
+                </Typography>
+              </div>
+            ))}
+          </div>
         </Grid>
       </CardContent>
     </Card>

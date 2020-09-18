@@ -1,7 +1,7 @@
 .arrow_box {
-    padding:10px;
-	position: relative;
-    background: rgba( 0, 0, 0, 0.8 );
-    border: 1px solid rgba( 0, 0, 0, 0.8);
-    border-radius: 10px;
+  padding: 10px;
+  position: relative;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
 }

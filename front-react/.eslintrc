@@ -2,22 +2,15 @@
   "parser": "babel-eslint",
   "rules": {
     "comma-dangle": 0,
-    "indent": [
-      2,
-      2,
-      {
-        "SwitchCase": 1
-      }
-    ],
+    "indent": ["off", 4],
+    "linebreak-style": ["error", "unix"],
+    "quotes": ["error", "single"],
+    "semi": ["error", "always"],
+    "no-unused-vars": "off",
+    "no-console": "off",
+    "no-empty": "off",
+    "no-useless-escape": "off",
     "jsx-quotes": 1,
-    "linebreak-style": [
-      2,
-      "unix"
-    ],
-    "quotes": [
-      2,
-      "single"
-    ],
     "react/display-name": 1,
     "react/forbid-prop-types": 0,
     "react/sort-prop-types": 1,
@@ -51,13 +44,17 @@
     "react/react-in-jsx-scope": 1,
     "react/self-closing-comp": 1,
     "react/sort-comp": 0,
-    "semi": 0
   },
   "env": {
     "es6": true,
+    "node" : true,
     "browser": true
   },
   "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
   "ecmaFeatures": {
     "jsx": true,
     "experimentalObjectRestSpread": true

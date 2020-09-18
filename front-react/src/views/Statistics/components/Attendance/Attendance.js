@@ -17,7 +17,7 @@ import AlarmOff from '@material-ui/icons/AlarmOff';
 const useStyles = makeStyles(theme => ({
   root: {
     height: '100%',
-    maxHeight: '385px',
+    maxHeight: '385px'
   },
   chartContainer: {
     position: 'relative',
@@ -29,7 +29,7 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(2),
     display: 'flex',
     justifyContent: 'center',
-    width:"100%"
+    width: '100%'
   },
   attendance: {
     textAlign: 'center',
@@ -39,12 +39,12 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.icon
   },
   cardContent: {
-    height:"100%"
+    height: '100%'
   }
 }));
 
 const Attendance = props => {
-  const { clickedNode,className, ...rest } = props;
+  const { clickedNode, className, ...rest } = props;
 
   const classes = useStyles();
   const theme = useTheme();
@@ -52,9 +52,9 @@ const Attendance = props => {
   const data = {
     datasets: [
       {
-        data: [props.late,props.attendance],
+        data: [props.late, props.attendance],
         backgroundColor: [
-          "#f17808",
+          '#f17808',
           theme.palette.primary.main,
           theme.palette.success.main
         ],
@@ -63,7 +63,7 @@ const Attendance = props => {
         hoverBorderColor: theme.palette.white
       }
     ],
-    labels: ['9시 이후 출입','9시 이전 출입' ]
+    labels: ['9시 이후 출입', '9시 이전 출입']
   };
 
   const options = {
@@ -71,13 +71,13 @@ const Attendance = props => {
       display: false,
       onHover: function(e) {
         e.target.style.cursor = 'pointer';
-     }
+      }
     },
     hover: {
       onHover: function(e) {
-         var point = this.getElementAtEvent(e);
-         if (point.length) e.target.style.cursor = 'pointer';
-         else e.target.style.cursor = 'default';
+        var point = this.getElementAtEvent(e);
+        if (point.length) e.target.style.cursor = 'pointer';
+        else e.target.style.cursor = 'default';
       }
     },
     responsive: true,
@@ -99,53 +99,46 @@ const Attendance = props => {
 
   const attendancees = [
     {
-        title: '9시 이전 출입',
-        value: props.attendance,
-        icon: <Alarm />,
-        color: theme.palette.primary.main
+      title: '9시 이전 출입',
+      value: props.attendance,
+      icon: <Alarm />,
+      color: theme.palette.primary.main
     },
     {
-        title: '9시 이후 출입',
-        value: props.late,
-        icon: <AlarmOff />,
-        color: "#f17808"
-    },
+      title: '9시 이후 출입',
+      value: props.late,
+      icon: <AlarmOff />,
+      color: '#f17808'
+    }
   ];
 
   return (
-    <Card
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
-      <CardHeader
-        title="출입통계"
-      />
+    <Card {...rest} className={clsx(classes.root, className)}>
+      <CardHeader title="출입통계" />
       <Divider />
-          <div className={classes.chartContainer}>
-            <Doughnut
-              onElementsClick={() => {props.history.push('/access/attendance')}}
-              data={data}
-              options={options}
-            /> 
-          </div> 
-        <div className={classes.stats} style={{position:'relative',bottom:220}}>
-          {attendancees.map(attendance => (
-            <div
-              className={classes.attendance}
-              key={attendance.title}
-            >
-              <span className={classes.attendanceIcon}>{attendance.icon}</span>
-              <Typography variant="body1">{attendance.title}</Typography>
-              <Typography
-                style={{ color: attendance.color }}
-                variant="h2"
-              >
-                {attendance.value}번
-              </Typography>
-            </div>
-          ))}
-        </div>
-        {/* </Grid> */}
+      <div className={classes.chartContainer}>
+        <Doughnut
+          onElementsClick={() => {
+            props.history.push('/access/attendance');
+          }}
+          data={data}
+          options={options}
+        />
+      </div>
+      <div
+        className={classes.stats}
+        style={{ position: 'relative', bottom: 220 }}>
+        {attendancees.map(attendance => (
+          <div className={classes.attendance} key={attendance.title}>
+            <span className={classes.attendanceIcon}>{attendance.icon}</span>
+            <Typography variant="body1">{attendance.title}</Typography>
+            <Typography style={{ color: attendance.color }} variant="h2">
+              {attendance.value}번
+            </Typography>
+          </div>
+        ))}
+      </div>
+      {/* </Grid> */}
       {/* </CardContent> */}
     </Card>
   );

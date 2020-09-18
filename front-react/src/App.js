@@ -6,14 +6,14 @@ import { ThemeProvider } from '@material-ui/styles';
 import validate from 'validate.js';
 import { chartjs } from './helpers';
 import theme from './theme';
-import 'rsuite/dist/styles/rsuite-default.css'
+import 'rsuite/dist/styles/rsuite-default.css';
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import './assets/scss/index.scss';
 import validators from './common/validators';
 import Routes from './Routes';
-import axios from 'axios'
+import axios from 'axios';
 
-import SignIn from './views/SignIn'
+import SignIn from './views/SignIn';
 
 const browserHistory = createBrowserHistory();
 
@@ -26,79 +26,80 @@ validate.validators = {
   ...validators
 };
 
-const base_url = "http://"+window.location.href.split('/')[2]+":3000"
+const base_url = 'http://' + window.location.href.split('/')[2] + ':3000';
 export default class App extends React.Component {
   state = {
-    auth : false,
-    user_id : '',
-    authority : '',
-    tempLimit : 0,
-    tempType : 0
-  }
-  
+    auth: false,
+    user_id: '',
+    authority: '',
+    tempLimit: 0,
+    tempType: 0
+  };
+
   componentWillMount() {
-    if(browserHistory.location.pathname !== '/sign-in') { //URL 직접 변경 감지
+    if (browserHistory.location.pathname !== '/sign-in') {
+      //URL 직접 변경 감지
       var value = document.cookie.match('(^|;) ?token=([^;]*)(;|$)');
-      if(Array.isArray(value)) {
-        axios.get(base_url+'/auth?token='+value[2])
-          .then((res) => {
-            if(res.data.auth === false) {
-              document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
-              browserHistory.push('/sign-in')
-            } else if( res.data.auth === true ) {
-              this.setState({
-                auth: true,
-                user_id: res.data.user_id,
-                authority : res.data.authority,
-                tempLimit : res.data.tempLimit,
-                tempType : res.data.tempType
-              });
-            }
-          })
+      if (Array.isArray(value)) {
+        axios.get(base_url + '/auth?token=' + value[2]).then(res => {
+          if (res.data.auth === false) {
+            document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
+            browserHistory.push('/sign-in');
+          } else if (res.data.auth === true) {
+            this.setState({
+              auth: true,
+              user_id: res.data.user_id,
+              authority: res.data.authority,
+              tempLimit: res.data.tempLimit,
+              tempType: res.data.tempType
+            });
+          }
+        });
       } else {
-        browserHistory.push('/sign-in')
+        browserHistory.push('/sign-in');
       }
     }
   }
 
-  componentDidMount () {
-    this.unlisten = browserHistory.listen((location, action) => { //클릭을 통한 페이지 이동 감지
-      if(location.pathname !== '/sign-in') {
+  componentDidMount() {
+    this.unlisten = browserHistory.listen((location, action) => {
+      //클릭을 통한 페이지 이동 감지
+      if (location.pathname !== '/sign-in') {
         var value = document.cookie.match('(^|;) ?token=([^;]*)(;|$)');
-        if(Array.isArray(value)) {
-          axios.get(base_url+'/auth?token='+value[2])
-          .then((res) => {
-            if(res.data.auth === false) {
-              browserHistory.push('/sign-in')
-              document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
+        if (Array.isArray(value)) {
+          axios.get(base_url + '/auth?token=' + value[2]).then(res => {
+            if (res.data.auth === false) {
+              browserHistory.push('/sign-in');
+              document.cookie =
+                'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
               this.setState({
                 auth: false,
                 authority: '',
                 user_id: '',
-                tempLimit : 0,
-                tempType : 0
+                tempLimit: 0,
+                tempType: 0
               });
               return false;
             } else {
               this.setState({
                 auth: true,
                 user_id: res.data.user_id,
-                authority : res.data.authority,
-                tempLimit : res.data.tempLimit,
-                tempType : res.data.tempType
+                authority: res.data.authority,
+                tempLimit: res.data.tempLimit,
+                tempType: res.data.tempType
               });
               return false;
             }
-          })
+          });
         } else {
-          browserHistory.push('/sign-in')
+          browserHistory.push('/sign-in');
           document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
           this.setState({
             auth: false,
-            authority:'',
+            authority: '',
             user_id: '',
-            tempLimit : 0,
-            tempType : 0
+            tempLimit: 0,
+            tempType: 0
           });
           return false;
         }
@@ -107,24 +108,28 @@ export default class App extends React.Component {
   }
 
   render() {
-    const getAuth = (_auth) => {
-        this.setState({
-          authority : _auth
-        })
-    }
+    const getAuth = _auth => {
+      this.setState({
+        authority: _auth
+      });
+    };
 
-    return browserHistory.location.pathname === '/sign-in' || this.state.authority !== '' ?
+    return browserHistory.location.pathname === '/sign-in' ||
+      this.state.authority !== '' ? (
       <ThemeProvider theme={theme}>
-        <Router  history={browserHistory}>
-          <Routes 
-          tempLimit={this.state.tempLimit} 
-          tempType={this.state.tempType} 
-          path={browserHistory.location.pathname} 
-          getAuth={getAuth} 
-          user_id={this.state.user_id} 
-          authority={this.state.authority} />
+        <Router history={browserHistory}>
+          <Routes
+            tempLimit={this.state.tempLimit}
+            tempType={this.state.tempType}
+            path={browserHistory.location.pathname}
+            getAuth={getAuth}
+            user_id={this.state.user_id}
+            authority={this.state.authority}
+          />
         </Router>
       </ThemeProvider>
-      : <div></div>
+    ) : (
+      <div></div>
+    );
   }
 }
