@@ -93,6 +93,30 @@ newUser.save(function (error, data2){
 */
 
 module.exports = {
+
+    async chk_status () {
+        //접속된 디바이스중 uptime 이 10분이상 차이나며 off로 판단한다. 
+        var chk_time = moment().subtract(10, 'minutes').format('YYYY-MM-DD HH:mm:ss');
+        Camera.updateMany(
+            {
+                "status":"Y",
+                "info_update_time":{$lt : chk_time},
+            },
+            { $set: { "status" : "N" } },
+        )
+        // var cameras = await Camera.find().equals("status","Y").lt("info_update_time",chk_time);
+        // if(cameras.length !== 0) {
+        //     cameras.map((camera) => {
+        //         Camera.findByIdAndUpdate(camera._id, {$set:
+        //             {
+        //                 "status":"N"
+        //             }
+        //         }, 
+        //         {new: true })
+        //     })
+        // }
+    },
+
     async capture_start(json) {
         json.stb_sn.map((i) => {
             client.publish('/control/capture/start/'+i,
