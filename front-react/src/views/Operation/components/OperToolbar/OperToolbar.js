@@ -54,7 +54,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const OperToolbar = props => {
-  const {search_event,search_val,dateChange,className, ...rest } = props;
+  const {loading,search_event,search_val,dateChange,className, ...rest } = props;
 
   const classes = useStyles();
 
@@ -71,6 +71,7 @@ const OperToolbar = props => {
         <Grid container justify="flex-start">
           <IntlProvider locale={kor}>
             <DateRangePicker 
+              loading={loading}
               cleanable={false}
               showOneCalendar 
               defaultValue={[new Date(), new Date()]}

@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const UsersToolbar = props => {
-  const {temp,temp_change,dateChange,className, ...rest } = props;
+  const {loading,temp,temp_change,dateChange,className, ...rest } = props;
 
   const handleTempChange = (event) => {
     // setTemp(event.target.value);
@@ -53,10 +53,6 @@ const UsersToolbar = props => {
   };
 
   const classes = useStyles();
-
-  useEffect(() => {
-    
-  },[])
 
   return (
     <div
@@ -66,6 +62,7 @@ const UsersToolbar = props => {
       <div className={classes.row}>
         <IntlProvider locale={kor}>
           <DateRangePicker 
+            loading={loading}
             cleanable={false}
             showOneCalendar 
             defaultValue={[new Date(), new Date()]}

@@ -46,7 +46,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ErrorsToolbar = props => {
-  const {setSearch,search,dateChange,className, ...rest } = props;
+  const {loading,setSearch,search,dateChange,className, ...rest } = props;
 
   const classes = useStyles();
   const handleSearch = (e) => {
@@ -60,6 +60,7 @@ const ErrorsToolbar = props => {
       <div className={classes.row}>
         <IntlProvider locale={kor}>
           <DateRangePicker 
+            loading={loading}
             cleanable={false}
             showOneCalendar 
             defaultValue={[new Date(), new Date()]}

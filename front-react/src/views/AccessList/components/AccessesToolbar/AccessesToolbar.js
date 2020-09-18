@@ -48,7 +48,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const AccessesToolbar = props => {
-  const {accesses,search,setSearch,temp,temp_change,type,type_change,typeCange,dateChange,className, ...rest } = props;
+  const {loading,accesses,search,setSearch,temp,temp_change,type,type_change,typeCange,dateChange,className, ...rest } = props;
 
   const handleTypeChange = (event) => {
     // setType(event.target.value);
@@ -73,7 +73,8 @@ const AccessesToolbar = props => {
     >
       <div className={classes.row}>
         <IntlProvider locale={kor}>
-          <DateRangePicker 
+          <DateRangePicker
+            loading={loading}
             cleanable={false}
             showOneCalendar 
             defaultValue={[new Date(), new Date()]}

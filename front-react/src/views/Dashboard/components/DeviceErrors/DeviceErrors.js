@@ -62,7 +62,7 @@ const DeviceErrors = props => {
         <TableContainer>
             <Table className={classes.inner}>
               <TableHead>
-                <TableRow>
+                <TableRow onClick={() => {props.history.push('device/error')}}>
                   <TableCell>시리얼 넘버</TableCell>
                   <TableCell>에러</TableCell>
                   <TableCell sortDirection="desc">

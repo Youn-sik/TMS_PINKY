@@ -261,7 +261,7 @@ const UserList = () => {
   return (
     <div className={classes.root}>
       <Card className={classes.root,classes.cardcontent}>
-        <UsersToolbar className={classes.toolbar} dateChange={handleDate} search_val={searchVal} search_event={searchEvent}/>
+        <UsersToolbar className={classes.toolbar} dateChange={handleDate} loading={loading} search_val={searchVal} search_event={searchEvent}/>
         <div className={classes.content}>
           <UsersTable activeType={activeType} sortAccesses={sortAccesses} loading={loading} users={searchVal !== '' ? filteredUsers : users} />
         </div>

@@ -134,7 +134,7 @@ const AccessStat = (props) => {
         xs={12}
         >
         <IntlProvider locale={kor}>
-          <DateRangePicker 
+          <DateRangePicker
             cleanable={false}
             oneTap
             showOneCalendar

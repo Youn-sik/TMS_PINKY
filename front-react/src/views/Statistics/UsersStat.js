@@ -286,11 +286,10 @@ const UsersStat = (props) => {
         <IntlProvider locale={kor}>
           <DateRangePicker 
             size="lg"
-            placeholder="Large"
             cleanable={false}
-            showOneCalendar
             defaultValue={[new Date(moment().subtract(6, 'days').format('YYYY-MM-DD')), new Date()]}
             onChange={(val) => {handleDate([val[0].yyyymmdd(),val[1].yyyymmdd()])}}
+            ranges={[]}
           />
         </IntlProvider>
         </Grid>

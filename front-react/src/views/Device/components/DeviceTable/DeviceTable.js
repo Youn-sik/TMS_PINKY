@@ -421,7 +421,7 @@ const DeviceTable = props => {
           <Grid container justify="flex-end" className={classes.buttonActions}>
             {
               selected.length >= 1 ? 
-              <Button variant="contained" color="secondary" className={classes.buttonStyle} onClick={() =>{ deleteDevice(selectedObject); setSelectedObject([])}}>삭제</Button> :
+              <Button variant="contained" color="secondary" className={classes.buttonStyle} onClick={() =>{ deleteDevice(selectedObject); setSelectedObject([]); setSelected([])}}>삭제</Button> :
               <Button variant="contained" color="secondary" className={classes.buttonStyle} disabled>삭제</Button>
             }
             {

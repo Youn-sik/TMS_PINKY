@@ -63,18 +63,19 @@ router.post('/',async function(req, res) {
             add.avatar_file_checksum = hex;
         }
         const groups = req.body.groups_obids === undefined ? null : req.body.groups_obids;
-        if(groups !== null) {
+        if(groups[0] !== null) {
             groups.map((i) => {
                 api_v1_group_group.findByIdAndUpdate(i ,{ $addToSet: { user_obids : add._id} }, {new: true }).exec()//groups의 children에 add의 _id값 push
             })
         } else {
-            if(await api_v1_group_group.findOne({name:'undefined',type:req.body.type}) === null) {
+            let groups = await api_v1_group_group.find({name:'undefined',type:req.body.type});
+            if(groups.length === 0) {
                 group = new api_v1_group_group({name:'undefined',type:req.body.type,user_obids:[add._id]})
                 group.save();
             } else {
                 await api_v1_group_group.findOneAndUpdate({name:'undefined',type:req.body.type},{ $addToSet: { user_obids : add._id} }, {new: true }).exec()
             }
-            group = group === null ? await api_v1_group_group.findOne({name:'undefined',type:req.body.type}) : group
+            group = group === null ? await api_v1_group_group.find({name:'undefined',type:req.body.type}) : group
             add.groups_obids = [group._id];
         }
         let type = '';

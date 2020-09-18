@@ -117,7 +117,7 @@ const Operation = (props) => {
   return (
     <div className={classes.root}>
       <Card className={classes.root,classes.cardcontent}>
-        <OperToolbar className={classes.toolbar} dateChange={handleDate} search_val={searchVal} search_event={searchEvent}/>
+        <OperToolbar loading={loading} className={classes.toolbar} dateChange={handleDate} search_val={searchVal} search_event={searchEvent}/>
         <div className={classes.content}>
           <OperTable loading={loading} oper={oper} />
         </div>

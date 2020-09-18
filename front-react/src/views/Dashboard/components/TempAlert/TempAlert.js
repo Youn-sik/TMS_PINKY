@@ -64,7 +64,7 @@ const TempAlert = props => {
           <TableContainer>
             <Table className={classes.inner}>
               <TableHead>
-                <TableRow>
+                <TableRow onClick={() => {props.history.push('access/records')}}>
                   <TableCell>사진</TableCell>
                   <TableCell>이름</TableCell>
                   <TableCell>온도</TableCell>
@@ -77,6 +77,7 @@ const TempAlert = props => {
                   access.avatar_temperature >= tempLimit ?
                   <TableRow
                   className={classes.highTempRow}
+                  onClick={() => {props.history.push('access/records')}}
                   key={access._id}
                 >
                   <TableCell>                
@@ -98,6 +99,7 @@ const TempAlert = props => {
                   <TableRow
                     hover
                     key={access._id}
+                    onClick={() => {props.history.push('access/records')}}
                   >
                     <TableCell>                
                       <img

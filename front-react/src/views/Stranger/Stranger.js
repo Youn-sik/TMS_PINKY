@@ -124,7 +124,7 @@ const Stranger = (props) => {
   return (
     <div className={classes.root}>
       <Card className={classes.root,classes.cardcontent}>
-        <UsersToolbar className={classes.toolbar} dateChange={handleDate} temp_change={handleTemp} temp={temp}/>
+        <UsersToolbar loading={loading} className={classes.toolbar} dateChange={handleDate} temp_change={handleTemp} temp={temp}/>
         <div className={classes.content}>
           <UsersTable tempLimit={props.tempLimit} tempType={props.tempType} activeType={activeType} sortAccesses={sortAccesses} loading={loading} accesses={accesses} />
         </div>

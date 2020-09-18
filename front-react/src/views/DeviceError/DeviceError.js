@@ -193,7 +193,7 @@ const DeviceError = () => {
   return (
     <div className={classes.root}>
       <Card className={classes.root,classes.cardcontent}>
-        <ErrorsToolbar search={search} setSearch={_setSearch} className={classes.toolbar} dateChange={handleDate}/>
+        <ErrorsToolbar loading={loading} search={search} setSearch={_setSearch} className={classes.toolbar} dateChange={handleDate}/>
         <div className={classes.content}>
           <ErrorsTable activeType={activeType} sortAccesses={sortAccesses} loading={loading} errors={search === '' ? errors : filteredErrors} />
         </div>

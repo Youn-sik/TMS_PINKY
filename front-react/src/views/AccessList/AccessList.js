@@ -267,7 +267,7 @@ const AccessList = (props) => {
   return (
     <div className={classes.root}>
       <Card className={classes.root,classes.cardcontent}>
-        <AccessesToolbar search={search} setSearch={_setSearch} accesses={search !== '' ? filteredAccesses : accesses} className={classes.toolbar} dateChange={handleDate} type_change={handleType} type={type} temp_change={handleTemp} temp={temp}/>
+        <AccessesToolbar search={search} loading={loading} setSearch={_setSearch} accesses={search !== '' ? filteredAccesses : accesses} className={classes.toolbar} dateChange={handleDate} type_change={handleType} type={type} temp_change={handleTemp} temp={temp}/>
         <div className={classes.content}>
           <AccessesTable 
           tempLimit={tempLimit} 

@@ -78,7 +78,7 @@ const EditDevice = (props) => {
     };
     
     const editDevice = async () => {
-        await axios.put(base_url+'/camera'+device._id,{
+        await axios.put(base_url+'/camera/'+deviceObject._id,{
             ...device,
             account : props.user_id,
             authority : props.authority
