@@ -180,7 +180,7 @@ const Groups = props => {
           그룹 목록
         </Typography>
         {
-          clickedNode.length !== 0 ?
+          clickedNode.name !== undefined && clickedNode.name !== 'undefined'?
           <Button
             variant="contained"
             className={classes.uploadButton}

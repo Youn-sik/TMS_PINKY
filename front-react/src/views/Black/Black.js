@@ -380,6 +380,10 @@ const Black = (props) => {
         tempGroups.data.push(undefinedGroup[0]);
       }
       setGroups(tempGroups.data);
+      setSelectedNode([])
+      setClickedNode({})
+      setUsers([])
+      setFilteredUsers([])
       alert('삭제 되었습니다');
     }
   }

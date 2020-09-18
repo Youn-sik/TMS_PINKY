@@ -142,7 +142,8 @@ const Groups = props => {
         if(Array.isArray(node.children))setUsers(node)
         setClickedNode(node)
       }} 
-      className={classes.treeItem} key={node._id} 
+      className={classes.treeItem} 
+      key={node._id} 
       label={
         <div className={classes.labelRoot}>
           {Array.isArray(node.children) ? <GroupIcon color="inherit" className={classes.labelIcon}/> : <PersonIcon color="inherit" className={classes.labelIcon}/>}
@@ -151,18 +152,20 @@ const Groups = props => {
           </Typography>
         </div>
       }
-            style={{
+      style={{
         '--tree-view-color': '#1a73e8',
         '--tree-view-bg-color': '#e8f0fe',
       }}
-      classes={{
-        root: classes.root,
-        content: classes.content,
-        expanded: classes.expanded,
-        selected: classes.selected,
-        group: classes.group,
-        label: classes.label
-      }}
+      classes={
+        {
+          root: classes.root,
+          content: classes.content,
+          expanded: classes.expanded,
+          selected: classes.selected,
+          group: classes.group,
+          label: classes.label
+        }
+      }
       >
         {Array.isArray(node.children) ? node.children.map((child) => renderTree(child,depth+1)) : null}
       </TreeItem>
@@ -180,7 +183,7 @@ const Groups = props => {
           그룹 목록
         </Typography>
         {
-          clickedNode.length !== 0 ?
+          clickedNode.name !== undefined && clickedNode.name !== 'undefined'?
           <Button
             variant="contained"
             className={classes.uploadButton}
@@ -195,7 +198,8 @@ const Groups = props => {
             }}
           >
             삭제
-          </Button> :
+          </Button> 
+          :
           <Button
             variant="contained"
             className={classes.uploadButton}
