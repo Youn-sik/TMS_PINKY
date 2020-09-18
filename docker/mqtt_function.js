@@ -104,17 +104,7 @@ module.exports = {
             },
             { $set: { "status" : "N" } },
         )
-        // var cameras = await Camera.find().equals("status","Y").lt("info_update_time",chk_time);
-        // if(cameras.length !== 0) {
-        //     cameras.map((camera) => {
-        //         Camera.findByIdAndUpdate(camera._id, {$set:
-        //             {
-        //                 "status":"N"
-        //             }
-        //         }, 
-        //         {new: true })
-        //     })
-        // }
+        console.log("mqtt_interval",moment().format('YYYY-MM-DD HH:mm:ss'))
     },
 
     async capture_start(json) {
