@@ -97,18 +97,23 @@ module.exports = {
     async chk_status () {
         //접속된 디바이스중 uptime 이 10분이상 차이나며 off로 판단한다. 
         var chk_time = moment().subtract(10, 'minutes').format('YYYY-MM-DD HH:mm:ss');
-        let test = await Camera.find({
+        let cameras = await Camera.find({
             "status":"Y",
             "info_update_time":{$lt : chk_time},
         })
-        console.log(test);
-        Camera.updateMany(
-            {
-                "status":"Y",
-                "info_update_time":{$lt : chk_time},
-            },
-            { $set: { "status" : "N" } },
-        )
+        if(cameras.length !== 0) {
+            cameras.map((camera) => {
+                Camera.findByIdAndUpdate(camera._id, { $set: { "status" : "N" } })
+            })
+        }
+        // console.log(test);
+        // Camera.updateMany(
+        //     {
+        //         "status":"Y",
+        //         "info_update_time":{$lt : chk_time},
+        //     },
+        //     { $set: { "status" : "N" } },
+        // )
         console.log("mqtt_interval",moment().format('YYYY-MM-DD HH:mm:ss'))
     },
 
