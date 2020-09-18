@@ -136,14 +136,6 @@ router.put('/:id',async function(req, res) {
 
         const id = req.params === undefined ? req.id : req.params.id
         const update_data = req.body === undefined ? req : req.body
-
-        const imageDir = await canvas.loadImage('image/'+req.body._id+'profile_updated_'+moment().format('YYYY-MM-DD_HH:mm:ss')+'.jpg')
-        const detections = await faceapi.detectSingleFace(imageDir)
-        .withFaceLandmarks()
-        .withFaceDescriptor();
-        asyncJSON.stringify(detections.descriptor,function(err, jsonValue) {
-            update_data.face_detection = jsonValue;
-        })
         
         update_data.groups_obids = req.body.clicked_groups;
         update_data.update_at = moment().format('YYYY-MM-DD HH:mm:ss');

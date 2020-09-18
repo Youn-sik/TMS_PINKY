@@ -90,7 +90,7 @@ const EditAccount = (props) => {
           ...selectedAccounts[0],
           ...accountInfo,
       })
-      alert('등록 되었습니다.')
+      alert('수정 되었습니다.')
       history.push('/system/account')
     }
     return (

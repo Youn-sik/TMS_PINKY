@@ -234,7 +234,7 @@ const EditEmployee = (props) => {
             clicked_groups: node._id !== undefined ? [node._id] : userObject[0].groups_obids,
             avatar_file: base64 ? base64 : userObject[0].avatar_file
         })
-        alert('등록 되었습니다.')
+        alert('수정 되었습니다.')
         history.push('/users/employee')
     }
     return (

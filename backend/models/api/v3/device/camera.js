@@ -8,7 +8,7 @@ const api_v3_device_camera_Schema = new mongoose.Schema({
     // gateway_obid : {type:ObjectId, ref: 'gateway', required: false},
     serial_number : { type: String, required: true },
     name : { type: String, required: true },
-    protocol : { type: Number, required: true },
+    protocol : { type: Number},
     location : { type: String, required: true },
     status : { type: String },
     download_current : { type: Number },

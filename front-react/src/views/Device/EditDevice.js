@@ -83,7 +83,7 @@ const EditDevice = (props) => {
             account : props.user_id,
             authority : props.authority
         })
-        window.alert('단말기 등록 완료.')
+        window.alert('단말기 수정 완료.')
         history.push('/device/list')
     }
 

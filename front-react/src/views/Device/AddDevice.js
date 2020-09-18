@@ -176,7 +176,7 @@ const AddDevice = (props) => {
           value={device.description}
           style={{width:'100%'}} 
           required 
-          id="standard-required" 
+          id="standard" 
           label="비고"
           onChange={handleDeviceChange}
           />
