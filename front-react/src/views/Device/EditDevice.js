@@ -77,8 +77,8 @@ const EditDevice = (props) => {
         });
     };
     
-    const addDevice = async () => {
-        await axios.post(base_url+'/camera',{
+    const editDevice = async () => {
+        await axios.put(base_url+'/camera'+device._id,{
             ...device,
             account : props.user_id,
             authority : props.authority
@@ -162,7 +162,7 @@ const EditDevice = (props) => {
                             />
                             </div>
                             <div style={{width: '100%',textAlign:'center',marginTop:"15px"}}>    
-                                <Button variant="contained" color="primary" onClick={addDevice}>수정</Button>
+                                <Button variant="contained" color="primary" onClick={editDevice}>수정</Button>
                             </div>
                         </div>
                     </CardContent>
