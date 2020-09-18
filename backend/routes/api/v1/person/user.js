@@ -63,7 +63,6 @@ router.post('/',async function(req, res) {
             add.avatar_file_checksum = hex;
         }
         const groups = req.body.groups_obids === undefined ? null : req.body.groups_obids;
-        console.log(groups);
         if(groups[0] !== null) {
             groups.map((i) => {
                 api_v1_group_group.findByIdAndUpdate(i ,{ $addToSet: { user_obids : add._id} }, {new: true }).exec()//groups의 children에 add의 _id값 push
