@@ -19,5 +19,5 @@
     "mqtt_dashboard_user": "admin",
     "mqtt_dashboard_password": "public",
 
-    "influxdb": "influx"
+    "influxdb": "127.0.0.1"
 }
