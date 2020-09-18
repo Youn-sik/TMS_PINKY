@@ -103,7 +103,11 @@ module.exports = {
                 "info_update_time":{$lt : chk_time},
             },
             { $set: { "status" : "N" } },
-            {new : true},
+            {upsert: true},
+            (err, doc)=>{
+                if(err) console.log(err);
+                    console.log(doc)
+            }
         )
         console.log("mqtt_interval",moment().format('YYYY-MM-DD HH:mm:ss'))
     },
