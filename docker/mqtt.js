@@ -44,8 +44,10 @@ client.on('connect', function(test) {
         }
     });
 });
-//10분마다 on / off 를 확인한다.  
-setInterval(fn.chk_status(), 10 * 60 * 1000);
+
+setInterval(function() { //10분마다 on / off 를 확인한다.    
+    fn.chk_status();
+}, 10 * 60 * 1000);
 
 client.on('message', async function(topic, message) {
     console.log(moment().format('YYYY-MM-DD HH:mm:ss.SSS') + ' ' + topic);
