@@ -203,7 +203,7 @@ const AddBlack = (props) => {
         await axios.post(base_url+'/user',{
             ...userInfo,
             type:5,
-            groups_obids:[node._id ? node._id : groups[groups.length - 1]],
+            groups_obids:[node._id ? node._id : undefined],
             account : props.user_id,
             avatar_file:base64
         })

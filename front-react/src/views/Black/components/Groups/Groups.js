@@ -116,7 +116,7 @@ const Groups = props => {
     let parent = Object.keys(clickedNode).length === 0 ? undefined : clickedNode
     let result = await axios.post(base_url+'/group',{
       name : groupName,
-      type : 1,
+      type : 5,
       parent,
       account : props.user_id,
     })
