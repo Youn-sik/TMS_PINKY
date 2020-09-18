@@ -103,7 +103,6 @@ module.exports = {
                 "info_update_time":{$lt : chk_time},
             },
             { $set: { "status" : "N" } },
-            {upsert: true},
             (err, doc)=>{
                 if(err) console.log(err);
                     console.log(doc)
