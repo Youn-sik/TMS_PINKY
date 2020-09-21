@@ -401,16 +401,13 @@ module.exports = {
         try {
             let insert_array = [];
             let camera = await Camera.findOne( { serial_number : json.stb_sn });
-            let Users = await User.find();
             let empCnt = 0;
             let visitorCnt = 0;
             let blackCnt = 0;
             let strangerCnt = 0;
-            
             json.values.forEach(async function(element){
                 let folder_date_path = "/uploads/accesss/temp/" + moment().format('YYYYMMDD');
                 let file_name = json.stb_sn + "_" + moment().format('YYYYMMDDHHmmss') + ".png";
-                //let upload_file_path = site.base_server_document + folder_date_path;
                 let file_path = site.base_server_document + folder_date_path + "/" + json.stb_sn + "/";
                 let upload_url = "http://"+server_ip+ ':3000' + folder_date_path + "/" + json.stb_sn + "/" + file_name;
                 let buff = Buffer.from(element.avatar_file, 'base64');
@@ -431,40 +428,20 @@ module.exports = {
                 
                 mkdirp.sync(file_path);
                 fs.writeFileSync(file_path + file_name, buff, 'utf-8')
-                // const imageDir = await canvas.loadImage(file_path + file_name)
 
-                if(user_obid === ""){
-                    insert_data = {
-                        name : userName,
-                        avatar_file : element.avatar_file,
-                        avatar_file_checksum : element.avatar_file_checksum,
-                        avatar_type : element.avatar_type,
-                        avatar_contraction_data : element.avatar_contraction_data,
-                        avatar_distance : element.avatar_distance,
-                        avatar_file_url : upload_url,
-                        avatar_temperature : element.avatar_temperature,
-                        access_time : moment().format('YYYY-MM-DD HH:mm:ss'),
-                        stb_sn : json.stb_sn,
-                        stb_obid : camera._id
-                    };
-                }else{
-                    insert_data = {
-                        name : userName,
-                        avatar_file : element.avatar_file,
-                        avatar_file_checksum : element.avatar_file_checksum,
-                        avatar_type : element.avatar_type,
-                        avatar_distance : element.avatar_distance,
-                        avatar_contraction_data : element.avatar_contraction_data,
-                        avatar_file_url : upload_url,
-                        user_obid : user_obid, 
-                        avatar_temperature : element.avatar_temperature,
-                        access_time : moment().format('YYYY-MM-DD HH:mm:ss'),
-                        stb_sn : json.stb_sn,
-                        stb_obid : camera._id
-                    };
+                insert_data = {
+                    avatar_file : element.avatar_file,
+                    avatar_file_checksum : element.avatar_file_checksum,
+                    avatar_type : element.avatar_type,
+                    avatar_distance : element.avatar_distance,
+                    avatar_contraction_data : element.avatar_contraction_data,
+                    avatar_file_url : upload_url,
+                    avatar_temperature : element.avatar_temperature,
+                    access_time : moment().format('YYYY-MM-DD HH:mm:ss'),
+                    stb_sn : json.stb_sn,
+                    stb_obid : camera._id
                 }
 
-                //new mongoose.Types.ObjectId()
                 insert_array.push(insert_data);
             })
             

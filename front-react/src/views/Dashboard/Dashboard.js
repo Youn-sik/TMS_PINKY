@@ -16,7 +16,7 @@ import {
   Attendance
 } from './components';
 import './Dashboard.css';
-const client = mqtt.connect('ws://172.16.135.89:8083/mqtt');
+const client = mqtt.connect('ws://172.16.135.55:8083/mqtt');
 
 client.on('connect', () => {
   client.subscribe('/access/realtime/result/+');
@@ -52,7 +52,7 @@ const Dashboard = props => {
   const [errors, setErrors] = useState([]);
 
   //온도 경고
-  const [temp, setTemp] = useState([{}]);
+  const [temp, setTemp] = useState([]);
 
   const [loading, setLoading] = useState(true);
 
@@ -100,16 +100,17 @@ const Dashboard = props => {
   async function device_errors() {
     let result = await axios.get(base_url + '/glogs?type=limit5errors');
     setErrors(result.data);
+    setLoading(false);
   }
 
   async function temp_alerts() {
     let result = await axios.get(base_url + '/access?type=temperature');
     setTemp(result.data);
-    setLoading(false);
   }
 
   const _setRealtime = values => {
     setTemp(temp => [values[0], ...temp]);
+    console.log(values[0])
     let _attendance = 0;
     let _late = 0;
     let _attendanceData = JSON.parse(JSON.stringify(attendanceData));

@@ -54,7 +54,6 @@ client.on('message', async function(topic, message) {
     try {
         let context = message.toString();
         let json = JSON.parse(context);
-        
         if (topic === '/control/capture/start/devices') {
             if (json.stb_sn[0] != undefined) {
                 fn.capture_start(json);
@@ -158,7 +157,7 @@ client.on('message', async function(topic, message) {
         }
 
         /* 출입통제 > 단말 실시간 데이터*/
-        if (topic === "/access/realtime/" + json.stb_sn) { 
+        if (topic === "/access/realtime/" + json.stb_sn) {
             if (json.stb_sn != undefined) {
                 fn.access_realtime(json,server_ip);
             }

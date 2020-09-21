@@ -43,7 +43,7 @@ export default class Stream extends React.Component {
       }
       setTimeout(() => {
         this.player.src(
-          'http://172.16.135.89:4000/stream/' +
+          'http://172.16.135.55:4000/stream/' +
             result.data.id +
             '/' +
             result.data.id +
