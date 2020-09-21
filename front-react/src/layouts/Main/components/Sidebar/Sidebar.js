@@ -46,19 +46,16 @@ const Sidebar = props => {
       icon: <DashboardIcon />
     },
     {
-      title: '출입, 출근 관리',
-      href: '/access',
+      title: '출입 관리',
+      // href: '/access',
+      href: '/access/records',
       icon: <SyncAltIcon />,
-      children: [
-        {
-          title: '출입 관리',
-          href: '/access/records'
-        },
-        {
-          title: '출근 관리',
-          href: '/access/attendance'
-        }
-      ]
+      // children: [
+      //   {
+      //     title: '출입 관리',
+      //     href: '/access/records'
+      //   },
+      // ]
     },
     {
       title: '인사관리',
@@ -67,10 +64,6 @@ const Sidebar = props => {
         {
           title: '사원 관리',
           href: '/users/employee'
-        },
-        {
-          title: '방문자 관리',
-          href: '/users/visitor'
         },
         {
           title: '블랙리스트 관리',
@@ -89,21 +82,22 @@ const Sidebar = props => {
     },
     {
       title: '단말 관리',
-      href: '/device',
-      children: [
-        {
-          title: '단말기 목록',
-          href: '/device/list'
-        },
-        {
-          title: '단말기 에러 로그',
-          href: '/device/error'
-        },
-        {
-          title: '단말기 스크린샷',
-          href: '/device/screen'
-        }
-      ],
+      // href: '/device',
+      href: '/device/list',
+      // children: [
+      //   {
+      //     title: '단말기 목록',
+      //     href: '/device/list'
+      //   },
+      //   {
+      //     title: '단말기 에러 로그',
+      //     href: '/device/error'
+      //   },
+      //   {
+      //     title: '단말기 스크린샷',
+      //     href: '/device/screen'
+      //   }
+      // ],
       icon: <DnsIcon />
     },
     {
@@ -114,10 +108,10 @@ const Sidebar = props => {
           title: '단말기 통계',
           href: '/stats/device'
         },
-        {
-          title: '사용자 통계',
-          href: '/stats/users'
-        },
+        // {
+        //   title: '사용자 통계',
+        //   href: '/stats/users'
+        // },
         {
           title: '출입 통계',
           href: '/stats/access'
@@ -145,7 +139,7 @@ const Sidebar = props => {
       icon: <SettingsIcon />
     }
     // {
-    //   title: 'Products',
+    //   title: 'Products'
     //   href: '/products',
     //   icon: <ShoppingBasketIcon />
     // },

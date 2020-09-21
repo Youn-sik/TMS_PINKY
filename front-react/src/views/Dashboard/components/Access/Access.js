@@ -51,19 +51,18 @@ const Access = props => {
   const data = {
     datasets: [
       {
-        data: [props.stranger, props.employee, props.visitor, props.black],
+        data:  [props.stranger,props.black,props.employee,],
         backgroundColor: [
           '#bdbdbd',
-          theme.palette.primary.main,
-          theme.palette.success.main,
           theme.palette.error.main,
+          theme.palette.primary.main,
         ],
         borderWidth: 8,
         borderColor: theme.palette.white,
         hoverBorderColor: theme.palette.white
       }
     ],
-    labels: ['사원', '방문자', '블랙리스트', '미등록자']
+    labels: ['미등록자','블랙리스트','사원',]
   };
 
   const options = {
@@ -103,12 +102,6 @@ const Access = props => {
       value: props.employee,
       icon: <PermIdentity />,
       color: theme.palette.primary.main
-    },
-    {
-      title: '방문자',
-      value: props.visitor,
-      icon: <PeopleIcon />,
-      color: theme.palette.success.main
     },
     {
       title: '블랙리스트',

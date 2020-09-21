@@ -84,7 +84,7 @@ const Routes = props => {
         layout={MainLayout}
         path="/device/list"
       />
-      <RouteWithLayout
+      {/* <RouteWithLayout
         component={DeviceScreenView}
         exact
         user_id={props.user_id}
@@ -99,7 +99,7 @@ const Routes = props => {
         authority={props.authority}
         layout={MainLayout}
         path="/device/error"
-      />
+      /> */}
       <RouteWithLayout
         component={AddDeviceView}
         exact
@@ -125,14 +125,6 @@ const Routes = props => {
         tempLimit={props.tempLimit}
         tempType={props.tempType}
         path="/access/records"
-      />
-      <RouteWithLayout
-        component={AttendanceListView}
-        exact
-        user_id={props.user_id}
-        authority={props.authority}
-        layout={MainLayout}
-        path="/access/attendance"
       />
       <RouteWithLayout
         component={StrangerView}
@@ -200,7 +192,7 @@ const Routes = props => {
         layout={MainLayout}
         path="/users/black/edit"
       />
-      <RouteWithLayout
+      {/* <RouteWithLayout
         component={VisitorView}
         exact
         user_id={props.user_id}
@@ -223,7 +215,7 @@ const Routes = props => {
         authority={props.authority}
         layout={MainLayout}
         path="/users/visitor/edit"
-      />
+      /> */}
       {/* <RouteWithLayout
         component={FaceDetectionView}
         exact

@@ -55,21 +55,21 @@ const DeviceStats = props => {
         ],
         borderWidth: 2
       },
-      {
-        label: '방문자',
-        data: chartData.visitor,
-        backgroundColor: ['rgba(75, 192, 192, 0.2)'],
-        borderColor: [
-          'rgba(75, 192, 192, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(75, 192, 192, 1)'
-        ],
-        borderWidth: 2
-      },
+      // {
+      //   label: '방문자',
+      //   data: chartData.visitor,
+      //   backgroundColor: ['rgba(75, 192, 192, 0.2)'],
+      //   borderColor: [
+      //     'rgba(75, 192, 192, 1)',
+      //     'rgba(75, 192, 192, 1)',
+      //     'rgba(75, 192, 192, 1)',
+      //     'rgba(75, 192, 192, 1)',
+      //     'rgba(75, 192, 192, 1)',
+      //     'rgba(75, 192, 192, 1)',
+      //     'rgba(75, 192, 192, 1)'
+      //   ],
+      //   borderWidth: 2
+      // },
       {
         label: '미등록자',
         data: chartData.stranger,
@@ -115,7 +115,10 @@ const DeviceStats = props => {
       yAxes: [
         {
           ticks: {
-            beginAtZero: true
+            beginAtZero: true,
+            suggestedMin: 0,    // minimum will be 0, unless there is a lower value.
+            // OR //
+            beginAtZero: true   // minimum value will be 0.
           }
         }
       ]

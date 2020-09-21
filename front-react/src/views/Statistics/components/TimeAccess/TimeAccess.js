@@ -84,6 +84,7 @@ const TimeAccess = props => {
   };
 
   const options = {
+    scaleStartValue : 0 ,
     responsive: true,
     animation: false,
     tooltips: {
@@ -151,6 +152,11 @@ const TimeAccess = props => {
           },
           labels: {
             show: true
+          },
+          ticks: {
+            suggestedMin: 0,    // minimum will be 0, unless there is a lower value.
+            // OR //
+            beginAtZero: true   // minimum value will be 0.
           }
         },
         {
@@ -163,6 +169,11 @@ const TimeAccess = props => {
           },
           labels: {
             show: true
+          },
+          ticks: {
+            suggestedMin: 0,    // minimum will be 0, unless there is a lower value.
+            // OR //
+            beginAtZero: true   // minimum value will be 0.
           }
         }
       ]
@@ -192,7 +203,7 @@ const TimeAccess = props => {
               }}>
               <div className="arrow_box">
                 <div style={{ color: 'white' }}>
-                  출입자 수: {tooltip.accessCount}명
+                  출입자 수: {tooltip.accessCount}명<br />
                 </div>
                 <div style={{ color: 'white' }}>
                   최고 발열자 :<br />
@@ -211,7 +222,7 @@ const TimeAccess = props => {
                   <br />
                   {tooltip.accessData.avatar_type === 1
                     ? '이름 : ' + tooltip.accessData.name
-                    : null}
+                    : null}<br />
                   온도 : {tooltip.maxTemp}
                 </div>
               </div>

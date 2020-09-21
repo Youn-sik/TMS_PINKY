@@ -16,7 +16,9 @@ import {
   Attendance
 } from './components';
 import './Dashboard.css';
-const client = mqtt.connect('ws://127.0.0.1:8083/mqtt');
+
+let mqtt_url = window.location.href.split('/')[2]
+const client = mqtt.connect('ws://'+mqtt_url+':8083/mqtt');
 
 client.on('connect', () => {
   client.subscribe('/access/realtime/result/+');
@@ -32,7 +34,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Dashboard = props => {
-  let base_url = 'http://' + window.location.href.split('/')[2] + ':3000';
+  let base_url = 'http://' + mqtt_url + ':3000';
   const classes = useStyles();
   //사용자
   const [employee, setEmployee] = useState(0);
@@ -66,7 +68,7 @@ const Dashboard = props => {
       if (i._id.type === 1) setEmployee(i.count);
       else if (i._id.type === 2) setVisitor(i.count);
       else if (i._id.type === 3) setStranger(i.count);
-      else if (i._id.type === 5) setBlack(i.count);
+      else if (i._id.type === 4) setBlack(i.count);
       return false;
     });
   }
@@ -189,13 +191,13 @@ const Dashboard = props => {
           <Grid
             item
             className={classes.accessCard}
-            lg={3}
+            lg={4}
             sm={6}
-            xl={3}
+            xl={4}
             xs={12}>
             <Employee history={props.history} count={employee} />
           </Grid>
-          <Grid
+          {/* <Grid
             item
             className={classes.accessCard}
             lg={3}
@@ -203,29 +205,29 @@ const Dashboard = props => {
             xl={3}
             xs={12}>
             <Visitor history={props.history} count={visitor} />
-          </Grid>
+          </Grid> */}
           <Grid
             item
             className={classes.accessCard}
-            lg={3}
+            lg={4}
             sm={6}
-            xl={3}
+            xl={4}
             xs={12}>
             <Black history={props.history} count={black} />
           </Grid>
           <Grid
             item
             className={classes.accessCard}
-            lg={3}
-            sm={6}
-            xl={3}
+            lg={4}
+            sm={12}
+            xl={4}
             xs={12}>
             <Stranger history={props.history} count={stranger} />
           </Grid>
-          <Grid item lg={4} md={6} xl={4} xs={12}>
+          <Grid item lg={6} md={6} xl={6} xs={12}>
             <Device history={props.history} on={on} off={off} />
           </Grid>
-          <Grid item lg={4} md={6} xl={4} xs={12}>
+          <Grid item lg={6} md={6} xl={6} xs={12}>
             <Access
               history={props.history}
               employee={employee}
@@ -234,14 +236,14 @@ const Dashboard = props => {
               stranger={stranger}
             />
           </Grid>
-          <Grid item lg={4} md={6} xl={4} xs={12}>
+          {/* <Grid item lg={4} md={6} xl={4} xs={12}>
             <Attendance
               history={props.history}
               attendance={attendance}
               late={late}
             />
-          </Grid>
-          <Grid item lg={6} md={6} xl={6} xs={12}>
+          </Grid> */}
+          <Grid item lg={6} md={12} xl={6} xs={12}>
             <DeviceErrors history={props.history} errors={errors} />
           </Grid>
           <Grid item lg={6} md={12} xl={6} xs={12}>
