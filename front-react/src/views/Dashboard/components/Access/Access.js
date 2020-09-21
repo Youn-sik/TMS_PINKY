@@ -55,8 +55,8 @@ const Access = props => {
         backgroundColor: [
           '#bdbdbd',
           theme.palette.primary.main,
+          theme.palette.success.main,
           theme.palette.error.main,
-          theme.palette.success.main
         ],
         borderWidth: 8,
         borderColor: theme.palette.white,

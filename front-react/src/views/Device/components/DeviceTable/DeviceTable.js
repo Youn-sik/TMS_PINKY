@@ -34,7 +34,7 @@ import {
 
 import mqtt from 'mqtt';
 
-const client = mqtt.connect('ws://172.16.135.55:8083/mqtt');
+const client = mqtt.connect('ws://127.0.0.1:8083/mqtt');
 
 client.on('connect', () => {
   console.log('mqtt was connected');

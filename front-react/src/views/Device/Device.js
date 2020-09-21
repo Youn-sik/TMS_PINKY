@@ -343,7 +343,7 @@ const Employee = props => {
         src:
           streamId === ''
             ? './sample.m3u8'
-            : 'http://172.16.135.55:4000/stream/' +
+            : 'http://' + window.location.href.split('/')[2] + ':3000/stream/' +
               streamId +
               '/' +
               streamId +
