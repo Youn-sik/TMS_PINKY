@@ -8,6 +8,7 @@ import Search from '@material-ui/icons/Search';
 import moment from 'moment';
 import 'moment/locale/ko';
 import 'rsuite/dist/styles/rsuite-default.css';
+import {base_url} from 'server.json';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -36,7 +37,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ScreensToolbar = props => {
-  const base_url = 'http://' + window.location.href.split('/')[2] + ':3000';
   const { search, handleSearch, className, ...rest } = props;
   const [data, setData] = useState([]);
   const classes = useStyles();

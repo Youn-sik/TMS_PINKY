@@ -9,7 +9,7 @@ import {
   Typography
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-const base_url = 'http://' + window.location.href.split('/')[2] + ':3000';
+import {mqtt_url} from 'server.json';
 export default class Stream extends React.Component {
   state = {
     preStream: ''
@@ -34,7 +34,7 @@ export default class Stream extends React.Component {
         preStream: this.props.stream
       });
       // try{
-      let result = await axios.post(base_url + ':4000/start', {
+      let result = await axios.post("http://"+mqtt_url + ':4000/start', {
         uri: 'rtsp://' + this.props.stream + ':9096',
         account: this.props.user_id
       });

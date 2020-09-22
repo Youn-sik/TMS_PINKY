@@ -8,6 +8,7 @@ import moment from 'moment';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import 'moment/locale/ko';
 import { DeviceStats, DeviceError } from './components';
+import {base_url} from 'server.json';
 // eslint-disable-next-line no-extend-native
 Date.prototype.yyyymmdd = function() {
   var yyyy = this.getFullYear().toString();
@@ -29,7 +30,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Statistics = props => {
-  const base_url = 'http://' + window.location.href.split('/')[2] + ':3000';
   const classes = useStyles();
   const { allowedDays } = DateRangePicker;
   const [date, setDate] = useState([

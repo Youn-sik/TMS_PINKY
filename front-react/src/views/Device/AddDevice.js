@@ -4,7 +4,7 @@ import { Grid, Card, CardContent, TextField, Button } from '@material-ui/core';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import './image.css';
-const base_url = 'http://' + window.location.href.split('/')[2] + ':3000';
+import {base_url} from 'server.json';
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(4)
@@ -100,13 +100,21 @@ const AddDevice = props => {
   };
 
   const addDevice = async () => {
-    await axios.post(base_url + '/camera', {
-      ...device,
-      account: props.user_id,
-      authority: props.authority
-    });
-    window.alert('단말기 등록 완료.');
-    history.push('/device/list');
+    if(device.name === '') {
+      alert("단말기 이름을 입력해주세요.")
+    } else if(device.location === '') {
+      alert("단말기 장소를 입력해주세요.")
+    } else if(device.serial_number === '') {
+      alert("단말기 시리얼 넘버를 입력해주세요.")
+    } else {
+      await axios.post(base_url + '/camera', {
+        ...device,
+        account: props.user_id,
+        authority: props.authority
+      });
+      window.alert('단말기 등록 완료.');
+      history.push('/device/list');
+    }
   };
 
   const addGate = async () => {
@@ -175,7 +183,6 @@ const AddDevice = props => {
             name="description"
             value={device.description}
             style={{ width: '100%' }}
-            required
             id="standard"
             label="비고"
             onChange={handleDeviceChange}

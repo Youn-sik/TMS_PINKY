@@ -5,6 +5,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import {base_url} from 'server.json';
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(4)
@@ -52,7 +53,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const EditAccount = props => {
-  const base_url = 'http://' + window.location.href.split('/')[2] + ':3000';
   const { selectedAccounts } = props.location;
   const classes = useStyles();
   const history = props.history;

@@ -11,6 +11,7 @@ import {
 import { makeStyles } from '@material-ui/styles';
 import './image.css';
 import axios from 'axios';
+import {base_url} from 'server.json';
 // import '@tensorflow/tfjs-node';
 // import * as faceapi from 'face-api.js';
 const useStyles = makeStyles(theme => ({
@@ -26,7 +27,6 @@ const useStyles = makeStyles(theme => ({
 // ])
 
 const FaceDetection = props => {
-  const base_url = 'http://' + window.location.href.split('/')[2] + ':3000';
   const [pictures, setPictures] = useState([]);
   const [detectedUsers, setDetectedUsers] = useState([]);
   const classes = useStyles();

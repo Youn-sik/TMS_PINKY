@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/styles';
 import { Grid, Card, CardContent, TextField, Button } from '@material-ui/core';
 import axios from 'axios';
 import './image.css';
+import {base_url} from 'server.json';
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(4)
@@ -50,7 +51,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const EditDevice = props => {
-  const base_url = 'http://' + window.location.href.split('/')[2] + ':3000';
   const deviceObject = props.location.state;
   const classes = useStyles();
   const history = props.history;
@@ -78,13 +78,21 @@ const EditDevice = props => {
   };
 
   const editDevice = async () => {
-    await axios.put(base_url + '/camera/' + deviceObject._id, {
-      ...device,
-      account: props.user_id,
-      authority: props.authority
-    });
-    window.alert('단말기 수정 완료.');
-    history.push('/device/list');
+    if(device.name === '') {
+      alert("단말기 이름을 입력해주세요.")
+    } else if(device.location === '') {
+      alert("단말기 장소를 입력해주세요.")
+    } else if(device.serial_number === '') {
+      alert("단말기 시리얼 넘버를 입력해주세요.")
+    } else {
+      await axios.put(base_url + '/camera/' + deviceObject._id, {
+        ...device,
+        account: props.user_id,
+        authority: props.authority
+      });
+      window.alert('단말기 수정 완료.');
+      history.push('/device/list');
+    }
   };
 
   useEffect(() => {

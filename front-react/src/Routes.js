@@ -91,7 +91,7 @@ const Routes = props => {
         authority={props.authority}
         layout={MainLayout}
         path="/device/screen"
-      />
+      /> */}
       <RouteWithLayout
         component={DeviceErrorView}
         exact
@@ -99,7 +99,7 @@ const Routes = props => {
         authority={props.authority}
         layout={MainLayout}
         path="/device/error"
-      /> */}
+      />
       <RouteWithLayout
         component={AddDeviceView}
         exact

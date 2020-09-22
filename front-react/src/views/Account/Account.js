@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 import axios from 'axios';
 import { AccountsTable } from './components';
+import {base_url} from 'server.json';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -11,7 +12,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Account = props => {
-  const base_url = 'http://' + window.location.href.split('/')[2] + ':3000';
   const [accountsSearch, setAccountsSearch] = useState('');
   const [accounts, setAccounts] = useState([]);
   const [filteredAccounts, setFilteredAccounts] = useState([]);

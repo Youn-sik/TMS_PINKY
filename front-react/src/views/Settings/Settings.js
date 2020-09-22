@@ -13,6 +13,7 @@ import {
   InputAdornment
 } from '@material-ui/core/';
 import NumberFormat from 'react-number-format';
+import {base_url} from 'server.json';
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3)
@@ -42,7 +43,6 @@ function NumberFormatCustom(props) {
 }
 
 const Settings = props => {
-  const base_url = 'http://' + window.location.href.split('/')[2] + ':3000';
   const [tempType, setTempType] = React.useState(String(props.tempType));
   const [tempLimit, setTempLimit] = React.useState(String(props.tempLimit));
   const classes = useStyles();

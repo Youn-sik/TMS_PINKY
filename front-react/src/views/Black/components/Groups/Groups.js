@@ -22,6 +22,7 @@ import {
   Divider,
   Button
 } from '@material-ui/core';
+import {base_url} from 'server.json';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -93,7 +94,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Groups = props => {
-  let base_url = 'http://' + window.location.href.split('/')[2] + ':3000';
   const {
     clickedNode,
     setSelectedNode,

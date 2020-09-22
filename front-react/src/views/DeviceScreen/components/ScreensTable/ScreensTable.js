@@ -16,6 +16,7 @@ import {
   Button,
   CircularProgress
 } from '@material-ui/core';
+import {base_url} from 'server.json';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -54,7 +55,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ScreensTable = props => {
-  const base_url = 'http://' + window.location.href.split('/')[2] + ':3000';
   const { loading, className, screens, ...rest } = props;
 
   const classes = useStyles();

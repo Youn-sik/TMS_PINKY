@@ -10,6 +10,7 @@ import './SignIn.css';
 import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
+import {base_url} from 'server.json';
 const schema = {
   id: {
     length: {
@@ -130,7 +131,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const SignIn = props => {
-  const base_url = 'http://' + window.location.href.split('/')[2] + ':3000';
   const { history, getAuth } = props;
 
   const classes = useStyles();

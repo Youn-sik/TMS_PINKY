@@ -5,6 +5,7 @@ import { ErrorsToolbar, ErrorsTable } from './components';
 import Card from '@material-ui/core/Card';
 import moment from 'moment';
 import 'moment/locale/ko';
+import {base_url} from 'server.json';
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3)
@@ -24,7 +25,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const DeviceError = () => {
-  const base_url = 'http://' + window.location.href.split('/')[2] + ':3000';
   const [errors, setErrors] = useState([]);
   const [search, setSearch] = useState('');
   const [originAcc, setOriginAcc] = useState([]);

@@ -33,8 +33,8 @@ import {
 } from '@material-ui/core';
 
 import mqtt from 'mqtt';
+import {mqtt_url} from 'server.json'
 
-let mqtt_url = window.location.href.split('/')[2];
 const client = mqtt.connect('ws://'+mqtt_url+':8083/mqtt');
 
 client.on('connect', () => {
@@ -478,7 +478,7 @@ const DeviceTable = props => {
             }
             label="모든 단말에 적용하기"
           />
-          <div style={{ marginLeft: 15 }}>
+          {/* <div style={{ marginLeft: 15 }}>
             <TextField
               id="standard-start-adornment"
               style={{ width: 70 }}
@@ -507,11 +507,11 @@ const DeviceTable = props => {
                 endAdornment: <InputAdornment position="end">초</InputAdornment>
               }}
             />
-          </div>
+          </div> */}
           <br />
           {selectedObject.length === 1 ? (
             <div>
-              <Button
+              {/* <Button
                 variant="contained"
                 onClick={() => {
                   !check
@@ -557,7 +557,7 @@ const DeviceTable = props => {
                 온도 조절
               </Button>
               <br />
-              <br />
+              <br /> */}
               <Button
                 variant="contained"
                 onClick={() => {

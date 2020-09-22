@@ -12,7 +12,7 @@ import './assets/scss/index.scss';
 import validators from './common/validators';
 import Routes from './Routes';
 import axios from 'axios';
-
+import {base_url} from 'server.json';
 import SignIn from './views/SignIn';
 
 const browserHistory = createBrowserHistory();
@@ -26,7 +26,6 @@ validate.validators = {
   ...validators
 };
 
-const base_url = 'http://' + window.location.href.split('/')[2] + ':3000';
 export default class App extends React.Component {
   state = {
     auth: false,

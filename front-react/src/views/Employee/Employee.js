@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 import axios from 'axios';
 import { Groups, UsersTable } from './components';
+import {base_url} from 'server.json';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -11,7 +12,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Employee = props => {
-  const base_url = 'http://' + window.location.href.split('/')[2] + ':3000';
   const [groups, setGroups] = useState([]);
   const [userSearch, setUserSearch] = useState('');
   const [filteredGroups, setFilteredGroups] = useState([]);

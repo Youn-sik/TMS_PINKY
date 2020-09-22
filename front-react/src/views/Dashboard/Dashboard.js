@@ -16,8 +16,8 @@ import {
   Attendance
 } from './components';
 import './Dashboard.css';
+import {base_url,mqtt_url} from 'server.json'
 
-let mqtt_url = window.location.href.split('/')[2]
 const client = mqtt.connect('ws://'+mqtt_url+':8083/mqtt');
 
 client.on('connect', () => {
@@ -34,7 +34,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Dashboard = props => {
-  let base_url = 'http://' + mqtt_url + ':3000';
   const classes = useStyles();
   //사용자
   const [employee, setEmployee] = useState(0);
