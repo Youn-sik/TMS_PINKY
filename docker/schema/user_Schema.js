@@ -3,7 +3,7 @@ const moment = require('moment');
 const ObjectId = mongoose.Schema.Types.ObjectId
 
 const userSchema = new mongoose.Schema({
-    avatar_file : { type: String, required: true },
+    avatar_file : { type: String },
     avatar_contraction_data : { type: String, required: true },
     avatar_file_checksum : { type: String, required: true },
     avatar_file_url : { type: String, required: true },
