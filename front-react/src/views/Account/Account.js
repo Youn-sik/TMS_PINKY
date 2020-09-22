@@ -289,15 +289,17 @@ const Account = props => {
         }
       });
 
-      let temp = JSON.parse(JSON.stringify(accounts)); //테이블에서 제거
-      if (temp.length === selectedAccounts) {
-        temp = [];
-      } else {
-        selectedAccounts.map((account, index) => {
-          temp.splice(account.index - index, 1);
-          return false;
-        });
-      }
+      let temp = accounts.filter((account) =>{ return selectedAccounts[0]._id !== account._id })
+
+      // let temp = JSON.parse(JSON.stringify(accounts)); //테이블에서 제거
+      // if (temp.length === selectedAccounts) {
+      //   temp = [];
+      // } else {
+      //   selectedAccounts.map((account, index) => {
+      //     temp.splice(account.index - index, 1);
+      //     return false;
+      //   });
+      // }
       await setAccounts(temp);
     }
   };
