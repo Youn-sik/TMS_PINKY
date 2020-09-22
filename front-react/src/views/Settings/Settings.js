@@ -59,7 +59,7 @@ const Settings = props => {
       tempLimit,
       tempType
     });
-    alert('수정 안료되었습니다.');
+    alert('수정 되었습니다.');
   };
 
   return (

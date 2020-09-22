@@ -118,12 +118,13 @@ app.get('/auth', async function(req, res) {
             auth = false;
         }
     }
+    const user = await User.findById({ _id: user_id })
     res.send({
         auth, 
         user_id:tokenAuth.user_id, 
         authority : tokenAuth.authority,
-        tempLimit : tokenAuth.tempLimit,
-        tempType : tokenAuth.tempType,
+        tempLimit : user.tempLimit,
+        tempType : user.tempType,
     });
 });
 

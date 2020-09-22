@@ -90,7 +90,8 @@ const EditAccount = props => {
   const addUser = async () => {
     await axios.put(base_url + '/account/' + selectedAccounts[0]._id, {
       ...selectedAccounts[0],
-      ...accountInfo
+      ...accountInfo,
+      account: props.user_id,
     });
     alert('수정 되었습니다.');
     history.push('/system/account');
