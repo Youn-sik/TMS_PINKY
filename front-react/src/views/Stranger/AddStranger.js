@@ -580,7 +580,6 @@ const AddStranger = props => {
                 style={{ width: '100%' }}
                 onChange={handleTypeChange}>
                 <MenuItem value={1}>사원</MenuItem>
-                <MenuItem value={2}>방문자</MenuItem>
                 <MenuItem value={5}>블랙리스트</MenuItem>
               </Select>
               <InputLabel shrink id="gender">
