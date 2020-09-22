@@ -118,7 +118,7 @@ app.get('/auth', async function(req, res) {
             auth = false;
         }
     }
-    const user = await User.findById({ _id: user_id })
+    const user = await User.findById({ _id: tokenAuth.user_id })
     res.send({
         auth, 
         user_id:tokenAuth.user_id, 
