@@ -176,11 +176,11 @@ router.put('/:id',async function(req, res) {
     }
 });
 
-router.delete('/:id',async function(req, res) {
+router.delete('/',async function(req, res) {
     try {
         const id = req.params === undefined ? req.id : req.params.id
-        const delete_data = await api_v1_person_access.findByIdAndRemove(id)
-        res.dend(delete_data)
+        const delete_data = await api_v1_person_access.remove({ access_time: { $lt: req.body.date } })
+        res.send(delete_data)
     } catch (err) {
         throw boom.boomify(err)
     }

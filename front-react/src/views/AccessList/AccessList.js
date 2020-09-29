@@ -47,6 +47,29 @@ const AccessList = props => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
+  const deleteRecords = async () => {
+    if(window.confirm("일주일 전 출입 기록들을 모두 삭제합니다\n삭제하시겠습니까?")){
+      let date = moment()
+      .subtract(7, 'days')
+      .locale('ko')
+      .format('YYYY-MM-DD')
+      date = date + ' 00:00:00'
+      await axios.delete(base_url + '/access',{
+        data:{
+          date
+        }
+      });
+
+      setAccesses([])
+      setOriginAcc([])
+      setAllAcc([])
+      setFilteredAccesses([])
+      setLoading(true)
+      getAccesses();
+    }
+  }
+
+
   useEffect(() => {
     getAccesses();
     return () => {
@@ -356,6 +379,7 @@ const AccessList = props => {
     <div className={classes.root}>
       <Card className={(classes.root, classes.cardcontent)}>
         <AccessesToolbar
+          deleteRecords={deleteRecords}
           search={search}
           loading={loading}
           setSearch={_setSearch}

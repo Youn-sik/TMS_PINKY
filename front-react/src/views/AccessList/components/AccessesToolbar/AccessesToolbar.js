@@ -7,10 +7,12 @@ import { DateRangePicker, IntlProvider } from 'rsuite';
 import kor from 'rsuite/lib/IntlProvider/locales/ko_KR';
 import 'rsuite/dist/styles/rsuite-default.css';
 import MenuItem from '@material-ui/core/MenuItem';
+import moment from 'moment';
 import 'moment/locale/ko';
 import TextField from '@material-ui/core/TextField';
 import Search from '@material-ui/icons/Search';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import Button from '@material-ui/core/Button';
 // eslint-disable-next-line no-extend-native
 Date.prototype.yyyymmdd = function() {
   var yyyy = this.getFullYear().toString();
@@ -60,6 +62,7 @@ const AccessesToolbar = props => {
     type_change,
     typeCange,
     dateChange,
+    deleteRecords,
     className,
     ...rest
   } = props;
@@ -116,6 +119,9 @@ const AccessesToolbar = props => {
           <MenuItem value="2">비정상 온도</MenuItem>
         </Select>
         <div style={{ width: '100%' }}>
+          <Button variant="contained" color="secondary" style={{marginLeft : 20}} onClick={deleteRecords}>
+            오래된 기록 삭제
+          </Button>
           <TextField
             style={{ float: 'right', marginRight: '30px' }}
             className={classes.search}
