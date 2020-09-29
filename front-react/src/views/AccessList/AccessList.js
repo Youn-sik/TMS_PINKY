@@ -59,12 +59,23 @@ const AccessList = props => {
           date
         }
       });
-
+      setActiveType('time');
+      setSearch('');
+      setType('0');
+      setTemp('0');
+      setLoading(true)
+      setDate([
+        moment()
+          .locale('ko')
+          .format('YYYY-MM-DD'),
+        moment()
+          .locale('ko')
+          .format('YYYY-MM-DD')
+      ]);
       setAccesses([])
       setOriginAcc([])
       setAllAcc([])
       setFilteredAccesses([])
-      setLoading(true)
       getAccesses();
     }
   }
