@@ -145,7 +145,12 @@ const ErrorsTable = props => {
             </TableHead>
             {
               <TableBody>
-                {errors.map(error => (
+                {errors
+                .slice(
+                  (page - 1) * rowsPerPage,
+                  (page - 1) * rowsPerPage + rowsPerPage
+                )
+                .map(error => (
                   <TableRow className={classes.tableRow} key={error._id}>
                     <TableCell>{error.stb_id}</TableCell>
                     <TableCell>{error.stb_sn}</TableCell>

@@ -40,22 +40,15 @@ const DeviceError = () => {
   const [loading, setLoading] = useState(true);
   const [activeType, setActiveType] = useState('create_dt');
 
-  const getErrors = useCallback(async () => {
-    let result = await axios.get(base_url + '/glogs?type=error');
+  const getErrors = async () => {
+    setLoading(true);
+    let result = await axios.get(base_url + `/glogs?type=error&date=${date[0]}/${date[1]}`);
     result.data.reverse();
     setOriginAcc(result.data);
-    setErrors(result.data.filter(i => i.create_dt.split(' ')[0] === date[0]));
+    setErrors(result.data);
     setLoading(false);
-    setDate([
-      moment()
-        .locale('ko')
-        .format('YYYY-MM-DD'),
-      moment()
-        .locale('ko')
-        .format('YYYY-MM-DD')
-    ]);
     setSearch('');
-  }, []);
+  }
 
   const _setSearch = value => {
     setSearch(value);
@@ -71,7 +64,7 @@ const DeviceError = () => {
 
   useEffect(() => {
     getErrors();
-  }, [getErrors]);
+  },[date])
 
   const classes = useStyles();
 
@@ -230,17 +223,6 @@ const DeviceError = () => {
 
   const handleDate = val => {
     setDate(val);
-    if (val[0] === val[1]) {
-      setErrors(originAcc.filter(i => i.create_dt.split(' ')[0] === val[0]));
-    } else {
-      setErrors(
-        originAcc.filter(
-          i =>
-            i.create_dt.split(' ')[0] >= val[0] &&
-            i.create_dt.split(' ')[0] <= val[1]
-        )
-      );
-    }
   };
 
   return (

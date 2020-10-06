@@ -37,13 +37,15 @@ const AccessStat = props => {
   ]);
   const [peopleData, setPeopleData] = useState([]);
   const [devices, setDevices] = useState([]);
-  const [device, setDevice] = useState({});
+  const [device, setDevice] = useState('all');
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [accesses, setAccesses] = useState([]);
   const [chartData, setChartData] = useState({});
+
   async function getAccesses() {
-    let result = await axios.get(base_url + '/access?type=deviceGroupAccesses');
+    setLoading(true);
+    let result = await axios.get(base_url + `/access?type=deviceGroupAccesses&date=${date[0]}/${date[1]}`);
     setPeopleData(result.data);
     setLoading(false);
   }
@@ -54,17 +56,11 @@ const AccessStat = props => {
     let data = [];
     let maxTemp = [];
     let accessData = [];
-    temp = temp.filter(i => parseInt(i._id) >= 7 && parseInt(i._id) <= 21);
     temp.map(i => {
-      i.accesses = i.accesses.filter(access => {
-        return access.date === date[0] && access.stb_sn === device;
-      });
-      i.max = i.accesses[0];
-      i.accesses = i.accesses.length;
       labels.push(i._id);
-      data.push(i.accesses);
-      maxTemp.push(i.max ? i.max.avatar_temperature : 0);
-      accessData.push(i.max);
+      data.push(i.count);
+      maxTemp.push(i.maxTemp);
+      accessData.push({avatar_file_url:i.maxUrl,avatar_type:i.maxType});
     });
     setChartData({
       labels,
@@ -81,7 +77,6 @@ const AccessStat = props => {
     );
     if (result.data.length > 0) {
       setDevices(result.data);
-      setDevice(result.data[0].serial_number);
     }
   }
 
@@ -93,24 +88,25 @@ const AccessStat = props => {
 
   const handleDeviceChange = e => {
     setDevice(e.target.value);
-    setCount(count + 1);
   };
 
   const handleDate = val => {
     setDate(val);
-    setCount(count + 1);
   };
 
   useEffect(() => {
-    getDevices();
     getAccesses();
+  }, [date,device]);
+
+  useEffect(() => {
+    getDevices();
   }, []);
 
   useEffect(() => {
     if (peopleData.length !== 0) {
       filterAccesses();
     }
-  }, [device, date, peopleData]);
+  }, [peopleData]);
 
   return (
     <div className={classes.root}>
@@ -143,6 +139,7 @@ const AccessStat = props => {
               value={device}
               style={{ width: '10%', marginLeft: '10px' }}
               onChange={handleDeviceChange}>
+                <MenuItem value='all'>전체</MenuItem>
               {devices.map(device => (
                 <MenuItem value={device.serial_number}>{device.name}</MenuItem>
               ))}

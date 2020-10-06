@@ -213,12 +213,12 @@ const TimeAccess = props => {
                   <br />
                   타입 :
                   {tooltip.accessData.avatar_type === 1
-                    ? '사원'
+                    ? ' 사원'
                     : tooltip.accessData.avatar_type === 2
-                    ? '방문자'
+                    ? ' 방문자'
                     : tooltip.accessData.avatar_type === 3
-                    ? '미등록자'
-                    : '블랙리스트'}
+                    ? ' 미등록자'
+                    : ' 블랙리스트'}
                   <br />
                   {tooltip.accessData.avatar_type === 1
                     ? '이름 : ' + tooltip.accessData.name

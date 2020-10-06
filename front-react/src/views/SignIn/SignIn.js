@@ -275,8 +275,8 @@ const SignIn = props => {
       function resize() {
         width = window.innerWidth;
         height = window.innerHeight;
-        canvas.current.width = width;
-        canvas.current.height = height;
+        // canvas.current.width = width;
+        // canvas.current.height = height;
       }
 
       // animation

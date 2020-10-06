@@ -198,7 +198,7 @@ const Statistics = props => {
   }
 
   async function getErrors() {
-    let result = await axios.get(base_url + '/glogs?type=error');
+    let result = await axios.get(base_url + `/glogs?type=error&date=${date[0]}/${date[1]}`);
     setAllErrorData(result.data);
     filterErrors(result.data);
   }

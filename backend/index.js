@@ -118,14 +118,24 @@ app.get('/auth', async function(req, res) {
             auth = false;
         }
     }
-    const user = await User.findById({ _id: tokenAuth.user_id })
-    res.send({
-        auth, 
-        user_id:tokenAuth.user_id, 
-        authority : tokenAuth.authority,
-        tempLimit : user.tempLimit,
-        tempType : user.tempType,
-    });
+
+    if(tokenAuth.user_id) {
+        const user = await User.findById({ _id: tokenAuth.user_id })
+        res.send({
+            auth, 
+            user_id:tokenAuth.user_id, 
+            authority : tokenAuth.authority,
+            tempLimit : user.tempLimit,
+            tempType : user.tempType,
+        });
+    } else {
+        res.send({
+            auth, 
+            user_id:tokenAuth.user_id, 
+            authority : tokenAuth.authority,
+        });
+    }
+    
 });
 
 

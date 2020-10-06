@@ -32,69 +32,158 @@ router.get('/',async function(req, res) {
             ])
         } 
         else if(req.query.type === 'deviceGroupAccesses') {
-            get_data = await api_v1_person_access.aggregate([
-                {
-                    $sort:{"avatar_temperature" : -1}
-                },
-                { 
-                    $project : { 
-                        date_time : { 
-                            $split: ["$access_time", " "] 
-                        },
-                        stb_sn:"$stb_sn",
-                        avatar_temperature : "$avatar_temperature", 
-                        avatar_file_url : "$avatar_file_url", 
-                        name : "$name",
-                        avatar_type : "$avatar_type"
-                    } 
-                },
-                {
-                    $project : {
-                        date : {$arrayElemAt:["$date_time",0]},
-                        time : {$arrayElemAt:["$date_time",1]},
-                        stb_sn : 1,
-                        avatar_temperature : 1,
-                        avatar_file_url : 1,
-                        name : 1, 
-                        avatar_type: 1
+            let date = req.query.date.split('/');
+            let device = req.query.device;
+
+            if(device) {
+                get_data = await api_v1_person_access.aggregate([
+                    {
+                        $sort:{"avatar_temperature" : -1}
+                    },
+                    {
+                        $match: {
+                            access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
+                            stb_sn : device 
+                        }
+                    },
+                    { 
+                        $project : { 
+                            date_time : { 
+                                $split: ["$access_time", " "] 
+                            },
+                            stb_sn:"$stb_sn",
+                            avatar_temperature : "$avatar_temperature", 
+                            avatar_file_url : "$avatar_file_url", 
+                            name : "$name",
+                            avatar_type : "$avatar_type"
+                        } 
+                    },
+                    {
+                        $project : {
+                            date : {$arrayElemAt:["$date_time",0]},
+                            time : {$arrayElemAt:["$date_time",1]},
+                            stb_sn : 1,
+                            avatar_temperature : 1,
+                            avatar_file_url : 1,
+                            name : 1, 
+                            avatar_type: 1
+                        }
+                    },
+                    { 
+                        $project : { 
+                            timeArr : { 
+                                $split: ["$time", ":"] 
+                            },
+                            date : 1,
+                            stb_sn : 1,
+                            avatar_temperature : 1,
+                            avatar_file_url : 1,
+                            name : 1, 
+                            avatar_type: 1
+                        } 
+                    },
+                    { 
+                        $project : { 
+                            hour :  {
+                                $arrayElemAt:["$timeArr",0]
+                            },
+                            date : 1,
+                            stb_sn : 1,
+                            avatar_temperature : 1,
+                            avatar_file_url : 1,
+                            name : 1, 
+                            avatar_type: 1
+                        } 
+                    },
+                    {
+                        $group : {
+                            _id : "$hour",
+                            count: { $sum: 1 },
+                            maxTemp:{ $max: "$avatar_temperature" },
+                            maxTempPicture:{ $max: "$avatar_file_url" },
+                            avatar_type : "$avatar_type"
+                        }
+                    },
+                    {
+                        $sort: {_id:1}
                     }
-                },
-                { 
-                    $project : { 
-                        timeArr : { 
-                            $split: ["$time", ":"] 
-                        },
-                        date : 1,
-                        stb_sn : 1,
-                        avatar_temperature : 1,
-                        avatar_file_url : 1,
-                        name : 1, 
-                        avatar_type: 1
-                    } 
-                },
-                { 
-                    $project : { 
-                        hour :  {
-                            $arrayElemAt:["$timeArr",0]
-                        },
-                        date : 1,
-                        stb_sn : 1,
-                        avatar_temperature : 1,
-                        avatar_file_url : 1,
-                        name : 1, 
-                        avatar_type: 1
-                    } 
-                },
-                {
-                    $group : {
-                        _id : "$hour",
-                        accesses : {$push:"$$ROOT"},
+                ])
+            } else {         
+                get_data = await api_v1_person_access.aggregate([
+                    {
+                        $sort:{"avatar_temperature" : -1}
+                    },
+                    {
+                        $match: {
+                            access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" }
+                        }
+                    },
+                    { 
+                        $project : { 
+                            date_time : { 
+                                $split: ["$access_time", " "] 
+                            },
+                            stb_sn:"$stb_sn",
+                            avatar_temperature : "$avatar_temperature", 
+                            avatar_file_url : "$avatar_file_url", 
+                            name : "$name",
+                            avatar_type : "$avatar_type"
+                        } 
+                    },
+                    {
+                        $project : {
+                            date : {$arrayElemAt:["$date_time",0]},
+                            time : {$arrayElemAt:["$date_time",1]},
+                            stb_sn : 1,
+                            avatar_temperature : 1,
+                            avatar_file_url : 1,
+                            name : 1, 
+                            avatar_type: 1
+                        }
+                    },
+                    { 
+                        $project : { 
+                            timeArr : { 
+                                $split: ["$time", ":"] 
+                            },
+                            date : 1,
+                            stb_sn : 1,
+                            avatar_temperature : 1,
+                            avatar_file_url : 1,
+                            name : 1, 
+                            avatar_type: 1
+                        } 
+                    },
+                    { 
+                        $project : { 
+                            hour :  {
+                                $arrayElemAt:["$timeArr",0]
+                            },
+                            date : 1,
+                            stb_sn : 1,
+                            avatar_temperature : 1,
+                            avatar_file_url : 1,
+                            name : 1, 
+                            avatar_type: 1
+                        } 
+                    },
+                    {
+                        $sort:{avatar_temperature:-1}
+                    },
+                    {
+                        $group : {
+                            _id : "$hour",
+                            count: { $sum: 1 },
+                            maxTemp:{ $first: "$avatar_temperature" },
+                            maxUrl:{ $first: "$avatar_file_url" },
+                            maxType:{ $first: "$avatar_type" },
+                        }
+                    },
+                    {
+                        $sort: {_id:1}
                     }
-                },
-                {
-                    $sort: {_id:1}
-                }
-            ])
+                ])
+            }
         } 
         else if(req.query.type === 'todayAttendance') {
             get_data = await api_v1_person_access.aggregate([
