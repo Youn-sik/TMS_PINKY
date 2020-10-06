@@ -121,8 +121,6 @@ const AccessList = props => {
         `/access?date=${date[0]}/${date[1]}&page=${page}${type !== '0' ? "&avatar_type="+type : ''}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
         cancelToken: source.token
       });
-
-      setLoading(false);
       setPage(1);
   
       let _temp = parseInt(_pages.data[0].count/7);
@@ -135,6 +133,7 @@ const AccessList = props => {
       setPages(0);
       setAccesses([]);
     }
+    setLoading(false);
   }
 
   async function movePage(page) {

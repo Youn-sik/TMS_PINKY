@@ -30,8 +30,41 @@ router.get('/',async function(req, res) {
                     }   
                 }
             ])
-        } 
-        else if(req.query.type === 'deviceGroupAccesses') {
+        } else if(req.query.type === 'deviceStats') {
+            let date = req.query.date.split('/');
+            let device = req.query.device;
+            get_data = await api_v1_person_access.aggregate([
+                {
+                    $match: {
+                        access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
+                        stb_sn : device
+                    }
+                },
+                { 
+                    $project : { 
+                        date_time : { 
+                            $split: ["$access_time", " "] 
+                        },
+                        avatar_type : 1
+                    } 
+                },
+                {
+                    $project : {
+                        date : {$arrayElemAt:["$date_time",0]},
+                        avatar_type : 1
+                    }
+                },
+                {
+                    $group : {
+                        _id : {
+                            avatar_type:"$avatar_type",
+                            date:"$date"
+                        },
+                        count: { $sum: 1 },
+                    }
+                },
+            ])
+        } else if(req.query.type === 'deviceGroupAccesses') {
             let date = req.query.date.split('/');
             let device = req.query.device;
 

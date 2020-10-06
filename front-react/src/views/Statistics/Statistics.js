@@ -55,26 +55,27 @@ const Statistics = props => {
       [0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0]
     ];
-    dates.map((date, index) => {
-      employee.map(i => {
-        if (i.access_time.split(' ')[0] === date) temp[0][index]++;
-        return false;
-      });
-      visitor.map(i => {
-        if (i.access_time.split(' ')[0] === date) temp[1][index]++;
-        return false;
-      });
-      stranger.map(i => {
-        if (i.access_time.split(' ')[0] === date) temp[2][index]++;
-        return false;
-      });
-      black.map(i => {
-        if (i.access_time.split(' ')[0] === date) temp[3][index]++;
-        return false;
-      });
-      return false;
-    });
-    return temp;
+    console.log(stranger);
+    // dates.map((date, index) => {
+    //   employee.map(i => {
+    //     if (i.access_time.split(' ')[0] === date) temp[0][index]++;
+    //     return false;
+    //   });
+    //   visitor.map(i => {
+    //     if (i.access_time.split(' ')[0] === date) temp[1][index]++;
+    //     return false;
+    //   });
+    //   stranger.map(i => {
+    //     if (i.access_time.split(' ')[0] === date) temp[2][index]++;
+    //     return false;
+    //   });
+    //   black.map(i => {
+    //     if (i.access_time.split(' ')[0] === date) temp[3][index]++;
+    //     return false;
+    //   });
+    //   return false;
+    // });
+    // return temp;
   };
 
   // error.log_no === 3 ? "연결 끊김" :
@@ -119,17 +120,15 @@ const Statistics = props => {
 
   const filterAccesses = result => {
     let employee = result.filter(
-      access => access.avatar_type === 1 && access.stb_sn === device
-    );
-    let visitor = result.filter(
-      access => access.avatar_type === 2 && access.stb_sn === device
+      access => access._id.avatar_type === 1
     );
     let stranger = result.filter(
-      access => access.avatar_type === 3 && access.stb_sn === device
+      access => access._id.avatar_type === 3
     );
     let black = result.filter(
-      access => access.avatar_type === 5 && access.stb_sn === device
+      access => access._id.avatar_type === 4
     );
+    
     let dates = [
       date[0],
       dateChange(date[0], 1),
@@ -140,7 +139,7 @@ const Statistics = props => {
       date[1]
     ];
 
-    let temp = statsData(employee, visitor, stranger, black, dates);
+    let temp = statsData(employee, stranger, black, dates);
 
     setPeopleData({
       employee: temp[0],
@@ -182,7 +181,7 @@ const Statistics = props => {
   };
 
   async function getAccesses() {
-    let result = await axios.get(base_url + `/access?date=${date[0]}/${date[1]}`);
+    let result = await axios.get(base_url + `/access?date=${date[0]}/${date[1]}&device=${device}&type=deviceStats`);
     setAllPeopleData(result.data);
     filterAccesses(result.data);
   }

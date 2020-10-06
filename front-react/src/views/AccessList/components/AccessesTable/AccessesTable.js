@@ -94,6 +94,7 @@ const AccessesTable = props => {
             <TableHead>
               <TableRow>
                 <TableCell>사진</TableCell>
+                <TableCell>이름</TableCell>
                 <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel
@@ -187,6 +188,7 @@ const AccessesTable = props => {
                                 src={access.avatar_file_url}></img>
                             </div>
                           </TableCell>
+                        <TableCell>{access.name === 'unknown' ? null : access.name}</TableCell>
                           <TableCell>
                             {access.stb_sn}
                           </TableCell>
