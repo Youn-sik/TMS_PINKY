@@ -126,7 +126,7 @@ const Routes = props => {
         tempType={props.tempType}
         path="/access/records"
       />
-      <RouteWithLayout
+      {/* <RouteWithLayout
         component={StrangerView}
         exact
         user_id={props.user_id}
@@ -135,7 +135,7 @@ const Routes = props => {
         tempLimit={props.tempLimit}
         tempType={props.tempType}
         path="/users/Stranger"
-      />
+      /> */}
       <RouteWithLayout
         component={AddStrangerView}
         exact

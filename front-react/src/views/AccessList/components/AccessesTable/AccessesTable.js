@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import Pagination from '@material-ui/lab/Pagination';
 import { makeStyles } from '@material-ui/styles';
+import { NavLink as RouterLink } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -16,7 +17,8 @@ import {
   TableHead,
   TableRow,
   TableContainer,
-  Paper
+  Paper,
+  Button
 } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
@@ -59,15 +61,15 @@ const AccessesTable = props => {
     loading,
     className,
     accesses,
+    page,
+    pages,
+    sort,
+    setSort,
+    setPage,
     ...rest
   } = props;
 
   const classes = useStyles();
-
-  const rowsPerPage = 7;
-  const [page, setPage] = useState(1);
-
-  const [sort, setSort] = useState('desc');
 
   const handlePageChange = (event, page) => {
     setPage(page);
@@ -95,24 +97,24 @@ const AccessesTable = props => {
                 <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel
-                      active={activeType === 'name'}
+                      active={activeType === 'stb_sn'}
                       direction={sort}
                       onClick={() => {
-                        createSortHandler('name');
+                        createSortHandler('stb_sn');
                       }}>
-                      이름
+                      단말기
                     </TableSortLabel>
                   ) : (
-                    '이름'
+                    '단말기'
                   )}
                 </TableCell>
                 <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel
-                      active={activeType === 'type'}
+                      active={activeType === 'avatar_type'}
                       direction={sort}
                       onClick={() => {
-                        createSortHandler('type');
+                        createSortHandler('avatar_type');
                       }}>
                       타입
                     </TableSortLabel>
@@ -123,10 +125,10 @@ const AccessesTable = props => {
                 <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel
-                      active={activeType === 'distance'}
+                      active={activeType === 'avatar_distance'}
                       direction={sort}
                       onClick={() => {
-                        createSortHandler('distance');
+                        createSortHandler('avatar_distance');
                       }}>
                       거리
                     </TableSortLabel>
@@ -137,10 +139,10 @@ const AccessesTable = props => {
                 <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel
-                      active={activeType === 'temp'}
+                      active={activeType === 'avatar_temperature'}
                       direction={sort}
                       onClick={() => {
-                        createSortHandler('temp');
+                        createSortHandler('avatar_temperature');
                       }}>
                       온도
                     </TableSortLabel>
@@ -151,10 +153,10 @@ const AccessesTable = props => {
                 <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel
-                      active={activeType === 'time'}
+                      active={activeType === 'access_time'}
                       direction={sort}
                       onClick={() => {
-                        createSortHandler('time');
+                        createSortHandler('access_time');
                       }}>
                       출입시간
                     </TableSortLabel>
@@ -162,15 +164,12 @@ const AccessesTable = props => {
                     '출입시간'
                   )}
                 </TableCell>
+                <TableCell>사용자 등록</TableCell>
               </TableRow>
             </TableHead>
             {
               <TableBody>
                 {props.accesses
-                  .slice(
-                    (page - 1) * rowsPerPage,
-                    (page - 1) * rowsPerPage + rowsPerPage
-                  )
                   .map(access => {
                     if (access.avatar_temperature >= tempLimit) {
                       //출입 기록 37.5도 이상일때
@@ -189,7 +188,7 @@ const AccessesTable = props => {
                             </div>
                           </TableCell>
                           <TableCell>
-                            {access.name === 'unknown' ? null : access.name}
+                            {access.stb_sn}
                           </TableCell>
                           <TableCell className={classes.redFont}>
                             {access.avatar_type === 1
@@ -217,6 +216,25 @@ const AccessesTable = props => {
                           <TableCell className={classes.redFont}>
                             {access.access_time}
                           </TableCell>
+                          <TableCell>
+                            {
+                              access.avatar_type === 3 ? 
+                              <RouterLink RouterLink
+                                style={{ textDecoration: 'none' }}
+                                to={{
+                                  pathname: '/users/stranger/add',
+                                  userObject: {
+                                    avatar_file_url: access.avatar_file_url,
+                                    avatar_file: access.avatar_file,
+                                    _id: access.avatar_file_url
+                                  }
+                                }}>
+                                <Button variant="contained" color="primary">
+                                  등록
+                                </Button>
+                              </RouterLink> : null
+                            }
+                          </TableCell>
                         </TableRow>
                       );
                     } else {
@@ -233,7 +251,7 @@ const AccessesTable = props => {
                             </div>
                           </TableCell>
                           <TableCell>
-                            {access.name === 'unknown' ? null : access.name}
+                            {access.stb_sn}
                           </TableCell>
                           <TableCell>
                             {access.avatar_type === 1
@@ -259,6 +277,25 @@ const AccessesTable = props => {
                               : '정상 체온'}
                           </TableCell>
                           <TableCell>{access.access_time}</TableCell>
+                          <TableCell>
+                            {
+                              access.avatar_type === 3 ? 
+                              <RouterLink RouterLink
+                                style={{ textDecoration: 'none' }}
+                                to={{
+                                  pathname: '/users/stranger/add',
+                                  userObject: {
+                                    avatar_file_url: access.avatar_file_url,
+                                    avatar_file: access.avatar_file,
+                                    _id: access.avatar_file_url
+                                  }
+                                }}>
+                                <Button variant="contained" color="primary">
+                                  등록
+                                </Button>
+                              </RouterLink> : null
+                            }
+                          </TableCell>
                         </TableRow>
                       );
                     }
@@ -271,15 +308,7 @@ const AccessesTable = props => {
       <CardActions className={classes.actions}>
         <Grid container alignItems="center" justify="center">
           <Pagination
-            count={
-              props.accesses.length % rowsPerPage === 0
-                ? parseInt(props.accesses.length / rowsPerPage)
-                : parseInt(
-                    props.accesses.length / rowsPerPage +
-                      parseInt(props.accesses.length % rowsPerPage) /
-                        parseInt(props.accesses.length % rowsPerPage)
-                  )
-            }
+            count={pages}
             onChange={handlePageChange}
             page={page}
             variant="outlined"

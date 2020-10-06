@@ -64,6 +64,7 @@ const AccessesToolbar = props => {
     dateChange,
     deleteRecords,
     className,
+    clickSearch,
     ...rest
   } = props;
 
@@ -119,20 +120,21 @@ const AccessesToolbar = props => {
           <MenuItem value="2">비정상 온도</MenuItem>
         </Select>
         <div style={{ width: '100%' }}>
-          <Button variant="contained" color="secondary" style={{marginLeft : 20}} onClick={deleteRecords}>
+          {/* <Button variant="contained" color="secondary" style={{marginLeft : 20}} onClick={deleteRecords}>
             오래된 기록 삭제
-          </Button>
+          </Button> */}
           <TextField
             style={{ float: 'right', marginRight: '30px' }}
             className={classes.search}
             id="input-with-icon-textfield"
             // label="검색"
             value={search}
+            onKeyUp={()=>{if(window.event.keyCode === 13) clickSearch();}}
             onChange={handleSearch}
             placeholder="검색"
             InputProps={{
               endAdornment: (
-                <InputAdornment position="end">
+                <InputAdornment style={{cursor:'pointer'}} onClick={clickSearch} position="end">
                   <Search></Search>
                 </InputAdornment>
               )

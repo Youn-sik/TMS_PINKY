@@ -6,8 +6,15 @@ const api_v1_group_glogs = require('../../../../models/api/v1/group/glogs')
 router.get('/',async function(req, res) {
     try {
         let get_data;
+        let date = req.query.date
+        if(date) 
+            date = date.split('/');
         if(req.query.type === 'error') {
-            get_data = await api_v1_group_glogs.find().or([{log_no:'32'},{log_no:'33'},{log_no:'3'}]);
+            get_data = await api_v1_group_glogs
+            .find()
+            .or([{log_no:'32'},{log_no:'33'},{log_no:'3'}])
+            // .gte("regdate",date[0]+" 00:00:00")
+            // .lte("regdate",date[1]+" 23:59:59");
         } else if(req.query.type === 'limit5errors') {
             get_data = await api_v1_group_glogs.find().or([{log_no:'32'},{log_no:'33'},{log_no:'3'}]).limit(5);
         } else {

@@ -69,10 +69,10 @@ const Sidebar = props => {
           title: '블랙리스트 관리',
           href: '/users/black'
         },
-        {
-          title: '미등록자 관리',
-          href: '/users/stranger'
-        }
+        // {
+        //   title: '미등록자 관리',
+        //   href: '/users/stranger'
+        // }
         // {
         //   title:'얼굴 인식',
         //   href:'/users/face-detection'

@@ -148,8 +148,6 @@ const Statistics = props => {
       stranger: temp[2],
       black: temp[3]
     });
-
-    setLoading(false);
   };
 
   const filterErrors = result => {
@@ -179,10 +177,12 @@ const Statistics = props => {
       memory: temp[2],
       black: temp[3]
     });
+
+    setLoading(false);
   };
 
   async function getAccesses() {
-    let result = await axios.get(base_url + '/access');
+    let result = await axios.get(base_url + `/access?date=${date[0]}/${date[1]}`);
     setAllPeopleData(result.data);
     filterAccesses(result.data);
   }
@@ -211,26 +211,20 @@ const Statistics = props => {
 
   const handleDeviceChange = e => {
     setDevice(e.target.value);
-    setCount(count + 1);
   };
 
   const handleDate = val => {
     setDate(val);
-    setCount(count + 1);
   };
 
   useEffect(() => {
-    if (count) {
-      filterAccesses(allPeopleData);
-      filterErrors(allErrorData);
-    }
-  }, [count]);
+    getAccesses();
+    getErrors();
+  }, [date,device]);
 
   useEffect(() => {
     getDevices();
-    getAccesses();
-    getErrors();
-  }, []);
+  },[])
 
   return (
     <div className={classes.root}>

@@ -11,9 +11,7 @@ router.get('/',async function(req, res) {
         let get_data;
         let date = new RegExp(moment().format('YYYY-MM-DD'));
         let today = new RegExp(moment().format('YYYY-MM-DD'));
-        if(req.query.type && req.query.type !== 'todayStatistics'&& req.query.type !== 'todayAttendance' && req.query.type !== 'temperature' && req.query.type !== 'attendance' && req.query.type !== 'deviceGroupAccesses') {
-            get_data = await api_v1_person_access.find({avatar_type:req.query.type}).select('-avatar_file -avatar_contraction_data').limit(50000)
-        } else if(req.query.type === 'todayStatistics') {
+        if(req.query.type === 'todayStatistics') {
             get_data = await api_v1_person_access.aggregate([
                 {
                     $match: {
@@ -137,8 +135,201 @@ router.get('/',async function(req, res) {
                     $sort: {avatar_contraction_data : 1,access_time : 1}   
                 },
             ])
+        } else if(req.query.type === 'dateCount') {
+            let date = req.query.date.split('/');
+            let search = '';
+            let avatar_type = req.query.avatar_type;
+            let tempType = req.query.tempType;
+            let avatar_temperature = req.query.avatar_temperature;
+
+            if(req.query.search) 
+                search = req.query.search;
+            
+            if(avatar_type && avatar_temperature && tempType) { //온도,타입 모두 설정한 경우
+                if(tempType === '2') {
+                    get_data = await api_v1_person_access.aggregate([
+                        {
+                            $match: {
+                                access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
+                                stb_sn : { $regex:search },
+                                avatar_type : parseInt(avatar_type),
+                                avatar_temperature : { $gte: avatar_temperature }
+                            }
+                        },
+                        {
+                            $group: {
+                                _id: {"type":"$avatar_contraction_data"},
+                                count: { $sum: 1 }
+                            }
+                        }
+                    ])
+                } else {
+                    get_data = await api_v1_person_access.aggregate([
+                        {
+                            $match: {
+                                access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
+                                stb_sn : { $regex:search },
+                                avatar_type : parseInt(avatar_type),
+                                avatar_temperature : { $lt: avatar_temperature }
+                            }
+                        },
+                        {
+                            $group: {
+                                _id: {"type":"$avatar_contraction_data"},
+                                count: { $sum: 1 }
+                            }
+                        }
+                    ])
+                }
+            } else if (avatar_type) { //아바타 타입만 선택한 경우
+                get_data = await api_v1_person_access.aggregate([
+                    {
+                        $match: {
+                            access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
+                            stb_sn : { $regex:search },
+                            avatar_type : parseInt(avatar_type),
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: {"type":"$avatar_contraction_data"},
+                            count: { $sum: 1 }
+                        }
+                    }
+                ])
+            } else if (avatar_temperature && tempType) {//온도 타입만 선택한 경우
+                if(tempType === '2') {
+                    get_data = await api_v1_person_access.aggregate([
+                        {
+                            $match: {
+                                access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
+                                stb_sn : { $regex:search },
+                                avatar_temperature : { $gte: avatar_temperature }
+                            }
+                        },
+                        {
+                            $group: {
+                                _id: {"type":"$avatar_contraction_data"},
+                                count: { $sum: 1 }
+                            }
+                        }
+                    ])
+                } else {
+                    get_data = await api_v1_person_access.aggregate([
+                        {
+                            $match: {
+                                access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
+                                stb_sn : { $regex:search },
+                                avatar_temperature : { $lt: avatar_temperature }
+                            }
+                        },
+                        {
+                            $group: {
+                                _id: {"type":"$avatar_contraction_data"},
+                                count: { $sum: 1 }
+                            }
+                        }
+                    ])
+                }   
+            } else { //모두 전체일경우
+                get_data = await api_v1_person_access.aggregate([
+                    {
+                        $match: {
+                            access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
+                            stb_sn : { $regex:search },
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: {"type":"$avatar_type"},
+                            count: { $sum: 1 }
+                        }
+                    }
+                ])
+            }
         } else {
-            get_data = await api_v1_person_access.find().select('-avatar_file')
+            // $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59"
+            let date = req.query.date.split('/');
+            let page = req.query.page - 1;
+            let avatar_type = req.query.avatar_type;
+            let tempType = req.query.tempType;
+            let avatar_temperature = req.query.avatar_temperature;
+            let headerType = "-_id";
+            let rowPerPage = 7;
+            let search = '';
+
+            if(req.query.search) 
+                search = req.query.search;
+
+            if(req.query.headerType)
+                headerType = req.query.headerType
+
+            if(avatar_type && avatar_temperature && tempType) { //온도,타입 모두 설정한 경우
+                if(tempType === '2') {
+                    get_data = await api_v1_person_access.find()
+                    .sort(headerType)
+                    .select('-avatar_file')
+                    .where("avatar_type").equals(parseInt(avatar_type))
+                    .gte('avatar_temperature', parseFloat(avatar_temperature))
+                    .gte("access_time",date[0]+" 00:00:00")
+                    .lte("access_time",date[1]+" 23:59:59")
+                    .regex("stb_sn",new RegExp(search))
+                    .skip(page*rowPerPage)
+                    .limit(rowPerPage)
+                } else {
+                    get_data = await api_v1_person_access.find()
+                    .sort(headerType)
+                    .select('-avatar_file')
+                    .where("avatar_type").equals(parseInt(avatar_type))
+                    .lt('avatar_temperature', parseFloat(avatar_temperature))
+                    .gte("access_time",date[0]+" 00:00:00")
+                    .lte("access_time",date[1]+" 23:59:59")
+                    .regex("stb_sn",new RegExp(search))
+                    .skip(page*rowPerPage)
+                    .limit(rowPerPage)
+                }
+            } else if (avatar_type) { //아바타 타입만 선택한 경우
+                get_data = await api_v1_person_access.find()
+                .sort(headerType)
+                .select('-avatar_file')
+                .where("avatar_type").equals(parseInt(avatar_type))
+                .gte("access_time",date[0]+" 00:00:00")
+                .lte("access_time",date[1]+" 23:59:59")
+                .regex("stb_sn",new RegExp(search))
+                .skip(page*rowPerPage)
+                .limit(rowPerPage)
+            } else if (avatar_temperature && tempType) {//온도 타입만 선택한 경우
+                if(tempType === '2') {
+                    get_data = await api_v1_person_access.find()
+                    .sort(headerType)
+                    .select('-avatar_file')
+                    .gte('avatar_temperature', parseFloat(avatar_temperature))
+                    .gte("access_time",date[0]+" 00:00:00")
+                    .lte("access_time",date[1]+" 23:59:59")
+                    .regex("stb_sn",new RegExp(search))
+                    .skip(page*rowPerPage)
+                    .limit(rowPerPage)
+                } else {
+                    get_data = await api_v1_person_access.find()
+                    .sort(headerType)
+                    .select('-avatar_file')
+                    .lt('avatar_temperature', parseFloat(avatar_temperature))
+                    .gte("access_time",date[0]+" 00:00:00")
+                    .lte("access_time",date[1]+" 23:59:59")
+                    .regex("stb_sn",new RegExp(search))
+                    .skip(page*rowPerPage)
+                    .limit(rowPerPage)
+                }   
+            }else { //모두 전체일경우
+                get_data = await api_v1_person_access.find()
+                .sort(headerType)
+                .select('-avatar_file')
+                .gte("access_time",date[0]+" 00:00:00")
+                .lte("access_time",date[1]+" 23:59:59")
+                .regex("stb_sn",new RegExp(search))
+                .skip(page*rowPerPage)
+                .limit(rowPerPage)
+            }
         }
         res.send(get_data)
     } catch (err) {
