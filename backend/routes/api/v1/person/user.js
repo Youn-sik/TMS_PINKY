@@ -21,9 +21,9 @@ require('moment-timezone');
 moment.tz.setDefault("Asia/Seoul"); 
 
 Promise.all([
-    faceapi.nets.ssdMobilenetv1.loadFromDisk(`/var/www/backend/face-models/`),
-    faceapi.nets.faceRecognitionNet.loadFromDisk(`/var/www/backend/face-models/`),
-    faceapi.nets.faceLandmark68Net.loadFromDisk(`/var/www/backend/face-models/`),
+    faceapi.nets.ssdMobilenetv1.loadFromDisk(`${__dirname}/face-models/`),
+    faceapi.nets.faceRecognitionNet.loadFromDisk(`${__dirname}/face-models/`),
+    faceapi.nets.faceLandmark68Net.loadFromDisk(`${__dirname}/face-models/`),
     faceapi.env.monkeyPatch({ Canvas, Image, ImageData,fetch: fetch }),
 ])
 
