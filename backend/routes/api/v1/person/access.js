@@ -63,6 +63,11 @@ router.get('/',async function(req, res) {
                         count: { $sum: 1 },
                     }
                 },
+                {
+                    $sort:{
+                        "_id.date":1
+                    }
+                },
             ])
         } else if(req.query.type === 'deviceGroupAccesses') {
             let date = req.query.date.split('/');

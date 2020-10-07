@@ -41,41 +41,33 @@ const Statistics = props => {
   const [allPeopleData, setAllPeopleData] = useState([]);
   const [peopleData, setPeopleData] = useState({});
   const [devices, setDevices] = useState([]);
-  const [device, setDevice] = useState({});
+  const [device, setDevice] = useState('');
   const [count, setCount] = useState(0);
   const [errorData, setErrorData] = useState({});
   const [allErrorData, setAllErrorData] = useState({});
   const [loading, setLoading] = useState(true);
   const [attList, setAttList] = useState([]);
 
-  const statsData = (employee, visitor, stranger, black, dates) => {
+  const statsData = (employee, stranger, black, dates) => {
     let temp = [
       [0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0]
     ];
-    console.log(stranger);
-    // dates.map((date, index) => {
-    //   employee.map(i => {
-    //     if (i.access_time.split(' ')[0] === date) temp[0][index]++;
-    //     return false;
-    //   });
-    //   visitor.map(i => {
-    //     if (i.access_time.split(' ')[0] === date) temp[1][index]++;
-    //     return false;
-    //   });
-    //   stranger.map(i => {
-    //     if (i.access_time.split(' ')[0] === date) temp[2][index]++;
-    //     return false;
-    //   });
-    //   black.map(i => {
-    //     if (i.access_time.split(' ')[0] === date) temp[3][index]++;
-    //     return false;
-    //   });
-    //   return false;
-    // });
-    // return temp;
+
+    dates.map((date, index) => {
+
+      if(employee[index] && employee[index]._id.date === date)
+        temp[0][index] = employee[index].count
+      if(stranger[index] && stranger[index]._id.date === date)
+        temp[2][index] = stranger[index].count
+      if(black[index] && black[index]._id.date === date)
+        temp[3][index] = black[index].count
+      return false;
+    });
+
+    return temp;
   };
 
   // error.log_no === 3 ? "연결 끊김" :
@@ -176,20 +168,20 @@ const Statistics = props => {
       memory: temp[2],
       black: temp[3]
     });
-
-    setLoading(false);
   };
 
   async function getAccesses() {
     let result = await axios.get(base_url + `/access?date=${date[0]}/${date[1]}&device=${device}&type=deviceStats`);
     setAllPeopleData(result.data);
     filterAccesses(result.data);
+
+    setLoading(false);
   }
 
   async function getDevices() {
     let result = await axios.get(
       base_url + '/camera?authority=' + props.authority
-    );
+    )
     if (result.data.length > 0) {
       setDevices(result.data);
       setDevice(result.data[0].serial_number);
@@ -217,9 +209,13 @@ const Statistics = props => {
   };
 
   useEffect(() => {
-    getAccesses();
-    getErrors();
-  }, [date,device]);
+    if(device !== '') {
+      setLoading(true)
+      getAccesses();
+      getErrors();
+    }
+
+  }, [device,date]);
 
   useEffect(() => {
     getDevices();
