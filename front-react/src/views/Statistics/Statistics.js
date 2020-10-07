@@ -172,10 +172,9 @@ const Statistics = props => {
 
   async function getAccesses() {
     let result = await axios.get(base_url + `/access?date=${date[0]}/${date[1]}&device=${device}&type=deviceStats`);
+    setLoading(false);
     setAllPeopleData(result.data);
     filterAccesses(result.data);
-
-    setLoading(false);
   }
 
   async function getDevices() {
@@ -185,6 +184,8 @@ const Statistics = props => {
     if (result.data.length > 0) {
       setDevices(result.data);
       setDevice(result.data[0].serial_number);
+    } else {
+      setDevice(null);
     }
   }
 
@@ -210,11 +211,9 @@ const Statistics = props => {
 
   useEffect(() => {
     if(device !== '') {
-      setLoading(true)
       getAccesses();
       getErrors();
     }
-
   }, [device,date]);
 
   useEffect(() => {

@@ -116,13 +116,13 @@ const AccessList = props => {
       cancelToken: source.token
     });
 
+    setLoading(false);
     if(_pages.data.length !== 0) {
       let result = await axios.get(base_url + 
         `/access?date=${date[0]}/${date[1]}&page=${page}${type !== '0' ? "&avatar_type="+type : ''}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
         cancelToken: source.token
       });
 
-      setLoading(false);
       setPage(1);
   
       let _temp = parseInt(_pages.data[0].count/7);
