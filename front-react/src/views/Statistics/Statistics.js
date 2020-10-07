@@ -41,39 +41,32 @@ const Statistics = props => {
   const [allPeopleData, setAllPeopleData] = useState([]);
   const [peopleData, setPeopleData] = useState({});
   const [devices, setDevices] = useState([]);
-  const [device, setDevice] = useState({});
+  const [device, setDevice] = useState('');
   const [count, setCount] = useState(0);
   const [errorData, setErrorData] = useState({});
   const [allErrorData, setAllErrorData] = useState({});
   const [loading, setLoading] = useState(true);
   const [attList, setAttList] = useState([]);
 
-  const statsData = (employee, visitor, stranger, black, dates) => {
+  const statsData = (employee, stranger, black, dates) => {
     let temp = [
       [0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0]
     ];
+
     dates.map((date, index) => {
-      employee.map(i => {
-        if (i.access_time.split(' ')[0] === date) temp[0][index]++;
-        return false;
-      });
-      visitor.map(i => {
-        if (i.access_time.split(' ')[0] === date) temp[1][index]++;
-        return false;
-      });
-      stranger.map(i => {
-        if (i.access_time.split(' ')[0] === date) temp[2][index]++;
-        return false;
-      });
-      black.map(i => {
-        if (i.access_time.split(' ')[0] === date) temp[3][index]++;
-        return false;
-      });
+
+      if(employee[index] && employee[index]._id.date === date)
+        temp[0][index] = employee[index].count
+      if(stranger[index] && stranger[index]._id.date === date)
+        temp[2][index] = stranger[index].count
+      if(black[index] && black[index]._id.date === date)
+        temp[3][index] = black[index].count
       return false;
     });
+
     return temp;
   };
 
@@ -119,17 +112,15 @@ const Statistics = props => {
 
   const filterAccesses = result => {
     let employee = result.filter(
-      access => access.avatar_type === 1 && access.stb_sn === device
-    );
-    let visitor = result.filter(
-      access => access.avatar_type === 2 && access.stb_sn === device
+      access => access._id.avatar_type === 1
     );
     let stranger = result.filter(
-      access => access.avatar_type === 3 && access.stb_sn === device
+      access => access._id.avatar_type === 3
     );
     let black = result.filter(
-      access => access.avatar_type === 5 && access.stb_sn === device
+      access => access._id.avatar_type === 4
     );
+    
     let dates = [
       date[0],
       dateChange(date[0], 1),
@@ -140,7 +131,7 @@ const Statistics = props => {
       date[1]
     ];
 
-    let temp = statsData(employee, visitor, stranger, black, dates);
+    let temp = statsData(employee, stranger, black, dates);
 
     setPeopleData({
       employee: temp[0],
@@ -177,20 +168,20 @@ const Statistics = props => {
       memory: temp[2],
       black: temp[3]
     });
-
-    setLoading(false);
   };
 
   async function getAccesses() {
-    let result = await axios.get(base_url + `/access?date=${date[0]}/${date[1]}`);
+    let result = await axios.get(base_url + `/access?date=${date[0]}/${date[1]}&device=${device}&type=deviceStats`);
     setAllPeopleData(result.data);
     filterAccesses(result.data);
+
+    setLoading(false);
   }
 
   async function getDevices() {
     let result = await axios.get(
       base_url + '/camera?authority=' + props.authority
-    );
+    )
     if (result.data.length > 0) {
       setDevices(result.data);
       setDevice(result.data[0].serial_number);
@@ -218,9 +209,13 @@ const Statistics = props => {
   };
 
   useEffect(() => {
-    getAccesses();
-    getErrors();
-  }, [date,device]);
+    if(device !== '') {
+      setLoading(true)
+      getAccesses();
+      getErrors();
+    }
+
+  }, [device,date]);
 
   useEffect(() => {
     getDevices();
