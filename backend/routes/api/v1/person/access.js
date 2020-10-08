@@ -76,9 +76,6 @@ router.get('/',async function(req, res) {
             if(device) {
                 get_data = await api_v1_person_access.aggregate([
                     {
-                        $sort:{"avatar_temperature" : -1}
-                    },
-                    {
                         $match: {
                             access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
                             stb_sn : device 
@@ -134,12 +131,15 @@ router.get('/',async function(req, res) {
                         } 
                     },
                     {
+                        $sort:{avatar_temperature:-1}
+                    },
+                    {
                         $group : {
                             _id : "$hour",
                             count: { $sum: 1 },
-                            maxTemp:{ $max: "$avatar_temperature" },
-                            maxTempPicture:{ $max: "$avatar_file_url" },
-                            avatar_type : "$avatar_type"
+                            maxTemp:{ $first: "$avatar_temperature" },
+                            maxUrl:{ $first: "$avatar_file_url" },
+                            maxType:{ $first: "$avatar_type" },
                         }
                     },
                     {
@@ -148,9 +148,6 @@ router.get('/',async function(req, res) {
                 ])
             } else {         
                 get_data = await api_v1_person_access.aggregate([
-                    {
-                        $sort:{"avatar_temperature" : -1}
-                    },
                     {
                         $match: {
                             access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" }

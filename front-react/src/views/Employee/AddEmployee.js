@@ -7,6 +7,7 @@ import {
   CardContent,
   TextField,
   Button,
+  CircularProgress,
   Typography
 } from '@material-ui/core';
 import axios from 'axios';
@@ -145,12 +146,15 @@ const emailMaskCustom = props => {
 };
 
 const AddEmployee = props => {
-  const { groups } = props.location;
+  // const { groups } = props.location;
   const classes = useStyles();
   const history = props.history;
   const [pictures, setPictures] = useState([]);
   const [open, setOpen] = useState(false);
   const [node, setNode] = useState({});
+  const [groups,setGroups] = useState([])
+  const [loading, setLoading] = useState(false);
+
   const onDrop = picture => {
     setPictures([picture, ...pictures]);
   };
@@ -162,11 +166,14 @@ const AddEmployee = props => {
     setOpen(false);
   };
 
+  const getGroups = async () => {
+    let result = await axios.get(base_url+'/group?type=1')
+    setGroups(result.data);
+  }
+
   useEffect(() => {
-    if (!groups) {
-      history.go(-1);
-    }
-  }, [groups, history]);
+    getGroups()
+  },[]);
 
   const [userInfo, setUserInfo] = useState({
     name: '',
@@ -243,6 +250,7 @@ const AddEmployee = props => {
     else if (userInfo.position === '') alert('직급을 입력해주세요');
     else if (userInfo.department_id === '') alert('부서를 입력해주세요');
     else {
+      setLoading(true);
       let base64 = await toBase64(pictures[0][0]);
       base64 = base64.replace('data:image/jpeg;base64,', '');
       base64 = base64.replace('data:image/png;base64,', '');
@@ -253,6 +261,7 @@ const AddEmployee = props => {
         account: props.user_id,
         avatar_file: base64
       });
+      setLoading(false);
       alert('등록 되었습니다.');
       history.push('/users/employee');
     }
@@ -365,9 +374,16 @@ const AddEmployee = props => {
                   onClick={handleClickOpen}>
                   그룹 선택
                 </Button>
-                <Button variant="contained" color="primary" onClick={addUser}>
-                  추가
-                </Button>
+                {
+                  !loading ?
+                  <Button variant="contained" color="primary" onClick={addUser}>
+                    추가
+                  </Button>
+                  :
+                  <Button variant="contained" color="primary" >
+                    등록중...
+                  </Button>
+                }
               </div>
               <Dialog
                 open={open}
@@ -381,8 +397,8 @@ const AddEmployee = props => {
                     defaultCollapseIcon={<ArrowDropDownIcon />}
                     defaultExpandIcon={<ArrowRightIcon />}
                     defaultEndIcon={<div style={{ width: 24 }} />}>
-                    {props.location.groups ? (
-                      props.location.groups.map(group => renderTree(group))
+                    {groups ? (
+                      groups.map(group => renderTree(group))
                     ) : (
                       <div></div>
                     )}

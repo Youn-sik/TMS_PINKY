@@ -142,6 +142,7 @@ const AddStranger = props => {
   const [allGroups, setAllGroups] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState({});
   const [pictures, setPictures] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -250,6 +251,7 @@ const AddStranger = props => {
       else if (userInfo.position === '') alert('직급을 입력해주세요');
       else if (userInfo.department_id === '') alert('부서를 입력해주세요');
       else {
+        setLoading(true);
         let result = await axios.post(base_url + '/user?type=stranger', {
           name: userInfo.name,
           avatar_file: base64,
@@ -264,7 +266,7 @@ const AddStranger = props => {
           mail: userInfo.mail,
           type: type,
           groups_obids: [
-            selectedGroup._id ? selectedGroup._id : groups[groups.length - 1]
+            selectedGroup._id ? selectedGroup._id : undefined
           ],
           account: props.user_id
         });
@@ -624,9 +626,16 @@ const AddStranger = props => {
                   onClick={handleClickOpen}>
                   그룹 선택
                 </Button>
-                <Button variant="contained" color="primary" onClick={addUser}>
-                  추가
-                </Button>
+                {
+                  !loading ?
+                  <Button variant="contained" color="primary" onClick={addUser}>
+                    추가
+                  </Button>
+                  :
+                  <Button variant="contained" color="primary" >
+                    등록중...
+                  </Button>
+                }
               </div>
               <Dialog
                 open={open}

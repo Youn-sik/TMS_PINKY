@@ -416,6 +416,7 @@ module.exports = {
         try {
             let insert_array = [];
             let camera = await Camera.findOne( { serial_number : json.stb_sn });
+            let Users = await User.find()
 
             json.values.forEach(async function(element){
                 let folder_date_path = "/uploads/accesss/temp/" + moment().format('YYYYMMDD');
@@ -423,7 +424,6 @@ module.exports = {
                 let file_path = site.base_server_document + folder_date_path + "/" + json.stb_sn + "/";
                 let upload_url = "http://"+server_ip+ ':3000' + folder_date_path + "/" + json.stb_sn + "/" + file_name;
                 let buff = Buffer.from(element.avatar_file, 'base64');
-                
                 if(element.avatar_distance === undefined) {
                     element.avatar_distance = 0
                 }

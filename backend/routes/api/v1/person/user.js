@@ -73,6 +73,7 @@ router.post('/',async function(req, res) {
                 .withFaceLandmarks()
                 .withFaceDescriptors();
             } else {
+                add.avatar_file_url = 'http://'+req.headers.host+'/image/'+add._id+'profile.jpg';
                 fs.writeFileSync('image/'+add._id+'profile.jpg',req.body.avatar_file,'base64')
                 let imageDir = await canvas.loadImage('image/'+add._id+'profile.jpg')
                 detections = await faceapi.detectAllFaces(imageDir)
@@ -89,16 +90,8 @@ router.post('/',async function(req, res) {
             asyncJSON.stringify(detections[0].descriptor,function(err, jsonValue) {
                 add.face_detection = jsonValue;
             })
-            
-            
-            add.avatar_file_url = 'http://'+req.headers.host+'/image/'+add._id+'profile.jpg';
 
-            //sha256 checksum
-            let file_buffer = fs.readFileSync(__dirname+'/../../../../image/'+add._id+'profile.jpg');
-            let sum = crypto.createHash('sha256');
-            sum.update(file_buffer);
-            const hex = sum.digest('hex');
-            add.avatar_file_checksum = hex;
+            add.avatar_file_checksum = "avatar_file_checksum";
         }
         const groups = req.body.groups_obids === undefined ? null : req.body.groups_obids;
         if(groups[0] !== null) {

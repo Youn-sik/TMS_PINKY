@@ -252,6 +252,7 @@ const AccessesTable = props => {
                                 src={access.avatar_file_url}></img>
                             </div>
                           </TableCell>
+                          <TableCell>{access.name === 'unknown' ? null : access.name}</TableCell>
                           <TableCell>
                             {access.stb_sn}
                           </TableCell>
