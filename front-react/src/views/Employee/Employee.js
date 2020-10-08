@@ -468,6 +468,18 @@ const Employee = props => {
     }
   };
 
+  const editGroupNode = async (node,name) => {
+    if (
+      window.confirm(
+        '정말로 수정 하시겠습니까?'
+      )
+    ) {
+      node.name = name;
+      await axios.put(base_url + '/group/' + node._id,node);
+      alert('수정 되었습니다.');
+    }
+  };
+
   const deleteUsers = async selectedUsers => {
     if (window.confirm('정말 삭제 하시겠습니까?')) {
       await axios.delete(base_url + '/user/' + users[0]._id, {
@@ -522,6 +534,7 @@ const Employee = props => {
             setSelectedNode={_setSelectedNode}
             clickedNode={clickedNode}
             deleteGroupNode={deleteGroupNode}
+            editGroupNode={editGroupNode}
             search={search}
             searchNode={searchNode}
             setUsers={_setUsers}

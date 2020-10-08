@@ -440,6 +440,18 @@ const Black = props => {
     setGroups(tempGroups.data);
   }
 
+  const editGroupNode = async (node,name) => {
+    if (
+      window.confirm(
+        '정말로 수정 하시겠습니까?'
+      )
+    ) {
+      node.name = name;
+      await axios.put(base_url + '/group/' + node._id,node);
+      alert('수정 되었습니다.');
+    }
+  };
+
   const deleteGroupNode = async node => {
     if (
       window.confirm(
@@ -519,6 +531,7 @@ const Black = props => {
             user_id={props.user_id}
             setClickedNode={_setClickedNode}
             setSelectedNode={_setSelectedNode}
+            editGroupNode={editGroupNode}
             clickedNode={clickedNode}
             deleteGroupNode={deleteGroupNode}
             search={search}

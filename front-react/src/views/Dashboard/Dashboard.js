@@ -109,10 +109,13 @@ const Dashboard = props => {
     setTemp(result.data);
   }
 
+  useEffect(() => {
+    if(temp.length === 11)
+      setTemp(temp.slice(0,10))
+  },[temp])
+
   const _setRealtime = values => {
     setTemp(temp => [values[0], ...temp]);
-    if(temp.length === 11)
-      setTemp(temp => temp.slice(10,11))
     let _attendance = 0;
     let _late = 0;
     let _attendanceData = JSON.parse(JSON.stringify(attendanceData));

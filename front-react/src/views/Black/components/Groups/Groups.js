@@ -102,6 +102,7 @@ const Groups = props => {
     setUsers,
     search,
     searchNode,
+    editGroupNode,
     groups,
     className,
     ...rest
@@ -109,21 +110,29 @@ const Groups = props => {
   // const [clickedNode,setClickedNode] = useState([]);
   const [open, setOpen] = useState(false);
   const [groupName, setGroupName] = useState('');
+  const [editOpen,setEditOpen] = useState(false)
   const classes = useStyles();
 
-  const handleClickOpen = () => {
-    if (clickedNode.rootParent !== undefined) {
-      window.alert('3차 그룹까지만 생성 가능합니다.');
+  const handleClickOpen = (type) => {
+    if(type === 'edit') {
+      setEditOpen(true);
+      setGroupName(clickedNode.name)
     } else {
-      setOpen(true);
+      if (clickedNode.rootParent !== undefined) {
+        window.alert('3차 그룹까지만 생성 가능합니다.');
+      } else {
+        setOpen(true);
+      }
     }
   };
 
   const handleClose = () => {
     setOpen(false);
+    setEditOpen(false);
   };
 
   const clickAddGroup = async () => {
+    setGroupName('');
     let parent =
       Object.keys(clickedNode).length === 0 ? undefined : clickedNode;
     let result = await axios.post(base_url + '/group', {
@@ -218,11 +227,36 @@ const Groups = props => {
             삭제
           </Button>
         )}
+        {clickedNode.name !== undefined && clickedNode.name !== 'undefined' ? (
+          <Button
+            variant="contained"
+            className={classes.uploadButton}
+            color="primary"
+            onClick={() => {
+              if (Array.isArray(clickedNode.children)) {
+                handleClickOpen('edit')
+                // editGroupNode(clickedNode);
+                // setClickedNode({});
+              } else {
+                window.alert('그룹을 선택해 주세요');
+              }
+            }}>
+            수정
+          </Button>
+        ) : (
+          <Button
+            variant="contained"
+            className={classes.uploadButton}
+            color="primary"
+            disabled>
+            수정
+          </Button>
+        )}
         <Button variant="contained" color="primary" onClick={handleClickOpen}>
           추가
         </Button>
         <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>그룹추가</DialogTitle>
+          <DialogTitle>그룹 추가</DialogTitle>
           <Divider></Divider>
           <DialogContent>
             <TextField
@@ -243,6 +277,33 @@ const Groups = props => {
             </Button>
             <Button onClick={clickAddGroup} color="primary">
               추가
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+
+        <Dialog open={editOpen} onClose={handleClose}>
+          <DialogTitle>그룹 수정</DialogTitle>
+          <Divider></Divider>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="그룹 이름"
+              value={groupName}
+              onChange={e => {
+                setGroupName(e.target.value);
+              }}
+              fullWidth
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="primary">
+              취소
+            </Button>
+            <Button onClick={() => {editGroupNode(clickedNode,groupName); setEditOpen(false);}} color="primary">
+              수정
             </Button>
           </DialogActions>
         </Dialog>
