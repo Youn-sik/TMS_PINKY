@@ -94,7 +94,20 @@ const AccessesTable = props => {
             <TableHead>
               <TableRow>
                 <TableCell>사진</TableCell>
-                <TableCell>이름</TableCell>
+                <TableCell>
+                  {accesses.length > 0 ? (
+                    <TableSortLabel
+                      active={activeType === 'name'}
+                      direction={sort}
+                      onClick={() => {
+                        createSortHandler('name');
+                      }}>
+                      이름
+                    </TableSortLabel>
+                  ) : (
+                    '이름'
+                  )}
+                </TableCell>
                 <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel

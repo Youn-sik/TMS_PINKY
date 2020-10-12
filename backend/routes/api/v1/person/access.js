@@ -381,12 +381,16 @@ router.get('/',async function(req, res) {
             let headerType = "-_id";
             let rowPerPage = 7;
             let search = '';
+            let name = ''
 
             if(req.query.search) 
                 search = req.query.search;
 
             if(req.query.headerType)
                 headerType = req.query.headerType
+
+            if(req.query.name)
+                name = req.query.name
 
             if(avatar_type && avatar_temperature && tempType) { //온도,타입 모두 설정한 경우
                 if(tempType === '2') {
@@ -398,6 +402,7 @@ router.get('/',async function(req, res) {
                     .gte("access_time",date[0]+" 00:00:00")
                     .lte("access_time",date[1]+" 23:59:59")
                     .regex("stb_sn",new RegExp(search))
+                    .regex("name",new RegExp(name))
                     .skip(page*rowPerPage)
                     .limit(rowPerPage)
                 } else {
@@ -409,6 +414,7 @@ router.get('/',async function(req, res) {
                     .gte("access_time",date[0]+" 00:00:00")
                     .lte("access_time",date[1]+" 23:59:59")
                     .regex("stb_sn",new RegExp(search))
+                    .regex("name",new RegExp(name))
                     .skip(page*rowPerPage)
                     .limit(rowPerPage)
                 }
@@ -420,6 +426,7 @@ router.get('/',async function(req, res) {
                 .gte("access_time",date[0]+" 00:00:00")
                 .lte("access_time",date[1]+" 23:59:59")
                 .regex("stb_sn",new RegExp(search))
+                .regex("name",new RegExp(name))
                 .skip(page*rowPerPage)
                 .limit(rowPerPage)
             } else if (avatar_temperature && tempType) {//온도 타입만 선택한 경우
@@ -431,6 +438,7 @@ router.get('/',async function(req, res) {
                     .gte("access_time",date[0]+" 00:00:00")
                     .lte("access_time",date[1]+" 23:59:59")
                     .regex("stb_sn",new RegExp(search))
+                    .regex("name",new RegExp(name))
                     .skip(page*rowPerPage)
                     .limit(rowPerPage)
                 } else {
@@ -441,6 +449,7 @@ router.get('/',async function(req, res) {
                     .gte("access_time",date[0]+" 00:00:00")
                     .lte("access_time",date[1]+" 23:59:59")
                     .regex("stb_sn",new RegExp(search))
+                    .regex("name",new RegExp(name))
                     .skip(page*rowPerPage)
                     .limit(rowPerPage)
                 }   
@@ -451,6 +460,7 @@ router.get('/',async function(req, res) {
                 .gte("access_time",date[0]+" 00:00:00")
                 .lte("access_time",date[1]+" 23:59:59")
                 .regex("stb_sn",new RegExp(search))
+                .regex("name",new RegExp(name))
                 .skip(page*rowPerPage)
                 .limit(rowPerPage)
             }
