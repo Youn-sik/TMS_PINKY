@@ -6,6 +6,7 @@ import Card from '@material-ui/core/Card';
 import moment from 'moment';
 import 'moment/locale/ko';
 import {base_url} from 'server.json';
+import xlsx from 'xlsx';
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3)
@@ -54,6 +55,48 @@ const AccessList = props => {
     setSearch(e.target.value);
   };
 
+  const clickExport = () => {
+
+    const ordered = [];
+    accesses.map((access) => {
+      let temp = {}
+      Object.keys(access).sort().forEach(function(key) {
+        if(key !== '__v' && 
+        key !== 'avatar_contraction_data' && 
+        key !== 'avatar_file_checksum' && 
+        key !== 'create_at' &&
+        key !== 'create_ut' &&
+        key !== 'stb_obid'){
+          if(key === '_id')
+            temp['아이디'] = access[key];
+          else if(key === 'access_time')
+            temp['출입 시간'] = access[key];
+          else if(key === 'avatar_distance')
+            temp['촬영 거리'] = access[key];
+          else if(key === 'avatar_file_url')
+            temp['사진 URL'] = access[key];
+          else if(key === 'avatar_temperature')
+            temp['온도'] = access[key];
+          else if(key === 'avatar_type')
+            temp['타입'] = access[key];
+          else if(key === 'name')
+            temp['이름'] = access[key];
+          else if(key === 'stb_sn')
+            temp['촬영 단말 시리얼 넘버'] = access[key];
+        }
+      });
+      ordered.push(temp);
+    })
+    
+    const ws = xlsx.utils.json_to_sheet(ordered);
+
+    const wb = xlsx.utils.book_new();
+
+    xlsx.utils.book_append_sheet(wb, ws, "Sheet1");
+
+    xlsx.writeFile(wb, "Test.csv");
+  }
+
   const clickSearch = async () => {
     setLoading(true);
     let headerType = activeType
@@ -76,10 +119,13 @@ const AccessList = props => {
     setLoading(false);
     setPage(1);
 
-    if(_pages.data.length !== 0){
-      let temp = parseInt(_pages.data[0].count/7);
+    let count = 0 
+      _pages.data.map(i => count += parseInt(i.count));
 
-      if(_pages.data[0].count%7)
+    if(_pages.data.length !== 0){
+      let temp = parseInt(count/7);
+
+      if(count%7)
         temp++;
 
       setPages(temp);
@@ -122,9 +168,12 @@ const AccessList = props => {
         cancelToken: source.token
       });
       setPage(1);
-  
-      let _temp = parseInt(_pages.data[0].count/7);
-      if(_pages.data[0].count%7)
+
+      let count = 0 
+      _pages.data.map(i => count += parseInt(i.count));
+
+      let _temp = parseInt(count/7);
+      if(count%7)
         _temp++;
   
       setPages(_temp);
@@ -175,6 +224,7 @@ const AccessList = props => {
     <div className={classes.root}>
       <Card className={(classes.root, classes.cardcontent)}>
         <AccessesToolbar
+          clickExport={clickExport}
           search={search}
           loading={loading}
           setSearch={_setSearch}

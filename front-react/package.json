@@ -66,7 +66,8 @@
     "text-mask-addons": "^3.8.0",
     "underscore": "^1.9.1",
     "uuid": "^3.3.2",
-    "validate.js": "^0.13.1"
+    "validate.js": "^0.13.1",
+    "xlsx": "^0.16.8"
   },
   "devDependencies": {
     "eslint-plugin-prettier": "^3.0.1",

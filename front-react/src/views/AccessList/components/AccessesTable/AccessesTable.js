@@ -234,7 +234,7 @@ const AccessesTable = props => {
                           <TableCell>
                             {
                               access.avatar_type === 3 ? 
-                              <RouterLink RouterLink
+                              <RouterLink
                                 style={{ textDecoration: 'none' }}
                                 to={{
                                   pathname: '/users/stranger/add',
@@ -296,7 +296,7 @@ const AccessesTable = props => {
                           <TableCell>
                             {
                               access.avatar_type === 3 ? 
-                              <RouterLink RouterLink
+                              <RouterLink
                                 style={{ textDecoration: 'none' }}
                                 to={{
                                   pathname: '/users/stranger/add',
