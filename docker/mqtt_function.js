@@ -452,7 +452,7 @@ module.exports = {
                                     +user.mobile+"|"
                                     +user.mail+"|"
                                     +user.gender+"|"
-                                    +user.type+"|"
+                                    +user.type === 5 ? 4 : user.type+"|"
                                     +user.avatar_file_url+"|"
                                     +user.create_at+"|"
                                     +user._id,

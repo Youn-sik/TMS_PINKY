@@ -13,6 +13,8 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 import axios from 'axios';
 import {
   Card,
@@ -111,6 +113,7 @@ const Groups = props => {
   const [open, setOpen] = useState(false);
   const [groupName, setGroupName] = useState('');
   const [editOpen,setEditOpen] = useState(false)
+  const [topGroupCheck,setTopGroupCheck] = useState(false);
   const classes = useStyles();
 
   const handleClickOpen = (type) => {
@@ -129,19 +132,25 @@ const Groups = props => {
   const handleClose = () => {
     setOpen(false);
     setEditOpen(false);
+    setTopGroupCheck(false);
   };
+
+  const handleCheck = () => {
+    setTopGroupCheck(!topGroupCheck)
+  }
 
   const clickAddGroup = async () => {
     setGroupName('');
     let parent =
-      Object.keys(clickedNode).length === 0 ? undefined : clickedNode;
+      Object.keys(clickedNode).length === 0 || topGroupCheck ? undefined : clickedNode;
+    console.log(topGroupCheck,parent);
     let result = await axios.post(base_url + '/group', {
       name: groupName,
       type: 1,
       parent,
       account: props.user_id
     });
-    if (Object.keys(clickedNode).length !== 0) {
+    if (!topGroupCheck && Object.keys(clickedNode).length !== 0) {
       let childrenSize = clickedNode.children.length;
       let userSize = clickedNode.user_obids.length;
       clickedNode.children.splice(childrenSize - userSize, 0, result.data);
@@ -150,6 +159,7 @@ const Groups = props => {
     }
     setGroupName('');
     setOpen(false);
+    setTopGroupCheck(false);
   };
 
   const renderTree = (node, depth) => (
@@ -260,6 +270,17 @@ const Groups = props => {
           <DialogTitle>그룹 추가</DialogTitle>
           <Divider></Divider>
           <DialogContent>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={topGroupCheck}
+                  onChange={handleCheck}
+                  name="checkedB"
+                  color="primary"
+                />
+              }
+              label="최상위 그룹으로 추가"
+            />
             <TextField
               autoFocus
               margin="dense"

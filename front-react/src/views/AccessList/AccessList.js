@@ -6,7 +6,8 @@ import Card from '@material-ui/core/Card';
 import moment from 'moment';
 import 'moment/locale/ko';
 import {base_url} from 'server.json';
-import xlsx from 'xlsx';
+import ExcelJS from 'exceljs/dist/es5/exceljs.browser.js'
+import { saveAs } from 'file-saver'
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3)
@@ -55,46 +56,40 @@ const AccessList = props => {
     setSearch(e.target.value);
   };
 
-  const clickExport = () => {
+  const clickExport = async () => {
 
-    const ordered = [];
-    accesses.map((access) => {
-      let temp = {}
-      Object.keys(access).sort().forEach(function(key) {
-        if(key !== '__v' && 
-        key !== 'avatar_contraction_data' && 
-        key !== 'avatar_file_checksum' && 
-        key !== 'create_at' &&
-        key !== 'create_ut' &&
-        key !== 'stb_obid'){
-          if(key === '_id')
-            temp['아이디'] = access[key];
-          else if(key === 'access_time')
-            temp['출입 시간'] = access[key];
-          else if(key === 'avatar_distance')
-            temp['촬영 거리'] = access[key];
-          else if(key === 'avatar_file_url')
-            temp['사진 URL'] = access[key];
-          else if(key === 'avatar_temperature')
-            temp['온도'] = access[key];
-          else if(key === 'avatar_type')
-            temp['타입'] = access[key];
-          else if(key === 'name')
-            temp['이름'] = access[key];
-          else if(key === 'stb_sn')
-            temp['촬영 단말 시리얼 넘버'] = access[key];
-        }
-      });
-      ordered.push(temp);
-    })
+    const wb = new ExcelJS.Workbook()
+
+    const ws = wb.addWorksheet("Info", {properties:{ defaultRowHeight: 50 }})
+
     
-    const ws = xlsx.utils.json_to_sheet(ordered);
 
-    const wb = xlsx.utils.book_new();
+    ws.addRow(['사진', '이름', '단말기','타입','거리','온도','출입 시간'])
+    accesses.map((access,index) => {
+      let temp = []
+      let image = wb.addImage({
+        base64: access.avatar_file,
+        extension: 'png'
+      })
 
-    xlsx.utils.book_append_sheet(wb, ws, "Sheet1");
+      temp.push('');
+      temp.push(access['name']);
+      temp.push(access['stb_sn'])
+      temp.push(access['avatar_type'] === 1 ? '사원' : access['avatar_type'] === 3 ? '미등록자' : '블랙리스트');
+      temp.push(String(access['avatar_distance']).substring(0,3)+"M");
+      temp.push(access['avatar_temperature'].length < 4 ? access['avatar_temperature'] : access['avatar_temperature'].substring(0,4));
+      temp.push(access['access_time']);
 
-    xlsx.writeFile(wb, "Test.csv");
+      ws.addRow(temp)
+      ws.addImage(image,{
+        tl: { col: 0, row: 1+index },
+        br: { col: 0.7, row: 2+index }
+      })
+    })
+
+    const buf = await wb.xlsx.writeBuffer()
+
+    saveAs(new Blob([buf]), 'abc.xlsx')
   }
 
   const clickSearch = async () => {

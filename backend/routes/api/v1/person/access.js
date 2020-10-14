@@ -11,11 +11,31 @@ router.get('/',async function(req, res) {
         let get_data;
         let date = new RegExp(moment().format('YYYY-MM-DD'));
         let today = new RegExp(moment().format('YYYY-MM-DD'));
+        let week = [moment().subtract(6, 'days').format('YYYY-MM-DD')+" 23:59:59",moment().format('YYYY-MM-DD')+" 00:00:00"]
         if(req.query.type === 'todayStatistics') {
             get_data = await api_v1_person_access.aggregate([
                 {
                     $match: {
                         access_time : {$regex:date}
+                    }
+                },
+                {
+                    $group: {
+                        _id: {"type":"$avatar_type"},
+                        count: { $sum: 1 }
+                    }
+                },
+                {
+                    $sort: {
+                        lastDate : -1
+                    }   
+                }
+            ])
+        } else if(req.query.type === 'weekStatistics') {
+            get_data = await api_v1_person_access.aggregate([
+                {
+                    $match: {
+                        access_time : { $gte:week[0],$lte: week[1] }
                     }
                 },
                 {
@@ -396,7 +416,7 @@ router.get('/',async function(req, res) {
                 if(tempType === '2') {
                     get_data = await api_v1_person_access.find()
                     .sort(headerType)
-                    .select('-avatar_file')
+
                     .where("avatar_type").equals(parseInt(avatar_type))
                     .gte('avatar_temperature', parseFloat(avatar_temperature))
                     .gte("access_time",date[0]+" 00:00:00")
@@ -408,7 +428,7 @@ router.get('/',async function(req, res) {
                 } else {
                     get_data = await api_v1_person_access.find()
                     .sort(headerType)
-                    .select('-avatar_file')
+
                     .where("avatar_type").equals(parseInt(avatar_type))
                     .lt('avatar_temperature', parseFloat(avatar_temperature))
                     .gte("access_time",date[0]+" 00:00:00")
@@ -421,7 +441,6 @@ router.get('/',async function(req, res) {
             } else if (avatar_type) { //아바타 타입만 선택한 경우
                 get_data = await api_v1_person_access.find()
                 .sort(headerType)
-                .select('-avatar_file')
                 .where("avatar_type").equals(parseInt(avatar_type))
                 .gte("access_time",date[0]+" 00:00:00")
                 .lte("access_time",date[1]+" 23:59:59")
@@ -433,7 +452,7 @@ router.get('/',async function(req, res) {
                 if(tempType === '2') {
                     get_data = await api_v1_person_access.find()
                     .sort(headerType)
-                    .select('-avatar_file')
+
                     .gte('avatar_temperature', parseFloat(avatar_temperature))
                     .gte("access_time",date[0]+" 00:00:00")
                     .lte("access_time",date[1]+" 23:59:59")
@@ -444,7 +463,7 @@ router.get('/',async function(req, res) {
                 } else {
                     get_data = await api_v1_person_access.find()
                     .sort(headerType)
-                    .select('-avatar_file')
+
                     .lt('avatar_temperature', parseFloat(avatar_temperature))
                     .gte("access_time",date[0]+" 00:00:00")
                     .lte("access_time",date[1]+" 23:59:59")
@@ -456,7 +475,6 @@ router.get('/',async function(req, res) {
             }else { //모두 전체일경우
                 get_data = await api_v1_person_access.find()
                 .sort(headerType)
-                .select('-avatar_file')
                 .gte("access_time",date[0]+" 00:00:00")
                 .lte("access_time",date[1]+" 23:59:59")
                 .regex("stb_sn",new RegExp(search))

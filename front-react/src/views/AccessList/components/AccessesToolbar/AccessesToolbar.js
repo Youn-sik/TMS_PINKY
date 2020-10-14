@@ -116,15 +116,16 @@ const AccessesToolbar = props => {
           labelId="demo-simple-select-label"
           id="demo-simple-select"
           value={temp}
+          style={{}}
           onChange={handleTempChange}>
           <MenuItem value="0">전체</MenuItem>
           <MenuItem value="1">정상 온도</MenuItem>
           <MenuItem value="2">비정상 온도</MenuItem>
         </Select>
-        <Button variant="contained" color="primary" style={{marginLeft : 20}} onClick={clickExport}>
-          EXPORT
+        <Button style={{width: '163px',marginLeft:'10px',marginRight:'10px' }} variant="contained" color="primary" onClick={clickExport}>
+          엑셀로 다운로드
         </Button>
-        <div style={{ width: '100%' }}>
+        <div style={{ width: '80%' }}>
           <TextField
             style={{ float: 'right', marginRight: '30px' }}
             className={classes.search}
