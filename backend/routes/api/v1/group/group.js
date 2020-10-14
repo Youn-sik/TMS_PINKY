@@ -77,8 +77,8 @@ router.post('/',async function(req, res) {
 router.put('/:id',async function(req, res) {
     try {
         const id = req.params === undefined ? req.id : req.params.id
-        const update_data = req.body === undefined ? req : req.body
-        api_v1_group_group.findByIdAndUpdate(id, update_data, {new: true })
+        const update_data = req.body
+        let update = await api_v1_group_group.findByIdAndUpdate(id, update_data, {new: true })
         res.send(update);
     } catch (err) {
         throw boom.boomify(err)

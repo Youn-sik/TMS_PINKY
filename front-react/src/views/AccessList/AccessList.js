@@ -6,6 +6,8 @@ import Card from '@material-ui/core/Card';
 import moment from 'moment';
 import 'moment/locale/ko';
 import {base_url} from 'server.json';
+import ExcelJS from 'exceljs/dist/es5/exceljs.browser.js'
+import { saveAs } from 'file-saver'
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3)
@@ -54,6 +56,42 @@ const AccessList = props => {
     setSearch(e.target.value);
   };
 
+  const clickExport = async () => {
+
+    const wb = new ExcelJS.Workbook()
+
+    const ws = wb.addWorksheet("Info", {properties:{ defaultRowHeight: 50 }})
+
+    
+
+    ws.addRow(['사진', '이름', '단말기','타입','거리','온도','출입 시간'])
+    accesses.map((access,index) => {
+      let temp = []
+      let image = wb.addImage({
+        base64: access.avatar_file,
+        extension: 'png'
+      })
+
+      temp.push('');
+      temp.push(access['name']);
+      temp.push(access['stb_sn'])
+      temp.push(access['avatar_type'] === 1 ? '사원' : access['avatar_type'] === 3 ? '미등록자' : '블랙리스트');
+      temp.push(String(access['avatar_distance']).substring(0,3)+"M");
+      temp.push(access['avatar_temperature'].length < 4 ? access['avatar_temperature'] : access['avatar_temperature'].substring(0,4));
+      temp.push(access['access_time']);
+
+      ws.addRow(temp)
+      ws.addImage(image,{
+        tl: { col: 0, row: 1+index },
+        br: { col: 0.7, row: 2+index }
+      })
+    })
+
+    const buf = await wb.xlsx.writeBuffer()
+
+    saveAs(new Blob([buf]), 'abc.xlsx')
+  }
+
   const clickSearch = async () => {
     setLoading(true);
     let headerType = activeType
@@ -76,10 +114,13 @@ const AccessList = props => {
     setLoading(false);
     setPage(1);
 
-    if(_pages.data.length !== 0){
-      let temp = parseInt(_pages.data[0].count/7);
+    let count = 0 
+      _pages.data.map(i => count += parseInt(i.count));
 
-      if(_pages.data[0].count%7)
+    if(_pages.data.length !== 0){
+      let temp = parseInt(count/7);
+
+      if(count%7)
         temp++;
 
       setPages(temp);
@@ -122,11 +163,13 @@ const AccessList = props => {
         `/access?date=${date[0]}/${date[1]}&page=${page}${type !== '0' ? "&avatar_type="+type : ''}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
         cancelToken: source.token
       });
-
       setPage(1);
-  
-      let _temp = parseInt(_pages.data[0].count/7);
-      if(_pages.data[0].count%7)
+
+      let count = 0 
+      _pages.data.map(i => count += parseInt(i.count));
+
+      let _temp = parseInt(count/7);
+      if(count%7)
         _temp++;
   
       setPages(_temp);
@@ -135,6 +178,7 @@ const AccessList = props => {
       setPages(0);
       setAccesses([]);
     }
+    setLoading(false);
   }
 
   async function movePage(page) {
@@ -176,6 +220,7 @@ const AccessList = props => {
     <div className={classes.root}>
       <Card className={(classes.root, classes.cardcontent)}>
         <AccessesToolbar
+          clickExport={clickExport}
           search={search}
           loading={loading}
           setSearch={_setSearch}

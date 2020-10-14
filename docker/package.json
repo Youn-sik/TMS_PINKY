@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@tensorflow/tfjs-node": "^2.3.0",
+    "@tensorflow/tfjs-node": "^2.5.0",
     "@vladmandic/face-api": "^0.4.5",
     "archiver": "^5.0.2",
     "async-json": "0.0.2",

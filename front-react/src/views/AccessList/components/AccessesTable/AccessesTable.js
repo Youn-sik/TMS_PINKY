@@ -97,6 +97,20 @@ const AccessesTable = props => {
                 <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel
+                      active={activeType === 'name'}
+                      direction={sort}
+                      onClick={() => {
+                        createSortHandler('name');
+                      }}>
+                      이름
+                    </TableSortLabel>
+                  ) : (
+                    '이름'
+                  )}
+                </TableCell>
+                <TableCell>
+                  {accesses.length > 0 ? (
+                    <TableSortLabel
                       active={activeType === 'stb_sn'}
                       direction={sort}
                       onClick={() => {
@@ -187,6 +201,7 @@ const AccessesTable = props => {
                                 src={access.avatar_file_url}></img>
                             </div>
                           </TableCell>
+                        <TableCell>{access.name === 'unknown' ? null : access.name}</TableCell>
                           <TableCell>
                             {access.stb_sn}
                           </TableCell>
@@ -219,7 +234,7 @@ const AccessesTable = props => {
                           <TableCell>
                             {
                               access.avatar_type === 3 ? 
-                              <RouterLink RouterLink
+                              <RouterLink
                                 style={{ textDecoration: 'none' }}
                                 to={{
                                   pathname: '/users/stranger/add',
@@ -250,6 +265,7 @@ const AccessesTable = props => {
                                 src={access.avatar_file_url}></img>
                             </div>
                           </TableCell>
+                          <TableCell>{access.name === 'unknown' ? null : access.name}</TableCell>
                           <TableCell>
                             {access.stb_sn}
                           </TableCell>
@@ -280,7 +296,7 @@ const AccessesTable = props => {
                           <TableCell>
                             {
                               access.avatar_type === 3 ? 
-                              <RouterLink RouterLink
+                              <RouterLink
                                 style={{ textDecoration: 'none' }}
                                 to={{
                                   pathname: '/users/stranger/add',

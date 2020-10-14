@@ -68,6 +68,7 @@ const UsersTable = props => {
     selectedNode,
     setUserSearch,
     setClickedNode,
+    exportExcel,
     clickedNode,
     setUsers,
     deleteUsers,
@@ -164,6 +165,9 @@ const UsersTable = props => {
             )
           }}
         />
+        <Button style={{width: '164px' }} variant="contained" color="primary" onClick={exportExcel}>
+          엑셀로 다운로드
+        </Button>
         <Grid container justify="flex-end" className={classes.buttonActions}>
           {selected.length ? (
             <Button

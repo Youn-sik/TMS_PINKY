@@ -119,7 +119,7 @@ const Access = props => {
 
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
-      <CardHeader title="금일 출입" />
+      <CardHeader title="주간 출입" />
       <Divider />
       <CardContent className={classes.cardContent}>
         <Grid

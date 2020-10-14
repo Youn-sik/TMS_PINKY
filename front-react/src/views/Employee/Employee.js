@@ -4,6 +4,8 @@ import { Grid } from '@material-ui/core';
 import axios from 'axios';
 import { Groups, UsersTable } from './components';
 import {base_url} from 'server.json';
+import ExcelJS from 'exceljs/dist/es5/exceljs.browser.js'
+import { saveAs } from 'file-saver'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -23,6 +25,69 @@ const Employee = props => {
   const [selectedNode, setSelectedNode] = useState([]);
   const [activeType, setActiveType] = useState('create_at');
   const classes = useStyles();
+
+  const exportExcel = async () => {
+    const wb = new ExcelJS.Workbook()
+
+    const ws = wb.addWorksheet("Info", {properties:{ defaultRowHeight: 50 }})
+    
+    ws.addRow(['사진', '이름', '성별','근무지','부서','직급','이메일','생성일'])
+
+    if(search === '' && users.length > 0) {
+      users.slice(0,7).map((user,index) => {
+        let temp = []
+        let image = wb.addImage({
+          base64: user.avatar_file,
+          extension: 'png'
+        })
+  
+        temp.push('');
+        temp.push(user['name']);
+        temp.push(user['gender'] === 1 ? '남자' : '여자')
+        temp.push(user['location']);
+        temp.push(user['department_id']);
+        temp.push(user['position']);
+        temp.push(user['mail']);
+        temp.push(user['create_at']);
+  
+        ws.addRow(temp)
+        ws.addImage(image,{
+          tl: { col: 0, row: 1+index },
+          br: { col: 0.7, row: 2+index }
+        })
+      })
+    } else if(filteredUsers.length > 0){
+      filteredUsers.slice(0,7).map((user,index) => {
+        let temp = []
+        let image = wb.addImage({
+          base64: user.avatar_file,
+          extension: 'png'
+        })
+  
+        temp.push('');
+        temp.push(user['name']);
+        temp.push(user['gender'] === 1 ? '남자' : '여자')
+        temp.push(user['location']);
+        temp.push(user['department_id']);
+        temp.push(user['position']);
+        temp.push(user['mail']);
+        temp.push(user['create_at']);
+  
+        ws.addRow(temp)
+        ws.addImage(image,{
+          tl: { col: 0, row: 1+index },
+          br: { col: 0.7, row: 2+index }
+        })
+      })
+    } else {
+      alert('Error: 사용자가 없습니다.')
+      return 0;
+    }
+
+    const buf = await wb.xlsx.writeBuffer()
+
+    saveAs(new Blob([buf]), 'abc.xlsx')
+  }
 
   const filterGroup = useCallback(
     groups => {
@@ -468,6 +533,18 @@ const Employee = props => {
     }
   };
 
+  const editGroupNode = async (node,name) => {
+    if (
+      window.confirm(
+        '정말로 수정 하시겠습니까?'
+      )
+    ) {
+      node.name = name;
+      await axios.put(base_url + '/group/' + node._id,node);
+      alert('수정 되었습니다.');
+    }
+  };
+
   const deleteUsers = async selectedUsers => {
     if (window.confirm('정말 삭제 하시겠습니까?')) {
       await axios.delete(base_url + '/user/' + users[0]._id, {
@@ -522,6 +599,7 @@ const Employee = props => {
             setSelectedNode={_setSelectedNode}
             clickedNode={clickedNode}
             deleteGroupNode={deleteGroupNode}
+            editGroupNode={editGroupNode}
             search={search}
             searchNode={searchNode}
             setUsers={_setUsers}
@@ -531,6 +609,7 @@ const Employee = props => {
         <Grid item lg={8} md={8} xl={9} xs={12}>
           {/* <AccountDetails users={users}/> */}
           <UsersTable
+            exportExcel={exportExcel}
             activeType={activeType}
             sortAccesses={sortAccesses}
             setClickedNode={_setClickedNode}

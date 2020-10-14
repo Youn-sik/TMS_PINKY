@@ -32,7 +32,7 @@ router.get('/:id',async function(req, res) {
     }
 });
 
-router.post('/',function(req, res) {
+router.post('/',async function (req, res) {
     try {
         const add = new api_v3_device_camera(req.body)
         // api_v3_device_gateway.findByIdAndUpdate(add ,{ $addToSet: { user_obids : add._id} }, {new: true }).exec()
@@ -43,10 +43,11 @@ router.post('/',function(req, res) {
             description : add.serial_number +' 단말기 추가'
         })
         operation.save();
-        add.save()
+        await add.save()
         res.send(add)
     } catch (err) {
-        throw boom.boomify(err)
+        // throw boom.boomify(err)
+        res.send({'error':'중복되는 시리얼 넘버'})
     }
 });
 

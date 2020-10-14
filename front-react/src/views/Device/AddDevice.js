@@ -107,13 +107,19 @@ const AddDevice = props => {
     } else if(device.serial_number === '') {
       alert("단말기 시리얼 넘버를 입력해주세요.")
     } else {
-      await axios.post(base_url + '/camera', {
+      let result = await axios.post(base_url + '/camera', {
         ...device,
         account: props.user_id,
         authority: props.authority
       });
-      window.alert('단말기 등록 완료.');
-      history.push('/device/list');
+
+      if(result.data.error) {
+        alert('중복된 시리얼 넘버 입니다.')
+      } else {
+        window.alert('단말기 등록 완료.');
+        history.push('/device/list');
+      }
+      
     }
   };
 

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 import Select from '@material-ui/core/Select';
+import Grid from '@material-ui/core/Grid';
 import { DateRangePicker, IntlProvider } from 'rsuite';
 import kor from 'rsuite/lib/IntlProvider/locales/ko_KR';
 import 'rsuite/dist/styles/rsuite-default.css';
@@ -45,8 +46,8 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(1)
   },
   select: {
-    width: 100,
-    margin: '0 0 0 30px'
+    // width: 100,
+    margin: '0 0 0 30px',
   }
 }));
 
@@ -65,6 +66,7 @@ const AccessesToolbar = props => {
     deleteRecords,
     className,
     clickSearch,
+    clickExport,
     ...rest
   } = props;
 
@@ -114,15 +116,16 @@ const AccessesToolbar = props => {
           labelId="demo-simple-select-label"
           id="demo-simple-select"
           value={temp}
+          style={{}}
           onChange={handleTempChange}>
           <MenuItem value="0">전체</MenuItem>
           <MenuItem value="1">정상 온도</MenuItem>
           <MenuItem value="2">비정상 온도</MenuItem>
         </Select>
-        <div style={{ width: '100%' }}>
-          {/* <Button variant="contained" color="secondary" style={{marginLeft : 20}} onClick={deleteRecords}>
-            오래된 기록 삭제
-          </Button> */}
+        <Button style={{width: '163px',marginLeft:'10px',marginRight:'10px' }} variant="contained" color="primary" onClick={clickExport}>
+          엑셀로 다운로드
+        </Button>
+        <div style={{ width: '80%' }}>
           <TextField
             style={{ float: 'right', marginRight: '30px' }}
             className={classes.search}

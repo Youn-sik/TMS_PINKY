@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import CardHeader from '@material-ui/core/CardHeader';
 import axios from 'axios';
 import mqtt from 'mqtt';
 import {
@@ -41,6 +42,11 @@ const Dashboard = props => {
   const [black, setBlack] = useState(0);
   const [stranger, setStranger] = useState(0);
 
+  const [employeeWeek, setEmployeeWeek] = useState(0);
+  const [visitorWeek, setVisitorWeek] = useState(0);
+  const [blackWeek, setBlackWeek] = useState(0);
+  const [strangerWeek, setStrangerWeek] = useState(0);
+
   //단말
   const [on, setOn] = useState(0);
   const [off, setOff] = useState(0);
@@ -60,6 +66,18 @@ const Dashboard = props => {
   const [isActive, setActive] = useState(false);
 
   const [attendanceData, setAttendanceData] = useState([]);
+
+  async function countWeekAccess() {
+    let result = await axios.get(base_url + '/access?type=weekStatistics');
+    setLoading(false);
+    result.data.map(i => {
+      if (i._id.type === 1) setEmployeeWeek(i.count);
+      else if (i._id.type === 2) setVisitorWeek(i.count);
+      else if (i._id.type === 3) setStrangerWeek(i.count);
+      else if (i._id.type === 4) setBlackWeek(i.count);
+      return false;
+    });
+  }
 
   async function countAccess() {
     let result = await axios.get(base_url + '/access?type=todayStatistics');
@@ -101,7 +119,6 @@ const Dashboard = props => {
   async function device_errors() {
     let result = await axios.get(base_url + '/glogs?type=limit5errors');
     setErrors(result.data);
-    setLoading(false);
   }
 
   async function temp_alerts() {
@@ -109,9 +126,13 @@ const Dashboard = props => {
     setTemp(result.data);
   }
 
+  useEffect(() => {
+    if(temp.length === 11)
+      setTemp(temp.slice(0,10))
+  },[temp])
+
   const _setRealtime = values => {
     setTemp(temp => [values[0], ...temp]);
-    console.log(values[0])
     let _attendance = 0;
     let _late = 0;
     let _attendanceData = JSON.parse(JSON.stringify(attendanceData));
@@ -159,6 +180,7 @@ const Dashboard = props => {
   };
 
   useEffect(() => {
+    countWeekAccess();
     countAccess();
     deviceState();
     attendanceChart();
@@ -189,6 +211,15 @@ const Dashboard = props => {
         <Grid container spacing={4}>
           <Grid
             item
+            style={{paddingBottom:"2px",paddingTop:"2px"}}
+            lg={12}
+            sm={12}
+            xl={12}
+            xs={12}>
+              <CardHeader style={{padding:0}} title="금일 출입" />
+          </Grid>
+          <Grid
+            item
             className={classes.accessCard}
             lg={4}
             sm={6}
@@ -196,15 +227,6 @@ const Dashboard = props => {
             xs={12}>
             <Employee history={props.history} count={employee} />
           </Grid>
-          {/* <Grid
-            item
-            className={classes.accessCard}
-            lg={3}
-            sm={6}
-            xl={3}
-            xs={12}>
-            <Visitor history={props.history} count={visitor} />
-          </Grid> */}
           <Grid
             item
             className={classes.accessCard}
@@ -224,16 +246,16 @@ const Dashboard = props => {
             <Stranger history={props.history} count={stranger} />
           </Grid>
           <Grid item lg={6} md={6} xl={6} xs={12}>
-            <Device history={props.history} on={on} off={off} />
-          </Grid>
-          <Grid item lg={6} md={6} xl={6} xs={12}>
             <Access
               history={props.history}
-              employee={employee}
-              visitor={visitor}
-              black={black}
-              stranger={stranger}
+              employee={employeeWeek}
+              visitor={visitorWeek}
+              black={blackWeek}
+              stranger={strangerWeek}
             />
+          </Grid>
+          <Grid item lg={6} md={6} xl={6} xs={12}>
+            <Device history={props.history} on={on} off={off} />
           </Grid>
           {/* <Grid item lg={4} md={6} xl={4} xs={12}>
             <Attendance

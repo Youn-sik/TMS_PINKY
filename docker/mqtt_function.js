@@ -8,7 +8,22 @@ require('moment-timezone');
 moment.tz.setDefault("Asia/Seoul"); 
 const mkdirp = require('mkdirp');
 const client = require('./mqtt_load');
+const canvas = require("canvas");
+const { loadImage, Canvas, Image, ImageData } = canvas;
 const fetch = require('node-fetch')
+var asyncJSON = require('async-json');
+const tf = require('@tensorflow/tfjs-node');
+//require('@tensorflow/tfjs-backend-webgl');
+const faceapi = require('@vladmandic/face-api');
+
+Promise.all([
+    // tf.setBackend('webgl'),
+    faceapi.nets.ssdMobilenetv1.loadFromDisk(`${__dirname}/schema/face-models/`),
+    faceapi.nets.faceRecognitionNet.loadFromDisk(`${__dirname}/schema/face-models/`),
+    faceapi.nets.faceLandmark68Net.loadFromDisk(`${__dirname}/schema/face-models/`),
+    faceapi.env.monkeyPatch({ Canvas, Image, ImageData,fetch: fetch }),
+])
+
 const mqtt_option = {
     retain: false,
     qos: 0
@@ -401,33 +416,62 @@ module.exports = {
         try {
             let insert_array = [];
             let camera = await Camera.findOne( { serial_number : json.stb_sn });
-            let empCnt = 0;
-            let visitorCnt = 0;
-            let blackCnt = 0;
-            let strangerCnt = 0;
+            let Users = await User.find()
+
             json.values.forEach(async function(element){
                 let folder_date_path = "/uploads/accesss/temp/" + moment().format('YYYYMMDD');
                 let file_name = json.stb_sn + "_" + moment().format('YYYYMMDDHHmmss') + ".png";
                 let file_path = site.base_server_document + folder_date_path + "/" + json.stb_sn + "/";
                 let upload_url = "http://"+server_ip+ ':3000' + folder_date_path + "/" + json.stb_sn + "/" + file_name;
                 let buff = Buffer.from(element.avatar_file, 'base64');
-                
                 if(element.avatar_distance === undefined) {
                     element.avatar_distance = 0
-                }
-
-                if(element.avatar_type === 1) {
-                    empCnt++;
-                } else if(element.avatar_type === 2) {
-                    visitorCnt++;
-                } else if(element.avatar_type === 3) {
-                    strangerCnt++;
-                } else if(element.avatar_type === 4) {
-                    blackCnt++;
                 }
                 
                 mkdirp.sync(file_path);
                 fs.writeFileSync(file_path + file_name, buff, 'utf-8')
+
+                const img = new Image();
+                img.src = "data:image/png;base64,"+element.avatar_file
+                console.time()
+                const detections = await faceapi.detectAllFaces(img)
+                .withFaceLandmarks()
+                .withFaceDescriptors();
+                console.timeEnd()
+                let userName = "unknown";
+                let user_obid = '';
+                if(detections.length > 0 && Users.length > 0) {
+                    const labeledDescriptors = await Promise.all(
+                        Users.map(async user => {
+                            return (
+                                new faceapi.LabeledFaceDescriptors(
+                                    user.name+"|"
+                                    +user.location+"|"
+                                    +user.department_id+"|"
+                                    +user.position+"|"
+                                    +user.mobile+"|"
+                                    +user.mail+"|"
+                                    +user.gender+"|"
+                                    +user.type === 5 ? 4 : user.type+"|"
+                                    +user.avatar_file_url+"|"
+                                    +user.create_at+"|"
+                                    +user._id,
+                                    [new Float32Array(Object.values(JSON.parse(user.face_detection)))]
+                                )
+                            )
+                        })
+                    );
+    
+                    const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.6)
+                    const bestMatch = detections.map(d => faceMatcher.findBestMatch(d.descriptor))
+                    const filteredMatch = bestMatch.filter(match => match._distance < 0.5)
+                    if(filteredMatch.length > 0 && filteredMatch[0]._label !== 'unknown') {
+                        let userData = filteredMatch[0]._label.split('|')
+                        userName = userData[0]
+                        element.avatar_type = parseInt(userData[7])
+                        user_obid = userData[10]
+                    }
+                }
 
                 insert_data = {
                     avatar_file : element.avatar_file,
@@ -439,46 +483,15 @@ module.exports = {
                     avatar_temperature : element.avatar_temperature,
                     access_time : moment().format('YYYY-MM-DD HH:mm:ss'),
                     stb_sn : json.stb_sn,
-                    stb_obid : camera._id
+                    stb_obid : camera._id,
+                    name : userName,
                 }
+                
 
                 insert_array.push(insert_data);
             })
             
-            let accessData = await Access.insertMany(insert_array)
-            
-            let todayStatistics = await Statistics.findOne()
-                .where('camera_obid').equals(camera._id)
-                .where('reference_date').equals(moment().format('YYYY-MM-DD'));
-            
-            if(todayStatistics === null) {
-                todayStatistics = new Statistics({
-                    camera_obid : camera._id,
-                    reference_date: moment().format('YYYY-MM-DD'),
-                    all_count: empCnt+visitorCnt+strangerCnt+blackCnt,
-                    employee_count : empCnt,
-                    guest_count : visitorCnt,
-                    stranger_count : strangerCnt,
-                    blacklist_count : blackCnt,
-                })
-                todayStatistics.save()
-            } else {
-                await Statistics.findByIdAndUpdate(todayStatistics._id,{ 
-                    $inc: { 
-                        all_count: empCnt+visitorCnt+strangerCnt+blackCnt,
-                        employee_count : empCnt,
-                        guest_count : visitorCnt,
-                        stranger_count : strangerCnt,
-                        blacklist_count : blackCnt
-                    },
-                    $push: { 
-                        statistics_obids: accessData[0] 
-                    } 
-                },
-                {
-                    
-                })
-            }
+            await Access.insertMany(insert_array)
 
             send_data = {
                 stb_sn: json.stb_sn,

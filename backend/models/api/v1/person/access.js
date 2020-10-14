@@ -5,6 +5,7 @@ moment.tz.setDefault("Asia/Seoul");
 const ObjectId = mongoose.Schema.Types.ObjectId
 
 const api_v1_person_access_Schema = new mongoose.Schema({
+    name : { type: String },
     avatar_file : { type: String, required: true },
     avatar_file_url : { type: String, required: true },
     avatar_contraction_data : { type: String, required: true },

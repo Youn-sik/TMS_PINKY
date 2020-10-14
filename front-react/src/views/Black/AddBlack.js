@@ -129,12 +129,14 @@ const TextMaskCustom = props => {
 };
 
 const AddBlack = props => {
-  const { groups } = props.location;
+  // const { groups } = props.location;
   const classes = useStyles();
   const history = props.history;
   const [pictures, setPictures] = useState([]);
   const [open, setOpen] = useState(false);
   const [node, setNode] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [groups, setGroups] = useState([])
   const onDrop = picture => {
     setPictures([picture, ...pictures]);
   };
@@ -142,11 +144,14 @@ const AddBlack = props => {
     setOpen(true);
   };
 
+  const getGroups = async () => {
+    let result = await axios.get(base_url+'/group?type=5')
+    setGroups(result.data);
+  }
+
   useEffect(() => {
-    if (!groups) {
-      history.go(-1);
-    }
-  }, [groups, history]);
+    getGroups();
+  }, []);
 
   const handleClose = () => {
     setOpen(false);
@@ -226,6 +231,7 @@ const AddBlack = props => {
     else if (userInfo.location === '') alert('장소를 입력해주세요');
     else if (userInfo.position === '') alert('사유를 입력해주세요');
     else {
+      setLoading(true);
       let base64 = await toBase64(pictures[0][0]);
       base64 = base64.replace('data:image/jpeg;base64,', '');
       base64 = base64.replace('data:image/png;base64,', '');
@@ -325,9 +331,16 @@ const AddBlack = props => {
                   onClick={handleClickOpen}>
                   그룹 선택
                 </Button>
-                <Button variant="contained" color="primary" onClick={addUser}>
-                  추가
-                </Button>
+                {
+                  !loading ?
+                  <Button variant="contained" color="primary" onClick={addUser}>
+                    추가
+                  </Button>
+                  :
+                  <Button variant="contained" color="primary" >
+                    등록중...
+                  </Button>
+                }
               </div>
               <Dialog
                 open={open}
@@ -341,8 +354,8 @@ const AddBlack = props => {
                     defaultCollapseIcon={<ArrowDropDownIcon />}
                     defaultExpandIcon={<ArrowRightIcon />}
                     defaultEndIcon={<div style={{ width: 24 }} />}>
-                    {props.location.groups ? (
-                      props.location.groups.map(group => renderTree(group))
+                    {groups ? (
+                      groups.map(group => renderTree(group))
                     ) : (
                       <div></div>
                     )}
