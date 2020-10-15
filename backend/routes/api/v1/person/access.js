@@ -5,7 +5,7 @@ require('moment-timezone');
 moment.tz.setDefault("Asia/Seoul"); 
 const boom = require('boom')
 const api_v1_person_access = require('../../../../models/api/v1/person/access')
-
+const fs = require('fs')
 router.get('/',async function(req, res) {
     try {
         let get_data;
@@ -52,12 +52,13 @@ router.get('/',async function(req, res) {
             ])
         } else if(req.query.type === 'deviceStats') {
             let date = req.query.date.split('/');
-            let device = req.query.device;
+            let device = req.query.device === ' ' ? new RegExp('') : new RegExp("^"+req.query.device+"$");
+            let tempLimit = req.query.tempLimit
             get_data = await api_v1_person_access.aggregate([
                 {
                     $match: {
                         access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
-                        stb_sn : device
+                        stb_sn : {$regex:device}
                     }
                 },
                 { 
@@ -65,19 +66,27 @@ router.get('/',async function(req, res) {
                         date_time : { 
                             $split: ["$access_time", " "] 
                         },
-                        avatar_type : 1
+                        temp_status : { 
+                            $cond: {
+                                if: {
+                                    $gte: ["$avatar_temperature" , tempLimit]
+                                },
+                                then: 'abnormal',
+                                else: 'normal'
+                            }
+                        },
                     } 
                 },
                 {
                     $project : {
                         date : {$arrayElemAt:["$date_time",0]},
-                        avatar_type : 1
+                        temp_status: 1,
                     }
                 },
                 {
                     $group : {
                         _id : {
-                            avatar_type:"$avatar_type",
+                            temp_status:"$temp_status",
                             date:"$date"
                         },
                         count: { $sum: 1 },
@@ -282,22 +291,30 @@ router.get('/',async function(req, res) {
         } else if(req.query.type === 'dateCount') {
             let date = req.query.date.split('/');
             let search = '';
-            let avatar_type = req.query.avatar_type;
+            let selected_temp_chk = false;
             let tempType = req.query.tempType;
             let avatar_temperature = req.query.avatar_temperature;
+            let selected_temp = req.query.avatar_temp;
+
+            if(selected_temp !== ' ') {
+                selected_temp_chk = true
+                selected_temp = new RegExp(selected_temp+'\\.');
+            }
+            else
+                selected_temp = new RegExp("")
 
             if(req.query.search) 
                 search = req.query.search;
             
-            if(avatar_type && avatar_temperature && tempType) { //온도,타입 모두 설정한 경우
+            if(selected_temp_chk && avatar_temperature && tempType) { //온도,타입 모두 설정한 경우
                 if(tempType === '2') {
                     get_data = await api_v1_person_access.aggregate([
                         {
                             $match: {
-                                access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
+                                access_time : { $gte:date[0],$lte: date[1] },
                                 stb_sn : { $regex:search },
-                                avatar_type : parseInt(avatar_type),
-                                avatar_temperature : { $gte: avatar_temperature }
+                                avatar_temperature : { $gte: avatar_temperature },
+                                avatar_temperature : { $regex:selected_temp },
                             }
                         },
                         {
@@ -311,10 +328,10 @@ router.get('/',async function(req, res) {
                     get_data = await api_v1_person_access.aggregate([
                         {
                             $match: {
-                                access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
+                                access_time : { $gte:date[0],$lte: date[1]},
                                 stb_sn : { $regex:search },
-                                avatar_type : parseInt(avatar_type),
-                                avatar_temperature : { $lt: avatar_temperature }
+                                avatar_temperature : { $lt: avatar_temperature },
+                                avatar_temperature : { $regex:selected_temp },
                             }
                         },
                         {
@@ -325,13 +342,13 @@ router.get('/',async function(req, res) {
                         }
                     ])
                 }
-            } else if (avatar_type) { //아바타 타입만 선택한 경우
+            } else if (selected_temp_chk) { //아바타 타입만 선택한 경우
                 get_data = await api_v1_person_access.aggregate([
                     {
                         $match: {
-                            access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
+                            access_time : { $gte:date[0],$lte: date[1] },
                             stb_sn : { $regex:search },
-                            avatar_type : parseInt(avatar_type),
+                            avatar_temperature : { $regex:selected_temp },
                         }
                     },
                     {
@@ -346,7 +363,7 @@ router.get('/',async function(req, res) {
                     get_data = await api_v1_person_access.aggregate([
                         {
                             $match: {
-                                access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
+                                access_time : { $gte:date[0],$lte: date[1] },
                                 stb_sn : { $regex:search },
                                 avatar_temperature : { $gte: avatar_temperature }
                             }
@@ -362,7 +379,7 @@ router.get('/',async function(req, res) {
                     get_data = await api_v1_person_access.aggregate([
                         {
                             $match: {
-                                access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
+                                access_time : { $gte:date[0],$lte: date[1] },
                                 stb_sn : { $regex:search },
                                 avatar_temperature : { $lt: avatar_temperature }
                             }
@@ -379,7 +396,7 @@ router.get('/',async function(req, res) {
                 get_data = await api_v1_person_access.aggregate([
                     {
                         $match: {
-                            access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
+                            access_time : { $gte:date[0],$lte: date[1] },
                             stb_sn : { $regex:search },
                         }
                     },
@@ -399,12 +416,24 @@ router.get('/',async function(req, res) {
             let tempType = req.query.tempType;
             let avatar_temperature = req.query.avatar_temperature;
             let headerType = "-_id";
-            let rowPerPage = 7;
+            let rowsPerPage = parseInt(req.query.rowsPerPage);
+            let selected_temp = req.query.avatar_temp;
+            let selected_temp_chk = false;
             let search = '';
             let name = ''
+            let stb_sn = '';
+            let stb_name = '';
+            let stb_location = ''
+
+            if(selected_temp !== ' ') {
+                selected_temp_chk = true
+                selected_temp = new RegExp(selected_temp+'\\.');
+            }
+            else
+                selected_temp = new RegExp('');
 
             if(req.query.search) 
-                search = req.query.search;
+                search = new RegExp(req.query.search)
 
             if(req.query.headerType)
                 headerType = req.query.headerType
@@ -412,75 +441,88 @@ router.get('/',async function(req, res) {
             if(req.query.name)
                 name = req.query.name
 
-            if(avatar_type && avatar_temperature && tempType) { //온도,타입 모두 설정한 경우
+            if(req.query.searchType === 'all') {
+                stb_sn = stb_name = stb_location = search
+            } else if(req.query.searchType === 'stb_name') {
+                stb_name = search
+            } else if(req.query.searchType === 'stb_location') {
+                stb_location = search
+            } else if(req.query.searchType === 'stb_sn') {
+                stb_sn = search
+            }
+
+            if(selected_temp_chk && avatar_temperature && tempType) { //온도,아바타 온도 모두 설정한 경우
                 if(tempType === '2') {
                     get_data = await api_v1_person_access.find()
                     .sort(headerType)
-
-                    .where("avatar_type").equals(parseInt(avatar_type))
+                    
                     .gte('avatar_temperature', parseFloat(avatar_temperature))
-                    .gte("access_time",date[0]+" 00:00:00")
-                    .lte("access_time",date[1]+" 23:59:59")
-                    .regex("stb_sn",new RegExp(search))
-                    .regex("name",new RegExp(name))
-                    .skip(page*rowPerPage)
-                    .limit(rowPerPage)
+                    .gte("access_time",date[0])
+                    .regex("avatar_temperature",selected_temp)
+                    .lte("access_time",date[1])
+                    .regex("stb_sn",stb_sn)
+                    // .regex("stb_name",stb_name)
+                    // .regex("stb_location",stb_location)
+                    .skip(page*rowsPerPage)
+                    .limit(rowsPerPage)
                 } else {
                     get_data = await api_v1_person_access.find()
                     .sort(headerType)
-
-                    .where("avatar_type").equals(parseInt(avatar_type))
                     .lt('avatar_temperature', parseFloat(avatar_temperature))
-                    .gte("access_time",date[0]+" 00:00:00")
-                    .lte("access_time",date[1]+" 23:59:59")
-                    .regex("stb_sn",new RegExp(search))
-                    .regex("name",new RegExp(name))
-                    .skip(page*rowPerPage)
-                    .limit(rowPerPage)
+                    .gte("access_time",date[0])
+                    .regex("avatar_temperature",selected_temp)
+                    .lte("access_time",date[1])
+                    .regex("stb_sn",stb_sn)
+                    // .regex("stb_name",stb_name)
+                    // .regex("stb_location",stb_location)
+                    .skip(page*rowsPerPage)
+                    .limit(rowsPerPage)
                 }
-            } else if (avatar_type) { //아바타 타입만 선택한 경우
+            } else if (selected_temp_chk) { //아바타 온도만 선택한 경우
                 get_data = await api_v1_person_access.find()
                 .sort(headerType)
-                .where("avatar_type").equals(parseInt(avatar_type))
-                .gte("access_time",date[0]+" 00:00:00")
-                .lte("access_time",date[1]+" 23:59:59")
-                .regex("stb_sn",new RegExp(search))
-                .regex("name",new RegExp(name))
-                .skip(page*rowPerPage)
-                .limit(rowPerPage)
+                .gte("access_time",date[0])
+                .lte("access_time",date[1])
+                .regex("avatar_temperature",selected_temp)
+                .regex("stb_sn",stb_sn)
+                // .regex("stb_name",stb_name)
+                // .regex("stb_location",stb_location)
+                .skip(page*rowsPerPage)
+                .limit(rowsPerPage)
             } else if (avatar_temperature && tempType) {//온도 타입만 선택한 경우
                 if(tempType === '2') {
                     get_data = await api_v1_person_access.find()
                     .sort(headerType)
-
                     .gte('avatar_temperature', parseFloat(avatar_temperature))
-                    .gte("access_time",date[0]+" 00:00:00")
-                    .lte("access_time",date[1]+" 23:59:59")
-                    .regex("stb_sn",new RegExp(search))
-                    .regex("name",new RegExp(name))
-                    .skip(page*rowPerPage)
-                    .limit(rowPerPage)
+                    .gte("access_time",date[0])
+                    .lte("access_time",date[1])
+                    .regex("stb_sn",stb_sn)
+                    // .regex("stb_name",stb_name)
+                    // .regex("stb_location",stb_location)
+                    .skip(page*rowsPerPage)
+                    .limit(rowsPerPage)
                 } else {
                     get_data = await api_v1_person_access.find()
                     .sort(headerType)
-
                     .lt('avatar_temperature', parseFloat(avatar_temperature))
-                    .gte("access_time",date[0]+" 00:00:00")
-                    .lte("access_time",date[1]+" 23:59:59")
-                    .regex("stb_sn",new RegExp(search))
-                    .regex("name",new RegExp(name))
-                    .skip(page*rowPerPage)
-                    .limit(rowPerPage)
+                    .gte("access_time",date[0])
+                    .lte("access_time",date[1])
+                    .regex("stb_sn",stb_sn)
+                    // .regex("stb_name",stb_name)
+                    // .regex("stb_location",stb_location)
+                    .skip(page*rowsPerPage)
+                    .limit(rowsPerPage)
                 }   
             }else { //모두 전체일경우
                 get_data = await api_v1_person_access.find()
                 .sort(headerType)
-                .gte("access_time",date[0]+" 00:00:00")
-                .lte("access_time",date[1]+" 23:59:59")
-                .regex("stb_sn",new RegExp(search))
-                .regex("name",new RegExp(name))
-                .skip(page*rowPerPage)
-                .limit(rowPerPage)
+                .gte("access_time",date[0])
+                .lte("access_time",date[1])
+                .regex("stb_sn",stb_sn)
+                // .regex("stb_name",stb_name)
+                // .regex("stb_location",stb_location)
+                .skip(page*rowsPerPage)
+                .limit(rowsPerPage)
             }
         }
         res.send(get_data)
@@ -522,7 +564,16 @@ router.put('/:id',async function(req, res) {
 router.delete('/',async function(req, res) {
     try {
         const id = req.params === undefined ? req.id : req.params.id
-        const delete_data = await api_v1_person_access.remove({ access_time: { $lt: req.body.date } })
+        let ids = req.body.accesses_data.map(i => i._id)
+        const delete_data = await api_v1_person_access.deleteMany({
+            _id:{
+                $in:ids
+            }
+        })
+        req.body.accesses_data.map(access => {
+            let ip = access.avatar_file_url.split(':')[0]
+            fs.unlink(access.avatar_file_url.replace(ip+':3000/','/var/www/backend/'),() => {})
+        })
         res.send(delete_data)
     } catch (err) {
         throw boom.boomify(err)

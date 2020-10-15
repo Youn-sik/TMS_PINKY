@@ -57,6 +57,7 @@ const Routes = props => {
         exact
         user_id={props.user_id}
         authority={props.authority}
+        tempLimit={props.tempLimit}
         layout={MainLayout}
         path="/stats/device"
       />
@@ -136,7 +137,7 @@ const Routes = props => {
         tempType={props.tempType}
         path="/users/Stranger"
       /> */}
-      <RouteWithLayout
+      {/* <RouteWithLayout
         component={AddStrangerView}
         exact
         user_id={props.user_id}
@@ -191,7 +192,7 @@ const Routes = props => {
         authority={props.authority}
         layout={MainLayout}
         path="/users/black/edit"
-      />
+      /> */}
       {/* <RouteWithLayout
         component={VisitorView}
         exact

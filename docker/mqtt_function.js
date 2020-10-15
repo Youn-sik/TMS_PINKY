@@ -8,21 +8,6 @@ require('moment-timezone');
 moment.tz.setDefault("Asia/Seoul"); 
 const mkdirp = require('mkdirp');
 const client = require('./mqtt_load');
-const canvas = require("canvas");
-const { loadImage, Canvas, Image, ImageData } = canvas;
-const fetch = require('node-fetch')
-var asyncJSON = require('async-json');
-const tf = require('@tensorflow/tfjs-node');
-//require('@tensorflow/tfjs-backend-webgl');
-const faceapi = require('@vladmandic/face-api');
-
-Promise.all([
-    // tf.setBackend('webgl'),
-    faceapi.nets.ssdMobilenetv1.loadFromDisk(`${__dirname}/schema/face-models/`),
-    faceapi.nets.faceRecognitionNet.loadFromDisk(`${__dirname}/schema/face-models/`),
-    faceapi.nets.faceLandmark68Net.loadFromDisk(`${__dirname}/schema/face-models/`),
-    faceapi.env.monkeyPatch({ Canvas, Image, ImageData,fetch: fetch }),
-])
 
 const mqtt_option = {
     retain: false,
@@ -433,45 +418,9 @@ module.exports = {
 
                 const img = new Image();
                 img.src = "data:image/png;base64,"+element.avatar_file
-                console.time()
-                const detections = await faceapi.detectAllFaces(img)
-                .withFaceLandmarks()
-                .withFaceDescriptors();
-                console.timeEnd()
+
                 let userName = "unknown";
                 let user_obid = '';
-                if(detections.length > 0 && Users.length > 0) {
-                    const labeledDescriptors = await Promise.all(
-                        Users.map(async user => {
-                            return (
-                                new faceapi.LabeledFaceDescriptors(
-                                    user.name+"|"
-                                    +user.location+"|"
-                                    +user.department_id+"|"
-                                    +user.position+"|"
-                                    +user.mobile+"|"
-                                    +user.mail+"|"
-                                    +user.gender+"|"
-                                    +user.type === 5 ? 4 : user.type+"|"
-                                    +user.avatar_file_url+"|"
-                                    +user.create_at+"|"
-                                    +user._id,
-                                    [new Float32Array(Object.values(JSON.parse(user.face_detection)))]
-                                )
-                            )
-                        })
-                    );
-    
-                    const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.6)
-                    const bestMatch = detections.map(d => faceMatcher.findBestMatch(d.descriptor))
-                    const filteredMatch = bestMatch.filter(match => match._distance < 0.5)
-                    if(filteredMatch.length > 0 && filteredMatch[0]._label !== 'unknown') {
-                        let userData = filteredMatch[0]._label.split('|')
-                        userName = userData[0]
-                        element.avatar_type = parseInt(userData[7])
-                        user_obid = userData[10]
-                    }
-                }
 
                 insert_data = {
                     avatar_file : element.avatar_file,
@@ -483,6 +432,8 @@ module.exports = {
                     avatar_temperature : element.avatar_temperature,
                     access_time : moment().format('YYYY-MM-DD HH:mm:ss'),
                     stb_sn : json.stb_sn,
+                    stb_name : camera.name,
+                    stb_location : camera.location,
                     stb_obid : camera._id,
                     name : userName,
                 }

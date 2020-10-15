@@ -15,6 +15,8 @@ const api_v1_person_access_Schema = new mongoose.Schema({
     user_obid : { type:ObjectId, ref: 'User' },
     avatar_type : { type : Number },
     stb_sn : { type:String},
+    stb_name : { type:String},
+    stb_location : { type:String},
     stb_obid : { type:ObjectId, ref:'camera'},
     access_time : { type: String },
     statistics_status : { type: String },

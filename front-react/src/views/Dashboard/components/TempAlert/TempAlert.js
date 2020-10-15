@@ -66,7 +66,6 @@ const TempAlert = props => {
                   props.history.push('access/records');
                 }}>
                 <TableCell>사진</TableCell>
-                <TableCell>이름</TableCell>
                 <TableCell>온도</TableCell>
                 <TableCell>타입</TableCell>
                 <TableCell>날짜</TableCell>
@@ -87,9 +86,6 @@ const TempAlert = props => {
                         className={classes.image}
                         src={access.avatar_file_url}
                       />
-                    </TableCell>
-                    <TableCell className={classes.redFont}>
-                      {access.name === 'unknown' ? null : access.name}
                     </TableCell>
                     <TableCell className={classes.redFont}>
                       {tempType === 1
@@ -122,9 +118,6 @@ const TempAlert = props => {
                         className={classes.image}
                         src={access.avatar_file_url}
                       />
-                    </TableCell>
-                    <TableCell>
-                      {access.name === 'unknown' ? null : access.name}
                     </TableCell>
                     <TableCell>
                       {tempType === 1

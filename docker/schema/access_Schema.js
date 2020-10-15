@@ -14,6 +14,8 @@ const accessSchema = new mongoose.Schema({
     avatar_type : { type : Number },
     access_time : { type: String },
     stb_sn : { type:String},
+    stb_name : { type:String},
+    stb_location : { type:String},
     stb_obid : { type:ObjectId, ref:'Camera'},
     statistics_status : { type: String },
     create_at : { type: String, default: moment().format('YYYY-MM-DD HH:mm:ss') },

@@ -41,36 +41,34 @@ const Statistics = props => {
   const [allPeopleData, setAllPeopleData] = useState([]);
   const [peopleData, setPeopleData] = useState({});
   const [devices, setDevices] = useState([]);
-  const [device, setDevice] = useState('');
+  const [device, setDevice] = useState(' ');
   const [count, setCount] = useState(0);
   const [errorData, setErrorData] = useState({});
   const [allErrorData, setAllErrorData] = useState({});
   const [loading, setLoading] = useState(true);
   const [attList, setAttList] = useState([]);
 
-  const statsData = (employee, stranger, black, dates) => {
+  const statsData = (normal,abnormal,all, dates) => {
     let temp = [
       [0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0]
     ];
 
     dates.map((date, index) => {
-      
-      let empCnt = Array.isArray(employee) ? employee.map((i) => {if(i._id.date === date) return i.count})[0] : undefined;
-      let strCnt = Array.isArray(stranger) ? stranger.map((i) => {if(i._id.date === date) return i.count})[0] : undefined;
-      let blackCnt = Array.isArray(black) ? black.map((i) => {if(i._id.date === date) return i.count})[0] : undefined;
+      let normalCnt = 0
+      normal.map((i) => {if(i._id.date === date) normalCnt = i.count;})
+      let abnormalCnt = 0
+      abnormal.map((i) => {if(i._id.date === date) abnormalCnt = i.count;})
+      let allCnt = normalCnt+abnormalCnt;
 
-      if(empCnt !== undefined)
-        temp[0][index] = empCnt
-      if(strCnt !== undefined)
-        temp[2][index] = strCnt
-      if(blackCnt !== undefined)
-        temp[3][index] = blackCnt
-      return false;
+      if(normalCnt !== undefined)
+        temp[0][index] = normalCnt
+      if(abnormalCnt !== undefined)
+        temp[1][index] = abnormalCnt
+      if(allCnt !== undefined)
+        temp[2][index] = allCnt
     });
-
     return temp;
   };
 
@@ -115,15 +113,13 @@ const Statistics = props => {
   };
 
   const filterAccesses = result => {
-    let employee = result.filter(
-      access => access._id.avatar_type === 1
+    let normal = result.filter(
+      access => access._id.temp_status === 'normal'
     );
-    let stranger = result.filter(
-      access => access._id.avatar_type === 3
+    let abnormal = result.filter(
+      access => access._id.temp_status === 'abnormal'
     );
-    let black = result.filter(
-      access => access._id.avatar_type === 4
-    );
+    let all = result
     
     let dates = [
       date[0],
@@ -135,13 +131,12 @@ const Statistics = props => {
       date[1]
     ];
 
-    let temp = statsData(employee, stranger, black, dates);
+    let temp = statsData(normal, abnormal, all, dates);
 
     setPeopleData({
-      employee: temp[0],
-      visitor: temp[1],
-      stranger: temp[2],
-      black: temp[3]
+      normal: temp[0],
+      abnormal: temp[1],
+      all: temp[2],
     });
   };
 
@@ -175,7 +170,7 @@ const Statistics = props => {
   };
 
   async function getAccesses() {
-    let result = await axios.get(base_url + `/access?date=${date[0]}/${date[1]}&device=${device}&type=deviceStats`);
+    let result = await axios.get(base_url + `/access?date=${date[0]}/${date[1]}&device=${device}&type=deviceStats&tempLimit=${props.tempLimit}`);
     setAllPeopleData(result.data);
     filterAccesses(result.data);
 
@@ -188,9 +183,6 @@ const Statistics = props => {
     )
     if (result.data.length > 0) {
       setDevices(result.data);
-      setDevice(result.data[0].serial_number);
-    } else {
-      setDevice(null);
     }
   }
 
@@ -264,9 +256,10 @@ const Statistics = props => {
               value={device}
               style={{ width: '10%', marginLeft: '10px' }}
               onChange={handleDeviceChange}>
-              {devices.map(device => (
-                <MenuItem value={device.serial_number}>{device.name}</MenuItem>
-              ))}
+                <MenuItem value={' '}>전체</MenuItem>
+                {devices.map(device => (
+                  <MenuItem value={device.serial_number}>{device.name}</MenuItem>
+                ))}
             </Select>
           </Grid>
           <Grid item lg={12} md={12} xl={12} xs={12}>

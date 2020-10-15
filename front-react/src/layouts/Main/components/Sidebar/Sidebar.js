@@ -57,18 +57,18 @@ const Sidebar = props => {
       //   },
       // ]
     },
-    {
-      title: '인사관리',
-      href: '/users',
-      children: [
-        {
-          title: '사원 관리',
-          href: '/users/employee'
-        },
-        {
-          title: '블랙리스트 관리',
-          href: '/users/black'
-        },
+    // {
+    //   title: '인사관리',
+    //   href: '/users',
+    //   children: [
+    //     {
+    //       title: '사원 관리',
+    //       href: '/users/employee'
+    //     },
+    //     {
+    //       title: '블랙리스트 관리',
+    //       href: '/users/black'
+    //     },
         // {
         //   title: '미등록자 관리',
         //   href: '/users/stranger'
@@ -77,9 +77,9 @@ const Sidebar = props => {
         //   title:'얼굴 인식',
         //   href:'/users/face-detection'
         // }
-      ],
-      icon: <PeopleIcon />
-    },
+    //   ],
+    //   icon: <PeopleIcon />
+    // },
     {
       title: '단말 관리',
       // href: '/device',

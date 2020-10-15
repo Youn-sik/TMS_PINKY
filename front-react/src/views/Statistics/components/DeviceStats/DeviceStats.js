@@ -41,8 +41,8 @@ const DeviceStats = props => {
   const data = {
     datasets: [
       {
-        label: '사원',
-        data: chartData.employee,
+        label: '정상 온도',
+        data: chartData.normal,
         backgroundColor: ['rgba(255, 99, 132, 0.2)'],
         borderColor: [
           'rgba(255, 99, 132, 1)',
@@ -71,8 +71,8 @@ const DeviceStats = props => {
       //   borderWidth: 2
       // },
       {
-        label: '미등록자',
-        data: chartData.stranger,
+        label: '비정상 온도',
+        data: chartData.abnormal,
         backgroundColor: ['rgba(255, 159, 64, 0.2)'],
         borderColor: [
           'rgba(255, 159, 64, 1)',
@@ -86,8 +86,8 @@ const DeviceStats = props => {
         borderWidth: 2
       },
       {
-        label: '블랙리스트',
-        data: chartData.black,
+        label: '모든 출입자',
+        data: chartData.all,
         backgroundColor: ['rgba(255, 206, 86, 0.2)'],
         borderColor: [
           'rgba(255, 206, 86, 1)',

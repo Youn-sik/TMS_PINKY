@@ -7,6 +7,7 @@ import { NavLink as RouterLink } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import Checkbox from '@material-ui/core/Checkbox';
 import {
   Card,
   CardActions,
@@ -61,6 +62,10 @@ const AccessesTable = props => {
     loading,
     className,
     accesses,
+    handleClick,
+    isSelected,
+    handleSelectAllClick,
+    selected,
     page,
     pages,
     sort,
@@ -93,21 +98,17 @@ const AccessesTable = props => {
           <Table className={classes.inner} size="small">
             <TableHead>
               <TableRow>
-                <TableCell>사진</TableCell>
                 <TableCell>
-                  {accesses.length > 0 ? (
-                    <TableSortLabel
-                      active={activeType === 'name'}
-                      direction={sort}
-                      onClick={() => {
-                        createSortHandler('name');
-                      }}>
-                      이름
-                    </TableSortLabel>
-                  ) : (
-                    '이름'
-                  )}
+                  <Checkbox
+                    checked={
+                      selected.length === accesses.length && accesses.length !== 0
+                        ? true
+                        : false
+                    }
+                    onChange={handleSelectAllClick}
+                  />
                 </TableCell>
+                <TableCell>사진</TableCell>
                 <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel
@@ -178,19 +179,26 @@ const AccessesTable = props => {
                     '출입시간'
                   )}
                 </TableCell>
-                <TableCell>사용자 등록</TableCell>
+                {/* <TableCell>사용자 등록</TableCell> */}
               </TableRow>
             </TableHead>
             {
               <TableBody>
                 {props.accesses
-                  .map(access => {
+                  .map((access,index) => {
+                    const isItemSelected = isSelected(access._id);
                     if (access.avatar_temperature >= tempLimit) {
                       //출입 기록 37.5도 이상일때
                       return (
                         <TableRow
                           className={classes.highTempRow}
                           key={access._id}>
+                          <TableCell>
+                            <Checkbox
+                              onChange={event => handleClick(event, access, index)}
+                              checked={isItemSelected}
+                            />
+                          </TableCell>
                           <TableCell>
                             <div className={classes.nameContainer}>
                               <img
@@ -201,7 +209,6 @@ const AccessesTable = props => {
                                 src={access.avatar_file_url}></img>
                             </div>
                           </TableCell>
-                        <TableCell>{access.name === 'unknown' ? null : access.name}</TableCell>
                           <TableCell>
                             {access.stb_sn}
                           </TableCell>
@@ -231,7 +238,7 @@ const AccessesTable = props => {
                           <TableCell className={classes.redFont}>
                             {access.access_time}
                           </TableCell>
-                          <TableCell>
+                          {/* <TableCell>
                             {
                               access.avatar_type === 3 ? 
                               <RouterLink
@@ -249,12 +256,18 @@ const AccessesTable = props => {
                                 </Button>
                               </RouterLink> : null
                             }
-                          </TableCell>
+                          </TableCell> */}
                         </TableRow>
                       );
                     } else {
                       return (
                         <TableRow className={classes.tableRow} key={access._id}>
+                          <TableCell>
+                            <Checkbox
+                              onChange={event => handleClick(event, access, index)}
+                              checked={isItemSelected}
+                            />
+                          </TableCell>
                           <TableCell>
                             <div className={classes.nameContainer}>
                               <img
@@ -265,7 +278,6 @@ const AccessesTable = props => {
                                 src={access.avatar_file_url}></img>
                             </div>
                           </TableCell>
-                          <TableCell>{access.name === 'unknown' ? null : access.name}</TableCell>
                           <TableCell>
                             {access.stb_sn}
                           </TableCell>
@@ -293,7 +305,7 @@ const AccessesTable = props => {
                               : '정상 체온'}
                           </TableCell>
                           <TableCell>{access.access_time}</TableCell>
-                          <TableCell>
+                          {/* <TableCell>
                             {
                               access.avatar_type === 3 ? 
                               <RouterLink
@@ -311,7 +323,7 @@ const AccessesTable = props => {
                                 </Button>
                               </RouterLink> : null
                             }
-                          </TableCell>
+                          </TableCell> */}
                         </TableRow>
                       );
                     }

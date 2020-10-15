@@ -31,21 +31,66 @@ const AccessList = props => {
   const [accesses, setAccesses] = useState([]);
   const [page,setPage] = useState(1);//현재 페이지
   const [pages,setPages] = useState(0);//페이지 갯수
+  const [searchType,setSearchType] = useState('all')
   const [date, setDate] = useState([
     moment()
       .locale('ko')
-      .format('YYYY-MM-DD'),
+      .format('YYYY-MM-DD')+" 00:00:00",
     moment()
       .locale('ko')
-      .format('YYYY-MM-DD')
-  ]);
-  const [type, setType] = useState('0');
+      .format('YYYY-MM-DD')+" 23:59:59"
+  ]); 
+  const [type, setType] = useState(' ');
   const [temp, setTemp] = useState('0');
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [filteredAccesses, setFilteredAccesses] = useState([]);
   const [activeType, setActiveType] = useState('access_time');
   const [sort, setSort] = useState('desc');
+  const [rowsPerPage,setRowsPerPage] = useState('7');
+  const [selected, setSelected] = useState([]);
+
+  const handleSelectAllClick = event => {
+    if (event.target.checked) {
+      const newSelecteds = accesses.map(n => n);
+      setSelected(newSelecteds);
+      return;
+    }
+    setSelected([]);
+  };
+
+  const deleteAccesses = async () => {
+    if(window.confirm('삭제한 내용은 되돌릴수 없습니다\n 정말 삭제하시겠습니까?')) {
+      await axios.delete(base_url +'/access', {
+        data: {
+          accesses_data : selected
+        }
+      })
+      getAccesses()
+      alert('삭제 되었습니다.')
+    }
+  }
+
+  const handleClick = (event, node, index) => {
+    const selectedIndex = selected.findIndex(i => i._id == node._id);
+    let newSelected = [];
+    if (selectedIndex === -1) {
+      node.index = index;
+      newSelected = newSelected.concat(selected, node);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1)
+      );
+    }
+    setSelected(newSelected);
+  };
+
+  const isSelected = _id => selected.findIndex(i => i._id == _id) !== -1;
 
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
@@ -56,6 +101,14 @@ const AccessList = props => {
     setSearch(e.target.value);
   };
 
+  const handleRowsPerPage = e => {
+    setRowsPerPage(e.target.value);
+  }
+
+  const handleSearchType = (e) => {
+    setSearchType(e.target.value);
+  }
+
   const clickExport = async () => {
 
     const wb = new ExcelJS.Workbook()
@@ -64,7 +117,7 @@ const AccessList = props => {
 
     
 
-    ws.addRow(['사진', '이름', '단말기','타입','거리','온도','출입 시간'])
+    ws.addRow(['사진', '단말기','타입','거리','온도','출입 시간'])
     accesses.map((access,index) => {
       let temp = []
       let image = wb.addImage({
@@ -73,7 +126,6 @@ const AccessList = props => {
       })
 
       temp.push('');
-      temp.push(access['name']);
       temp.push(access['stb_sn'])
       temp.push(access['avatar_type'] === 1 ? '사원' : access['avatar_type'] === 3 ? '미등록자' : '블랙리스트');
       temp.push(String(access['avatar_distance']).substring(0,3)+"M");
@@ -102,12 +154,12 @@ const AccessList = props => {
       headerType = '-'+headerType;
 
     let _pages = await axios.get(base_url + 
-      `/access?type=dateCount&date=${date[0]}/${date[1]}&search=${search}${type !== '0' ? "&avatar_type="+type : ''}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+      `/access?type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
 
     let result = await axios.get(base_url + 
-      `/access?date=${date[0]}/${date[1]}&page=${page}&search=${search}${type !== '0' ? "&avatar_type="+type : ''}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+      `/access?searchType=${searchType}&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&page=${page}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
 
@@ -118,9 +170,9 @@ const AccessList = props => {
       _pages.data.map(i => count += parseInt(i.count));
 
     if(_pages.data.length !== 0){
-      let temp = parseInt(count/7);
+      let temp = parseInt(count/rowsPerPage);
 
-      if(count%7)
+      if(count%rowsPerPage)
         temp++;
 
       setPages(temp);
@@ -131,36 +183,56 @@ const AccessList = props => {
     }
   }
 
-  const sortAccesses = async (type, headerType) => {
+  const sortAccesses = async (_type, headerType) => {
     setActiveType(headerType);
+
+    let firstDate = '';
+    let lastDate = '';
+    if(date[0] > date[1]) {
+      firstDate = date[1]
+      lastDate = date[0]
+    } else {
+      firstDate = date[0]
+      lastDate = date[1]
+    }
 
     setLoading(true);
     if(headerType === 'access_time')
       headerType = '_id'
-    if(type === 'desc') 
+    if(_type === 'desc') 
       headerType = '-'+headerType;
 
-    let result = await axios.get(base_url + `/access?date=${date[0]}/${date[1]}&page=${1}&headerType=${headerType}`, {
+    let result = await axios.get(base_url + 
+      `/access?searchType=${searchType}&rowsPerPage=${rowsPerPage}&headerType=${headerType}&date=${firstDate}/${lastDate}&page=${page}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
     
     setLoading(false);
-    setPage(1);
     setAccesses(result.data);
   };
 
   async function getAccesses() {
     setLoading(true)
-    
+    let firstDate = '';
+    let lastDate = '';
+
+    if(date[0] > date[1]) {
+      firstDate = date[1]
+      lastDate = date[0]
+    } else {
+      firstDate = date[0]
+      lastDate = date[1]
+    }
+
     let _pages = await axios.get(base_url + 
-      `/access?type=dateCount&date=${date[0]}/${date[1]}${type !== '0' ? "&avatar_type="+type : ''}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+      `/access?type=dateCount&rowsPerPage=${rowsPerPage}&date=${firstDate}/${lastDate}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
 
     setLoading(false);
     if(_pages.data.length !== 0) {
       let result = await axios.get(base_url + 
-        `/access?date=${date[0]}/${date[1]}&page=${page}${type !== '0' ? "&avatar_type="+type : ''}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+        `/access?date=${firstDate}/${lastDate}&&rowsPerPage=${rowsPerPage}page=${page}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
         cancelToken: source.token
       });
       setPage(1);
@@ -168,8 +240,8 @@ const AccessList = props => {
       let count = 0 
       _pages.data.map(i => count += parseInt(i.count));
 
-      let _temp = parseInt(count/7);
-      if(count%7)
+      let _temp = parseInt(count/rowsPerPage);
+      if(count%rowsPerPage)
         _temp++;
   
       setPages(_temp);
@@ -184,11 +256,21 @@ const AccessList = props => {
   async function movePage(page) {
     let headerType = activeType
     setLoading(true);
+    let firstDate = '';
+    let lastDate = '';
+    if(date[0] > date[1]) {
+      firstDate = date[1]
+      lastDate = date[0]
+    } else {
+      firstDate = date[0]
+      lastDate = date[1]
+    }
     setPage(page)
-    if(type === 'desc') 
+
+    if(sort === 'desc') 
       headerType = '-'+headerType;
       
-    let result = await axios.get(base_url + `/access?date=${date[0]}/${date[1]}&page=${page}&headerType=${headerType}`, {
+    let result = await axios.get(base_url + `/access?date=${firstDate}/${lastDate}&avatar_temp=${type}&page=${page}&headerType=${headerType}&rowsPerPage=${rowsPerPage}`, {
       cancelToken: source.token
     });
 
@@ -198,7 +280,25 @@ const AccessList = props => {
 
   useEffect(() => {
     getAccesses();
-  },[type,temp,date])
+  },[type,temp,date,rowsPerPage])
+
+  const resetSearch = () => {
+    setSearchType('all')
+    setDate([
+      moment()
+        .locale('ko')
+        .format('YYYY-MM-DD')+" 00:00:00",
+      moment()
+        .locale('ko')
+        .format('YYYY-MM-DD')+" 23:59:59"
+    ]);
+    setType(' ');
+    setTemp('0');
+    setLoading(true);
+    setSearch('');
+    setActiveType('access_time');
+    setSort('desc');
+  }
   
   const _setSort = (type) => {
     setSort(type);
@@ -213,7 +313,10 @@ const AccessList = props => {
   };
 
   const handleDate = val => {
-    setDate(val);
+    if(val[0] === 0)
+      setDate([date[0],val[1]]);
+    else
+      setDate([val[0],date[1]]);
   };
 
   return (
@@ -222,19 +325,30 @@ const AccessList = props => {
         <AccessesToolbar
           clickExport={clickExport}
           search={search}
+          deleteAccesses={deleteAccesses}
           loading={loading}
+          handleSearchType={handleSearchType}
+          searchType = {searchType}
+          resetSearch={resetSearch}
           setSearch={_setSearch}
+          handleRowsPerPage={handleRowsPerPage}
+          rowsPerPage={rowsPerPage}
           accesses={search !== '' ? filteredAccesses : accesses}
           className={classes.toolbar}
           dateChange={handleDate}
           type_change={handleType}
           type={type}
+          date={date}
           temp_change={handleTemp}
           temp={temp}
           clickSearch={clickSearch}
         />
         <div className={classes.content}>
           <AccessesTable
+            handleSelectAllClick={handleSelectAllClick}
+            isSelected={isSelected}
+            handleClick={handleClick}
+            selected={selected}
             tempLimit={tempLimit}
             tempType={tempType}
             activeType={activeType}
