@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState, useEffect} from 'react';
 import { makeStyles } from '@material-ui/styles';
 import axios from 'axios';
 import {
@@ -43,8 +43,9 @@ function NumberFormatCustom(props) {
 }
 
 const Settings = props => {
-  const [tempType, setTempType] = React.useState(String(props.tempType));
-  const [tempLimit, setTempLimit] = React.useState(String(props.tempLimit));
+  const [tempType, setTempType] = useState(String(props.tempType));
+  const [tempLimit, setTempLimit] = useState(String(props.tempLimit));
+  const [term, setTerm] = useState();
   const classes = useStyles();
   const handleChange = event => {
     setTempType(event.target.value);
@@ -55,12 +56,28 @@ const Settings = props => {
   };
 
   const clickEdit = async () => {
-    let result = await axios.put(base_url + '/account/' + props.user_id, {
+    await axios.put(base_url + '/account/' + props.user_id, {
       tempLimit,
       tempType
     });
+    await axios.put(base_url + '/schedule', {
+      term
+    });
     alert('수정 되었습니다.');
   };
+
+  const getTerm = async () => {
+    let result = await axios.get(base_url + '/schedule')
+    setTerm(result.data.term)
+  }
+
+  const handleTerm = (e) => {
+    setTerm(e.target.value)
+  }
+
+  useEffect(() => {
+    getTerm();
+  },[])
 
   return (
     <div className={classes.root}>
@@ -119,6 +136,20 @@ const Settings = props => {
           </FormControl>
           <br />
           <br />
+          출입자 사진 보관 기간
+          <br />
+          <FormControl>
+            <Input
+              id="standard-adornment-weight"
+              value={term}
+              onChange={handleTerm}
+              endAdornment={<InputAdornment position="end">일</InputAdornment>}
+              aria-describedby="standard-weight-helper-text"
+              InputProps={{
+                inputComponent: NumberFormatCustom
+              }}
+            />
+          </FormControl>
           <br />
           <br />
           <div style={{ textAlign: 'center' }}>

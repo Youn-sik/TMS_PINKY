@@ -169,6 +169,15 @@ let s = schedule.scheduleJob('0 0 0 * * *', async function(){//스케쥴 설정
     }   
 });
 
+app.get('/schedule',(req,res) => {
+    res.send({term})
+})
+
+app.put('/schedule',(req,res) => {
+    term = req.body.term;
+    res.send({term})
+})
+
 
 // Run the server!
 const start = async () => {
