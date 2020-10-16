@@ -112,10 +112,10 @@ const AccessesTable = props => {
                 <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel
-                      active={activeType === 'stb_sn'}
+                      active={activeType === 'stb_name'}
                       direction={sort}
                       onClick={() => {
-                        createSortHandler('stb_sn');
+                        createSortHandler('stb_name');
                       }}>
                       단말기명
                     </TableSortLabel>
@@ -140,10 +140,10 @@ const AccessesTable = props => {
                 <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel
-                      active={activeType === 'stb_sn'}
+                      active={activeType === 'stb_location'}
                       direction={sort}
                       onClick={() => {
-                        createSortHandler('stb_sn');
+                        createSortHandler('stb_location');
                       }}>
                       단말기 위치
                     </TableSortLabel>
