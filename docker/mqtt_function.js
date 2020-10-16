@@ -452,7 +452,7 @@ module.exports = {
                                     +user.mobile+"|"
                                     +user.mail+"|"
                                     +user.gender+"|"
-                                    +user.type === 5 ? 4 : user.type+"|"
+                                    +user.type+"|"
                                     +user.avatar_file_url+"|"
                                     +user.create_at+"|"
                                     +user._id,
@@ -476,7 +476,7 @@ module.exports = {
                 insert_data = {
                     avatar_file : element.avatar_file,
                     avatar_file_checksum : element.avatar_file_checksum,
-                    avatar_type : element.avatar_type,
+                    avatar_type : element.avatar_type === 5 ? 4 : element.avatar_type,
                     avatar_distance : element.avatar_distance,
                     avatar_contraction_data : element.avatar_contraction_data,
                     avatar_file_url : upload_url,

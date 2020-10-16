@@ -138,12 +138,15 @@ const Dashboard = props => {
     let _attendanceData = JSON.parse(JSON.stringify(attendanceData));
     if (values[0].avatar_type === 1) {
       setEmployee(employee => employee + 1);
+      setEmployeeWeek(employee => employee + 1);
     } else if (values[0].avatar_type === 2) {
       setVisitor(visitor => visitor + 1);
     } else if (values[0].avatar_type === 3) {
       setStranger(stranger => stranger + 1);
+      setStrangerWeek(stranger => stranger + 1);
     } else {
       setBlack(black => black + 1);
+      setBlackWeek(black => black + 1);
     }
     // setAttendanceData((attendance) => {
     //   attendance.map((i) => {
