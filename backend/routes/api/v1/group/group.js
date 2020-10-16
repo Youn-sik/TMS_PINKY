@@ -8,6 +8,8 @@ router.get('/',async function(req, res) {
         const type = req.query.type;
         if(type === undefined) {
             const get_data = await api_v1_group_group.find()
+            .where('parent',null)
+            .where('rootParent',null)
             .populate('user_obids')
             .populate({
                 path : 'children',
@@ -19,12 +21,12 @@ router.get('/',async function(req, res) {
                     {path: 'user_obids'},
                 ],
             })
-            .exec(async (err, data) => {
-                data = data.filter(i => i.parent === undefined)
-                res.send(data);
-            });
+            res.send(get_data);
         } else {
             const get_data = await api_v1_group_group.find({type:type})
+            .where('parent',null)
+            .where('rootParent',null)
+            .where('type',type)
             .populate('user_obids')
             .populate({
                 path : 'children',
@@ -36,10 +38,7 @@ router.get('/',async function(req, res) {
                     {path: 'user_obids'},
                 ],
             })
-            .exec(async (err, data) => {
-                data = data.filter(i => i.parent === undefined)
-                res.send(data);
-            });
+            res.send(get_data);
         }
     } catch (err) {
         throw boom.boomify(err)

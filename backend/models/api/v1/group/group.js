@@ -17,6 +17,10 @@ const api_v1_group_group_Schema = new mongoose.Schema({
     update_at : { type: String },
     update_ut : { type: String },
 })
-api_v1_group_group_Schema.index({ parent: 1, type: 1, rootParent: 1 });
+api_v1_group_group_Schema.index({ parent: 1 });
+api_v1_group_group_Schema.index({ rootParent: 1 });
+api_v1_group_group_Schema.index({ children: 1 });
+api_v1_group_group_Schema.index({ user_obids: 1 });
+api_v1_group_group_Schema.index({ type: 1 });
 
 module.exports = mongoose.model('group', api_v1_group_group_Schema)
