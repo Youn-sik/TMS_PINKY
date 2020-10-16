@@ -45,7 +45,7 @@ const AccessStat = props => {
 
   async function getAccesses() {
     setLoading(true);
-    let result = await axios.get(base_url + `/access?type=deviceGroupAccesses&date=${date[0]}/${date[1]}`);
+    let result = await axios.get(base_url + `/access?type=deviceGroupAccesses&device=${device}&date=${date[0]}/${date[1]}`);
     setPeopleData(result.data);
     setLoading(false);
   }
@@ -56,6 +56,25 @@ const AccessStat = props => {
     let data = [];
     let maxTemp = [];
     let accessData = [];
+    ['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
+    .forEach(function(time,index) {
+      if(!temp[index]) {
+        temp.push({
+          _id:time,
+          count:0,
+          maxTemp:'0',
+          maxUrl:'',
+        })
+      } else if(temp[index]._id !== time) {
+        temp.splice(index,0,{
+          _id:time,
+          count:0,
+          maxTemp:'0',
+          maxUrl:'',
+        })
+      }
+
+    })
     temp.map(i => {
       labels.push(i._id);
       data.push(i.count);
@@ -103,7 +122,7 @@ const AccessStat = props => {
   }, []);
 
   useEffect(() => {
-    if (peopleData.length !== 0) {
+    if(devices.length > 0) {
       filterAccesses();
     }
   }, [peopleData]);
@@ -127,7 +146,7 @@ const AccessStat = props => {
                 cleanable={false}
                 oneTap
                 showOneCalendar
-                defaultValue={[new Date(), new Date()]}
+                defaultValue={[new Date(date[0]), new Date(date[0])]}
                 onChange={val => {
                   handleDate([val[0].yyyymmdd()]);
                 }}

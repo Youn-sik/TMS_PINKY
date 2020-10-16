@@ -16,6 +16,8 @@ const accessSchema = new mongoose.Schema({
     stb_sn : { type:String},
     stb_obid : { type:ObjectId, ref:'Camera'},
     statistics_status : { type: String },
+    stb_name : { type:String},
+    stb_location : { type:String},
     create_at : { type: String, default: moment().format('YYYY-MM-DD HH:mm:ss') },
     create_ut : { type: String, default: Date.now },
     update_at : { type: String },

@@ -58,9 +58,12 @@ const Statistics = props => {
 
     dates.map((date, index) => {
       
-      let empCnt = Array.isArray(employee) ? employee.map((i) => {if(i._id.date === date) return i.count})[0] : undefined;
-      let strCnt = Array.isArray(stranger) ? stranger.map((i) => {if(i._id.date === date) return i.count})[0] : undefined;
-      let blackCnt = Array.isArray(black) ? black.map((i) => {if(i._id.date === date) return i.count})[0] : undefined;
+      let empCnt = 0
+      employee.map((i) => {if(i._id.date === date) empCnt = i.count;})
+      let strCnt = 0
+      stranger.map((i) => {if(i._id.date === date) strCnt = i.count;})
+      let blackCnt = 0
+      black.map((i) => {if(i._id.date === date) blackCnt = i.count;})
 
       if(empCnt !== undefined)
         temp[0][index] = empCnt

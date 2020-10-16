@@ -111,15 +111,43 @@ const AccessesTable = props => {
                 <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel
+                      active={activeType === 'stb_name'}
+                      direction={sort}
+                      onClick={() => {
+                        createSortHandler('stb_name');
+                      }}>
+                      단말기 이름
+                    </TableSortLabel>
+                  ) : (
+                    '단말기 이름'
+                  )}
+                </TableCell>
+                <TableCell>
+                  {accesses.length > 0 ? (
+                    <TableSortLabel
                       active={activeType === 'stb_sn'}
                       direction={sort}
                       onClick={() => {
                         createSortHandler('stb_sn');
                       }}>
-                      단말기
+                      단말기 시리얼
                     </TableSortLabel>
                   ) : (
-                    '단말기'
+                    '단말기 시리얼'
+                  )}
+                </TableCell>
+                <TableCell>
+                  {accesses.length > 0 ? (
+                    <TableSortLabel
+                      active={activeType === 'stb_location'}
+                      direction={sort}
+                      onClick={() => {
+                        createSortHandler('stb_location');
+                      }}>
+                      단말기 위치
+                    </TableSortLabel>
+                  ) : (
+                    '단말기 위치'
                   )}
                 </TableCell>
                 <TableCell>

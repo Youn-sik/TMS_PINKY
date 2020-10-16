@@ -484,6 +484,8 @@ module.exports = {
                     access_time : moment().format('YYYY-MM-DD HH:mm:ss'),
                     stb_sn : json.stb_sn,
                     stb_obid : camera._id,
+                    stb_name : camera.name,
+                    stb_location : camera.location,
                     name : userName,
                 }
                 
