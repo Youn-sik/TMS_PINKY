@@ -231,7 +231,13 @@ const AccessesTable = props => {
                           </TableCell>
                         <TableCell>{access.name === 'unknown' ? null : access.name}</TableCell>
                           <TableCell>
+                            {access.stb_name ? access.stb_name : ''}
+                          </TableCell>
+                          <TableCell>
                             {access.stb_sn}
+                          </TableCell>
+                          <TableCell>
+                            {access.stb_location ? access.stb_location : ''}
                           </TableCell>
                           <TableCell className={classes.redFont}>
                             {access.avatar_type === 1
