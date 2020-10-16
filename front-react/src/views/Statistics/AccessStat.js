@@ -6,9 +6,12 @@ import { DateRangePicker, IntlProvider } from 'rsuite';
 import kor from 'rsuite/lib/IntlProvider/locales/ko_KR';
 import moment from 'moment';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Button from '@material-ui/core/Button';
 import 'moment/locale/ko';
 import { TimeAccess } from './components';
 import {base_url} from 'server.json';
+import { saveAs } from 'file-saver'
+import ExcelJS from 'exceljs/dist/es5/exceljs.browser.js'
 // eslint-disable-next-line no-extend-native
 Date.prototype.yyyymmdd = function() {
   var yyyy = this.getFullYear().toString();
@@ -44,10 +47,10 @@ const AccessStat = props => {
   const [chartData, setChartData] = useState({});
 
   async function getAccesses() {
-    setLoading(true);
-    let result = await axios.get(base_url + `/access?type=deviceGroupAccesses&date=${date[0]}/${date[1]}`);
-    setPeopleData(result.data);
-    setLoading(false);
+      setLoading(true);
+      let result = await axios.get(base_url + `/access?type=deviceGroupAccesses&device=${device}&date=${date[0]}/${date[1]}`);
+      setPeopleData(result.data);
+      setLoading(false);
   }
 
   const filterAccesses = () => {
@@ -56,6 +59,25 @@ const AccessStat = props => {
     let data = [];
     let maxTemp = [];
     let accessData = [];
+    ['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
+    .forEach(function(time,index) {
+      if(!temp[index]) {
+        temp.push({
+          _id:time,
+          count:0,
+          maxTemp:'0',
+          maxUrl:'',
+        })
+      } else if(temp[index]._id !== time) {
+        temp.splice(index,0,{
+          _id:time,
+          count:0,
+          maxTemp:'0',
+          maxUrl:'',
+        })
+      }
+
+    })
     temp.map(i => {
       labels.push(i._id);
       data.push(i.count);
@@ -86,6 +108,44 @@ const AccessStat = props => {
       .format('YYYY-MM-DD');
   };
 
+  const clickExport = async () => {
+
+    const wb = new ExcelJS.Workbook()
+
+    const ws = wb.addWorksheet()
+
+    let data = JSON.parse(JSON.stringify(accesses));
+    let time = ['시간'] ;
+    let count = ['출입자수'];
+    let maxTemp = ['최고 발열자 온도'];
+    let maxImg = ['최고 발열자 사진',' '];
+    data.map((i, index) => {
+      time.push(i._id)
+      count.push(i.count)
+      maxTemp.push(i.maxTemp)
+
+      if(i.maxBase64) {
+        let image = wb.addImage({
+          base64: i.maxBase64,
+          extension: 'png'
+        })
+        ws.addImage(image,{
+          tl: { col: 1.5+index, row: 3 },
+          br: { col: 2+index, row: 5.5 }
+        })
+      }
+    });
+    
+    ws.addRow(time)
+    ws.addRow(count)
+    ws.addRow(maxTemp)
+    ws.addRow(maxImg)
+
+    const buf = await wb.xlsx.writeBuffer()
+
+    saveAs(new Blob([buf]), 'statistics.xlsx')
+  }
+
   const handleDeviceChange = e => {
     setDevice(e.target.value);
   };
@@ -103,7 +163,7 @@ const AccessStat = props => {
   }, []);
 
   useEffect(() => {
-    if (peopleData.length !== 0) {
+    if(devices.length > 0) { 
       filterAccesses();
     }
   }, [peopleData]);
@@ -127,7 +187,7 @@ const AccessStat = props => {
                 cleanable={false}
                 oneTap
                 showOneCalendar
-                defaultValue={[new Date(), new Date()]}
+                defaultValue={[new Date(date[0]), new Date(date[0])]}
                 onChange={val => {
                   handleDate([val[0].yyyymmdd()]);
                 }}
@@ -144,6 +204,12 @@ const AccessStat = props => {
                 <MenuItem value={device.serial_number}>{device.name}</MenuItem>
               ))}
             </Select>
+            <Button
+            size="small"
+            style={{float: 'right',marginRight:'10px' }} 
+            variant="contained" color="primary" onClick={clickExport}>
+              엑셀로 다운로드
+            </Button>
           </Grid>
           <Grid item lg={12} md={12} xl={12} xs={12}>
             <TimeAccess date={date} chartData={chartData}></TimeAccess>

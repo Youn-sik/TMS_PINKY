@@ -87,11 +87,15 @@ const TimeAccess = props => {
     scaleStartValue : 0 ,
     responsive: true,
     animation: false,
+    onHover : function(e) {
+      if(e.type === 'mouseout')
+        setPositionAndData({
+          accessCount: 0,
+        });
+    },
     tooltips: {
       enabled: false,
-      mode: 'x',
-      intersect: false,
-      custom: tooltipModel => {
+      custom: (tooltipModel) => {
         // if chart is not defined, return early
         let chart = _chartRef.current;
         if (!chart) {
@@ -107,9 +111,9 @@ const TimeAccess = props => {
         const position = chart.chartInstance.canvas.getBoundingClientRect();
 
         const left =
-          tooltipModel.caretX + window.pageXOffset + window.outerWidth / 6;
+          position.left + window.pageXOffset + tooltipModel.caretX + 'px';
         const top =
-          position.top + 20 + window.pageYOffset - window.outerWidth / 100;
+          position.top + window.pageYOffset + tooltipModel.caretY + 'px';
 
         const date = tooltipModel.dataPoints[0].xLabel;
         const value = tooltipModel.dataPoints[0].yLabel;
@@ -186,6 +190,7 @@ const TimeAccess = props => {
       <Divider />
       <CardContent className={classes.cardContent}>
         <Grid
+          style={{hidden:"hidden"}}
           className={classes.cardContent}
           container
           direction="row"
@@ -196,11 +201,11 @@ const TimeAccess = props => {
           </div>
           {tooltip.accessCount !== 0 ? (
             <div
-              style={{
-                position: 'absolute',
-                top: tooltip.top,
-                left: tooltip.left
-              }}>
+            style={{
+              position: 'absolute',
+              top: tooltip.top,
+              left: tooltip.left
+            }}>
               <div className="arrow_box">
                 <div style={{ color: 'white' }}>
                   출입자 수: {tooltip.accessCount}명<br />

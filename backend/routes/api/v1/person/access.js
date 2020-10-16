@@ -30,7 +30,7 @@ router.get('/',async function(req, res) {
                         lastDate : -1
                     }   
                 }
-            ])
+            ]).allowDiskUse(true);
         } else if(req.query.type === 'weekStatistics') {
             get_data = await api_v1_person_access.aggregate([
                 {
@@ -49,7 +49,7 @@ router.get('/',async function(req, res) {
                         lastDate : -1
                     }   
                 }
-            ])
+            ]).allowDiskUse(true);
         } else if(req.query.type === 'deviceStats') {
             let date = req.query.date.split('/');
             let device = req.query.device === ' ' ? new RegExp('') : new RegExp("^"+req.query.device+"$");
@@ -97,16 +97,16 @@ router.get('/',async function(req, res) {
                         "_id.date":1
                     }
                 },
-            ])
+            ]).allowDiskUse(true);
         } else if(req.query.type === 'deviceGroupAccesses') {
             let date = req.query.date.split('/');
-            let device = req.query.device;
+            let device = req.query.device === 'all' ? null : req.query.device;
 
             if(device) {
                 get_data = await api_v1_person_access.aggregate([
                     {
                         $match: {
-                            access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
+                            access_time : { $regex: new RegExp(date[0])},
                             stb_sn : device 
                         }
                     },
@@ -118,6 +118,7 @@ router.get('/',async function(req, res) {
                             stb_sn:"$stb_sn",
                             avatar_temperature : "$avatar_temperature", 
                             avatar_file_url : "$avatar_file_url", 
+                            avatar_file : "$avatar_file", 
                             name : "$name",
                             avatar_type : "$avatar_type"
                         } 
@@ -129,6 +130,7 @@ router.get('/',async function(req, res) {
                             stb_sn : 1,
                             avatar_temperature : 1,
                             avatar_file_url : 1,
+                            avatar_file : 1,
                             name : 1, 
                             avatar_type: 1
                         }
@@ -142,6 +144,7 @@ router.get('/',async function(req, res) {
                             stb_sn : 1,
                             avatar_temperature : 1,
                             avatar_file_url : 1,
+                            avatar_file : 1,
                             name : 1, 
                             avatar_type: 1
                         } 
@@ -155,6 +158,7 @@ router.get('/',async function(req, res) {
                             stb_sn : 1,
                             avatar_temperature : 1,
                             avatar_file_url : 1,
+                            avatar_file : 1,
                             name : 1, 
                             avatar_type: 1
                         } 
@@ -168,18 +172,19 @@ router.get('/',async function(req, res) {
                             count: { $sum: 1 },
                             maxTemp:{ $first: "$avatar_temperature" },
                             maxUrl:{ $first: "$avatar_file_url" },
+                            maxBase64:{ $first: "$avatar_file" },
                             maxType:{ $first: "$avatar_type" },
                         }
                     },
                     {
                         $sort: {_id:1}
                     }
-                ])
+                ]).allowDiskUse(true);
             } else {         
                 get_data = await api_v1_person_access.aggregate([
                     {
                         $match: {
-                            access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" }
+                            access_time : { $regex: new RegExp(date[0])},
                         }
                     },
                     { 
@@ -190,6 +195,7 @@ router.get('/',async function(req, res) {
                             stb_sn:"$stb_sn",
                             avatar_temperature : "$avatar_temperature", 
                             avatar_file_url : "$avatar_file_url", 
+                            avatar_file : "$avatar_file", 
                             name : "$name",
                             avatar_type : "$avatar_type"
                         } 
@@ -201,6 +207,7 @@ router.get('/',async function(req, res) {
                             stb_sn : 1,
                             avatar_temperature : 1,
                             avatar_file_url : 1,
+                            avatar_file : 1,
                             name : 1, 
                             avatar_type: 1
                         }
@@ -214,6 +221,7 @@ router.get('/',async function(req, res) {
                             stb_sn : 1,
                             avatar_temperature : 1,
                             avatar_file_url : 1,
+                            avatar_file : 1,
                             name : 1, 
                             avatar_type: 1
                         } 
@@ -227,6 +235,7 @@ router.get('/',async function(req, res) {
                             stb_sn : 1,
                             avatar_temperature : 1,
                             avatar_file_url : 1,
+                            avatar_file : 1,
                             name : 1, 
                             avatar_type: 1
                         } 
@@ -240,13 +249,14 @@ router.get('/',async function(req, res) {
                             count: { $sum: 1 },
                             maxTemp:{ $first: "$avatar_temperature" },
                             maxUrl:{ $first: "$avatar_file_url" },
+                            maxBase64:{ $first: "$avatar_file" },
                             maxType:{ $first: "$avatar_type" },
                         }
                     },
                     {
                         $sort: {_id:1}
                     }
-                ])
+                ]).allowDiskUse(true);
             }
         } 
         else if(req.query.type === 'todayAttendance') {
@@ -269,7 +279,7 @@ router.get('/',async function(req, res) {
                         count: { $sum: 1 }
                     },
                 },
-            ])
+            ]).allowDiskUse(true);
         } else if(req.query.type === 'temperature') {
             get_data = await api_v1_person_access.find()
                 .where('avatar_temperature')
@@ -287,7 +297,7 @@ router.get('/',async function(req, res) {
                 {
                     $sort: {avatar_contraction_data : 1,access_time : 1}   
                 },
-            ])
+            ]).allowDiskUse(true);
         } else if(req.query.type === 'dateCount') {
             let date = req.query.date.split('/');
             let search = '';
@@ -323,7 +333,7 @@ router.get('/',async function(req, res) {
                                 count: { $sum: 1 }
                             }
                         }
-                    ])
+                    ]).allowDiskUse(true);
                 } else {
                     get_data = await api_v1_person_access.aggregate([
                         {
@@ -340,7 +350,7 @@ router.get('/',async function(req, res) {
                                 count: { $sum: 1 }
                             }
                         }
-                    ])
+                    ]).allowDiskUse(true);
                 }
             } else if (selected_temp_chk) { //아바타 타입만 선택한 경우
                 get_data = await api_v1_person_access.aggregate([
@@ -357,7 +367,7 @@ router.get('/',async function(req, res) {
                             count: { $sum: 1 }
                         }
                     }
-                ])
+                ]).allowDiskUse(true);
             } else if (avatar_temperature && tempType) {//온도 타입만 선택한 경우
                 if(tempType === '2') {
                     get_data = await api_v1_person_access.aggregate([
@@ -374,7 +384,7 @@ router.get('/',async function(req, res) {
                                 count: { $sum: 1 }
                             }
                         }
-                    ])
+                    ]).allowDiskUse(true);
                 } else {
                     get_data = await api_v1_person_access.aggregate([
                         {
@@ -390,7 +400,7 @@ router.get('/',async function(req, res) {
                                 count: { $sum: 1 }
                             }
                         }
-                    ])
+                    ]).allowDiskUse(true);
                 }   
             } else { //모두 전체일경우
                 get_data = await api_v1_person_access.aggregate([
@@ -406,7 +416,7 @@ router.get('/',async function(req, res) {
                             count: { $sum: 1 }
                         }
                     }
-                ])
+                ]).allowDiskUse(true);
             }
         } else {
             // $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59"

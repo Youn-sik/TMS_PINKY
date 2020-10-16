@@ -117,10 +117,38 @@ const AccessesTable = props => {
                       onClick={() => {
                         createSortHandler('stb_sn');
                       }}>
-                      단말기
+                      단말기명
                     </TableSortLabel>
                   ) : (
-                    '단말기'
+                    '단말기명'
+                  )}
+                </TableCell>
+                <TableCell>
+                  {accesses.length > 0 ? (
+                    <TableSortLabel
+                      active={activeType === 'stb_sn'}
+                      direction={sort}
+                      onClick={() => {
+                        createSortHandler('stb_sn');
+                      }}>
+                      시리얼 번호
+                    </TableSortLabel>
+                  ) : (
+                    '시리얼 번호'
+                  )}
+                </TableCell>
+                <TableCell>
+                  {accesses.length > 0 ? (
+                    <TableSortLabel
+                      active={activeType === 'stb_sn'}
+                      direction={sort}
+                      onClick={() => {
+                        createSortHandler('stb_sn');
+                      }}>
+                      단말기 위치
+                    </TableSortLabel>
+                  ) : (
+                    '단말기 위치'
                   )}
                 </TableCell>
                 <TableCell>
@@ -210,7 +238,13 @@ const AccessesTable = props => {
                             </div>
                           </TableCell>
                           <TableCell>
+                            단말명
+                          </TableCell>
+                          <TableCell>
                             {access.stb_sn}
+                          </TableCell>
+                          <TableCell>
+                            설치 위치
                           </TableCell>
                           <TableCell className={classes.redFont}>
                             {access.avatar_type === 1
@@ -279,7 +313,13 @@ const AccessesTable = props => {
                             </div>
                           </TableCell>
                           <TableCell>
+                            단말명
+                          </TableCell>
+                          <TableCell>
                             {access.stb_sn}
+                          </TableCell>
+                          <TableCell>
+                            설치 위치
                           </TableCell>
                           <TableCell>
                             {access.avatar_type === 1
