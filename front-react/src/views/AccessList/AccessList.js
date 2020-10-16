@@ -184,7 +184,7 @@ const AccessList = props => {
     let headerType = activeType
     setLoading(true);
     setPage(page)
-    if(type === 'desc') 
+    if(sort === 'desc') 
       headerType = '-'+headerType;
       
     let result = await axios.get(base_url + `/access?date=${date[0]}/${date[1]}&page=${page}&headerType=${headerType}`, {
