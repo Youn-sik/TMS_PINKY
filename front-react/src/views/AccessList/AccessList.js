@@ -114,7 +114,7 @@ const AccessList = props => {
       headerType = '-'+headerType;
 
     let _pages = await axios.get(base_url + 
-      `/access?type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+      `/access?searchType=${searchType}&search=${search}&type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
 
@@ -179,13 +179,13 @@ const AccessList = props => {
     setLoading(true)
     
     let _pages = await axios.get(base_url + 
-      `/access?type=dateCount&rowsPerPage=${rowsPerPage}&date=${date[0]}/${date[1]}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+      `/access?searchType=${searchType}&search=${search}&type=dateCount&rowsPerPage=${rowsPerPage}&date=${date[0]}/${date[1]}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
 
     if(_pages.data.length !== 0) {
       let result = await axios.get(base_url + 
-        `/access?date=${date[0]}/${date[1]}&&rowsPerPage=${rowsPerPage}page=${page}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+        `/access?searchType=${searchType}&search=${search}&date=${date[0]}/${date[1]}&&rowsPerPage=${rowsPerPage}page=${page}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
         cancelToken: source.token
       });
       setPage(1);
@@ -218,7 +218,7 @@ const AccessList = props => {
     });
 
     let _pages = await axios.get(base_url + 
-      `/access?type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+      `/access?searchType=${searchType}&search=${search}&type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
 
