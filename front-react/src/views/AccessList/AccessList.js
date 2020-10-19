@@ -100,8 +100,8 @@ const AccessList = props => {
     })
 
     const buf = await wb.xlsx.writeBuffer()
-
-    saveAs(new Blob([buf]), 'abc.xlsx')
+    
+    saveAs(new Blob([buf]), 'access_records_'+moment().locale('ko').format('YYYY-MM-DD HH:mm:ss')+'.xlsx')
   }
 
   const clickSearch = async () => {
@@ -155,6 +155,20 @@ const AccessList = props => {
         `/access?searchType=${searchType}&rowsPerPage=${rowsPerPage}&headerType=${headerType}&date=${date[0]}/${date[1]}&page=${page}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
+
+    let _pages = await axios.get(base_url + 
+      `/access?searchType=${searchType}&type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+      cancelToken: source.token
+    });
+
+    let count = 0 
+    _pages.data.map(i => count += parseInt(i.count));
+
+    let _temp = parseInt(count/rowsPerPage);
+    if(count%rowsPerPage)
+      _temp++;
+
+    setPages(_temp);
     
     setLoading(false);
     setPage(1);
@@ -199,9 +213,23 @@ const AccessList = props => {
     if(sort === 'desc') 
       headerType = '-'+headerType;
       
-      let result = await axios.get(base_url + `/access?date=${date[0]}/${date[1]}&avatar_temp=${type}&page=${page}&headerType=${headerType}&rowsPerPage=${rowsPerPage}`, {
+    let result = await axios.get(base_url + `/access?searchType=${searchType}&search=${search}&date=${date[0]}/${date[1]}&avatar_temp=${type}&page=${page}&headerType=${headerType}&rowsPerPage=${rowsPerPage}`, {
       cancelToken: source.token
     });
+
+    let _pages = await axios.get(base_url + 
+      `/access?type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+      cancelToken: source.token
+    });
+
+    let count = 0 
+    _pages.data.map(i => count += parseInt(i.count));
+
+    let _temp = parseInt(count/rowsPerPage);
+    if(count%rowsPerPage)
+      _temp++;
+
+    setPages(_temp);
 
     setLoading(false);
     setAccesses(result.data);

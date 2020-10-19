@@ -6,6 +6,8 @@ import { Groups, UsersTable } from './components';
 import {base_url} from 'server.json';
 import ExcelJS from 'exceljs/dist/es5/exceljs.browser.js'
 import { saveAs } from 'file-saver'
+import moment from 'moment';
+import 'moment/locale/ko';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -86,7 +88,7 @@ const Black = props => {
 
     const buf = await wb.xlsx.writeBuffer()
 
-    saveAs(new Blob([buf]), 'abc.xlsx')
+    saveAs(new Blob([buf]), 'black_list_'+moment().locale('ko').format('YYYY-MM-DD HH:mm:ss')+'.xlsx')
   }
 
   const filterGroup = useCallback(

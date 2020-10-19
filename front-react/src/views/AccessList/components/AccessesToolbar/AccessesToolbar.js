@@ -94,55 +94,57 @@ const AccessesToolbar = props => {
   return (
     <div {...rest} className={clsx(classes.root, className)}>
       <div className={classes.row}>
-        <IntlProvider locale={kor}>
-          <DateRangePicker
-            loading={loading}
-            cleanable={false}
-            showOneCalendar
-            defaultValue={[new Date(), new Date()]}
-            onChange={val => {
-              dateChange([val[0].yyyymmdd(), val[1].yyyymmdd()]);
-            }}
-          />
-        </IntlProvider>
-        <Select
-          className={classes.select}
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={props.type}
-          onChange={handleTypeChange}>
-          <MenuItem value="0">전체</MenuItem>
-          <MenuItem value="1">사원</MenuItem>
-          <MenuItem value="3">미등록자</MenuItem>
-          <MenuItem value="4">블랙리스트</MenuItem>
-        </Select>
-        <Select
-          className={classes.select}
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={temp}
-          style={{}}
-          onChange={handleTempChange}>
-          <MenuItem value="0">전체</MenuItem>
-          <MenuItem value="1">정상 온도</MenuItem>
-          <MenuItem value="2">비정상 온도</MenuItem>
-        </Select>
-        <Select
-          className={classes.select}
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={rowsPerPage}
-          onChange={handleRowsPerPage}
-          >
-          <MenuItem value="7">7</MenuItem>
-          <MenuItem value="10">10</MenuItem>
-          <MenuItem value="20">20</MenuItem>
-          <MenuItem value="30">30</MenuItem>
-        </Select>
-        <Button style={{width: '163px',marginLeft:'10px',marginRight:'10px' }} variant="contained" color="primary" onClick={clickExport}>
-          엑셀로 다운로드
-        </Button>
-        <div style={{ width: '80%' }}>
+        <div style={{ width: '60%' }}>
+          <IntlProvider locale={kor}>
+            <DateRangePicker
+              loading={loading}
+              cleanable={false}
+              showOneCalendar
+              defaultValue={[new Date(), new Date()]}
+              onChange={val => {
+                dateChange([val[0].yyyymmdd(), val[1].yyyymmdd()]);
+              }}
+            />
+          </IntlProvider>
+          <Select
+            className={classes.select}
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={props.type}
+            onChange={handleTypeChange}>
+            <MenuItem value="0">전체</MenuItem>
+            <MenuItem value="1">사원</MenuItem>
+            <MenuItem value="3">미등록자</MenuItem>
+            <MenuItem value="4">블랙리스트</MenuItem>
+          </Select>
+          <Select
+            className={classes.select}
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={temp}
+            style={{}}
+            onChange={handleTempChange}>
+            <MenuItem value="0">전체</MenuItem>
+            <MenuItem value="1">정상 온도</MenuItem>
+            <MenuItem value="2">비정상 온도</MenuItem>
+          </Select>
+          <Select
+            className={classes.select}
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={rowsPerPage}
+            onChange={handleRowsPerPage}
+            >
+            <MenuItem value="7">7</MenuItem>
+            <MenuItem value="10">10</MenuItem>
+            <MenuItem value="20">20</MenuItem>
+            <MenuItem value="30">30</MenuItem>
+          </Select>
+          <Button style={{marginLeft:'10px',marginRight:'10px' }} variant="contained" color="primary" onClick={clickExport}>
+            엑셀로 다운로드
+          </Button>
+        </div>
+        <div style={{ width: '40%' }}>
           <TextField
             style={{ float: 'right', marginRight: '30px' }}
             className={classes.search}

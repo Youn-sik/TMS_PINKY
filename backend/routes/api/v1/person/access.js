@@ -52,7 +52,7 @@ router.get('/',async function(req, res) {
             ]).allowDiskUse(true);
         } else if(req.query.type === 'deviceStats') {
             let date = req.query.date.split('/');
-            let device = new RegExp(req.query.device);
+            let device = new RegExp("^"+req.query.device+"$");
 
             if(device === '')
                 device = new RegExp('')
@@ -451,10 +451,16 @@ router.get('/',async function(req, res) {
                 stb_sn = search
             }
 
+            if(req.query.execPage) {
+                page = parseInt(req.query.execPage) - 1
+                rowPerPage = parseInt(req.query.execRowPerPage)
+            }
+
             if(avatar_type && avatar_temperature && tempType) { //온도,타입 모두 설정한 경우
                 if(tempType === '2') {
                     get_data = await api_v1_person_access.find()
                     .sort(headerType)
+                    .select(req.query.execPage ? '-avatar_file' : '')
                     .where("avatar_type").equals(parseInt(avatar_type))
                     .gte('avatar_temperature', parseFloat(avatar_temperature))
                     .gte("access_time",date[0]+" 00:00:00")
@@ -468,6 +474,7 @@ router.get('/',async function(req, res) {
                 } else {
                     get_data = await api_v1_person_access.find()
                     .sort(headerType)
+                    .select(req.query.execPage ? '-avatar_file' : '')
                     .where("avatar_type").equals(parseInt(avatar_type))
                     .lt('avatar_temperature', parseFloat(avatar_temperature))
                     .gte("access_time",date[0]+" 00:00:00")
@@ -482,6 +489,7 @@ router.get('/',async function(req, res) {
             } else if (avatar_type) { //아바타 타입만 선택한 경우
                 get_data = await api_v1_person_access.find()
                 .sort(headerType)
+                .select(req.query.execPage ? '-avatar_file' : '')
                 .where("avatar_type").equals(parseInt(avatar_type))
                 .gte("access_time",date[0]+" 00:00:00")
                 .lte("access_time",date[1]+" 23:59:59")
@@ -495,6 +503,7 @@ router.get('/',async function(req, res) {
                 if(tempType === '2') {
                     get_data = await api_v1_person_access.find()
                     .sort(headerType)
+                    .select(req.query.execPage ? '-avatar_file' : '')
                     .gte('avatar_temperature', parseFloat(avatar_temperature))
                     .gte("access_time",date[0]+" 00:00:00")
                     .lte("access_time",date[1]+" 23:59:59")
@@ -507,7 +516,7 @@ router.get('/',async function(req, res) {
                 } else {
                     get_data = await api_v1_person_access.find()
                     .sort(headerType)
-
+                    .select(req.query.execPage ? '-avatar_file' : '')
                     .lt('avatar_temperature', parseFloat(avatar_temperature))
                     .gte("access_time",date[0]+" 00:00:00")
                     .lte("access_time",date[1]+" 23:59:59")
@@ -520,13 +529,14 @@ router.get('/',async function(req, res) {
                 }   
             }else { //모두 전체일경우
                 get_data = await api_v1_person_access.find()
+                .select(req.query.execPage ? '-avatar_file' : '')
                 .sort(headerType)
                 .gte("access_time",date[0]+" 00:00:00")
                 .lte("access_time",date[1]+" 23:59:59")
-                .regex("stb_sn",new RegExp(stb_sn))
-                .regex("stb_name",new RegExp(stb_name))
-                .regex("stb_location",new RegExp(stb_location))
-                .regex("name",new RegExp(name))
+                // .regex("stb_sn",new RegExp(stb_sn))
+                // .regex("stb_name",new RegExp(stb_name))
+                // .regex("stb_location",new RegExp(stb_location))
+                // .regex("name",new RegExp(name))
                 .skip(page*rowPerPage)
                 .limit(rowPerPage)
             }
