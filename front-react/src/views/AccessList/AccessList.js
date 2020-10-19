@@ -47,7 +47,7 @@ const AccessList = props => {
   const [activeType, setActiveType] = useState('access_time');
   const [sort, setSort] = useState('desc');
   const [rowsPerPage,setRowsPerPage] = useState('7');
-  const [searchType,setSearchType] = useState('all')
+  const [searchType,setSearchType] = useState('name')
 
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();

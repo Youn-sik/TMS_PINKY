@@ -441,9 +441,7 @@ router.get('/',async function(req, res) {
             if(req.query.name)
                 name = req.query.name
 
-            if(req.query.searchType === 'all') {
-                stb_sn = stb_name = stb_location = search
-            } else if(req.query.searchType === 'stb_name') {
+            if(req.query.searchType === 'stb_name') {
                 stb_name = search
             } else if(req.query.searchType === 'stb_location') {
                 stb_location = search
@@ -465,7 +463,7 @@ router.get('/',async function(req, res) {
                     .gte('avatar_temperature', parseFloat(avatar_temperature))
                     .gte("access_time",date[0]+" 00:00:00")
                     .lte("access_time",date[1]+" 23:59:59")
-                    .regex("stb_sn",new RegExp(search))
+                    .regex("stb_sn",new RegExp(stb_sn))
                     .regex("name",new RegExp(name))
                     .regex("stb_name",new RegExp(stb_name))
                     .regex("stb_location",new RegExp(stb_location))
@@ -479,7 +477,7 @@ router.get('/',async function(req, res) {
                     .lt('avatar_temperature', parseFloat(avatar_temperature))
                     .gte("access_time",date[0]+" 00:00:00")
                     .lte("access_time",date[1]+" 23:59:59")
-                    .regex("stb_sn",new RegExp(search))
+                    .regex("stb_sn",new RegExp(stb_sn))
                     .regex("name",new RegExp(name))
                     .regex("stb_name",new RegExp(stb_name))
                     .regex("stb_location",new RegExp(stb_location))
@@ -493,7 +491,7 @@ router.get('/',async function(req, res) {
                 .where("avatar_type").equals(parseInt(avatar_type))
                 .gte("access_time",date[0]+" 00:00:00")
                 .lte("access_time",date[1]+" 23:59:59")
-                .regex("stb_sn",new RegExp(search))
+                .regex("stb_sn",new RegExp(stb_sn))
                 .regex("stb_name",new RegExp(stb_name))
                 .regex("stb_location",new RegExp(stb_location))
                 .regex("name",new RegExp(name))
@@ -507,7 +505,7 @@ router.get('/',async function(req, res) {
                     .gte('avatar_temperature', parseFloat(avatar_temperature))
                     .gte("access_time",date[0]+" 00:00:00")
                     .lte("access_time",date[1]+" 23:59:59")
-                    .regex("stb_sn",new RegExp(search))
+                    .regex("stb_sn",new RegExp(stb_sn))
                     .regex("name",new RegExp(name))
                     .regex("stb_name",new RegExp(stb_name))
                     .regex("stb_location",new RegExp(stb_location))
@@ -520,7 +518,7 @@ router.get('/',async function(req, res) {
                     .lt('avatar_temperature', parseFloat(avatar_temperature))
                     .gte("access_time",date[0]+" 00:00:00")
                     .lte("access_time",date[1]+" 23:59:59")
-                    .regex("stb_sn",new RegExp(search))
+                    .regex("stb_sn",new RegExp(stb_sn))
                     .regex("stb_name",new RegExp(stb_name))
                     .regex("stb_location",new RegExp(stb_location))
                     .regex("name",new RegExp(name))
