@@ -46,6 +46,8 @@ const AccessList = props => {
   const [filteredAccesses, setFilteredAccesses] = useState([]);
   const [activeType, setActiveType] = useState('access_time');
   const [sort, setSort] = useState('desc');
+  const [rowsPerPage,setRowsPerPage] = useState('7');
+  const [searchType,setSearchType] = useState('all')
 
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
@@ -56,6 +58,14 @@ const AccessList = props => {
     setSearch(e.target.value);
   };
 
+  const handleRowsPerPage = e => {
+    setRowsPerPage(e.target.value);
+  }
+
+  const handleSearchType = (e) => {
+    setSearchType(e.target.value);
+  }
+
   const clickExport = async () => {
 
     const wb = new ExcelJS.Workbook()
@@ -64,7 +74,7 @@ const AccessList = props => {
 
     
 
-    ws.addRow(['사진', '이름', '단말기','타입','거리','온도','출입 시간'])
+    ws.addRow(['사진', '이름', '단말기 이름','단말기 시리얼','단말기 위치','타입','거리','온도','출입 시간'])
     accesses.map((access,index) => {
       let temp = []
       let image = wb.addImage({
@@ -74,7 +84,9 @@ const AccessList = props => {
 
       temp.push('');
       temp.push(access['name']);
+      temp.push(access['stb_name'])
       temp.push(access['stb_sn'])
+      temp.push(access['stb_location'])
       temp.push(access['avatar_type'] === 1 ? '사원' : access['avatar_type'] === 3 ? '미등록자' : '블랙리스트');
       temp.push(String(access['avatar_distance']).substring(0,3)+"M");
       temp.push(access['avatar_temperature'].length < 4 ? access['avatar_temperature'] : access['avatar_temperature'].substring(0,4));
@@ -102,12 +114,12 @@ const AccessList = props => {
       headerType = '-'+headerType;
 
     let _pages = await axios.get(base_url + 
-      `/access?type=dateCount&date=${date[0]}/${date[1]}&search=${search}${type !== '0' ? "&avatar_type="+type : ''}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+      `/access?type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
 
     let result = await axios.get(base_url + 
-      `/access?date=${date[0]}/${date[1]}&page=${page}&search=${search}${type !== '0' ? "&avatar_type="+type : ''}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+      `/access?searchType=${searchType}&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&page=${page}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
 
@@ -118,9 +130,9 @@ const AccessList = props => {
       _pages.data.map(i => count += parseInt(i.count));
 
     if(_pages.data.length !== 0){
-      let temp = parseInt(count/7);
+      let temp = parseInt(count/rowsPerPage);
 
-      if(count%7)
+      if(count%rowsPerPage)
         temp++;
 
       setPages(temp);
@@ -131,16 +143,16 @@ const AccessList = props => {
     }
   }
 
-  const sortAccesses = async (type, headerType) => {
+  const sortAccesses = async (_type, headerType) => {
     setActiveType(headerType);
 
     setLoading(true);
     if(headerType === 'access_time')
       headerType = '_id'
-    if(type === 'desc') 
+    if(_type === 'desc') 
       headerType = '-'+headerType;
-
-    let result = await axios.get(base_url + `/access?date=${date[0]}/${date[1]}&page=${1}&headerType=${headerType}`, {
+      let result = await axios.get(base_url + 
+        `/access?searchType=${searchType}&rowsPerPage=${rowsPerPage}&headerType=${headerType}&date=${date[0]}/${date[1]}&page=${page}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
     
@@ -153,13 +165,13 @@ const AccessList = props => {
     setLoading(true)
     
     let _pages = await axios.get(base_url + 
-      `/access?type=dateCount&date=${date[0]}/${date[1]}${type !== '0' ? "&avatar_type="+type : ''}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+      `/access?type=dateCount&rowsPerPage=${rowsPerPage}&date=${date[0]}/${date[1]}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
 
     if(_pages.data.length !== 0) {
       let result = await axios.get(base_url + 
-        `/access?date=${date[0]}/${date[1]}&page=${page}${type !== '0' ? "&avatar_type="+type : ''}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+        `/access?date=${date[0]}/${date[1]}&&rowsPerPage=${rowsPerPage}page=${page}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
         cancelToken: source.token
       });
       setPage(1);
@@ -167,8 +179,8 @@ const AccessList = props => {
       let count = 0 
       _pages.data.map(i => count += parseInt(i.count));
 
-      let _temp = parseInt(count/7);
-      if(count%7)
+      let _temp = parseInt(count/rowsPerPage);
+      if(count%rowsPerPage)
         _temp++;
   
       setPages(_temp);
@@ -187,7 +199,7 @@ const AccessList = props => {
     if(sort === 'desc') 
       headerType = '-'+headerType;
       
-    let result = await axios.get(base_url + `/access?date=${date[0]}/${date[1]}&page=${page}&headerType=${headerType}`, {
+      let result = await axios.get(base_url + `/access?date=${date[0]}/${date[1]}&avatar_temp=${type}&page=${page}&headerType=${headerType}&rowsPerPage=${rowsPerPage}`, {
       cancelToken: source.token
     });
 
@@ -197,7 +209,7 @@ const AccessList = props => {
 
   useEffect(() => {
     getAccesses();
-  },[type,temp,date])
+  },[type,temp,date,rowsPerPage])
   
   const _setSort = (type) => {
     setSort(type);
@@ -221,13 +233,18 @@ const AccessList = props => {
         <AccessesToolbar
           clickExport={clickExport}
           search={search}
+          handleSearchType={handleSearchType}
+          searchType = {searchType}
           loading={loading}
+          handleRowsPerPage={handleRowsPerPage}
+          rowsPerPage={rowsPerPage}
           setSearch={_setSearch}
           accesses={search !== '' ? filteredAccesses : accesses}
           className={classes.toolbar}
           dateChange={handleDate}
           type_change={handleType}
           type={type}
+          date={date}
           temp_change={handleTemp}
           temp={temp}
           clickSearch={clickSearch}

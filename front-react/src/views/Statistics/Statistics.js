@@ -38,16 +38,11 @@ const Statistics = props => {
       .format('YYYY-MM-DD'),
     moment().format('YYYY-MM-DD')
   ]);
-  const [allPeopleData, setAllPeopleData] = useState([]);
   const [peopleData, setPeopleData] = useState({});
   const [devices, setDevices] = useState([]);
-  const [device, setDevice] = useState('');
-  const [count, setCount] = useState(0);
+  const [device, setDevice] = useState(' ');
   const [errorData, setErrorData] = useState({});
-  const [allErrorData, setAllErrorData] = useState({});
   const [loading, setLoading] = useState(true);
-  const [attList, setAttList] = useState([]);
-
   const statsData = (employee, stranger, black, dates) => {
     let temp = [
       [0, 0, 0, 0, 0, 0, 0],
@@ -178,10 +173,10 @@ const Statistics = props => {
   };
 
   async function getAccesses() {
-    let result = await axios.get(base_url + `/access?date=${date[0]}/${date[1]}&device=${device}&type=deviceStats`);
-    setAllPeopleData(result.data);
+    let local_device = device === ' ' ? '' : device
+    let result = await axios.get(base_url + `/access?date=${date[0]}/${date[1]}&device=${local_device}&type=deviceStats`);
     filterAccesses(result.data);
-
+    
     setLoading(false);
   }
 
@@ -191,13 +186,11 @@ const Statistics = props => {
     )
     if (result.data.length > 0) {
       setDevices(result.data);
-      setDevice(result.data[0].serial_number);
     }
   }
 
   async function getErrors() {
     let result = await axios.get(base_url + `/glogs?type=error&date=${date[0]}/${date[1]}`);
-    setAllErrorData(result.data);
     filterErrors(result.data);
   }
 
@@ -221,7 +214,6 @@ const Statistics = props => {
       getAccesses();
       getErrors();
     }
-
   }, [device,date]);
 
   useEffect(() => {
@@ -265,6 +257,7 @@ const Statistics = props => {
               value={device}
               style={{ width: '10%', marginLeft: '10px' }}
               onChange={handleDeviceChange}>
+              <MenuItem value={' '}>전체</MenuItem>
               {devices.map(device => (
                 <MenuItem value={device.serial_number}>{device.name}</MenuItem>
               ))}

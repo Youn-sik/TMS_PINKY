@@ -55,14 +55,19 @@ const AccessesToolbar = props => {
   const {
     loading,
     accesses,
+    handleSearchType,
+    handleRowsPerPage,
+    rowsPerPage,
     search,
     setSearch,
     temp,
     temp_change,
+    date,
     type,
     type_change,
     typeCange,
     dateChange,
+    searchType,
     deleteRecords,
     className,
     clickSearch,
@@ -122,6 +127,18 @@ const AccessesToolbar = props => {
           <MenuItem value="1">정상 온도</MenuItem>
           <MenuItem value="2">비정상 온도</MenuItem>
         </Select>
+        <Select
+          className={classes.select}
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={rowsPerPage}
+          onChange={handleRowsPerPage}
+          >
+          <MenuItem value="7">7</MenuItem>
+          <MenuItem value="10">10</MenuItem>
+          <MenuItem value="20">20</MenuItem>
+          <MenuItem value="30">30</MenuItem>
+        </Select>
         <Button style={{width: '163px',marginLeft:'10px',marginRight:'10px' }} variant="contained" color="primary" onClick={clickExport}>
           엑셀로 다운로드
         </Button>
@@ -143,6 +160,18 @@ const AccessesToolbar = props => {
               )
             }}
           />
+          <Select
+            style={{ float: 'right',marginRight: '20px',width:"100px" }}
+            labelId="demo-simple-select-outlined-label"
+            id="demo-simple-select-outlined"
+            value={searchType}
+            onChange={handleSearchType}
+          >
+            <MenuItem value={'all'}>전체</MenuItem>
+            <MenuItem value={'stb_name'}>단말기명</MenuItem>
+            <MenuItem value={'stb_location'}>단말기 위치</MenuItem>
+            <MenuItem value={'stb_sn'}>시리얼 번호</MenuItem>
+          </Select>
         </div>
       </div>
     </div>

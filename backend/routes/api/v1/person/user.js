@@ -216,6 +216,7 @@ router.delete('/:id',async function(req, res) {
             await api_v1_group_group.updateMany({type:req.body.type},{ $pull: { user_obids : req.body._id} }, {new: true }).exec();
             const id = req.params === undefined ? req.id : req.params.id
             const delete_data = await api_v1_person_user.findByIdAndDelete(id)
+            fs.unlink('/var/www/backend/image/'+id+"profile.png",() => {})
             let type = '';
             if(delete_data.type === 1) type = '사원';
             else if(delete_data.type === 2) type = '방문자'

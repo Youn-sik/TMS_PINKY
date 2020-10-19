@@ -52,12 +52,16 @@ router.get('/',async function(req, res) {
             ]).allowDiskUse(true);
         } else if(req.query.type === 'deviceStats') {
             let date = req.query.date.split('/');
-            let device = req.query.device;
+            let device = new RegExp(req.query.device);
+
+            if(device === '')
+                device = new RegExp('')
+
             get_data = await api_v1_person_access.aggregate([
                 {
                     $match: {
                         access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
-                        stb_sn : device
+                        stb_sn : {$regex : device}
                     }
                 },
                 { 
@@ -281,21 +285,33 @@ router.get('/',async function(req, res) {
             ]).allowDiskUse(true);
         } else if(req.query.type === 'dateCount') {
             let date = req.query.date.split('/');
-            let search = '';
+            let search = new RegExp('');
             let avatar_type = req.query.avatar_type;
             let tempType = req.query.tempType;
             let avatar_temperature = req.query.avatar_temperature;
-
-            if(req.query.search) 
-                search = req.query.search;
+            let stb_sn = '';
+            let stb_name = '';
+            let stb_location = '';
             
+            if(req.query.searchType === 'all') {
+                stb_sn = stb_name = stb_location = search
+            } else if(req.query.searchType === 'stb_name') {
+                stb_name = search
+            } else if(req.query.searchType === 'stb_location') {
+                stb_location = search
+            } else if(req.query.searchType === 'stb_sn') {
+                stb_sn = search
+            }
+
             if(avatar_type && avatar_temperature && tempType) { //온도,타입 모두 설정한 경우
                 if(tempType === '2') {
                     get_data = await api_v1_person_access.aggregate([
                         {
                             $match: {
                                 access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
-                                stb_sn : { $regex:search },
+                                stb_sn : { $regex:new RegExp(stb_sn) },
+                                stb_name : { $regex:new RegExp(stb_name) },
+                                stb_location : { $regex:new RegExp(stb_location) },
                                 avatar_type : parseInt(avatar_type),
                                 avatar_temperature : { $gte: avatar_temperature }
                             }
@@ -312,7 +328,9 @@ router.get('/',async function(req, res) {
                         {
                             $match: {
                                 access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
-                                stb_sn : { $regex:search },
+                                stb_sn : { $regex:new RegExp(stb_sn) },
+                                stb_name : { $regex:new RegExp(stb_name) },
+                                stb_location : { $regex:new RegExp(stb_location) },
                                 avatar_type : parseInt(avatar_type),
                                 avatar_temperature : { $lt: avatar_temperature }
                             }
@@ -330,7 +348,9 @@ router.get('/',async function(req, res) {
                     {
                         $match: {
                             access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
-                            stb_sn : { $regex:search },
+                            stb_sn : { $regex:new RegExp(stb_sn) },
+                            stb_name : { $regex:new RegExp(stb_name) },
+                            stb_location : { $regex:new RegExp(stb_location) },
                             avatar_type : parseInt(avatar_type),
                         }
                     },
@@ -347,7 +367,9 @@ router.get('/',async function(req, res) {
                         {
                             $match: {
                                 access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
-                                stb_sn : { $regex:search },
+                                stb_sn : { $regex:new RegExp(stb_sn) },
+                                stb_name : { $regex:new RegExp(stb_name) },
+                                stb_location : { $regex:new RegExp(stb_location) },
                                 avatar_temperature : { $gte: avatar_temperature }
                             }
                         },
@@ -363,7 +385,9 @@ router.get('/',async function(req, res) {
                         {
                             $match: {
                                 access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
-                                stb_sn : { $regex:search },
+                                stb_sn : { $regex:new RegExp(stb_sn) },
+                                stb_name : { $regex:new RegExp(stb_name) },
+                                stb_location : { $regex:new RegExp(stb_location) },
                                 avatar_temperature : { $lt: avatar_temperature }
                             }
                         },
@@ -380,7 +404,9 @@ router.get('/',async function(req, res) {
                     {
                         $match: {
                             access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
-                            stb_sn : { $regex:search },
+                            stb_sn : { $regex:new RegExp(stb_sn) },
+                            stb_name : { $regex:new RegExp(stb_name) },
+                            stb_location : { $regex:new RegExp(stb_location) },
                         }
                     },
                     {
@@ -396,21 +422,34 @@ router.get('/',async function(req, res) {
             let date = req.query.date.split('/');
             let page = req.query.page - 1;
             let avatar_type = req.query.avatar_type;
+            let rowPerPage = parseInt(req.query.rowsPerPage);
             let tempType = req.query.tempType;
             let avatar_temperature = req.query.avatar_temperature;
             let headerType = "-_id";
-            let rowPerPage = 7;
             let search = '';
             let name = ''
+            let stb_sn = '';
+            let stb_name = '';
+            let stb_location = ''
 
             if(req.query.search) 
-                search = req.query.search;
+                search = new RegExp(req.query.search)
 
             if(req.query.headerType)
                 headerType = req.query.headerType
 
             if(req.query.name)
                 name = req.query.name
+
+            if(req.query.searchType === 'all') {
+                stb_sn = stb_name = stb_location = search
+            } else if(req.query.searchType === 'stb_name') {
+                stb_name = search
+            } else if(req.query.searchType === 'stb_location') {
+                stb_location = search
+            } else if(req.query.searchType === 'stb_sn') {
+                stb_sn = search
+            }
 
             if(avatar_type && avatar_temperature && tempType) { //온도,타입 모두 설정한 경우
                 if(tempType === '2') {
@@ -422,18 +461,21 @@ router.get('/',async function(req, res) {
                     .lte("access_time",date[1]+" 23:59:59")
                     .regex("stb_sn",new RegExp(search))
                     .regex("name",new RegExp(name))
+                    .regex("stb_name",new RegExp(stb_name))
+                    .regex("stb_location",new RegExp(stb_location))
                     .skip(page*rowPerPage)
                     .limit(rowPerPage)
                 } else {
                     get_data = await api_v1_person_access.find()
                     .sort(headerType)
-
                     .where("avatar_type").equals(parseInt(avatar_type))
                     .lt('avatar_temperature', parseFloat(avatar_temperature))
                     .gte("access_time",date[0]+" 00:00:00")
                     .lte("access_time",date[1]+" 23:59:59")
                     .regex("stb_sn",new RegExp(search))
                     .regex("name",new RegExp(name))
+                    .regex("stb_name",new RegExp(stb_name))
+                    .regex("stb_location",new RegExp(stb_location))
                     .skip(page*rowPerPage)
                     .limit(rowPerPage)
                 }
@@ -444,6 +486,8 @@ router.get('/',async function(req, res) {
                 .gte("access_time",date[0]+" 00:00:00")
                 .lte("access_time",date[1]+" 23:59:59")
                 .regex("stb_sn",new RegExp(search))
+                .regex("stb_name",new RegExp(stb_name))
+                .regex("stb_location",new RegExp(stb_location))
                 .regex("name",new RegExp(name))
                 .skip(page*rowPerPage)
                 .limit(rowPerPage)
@@ -451,12 +495,13 @@ router.get('/',async function(req, res) {
                 if(tempType === '2') {
                     get_data = await api_v1_person_access.find()
                     .sort(headerType)
-
                     .gte('avatar_temperature', parseFloat(avatar_temperature))
                     .gte("access_time",date[0]+" 00:00:00")
                     .lte("access_time",date[1]+" 23:59:59")
                     .regex("stb_sn",new RegExp(search))
                     .regex("name",new RegExp(name))
+                    .regex("stb_name",new RegExp(stb_name))
+                    .regex("stb_location",new RegExp(stb_location))
                     .skip(page*rowPerPage)
                     .limit(rowPerPage)
                 } else {
@@ -467,6 +512,8 @@ router.get('/',async function(req, res) {
                     .gte("access_time",date[0]+" 00:00:00")
                     .lte("access_time",date[1]+" 23:59:59")
                     .regex("stb_sn",new RegExp(search))
+                    .regex("stb_name",new RegExp(stb_name))
+                    .regex("stb_location",new RegExp(stb_location))
                     .regex("name",new RegExp(name))
                     .skip(page*rowPerPage)
                     .limit(rowPerPage)
@@ -476,7 +523,9 @@ router.get('/',async function(req, res) {
                 .sort(headerType)
                 .gte("access_time",date[0]+" 00:00:00")
                 .lte("access_time",date[1]+" 23:59:59")
-                .regex("stb_sn",new RegExp(search))
+                .regex("stb_sn",new RegExp(stb_sn))
+                .regex("stb_name",new RegExp(stb_name))
+                .regex("stb_location",new RegExp(stb_location))
                 .regex("name",new RegExp(name))
                 .skip(page*rowPerPage)
                 .limit(rowPerPage)
