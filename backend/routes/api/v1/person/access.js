@@ -286,7 +286,7 @@ router.get('/',async function(req, res) {
         } else if(req.query.type === 'dateCount') {
             let date = req.query.date.split('/');
             let search = new RegExp('');
-            let avatar_type = req.query.avatar_type;
+            let avatar_type = parseInt(req.query.avatar_type);
             let tempType = req.query.tempType;
             let avatar_temperature = req.query.avatar_temperature;
             let stb_sn = '';
@@ -312,7 +312,7 @@ router.get('/',async function(req, res) {
                                 stb_sn : { $regex:new RegExp(stb_sn) },
                                 stb_name : { $regex:new RegExp(stb_name) },
                                 stb_location : { $regex:new RegExp(stb_location) },
-                                avatar_type : parseInt(avatar_type),
+                                avatar_type : avatar_type,
                                 avatar_temperature : { $gte: avatar_temperature }
                             }
                         },
@@ -331,7 +331,7 @@ router.get('/',async function(req, res) {
                                 stb_sn : { $regex:new RegExp(stb_sn) },
                                 stb_name : { $regex:new RegExp(stb_name) },
                                 stb_location : { $regex:new RegExp(stb_location) },
-                                avatar_type : parseInt(avatar_type),
+                                avatar_type : avatar_type,
                                 avatar_temperature : { $lt: avatar_temperature }
                             }
                         },
@@ -351,7 +351,7 @@ router.get('/',async function(req, res) {
                             stb_sn : { $regex:new RegExp(stb_sn) },
                             stb_name : { $regex:new RegExp(stb_name) },
                             stb_location : { $regex:new RegExp(stb_location) },
-                            avatar_type : parseInt(avatar_type),
+                            avatar_type : avatar_type,
                         }
                     },
                     {
@@ -421,7 +421,7 @@ router.get('/',async function(req, res) {
             // $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59"
             let date = req.query.date.split('/');
             let page = req.query.page - 1;
-            let avatar_type = req.query.avatar_type;
+            let avatar_type = parseInt(req.query.avatar_type);
             let rowPerPage = parseInt(req.query.rowsPerPage);
             let tempType = req.query.tempType;
             let avatar_temperature = req.query.avatar_temperature;
@@ -459,7 +459,7 @@ router.get('/',async function(req, res) {
                     get_data = await api_v1_person_access.find()
                     .sort(headerType)
                     .select(req.query.execPage ? '-avatar_file' : '')
-                    .where("avatar_type").equals(parseInt(avatar_type))
+                    .where("avatar_type").equals(avatar_type)
                     .gte('avatar_temperature', parseFloat(avatar_temperature))
                     .gte("access_time",date[0]+" 00:00:00")
                     .lte("access_time",date[1]+" 23:59:59")
@@ -473,7 +473,7 @@ router.get('/',async function(req, res) {
                     get_data = await api_v1_person_access.find()
                     .sort(headerType)
                     .select(req.query.execPage ? '-avatar_file' : '')
-                    .where("avatar_type").equals(parseInt(avatar_type))
+                    .where("avatar_type").equals(avatar_type)
                     .lt('avatar_temperature', parseFloat(avatar_temperature))
                     .gte("access_time",date[0]+" 00:00:00")
                     .lte("access_time",date[1]+" 23:59:59")
@@ -488,7 +488,7 @@ router.get('/',async function(req, res) {
                 get_data = await api_v1_person_access.find()
                 .sort(headerType)
                 .select(req.query.execPage ? '-avatar_file' : '')
-                .where("avatar_type").equals(parseInt(avatar_type))
+                .where("avatar_type").equals(avatar_type)
                 .gte("access_time",date[0]+" 00:00:00")
                 .lte("access_time",date[1]+" 23:59:59")
                 .regex("stb_sn",new RegExp(stb_sn))
