@@ -114,12 +114,12 @@ const AccessList = props => {
       headerType = '-'+headerType;
 
     let _pages = await axios.get(base_url + 
-      `/access?searchType=${searchType}&search=${search}&type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+      `/access?searchType=${searchType}&search=${search}&type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&avatar_type=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
 
     let result = await axios.get(base_url + 
-      `/access?searchType=${searchType}&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&page=${page}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+      `/access?searchType=${searchType}&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&page=${page}&search=${search}&avatar_type=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
 
@@ -152,12 +152,12 @@ const AccessList = props => {
     if(_type === 'desc') 
       headerType = '-'+headerType;
       let result = await axios.get(base_url + 
-        `/access?searchType=${searchType}&rowsPerPage=${rowsPerPage}&headerType=${headerType}&date=${date[0]}/${date[1]}&page=${page}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+        `/access?searchType=${searchType}&rowsPerPage=${rowsPerPage}&headerType=${headerType}&date=${date[0]}/${date[1]}&page=${page}&search=${search}&avatar_type=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
 
     let _pages = await axios.get(base_url + 
-      `/access?searchType=${searchType}&type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+      `/access?searchType=${searchType}&type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&search=${search}&avatar_type=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
 
@@ -179,13 +179,13 @@ const AccessList = props => {
     setLoading(true)
     
     let _pages = await axios.get(base_url + 
-      `/access?searchType=${searchType}&search=${search}&type=dateCount&rowsPerPage=${rowsPerPage}&date=${date[0]}/${date[1]}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+      `/access?searchType=${searchType}&search=${search}&type=dateCount&rowsPerPage=${rowsPerPage}&date=${date[0]}/${date[1]}&avatar_type=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
 
     if(_pages.data.length !== 0) {
       let result = await axios.get(base_url + 
-        `/access?searchType=${searchType}&search=${search}&date=${date[0]}/${date[1]}&&rowsPerPage=${rowsPerPage}page=${page}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+        `/access?searchType=${searchType}&search=${search}&date=${date[0]}/${date[1]}&&rowsPerPage=${rowsPerPage}page=${page}&avatar_type=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
         cancelToken: source.token
       });
       setPage(1);
@@ -213,12 +213,12 @@ const AccessList = props => {
     if(sort === 'desc') 
       headerType = '-'+headerType;
       
-    let result = await axios.get(base_url + `/access?searchType=${searchType}&search=${search}&date=${date[0]}/${date[1]}&avatar_temp=${type}&page=${page}&headerType=${headerType}&rowsPerPage=${rowsPerPage}`, {
+    let result = await axios.get(base_url + `/access?searchType=${searchType}&search=${search}&date=${date[0]}/${date[1]}&avatar_type=${type}&page=${page}&headerType=${headerType}&rowsPerPage=${rowsPerPage}`, {
       cancelToken: source.token
     });
 
     let _pages = await axios.get(base_url + 
-      `/access?searchType=${searchType}&search=${search}&type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+      `/access?searchType=${searchType}&search=${search}&type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&search=${search}&avatar_type=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
 
