@@ -31,7 +31,7 @@ const AccessList = props => {
   const [accesses, setAccesses] = useState([]);
   const [page,setPage] = useState(1);//현재 페이지
   const [pages,setPages] = useState(0);//페이지 갯수
-  const [searchType,setSearchType] = useState('all')
+  const [searchType,setSearchType] = useState('stb_name')
   const [date, setDate] = useState([
     moment()
       .locale('ko')
@@ -150,11 +150,12 @@ const AccessList = props => {
 
     if(headerType === 'access_time')
       headerType = '_id'
-    if(type === 'desc') 
+    if(sort === 'desc') 
       headerType = '-'+headerType;
 
+
     let _pages = await axios.get(base_url + 
-      `/access?type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+      `/access?searchType=${searchType}&search=${search}&type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
 
@@ -225,14 +226,14 @@ const AccessList = props => {
     }
 
     let _pages = await axios.get(base_url + 
-      `/access?type=dateCount&rowsPerPage=${rowsPerPage}&date=${firstDate}/${lastDate}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+      `/access?searchType=${searchType}&search=${search}&type=dateCount&rowsPerPage=${rowsPerPage}&date=${firstDate}/${lastDate}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
 
     setLoading(false);
     if(_pages.data.length !== 0) {
       let result = await axios.get(base_url + 
-        `/access?date=${firstDate}/${lastDate}&&rowsPerPage=${rowsPerPage}page=${page}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+        `/access?searchType=${searchType}&search=${search}&date=${firstDate}/${lastDate}&&rowsPerPage=${rowsPerPage}page=${page}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
         cancelToken: source.token
       });
       setPage(1);
@@ -270,9 +271,23 @@ const AccessList = props => {
     if(sort === 'desc') 
       headerType = '-'+headerType;
       
-    let result = await axios.get(base_url + `/access?date=${firstDate}/${lastDate}&avatar_temp=${type}&page=${page}&headerType=${headerType}&rowsPerPage=${rowsPerPage}`, {
+    let result = await axios.get(base_url + `/access?searchType=${searchType}&search=${search}&date=${firstDate}/${lastDate}&avatar_temp=${type}&page=${page}&headerType=${headerType}&rowsPerPage=${rowsPerPage}`, {
+      cancelToken: source.tfirstDate
+    });
+
+    let _pages = await axios.get(base_url + 
+      `/access?searchType=${searchType}&search=${search}&type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
+
+    let count = 0 
+    _pages.data.map(i => count += parseInt(i.count));
+
+    let _temp = parseInt(count/rowsPerPage);
+    if(count%rowsPerPage)
+      _temp++;
+
+    setPages(_temp);
 
     setLoading(false);
     setAccesses(result.data);

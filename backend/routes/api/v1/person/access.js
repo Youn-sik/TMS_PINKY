@@ -11,7 +11,7 @@ router.get('/',async function(req, res) {
         let get_data;
         let date = new RegExp(moment().format('YYYY-MM-DD'));
         let today = new RegExp(moment().format('YYYY-MM-DD'));
-        let week = [moment().subtract(6, 'days').format('YYYY-MM-DD')+" 23:59:59",moment().format('YYYY-MM-DD')+" 00:00:00"]
+        let week = [moment().subtract(6, 'days').format('YYYY-MM-DD')+" 00:00:00",moment().format('YYYY-MM-DD')+" 23:59:59"]
         if(req.query.type === 'todayStatistics') {
             get_data = await api_v1_person_access.aggregate([
                 {

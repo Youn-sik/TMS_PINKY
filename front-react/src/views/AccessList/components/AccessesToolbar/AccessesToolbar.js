@@ -122,80 +122,82 @@ const AccessesToolbar = props => {
             }}
           />
         </IntlProvider> */}
-        <InputGroup style={{ width: 460 }}>
-        <IntlProvider locale={kor}>
-          <DatePicker 
-          format="YYYY-MM-DD HH:mm:ss" 
-          block 
-          loading={loading}
-          cleanable={false}
-          onChange={val => {
-            dateChange([val.yyyymmddhhmmss(), 0]);
-          }}
-          value={new Date(date[0])}
-          defaultValue={new Date(`${moment().format('YYYY-MM-DD')}T00:00:00`)} />
-          <InputGroup.Addon>~</InputGroup.Addon>
-          <DatePicker 
-          format="YYYY-MM-DD HH:mm:ss" 
-          block 
-          loading={loading}
-          cleanable={false}
-          onChange={val => {
-            dateChange([0, val.yyyymmddhhmmss()]);
-          }}
-          value={new Date(date[1])}
-          defaultValue={new Date(`${moment().format('YYYY-MM-DD')}T23:59:59`)}/>
-          
-          </IntlProvider>
-        </InputGroup>
-        <Select
-          className={classes.select}
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={type}
-          onChange={handleTypeChange}>
-          <MenuItem value=" ">전체</MenuItem>
-          <MenuItem value="34">34</MenuItem>
-          <MenuItem value="35">35</MenuItem>
-          <MenuItem value="36">36</MenuItem>
-          <MenuItem value="37">37</MenuItem>
-          <MenuItem value="38">38</MenuItem>
-          <MenuItem value="39">39</MenuItem>
-        </Select>
-        <Select
-          className={classes.select}
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={temp}
-          style={{}}
-          onChange={handleTempChange}>
-          <MenuItem value="0">전체</MenuItem>
-          <MenuItem value="1">정상 온도</MenuItem>
-          <MenuItem value="2">비정상 온도</MenuItem>
-        </Select>
-        <Select
-          className={classes.select}
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={rowsPerPage}
-          onChange={handleRowsPerPage}
-          >
-          <MenuItem value="7">7</MenuItem>
-          <MenuItem value="10">10</MenuItem>
-          <MenuItem value="20">20</MenuItem>
-          <MenuItem value="30">30</MenuItem>
-        </Select>
-        <Button 
-        style={{width:'200px', marginLeft:'10px',marginRight:'10px' }} 
-        variant="contained" color="primary" onClick={clickExport}>
-          엑셀로 다운로드
-        </Button>
-        <Button 
-        style={{marginLeft:'10px' }} 
-        variant="contained" color="secondary" onClick={deleteAccesses}>
-          삭제
-        </Button>
-        <div style={{ width: '80%' }}>
+          <InputGroup style={{ width: 460 }}>
+          <IntlProvider locale={kor}>
+            <DatePicker 
+            format="YYYY-MM-DD HH:mm:ss" 
+            block 
+            loading={loading}
+            cleanable={false}
+            onChange={val => {
+              dateChange([val.yyyymmddhhmmss(), 0]);
+            }}
+            value={new Date(date[0])}
+            defaultValue={new Date(`${moment().format('YYYY-MM-DD')}T00:00:00`)} />
+            <InputGroup.Addon>~</InputGroup.Addon>
+            <DatePicker 
+            format="YYYY-MM-DD HH:mm:ss" 
+            block 
+            loading={loading}
+            cleanable={false}
+            onChange={val => {
+              dateChange([0, val.yyyymmddhhmmss()]);
+            }}
+            value={new Date(date[1])}
+            defaultValue={new Date(`${moment().format('YYYY-MM-DD')}T23:59:59`)}/>
+            
+            </IntlProvider>
+          </InputGroup>
+          <Select
+            className={classes.select}
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={type}
+            onChange={handleTypeChange}>
+            <MenuItem value=" ">전체</MenuItem>
+            <MenuItem value="34">34</MenuItem>
+            <MenuItem value="35">35</MenuItem>
+            <MenuItem value="36">36</MenuItem>
+            <MenuItem value="37">37</MenuItem>
+            <MenuItem value="38">38</MenuItem>
+            <MenuItem value="39">39</MenuItem>
+          </Select>
+          <Select
+            className={classes.select}
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={temp}
+            style={{}}
+            onChange={handleTempChange}>
+            <MenuItem value="0">전체</MenuItem>
+            <MenuItem value="1">정상 온도</MenuItem>
+            <MenuItem value="2">비정상 온도</MenuItem>
+          </Select>
+          <Select
+            className={classes.select}
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={rowsPerPage}
+            onChange={handleRowsPerPage}
+            >
+            <MenuItem value="7">7</MenuItem>
+            <MenuItem value="10">10</MenuItem>
+            <MenuItem value="30">30</MenuItem>
+            <MenuItem value="50">50</MenuItem>
+            <MenuItem value="100">100</MenuItem>
+          </Select>
+          <Button 
+          style={{width:'200px', marginLeft:'10px',marginRight:'10px' }} 
+          variant="contained" color="primary" onClick={clickExport}>
+            엑셀로 다운로드
+          </Button>
+          <Button 
+          style={{marginLeft:'10px' }} 
+          variant="contained" color="secondary" onClick={deleteAccesses}>
+            삭제
+          </Button>
+          <br/>
+        <div style={{ width: '50%' }}>
           <TextField
             style={{ float: 'right', marginRight: '30px' }}
             className={classes.search}
@@ -220,7 +222,6 @@ const AccessesToolbar = props => {
             value={searchType}
             onChange={handleSearchType}
           >
-            <MenuItem value={'all'}>전체</MenuItem>
             <MenuItem value={'stb_name'}>단말기명</MenuItem>
             <MenuItem value={'stb_location'}>단말기 위치</MenuItem>
             <MenuItem value={'stb_sn'}>시리얼 번호</MenuItem>
