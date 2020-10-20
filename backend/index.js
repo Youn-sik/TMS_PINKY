@@ -107,7 +107,6 @@ app.post('/login', async function(req, res) {
 app.get('/auth', async function(req, res) {
     let token = req.query.token;
     let tokenAuth = {user_id:null};
-    console.log(token);
     if(token === undefined && req.headers.cookie !== undefined) {
         token = cookie.parse(req.headers.cookie).token;
     }
@@ -136,9 +135,7 @@ app.get('/auth', async function(req, res) {
         });
     } else {
         res.send({
-            auth, 
-            user_id:tokenAuth.user_id, 
-            authority : tokenAuth.authority,
+            auth
         });
     }
     

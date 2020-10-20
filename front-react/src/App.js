@@ -35,15 +35,22 @@ export default class App extends React.Component {
     tempType: 0
   };
 
-  componentWillMount() {
+  async componentWillMount () {
     if (browserHistory.location.pathname !== '/sign-in') {
       //URL 직접 변경 감지
       var value = document.cookie.match('(^|;) ?token=([^;]*)(;|$)');
       if (Array.isArray(value)) {
-        axios.get(base_url + '/auth?token=' + value[2]).then(res => {
+        await axios.get(base_url + '/auth?token=' + value[2]).then(res => {
           if (res.data.auth === false) {
-            document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
             browserHistory.push('/sign-in');
+            this.setState({
+              auth: false,
+              authority: '',
+              user_id: '',
+              tempLimit: 0,
+              tempType: 0
+            });
+            document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
           } else if (res.data.auth === true) {
             this.setState({
               auth: true,
@@ -113,22 +120,25 @@ export default class App extends React.Component {
       });
     };
 
-    return browserHistory.location.pathname === '/sign-in' ||
-      this.state.authority !== '' ? (
-      <ThemeProvider theme={theme}>
-        <Router history={browserHistory}>
-          <Routes
-            tempLimit={this.state.tempLimit}
-            tempType={this.state.tempType}
-            path={browserHistory.location.pathname}
-            getAuth={getAuth}
-            user_id={this.state.user_id}
-            authority={this.state.authority}
-          />
-        </Router>
-      </ThemeProvider>
-    ) : (
-      <div></div>
-    );
+    if(browserHistory.location.pathname === '/sign-in' || this.state.authority !== '') { 
+        return ( 
+          <ThemeProvider theme={theme}>
+            <Router history={browserHistory}>
+              <Routes
+                tempLimit={this.state.tempLimit}
+                tempType={this.state.tempType}
+                path={browserHistory.location.pathname}
+                getAuth={getAuth}
+                user_id={this.state.user_id}
+                authority={this.state.authority}
+              />
+            </Router>
+          </ThemeProvider>
+        )
+    } else {
+      return (
+        <div></div>
+      )
+    }
   }
 }
