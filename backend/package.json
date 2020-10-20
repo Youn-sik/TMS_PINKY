@@ -11,12 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@ffmpeg-installer/ffmpeg": "^1.0.20",
     "@mongoosejs/double": "^0.2.0",
-    "@tensorflow/tfjs-backend-wasm": "^2.3.0",
-    "@tensorflow/tfjs-backend-webgl": "^2.3.0",
     "@tensorflow/tfjs-node": "^2.6.0",
-    "@vladmandic/face-api": "^0.4.5",
     "async-json": "0.0.2",
     "body-parser": "^1.19.0",
     "boom": "^7.3.0",
