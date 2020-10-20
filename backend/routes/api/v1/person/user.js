@@ -11,7 +11,7 @@ const crypto = require('crypto');
 const canvas = require("canvas");
 const { loadImage, Canvas, Image, ImageData } = canvas;
 const tf = require('@tensorflow/tfjs-node');
-const faceapi = require('@vladmandic/face-api');
+const faceapi = require('face-api.js');
 const fetch = require('node-fetch')
 var asyncJSON = require('async-json');
 
