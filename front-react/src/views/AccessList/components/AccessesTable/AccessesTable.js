@@ -7,6 +7,7 @@ import { NavLink as RouterLink } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import Checkbox from '@material-ui/core/Checkbox';
 import {
   Card,
   CardActions,
@@ -61,6 +62,10 @@ const AccessesTable = props => {
     loading,
     className,
     accesses,
+    handleClick,
+    isSelected,
+    handleSelectAllClick,
+    selected,
     page,
     pages,
     sort,
@@ -93,6 +98,16 @@ const AccessesTable = props => {
           <Table className={classes.inner} size="small">
             <TableHead>
               <TableRow>
+              <TableCell>
+                  <Checkbox
+                    checked={
+                      selected.length === accesses.length && accesses.length !== 0
+                        ? true
+                        : false
+                    }
+                    onChange={handleSelectAllClick}
+                  />
+                </TableCell>
                 <TableCell>사진</TableCell>
                 <TableCell>
                   {accesses.length > 0 ? (
@@ -212,13 +227,20 @@ const AccessesTable = props => {
             {
               <TableBody>
                 {props.accesses
-                  .map(access => {
+                  .map((access,index) => {
+                    const isItemSelected = isSelected(access._id);
                     if (access.avatar_temperature >= tempLimit) {
                       //출입 기록 37.5도 이상일때
                       return (
                         <TableRow
                           className={classes.highTempRow}
                           key={access._id}>
+                          <TableCell>
+                          <Checkbox
+                              onChange={event => handleClick(event, access, index)}
+                              checked={isItemSelected}
+                            />
+                          </TableCell>
                           <TableCell>
                             <div className={classes.nameContainer}>
                               <img
@@ -289,6 +311,12 @@ const AccessesTable = props => {
                     } else {
                       return (
                         <TableRow className={classes.tableRow} key={access._id}>
+                          <TableCell>
+                          <Checkbox
+                              onChange={event => handleClick(event, access, index)}
+                              checked={isItemSelected}
+                            />
+                          </TableCell>
                           <TableCell>
                             <div className={classes.nameContainer}>
                               <img

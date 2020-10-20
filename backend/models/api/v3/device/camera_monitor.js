@@ -19,5 +19,5 @@ const cameramonitorSchema = new mongoose.Schema({
     regdate: { type: String, default: moment().format('YYYY-MM-DD HH:mm:ss') },
 });
 cameramonitorSchema.index({ camera_obids: 1, serial_number: 1 });
-
+mongoose.set('useCreateIndex', true)
 module.exports = mongoose.model('Camera_monitor', cameramonitorSchema);

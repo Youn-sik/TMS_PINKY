@@ -52,6 +52,6 @@ const api_v3_device_camera_Schema = new mongoose.Schema({
         reboot_time : { type: String },
     }
 })
-
+mongoose.set('useCreateIndex', true)
 api_v3_device_camera_Schema.index({ gateway_obid: 1, serial_number: 1, status: 1 });
 module.exports = mongoose.model('camera', api_v3_device_camera_Schema)

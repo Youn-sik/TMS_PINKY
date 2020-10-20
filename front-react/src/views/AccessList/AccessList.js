@@ -48,7 +48,50 @@ const AccessList = props => {
   const [sort, setSort] = useState('desc');
   const [rowsPerPage,setRowsPerPage] = useState('7');
   const [searchType,setSearchType] = useState('name')
+  const [selected, setSelected] = useState([]);
 
+  const handleSelectAllClick = event => {
+    if (event.target.checked) {
+      const newSelecteds = accesses.map(n => n);
+      setSelected(newSelecteds);
+      return;
+    }
+    setSelected([]);
+  };
+
+  const deleteAccesses = async () => {
+    if(window.confirm('삭제한 내용은 되돌릴수 없습니다\n 정말 삭제하시겠습니까?')) {
+      await axios.delete(base_url +'/access', {
+        data: {
+          accesses_data : selected
+        }
+      })
+      getAccesses()
+      alert('삭제 되었습니다.')
+    }
+  }
+
+  const handleClick = (event, node, index) => {
+    const selectedIndex = selected.findIndex(i => i._id == node._id);
+    let newSelected = [];
+    if (selectedIndex === -1) {
+      node.index = index;
+      newSelected = newSelected.concat(selected, node);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1)
+      );
+    }
+    setSelected(newSelected);
+  };
+
+  const isSelected = _id => selected.findIndex(i => i._id == _id) !== -1;
+  
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
@@ -259,6 +302,7 @@ const AccessList = props => {
     <div className={classes.root}>
       <Card className={(classes.root, classes.cardcontent)}>
         <AccessesToolbar
+          deleteAccesses={deleteAccesses}
           clickExport={clickExport}
           search={search}
           handleSearchType={handleSearchType}
@@ -279,6 +323,10 @@ const AccessList = props => {
         />
         <div className={classes.content}>
           <AccessesTable
+            handleSelectAllClick={handleSelectAllClick}
+            isSelected={isSelected}
+            handleClick={handleClick}
+            selected={selected}
             tempLimit={tempLimit}
             tempType={tempType}
             activeType={activeType}

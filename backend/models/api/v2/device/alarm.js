@@ -18,5 +18,5 @@ const api_v2_device_alarm_Schema = new mongoose.Schema({
     device_id: ObjectId,
     trace_id: ObjectId
 })
-
+mongoose.set('useCreateIndex', true)
 module.exports = mongoose.model('api_v2_device_alarm', api_v2_device_alarm_Schema)

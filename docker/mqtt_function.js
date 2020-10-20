@@ -79,7 +79,7 @@ mongoose.connect('mongodb://' + site.mongodb_host + ':27017/' + site.mongodb_dat
     useNewUrlParser: true, 
     useUnifiedTopology: true,
     useCreateIndex: true,
-    poolSize: 4,
+    poolSize: 8,
 });
 
 const Access = require('./schema/access_Schema');

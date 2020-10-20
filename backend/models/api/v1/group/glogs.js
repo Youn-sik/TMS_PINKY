@@ -13,5 +13,5 @@ const api_v1_group_glogs_Schema = new mongoose.Schema({
     regdate: { type: String, default: moment().format('YYYY-MM-DD HH:mm:ss') }
 });
 api_v1_group_glogs_Schema.index({ process_status: 1, stb_sn: 1, log_no: 1 });
-
+mongoose.set('useCreateIndex', true)
 module.exports = mongoose.model('g_logs', api_v1_group_glogs_Schema);

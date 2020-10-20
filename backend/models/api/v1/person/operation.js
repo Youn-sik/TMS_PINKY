@@ -10,4 +10,5 @@ const operrion = new mongoose.Schema({
     date : { type: String },
     description : { type: String},
 });
+mongoose.set('useCreateIndex', true)
 module.exports = mongoose.model('operation', operrion)

@@ -8,5 +8,5 @@ const camerafailSchema = new mongoose.Schema({
     regdate: { type: String, default: moment().format('YYYY-MM-DD HH:mm:ss') }
 });
 camerafailSchema.index({ serial_number: 1 });
-
+mongoose.set('useCreateIndex', true)
 module.exports = mongoose.model('camera_fail', camerafailSchema);

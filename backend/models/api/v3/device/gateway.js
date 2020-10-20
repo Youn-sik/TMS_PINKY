@@ -18,6 +18,6 @@ const api_v3_device_gateway_Schema = new mongoose.Schema({
     update_ut : { type: String },
     
 })
-
+mongoose.set('useCreateIndex', true)
 api_v3_device_gateway_Schema.index({ name: 1, ip: 1, port: 1 });
 module.exports = mongoose.model('gateway', api_v3_device_gateway_Schema)

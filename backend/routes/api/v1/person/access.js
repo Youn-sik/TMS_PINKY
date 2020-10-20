@@ -292,9 +292,10 @@ router.get('/',async function(req, res) {
             let stb_sn = '';
             let stb_name = '';
             let stb_location = '';
+            let name = ''
             
-            if(req.query.searchType === 'all') {
-                stb_sn = stb_name = stb_location = search
+            if(req.query.searchType === 'name') {
+                name = search
             } else if(req.query.searchType === 'stb_name') {
                 stb_name = search
             } else if(req.query.searchType === 'stb_location') {
@@ -309,6 +310,7 @@ router.get('/',async function(req, res) {
                         {
                             $match: {
                                 access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
+                                name : { $regex:new RegExp(name) },
                                 stb_sn : { $regex:new RegExp(stb_sn) },
                                 stb_name : { $regex:new RegExp(stb_name) },
                                 stb_location : { $regex:new RegExp(stb_location) },
@@ -328,6 +330,7 @@ router.get('/',async function(req, res) {
                         {
                             $match: {
                                 access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
+                                name : { $regex:new RegExp(name) },
                                 stb_sn : { $regex:new RegExp(stb_sn) },
                                 stb_name : { $regex:new RegExp(stb_name) },
                                 stb_location : { $regex:new RegExp(stb_location) },
@@ -348,6 +351,7 @@ router.get('/',async function(req, res) {
                     {
                         $match: {
                             access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
+                            name : { $regex:new RegExp(name) },
                             stb_sn : { $regex:new RegExp(stb_sn) },
                             stb_name : { $regex:new RegExp(stb_name) },
                             stb_location : { $regex:new RegExp(stb_location) },
@@ -367,6 +371,7 @@ router.get('/',async function(req, res) {
                         {
                             $match: {
                                 access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
+                                name : { $regex:new RegExp(name) },
                                 stb_sn : { $regex:new RegExp(stb_sn) },
                                 stb_name : { $regex:new RegExp(stb_name) },
                                 stb_location : { $regex:new RegExp(stb_location) },
@@ -385,6 +390,7 @@ router.get('/',async function(req, res) {
                         {
                             $match: {
                                 access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
+                                name : { $regex:new RegExp(name) },
                                 stb_sn : { $regex:new RegExp(stb_sn) },
                                 stb_name : { $regex:new RegExp(stb_name) },
                                 stb_location : { $regex:new RegExp(stb_location) },
@@ -404,6 +410,7 @@ router.get('/',async function(req, res) {
                     {
                         $match: {
                             access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
+                            name : { $regex:new RegExp(name) },
                             stb_sn : { $regex:new RegExp(stb_sn) },
                             stb_name : { $regex:new RegExp(stb_name) },
                             stb_location : { $regex:new RegExp(stb_location) },
@@ -578,7 +585,16 @@ router.put('/:id',async function(req, res) {
 router.delete('/',async function(req, res) {
     try {
         const id = req.params === undefined ? req.id : req.params.id
-        const delete_data = await api_v1_person_access.remove({ access_time: { $lt: req.body.date } })
+        let ids = req.body.accesses_data.map(i => i._id)
+        const delete_data = await api_v1_person_access.deleteMany({
+            _id:{
+                $in:ids
+            }
+        })
+        req.body.accesses_data.map(access => {
+            let ip = access.avatar_file_url.split(':')[0]
+            fs.unlink(access.avatar_file_url.replace(ip+':3000/','/var/www/backend/'),() => {})
+        })
         res.send(delete_data)
     } catch (err) {
         throw boom.boomify(err)

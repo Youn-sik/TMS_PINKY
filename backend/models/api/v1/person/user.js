@@ -34,6 +34,7 @@ const api_v1_person_user_Schema = new mongoose.Schema({
     update_ut : { type: String },
     face_detection : {type: String}
 });
+mongoose.set('useCreateIndex', true)
 api_v1_person_user_Schema.index({ user_id: 1, name: 1, avatar_file_checksum: 1, type: 1 });
 
 module.exports = mongoose.model('user', api_v1_person_user_Schema);

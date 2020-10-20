@@ -63,6 +63,7 @@ const AccessesToolbar = props => {
     temp,
     temp_change,
     date,
+    deleteAccesses,
     type,
     type_change,
     typeCange,
@@ -137,11 +138,17 @@ const AccessesToolbar = props => {
             >
             <MenuItem value="7">7</MenuItem>
             <MenuItem value="10">10</MenuItem>
-            <MenuItem value="20">20</MenuItem>
             <MenuItem value="30">30</MenuItem>
+            <MenuItem value="50">50</MenuItem>
+            <MenuItem value="100">100</MenuItem>
           </Select>
           <Button style={{marginLeft:'10px',marginRight:'10px' }} variant="contained" color="primary" onClick={clickExport}>
             엑셀로 다운로드
+          </Button>
+          <Button 
+          style={{marginLeft:'10px' }} 
+          variant="contained" color="secondary" onClick={deleteAccesses}>
+            삭제
           </Button>
         </div>
         <div style={{ width: '40%' }}>

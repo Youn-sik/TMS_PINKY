@@ -143,8 +143,9 @@ router.put('/:id',async function(req, res) {
     try {
         let group = null
         req.body.avatar_file_checksum = crypto.createHash('sha256').update(req.body.avatar_file).digest('base64');
-        fs.writeFileSync('image/'+req.body._id+'profile_updated_'+moment().format('YYYY-MM-DD_HH:mm:ss')+'.jpg',req.body.avatar_file,'base64');
-        req.body.avatar_file_url = 'http://'+req.headers.host+'/image/'+req.body._id+'profile_updated_'+moment().format('YYYY-MM-DD_HH:mm:ss')+'.jpg';
+        fs.unlink('/var/www/backend/image/'+req.body._id+"profile_updated.jpg",() => {})
+        fs.unlink('/var/www/backend/image/'+req.body._id+"profile.jpg",() => {})
+        fs.writeFileSync('image/'+req.body._id+'profile_updated.jpg',req.body.avatar_file,'base64');
         if(String(req.body.groups_obids) !== String(req.body.clicked_groups)) {
             req.body.groups_obids.map(async (i) => {
                 await api_v1_group_group.findOneAndUpdate({_id:i},{ $pull: { user_obids : req.body._id} }, {new: true }).exec()
@@ -169,7 +170,7 @@ router.put('/:id',async function(req, res) {
         const id = req.params === undefined ? req.id : req.params.id
         const update_data = req.body === undefined ? req : req.body
 
-        const imageDir = await canvas.loadImage('image/'+req.body._id+'profile_updated_'+moment().format('YYYY-MM-DD_HH:mm:ss')+'.jpg')
+        const imageDir = await canvas.loadImage('image/'+req.body._id+'profile_updated.jpg')
         const detections = await faceapi.detectSingleFace(imageDir)
         .withFaceLandmarks()
         .withFaceDescriptor();
@@ -180,6 +181,7 @@ router.put('/:id',async function(req, res) {
         update_data.groups_obids = req.body.clicked_groups;
         update_data.update_at = moment().format('YYYY-MM-DD HH:mm:ss');
         update_data.update_ut = Date.now();
+        update_data.avatar_file_url = 'http://'+req.headers.host+'/image/'+req.body._id+'profile_updated.jpg'
         const update = await api_v1_person_user.findOneAndUpdate({_id:id}, {$set:update_data}, {new: true })
         let type = '';
         if(update.type === 1) type = '사원';
@@ -216,7 +218,9 @@ router.delete('/:id',async function(req, res) {
             await api_v1_group_group.updateMany({type:req.body.type},{ $pull: { user_obids : req.body._id} }, {new: true }).exec();
             const id = req.params === undefined ? req.id : req.params.id
             const delete_data = await api_v1_person_user.findByIdAndDelete(id)
-            fs.unlink('/var/www/backend/image/'+id+"profile.png",() => {})
+            console.log(id);
+            fs.unlink('/var/www/backend/image/'+id+"profile.jpg",() => {})
+            fs.unlink('/var/www/backend/image/'+id+"profile_updated.jpg",() => {})
             let type = '';
             if(delete_data.type === 1) type = '사원';
             else if(delete_data.type === 2) type = '방문자'
@@ -250,6 +254,8 @@ router.delete('/:id',async function(req, res) {
             req.body.selectedData.map(async (i,index) => {
                 await api_v1_group_group.updateMany({type:i.type},{ $pull: { user_obids : i._id} }, {new: true }).exec();
                 deletedList.push(await api_v1_person_user.findByIdAndDelete(i._id));
+                fs.unlink('/var/www/backend/image/'+i._id+"profile.jpg",() => {})
+                fs.unlink('/var/www/backend/image/'+i._id+"profile_updated.jpg",() => {})
                 if(req.body.selectedData.length-1 === index) {
                     deletedList.map((i,index) => {
                         let type = '';

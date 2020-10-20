@@ -22,5 +22,5 @@ api_v1_group_group_Schema.index({ rootParent: 1 });
 api_v1_group_group_Schema.index({ children: 1 });
 api_v1_group_group_Schema.index({ user_obids: 1 });
 api_v1_group_group_Schema.index({ type: 1 });
-
+mongoose.set('useCreateIndex', true)
 module.exports = mongoose.model('group', api_v1_group_group_Schema)

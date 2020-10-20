@@ -28,4 +28,5 @@ api_v1_person_access_Schema.index({avatar_distance: 1});
 api_v1_person_access_Schema.index({avatar_temperature: 1});
 api_v1_person_access_Schema.index({avatar_type: 1});
 api_v1_person_access_Schema.index({stb_sn: 1});
+mongoose.set('useCreateIndex', true)
 module.exports = mongoose.model('access', api_v1_person_access_Schema)

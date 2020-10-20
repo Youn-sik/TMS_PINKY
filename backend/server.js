@@ -13,7 +13,7 @@ mongoose
 		useNewUrlParser: true, 
 		useUnifiedTopology: true,
 		useCreateIndex: true,
-		poolSize: 4,
+		poolSize: 8,
 	})
 	.then(() => console.log('MongoDB connected...'))
 	.catch(err => console.log(err))
