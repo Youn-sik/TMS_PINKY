@@ -10,6 +10,7 @@ const path = require('path');
 const crypto = require('crypto');
 const schedule = require('node-schedule');
 const moment = require('moment');
+const fs = require('fs');
 require('moment-timezone'); 
 moment.tz.setDefault("Asia/Seoul"); 
 

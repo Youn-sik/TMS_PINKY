@@ -62,9 +62,10 @@ mongodb.once('open', function () {
 
 mongoose.connect('mongodb://' + site.mongodb_host + ':27017/' + site.mongodb_database, { 
     useNewUrlParser: true, 
-    useUnifiedTopology: true ,
+    useUnifiedTopology: true,
     useCreateIndex: true,
-    poolSize:8
+    poolSize: 8,
+    socketTimeoutMS: 1000*60*10, //10분
 });
 
 const Access = require('./schema/access_Schema');

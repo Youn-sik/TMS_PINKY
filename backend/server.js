@@ -12,7 +12,8 @@ mongoose
 	.connect('mongodb://kool:master@172.16.135.89:27017/cloud40',{ 
 		useNewUrlParser: true ,
 		useUnifiedTopology: true,
-		poolSize:8
+		poolSize:8,
+		socketTimeoutMS: 1000*60*10, //10분
 	})
 	.then(() => console.log('MongoDB connected...'))
 	.catch(err => console.log(err))
