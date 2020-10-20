@@ -29,44 +29,44 @@ const mqtt_option = {
     qos: 0
 }
 
-const Influx = require('influx');
-const influx = new Influx.InfluxDB({
-    host: site.influxdb,
-    database: 'g_rrd'
-});
+// const Influx = require('influx');
+// const influx = new Influx.InfluxDB({
+//     host: site.influxdb,
+//     database: 'g_rrd'
+// });
 
-class InfluxQueue {
-    constructor() {
-        this._queue = [];
-    }
+// class InfluxQueue {
+//     constructor() {
+//         this._queue = [];
+//     }
 
-    push(data) {
-        this._queue.push(data);
-    }
+//     push(data) {
+//         this._queue.push(data);
+//     }
 
-    getAll() {
-        let data = this._queue.splice(0, this._queue.length);
-        this._queue = [];
-        return data;
-    }
+//     getAll() {
+//         let data = this._queue.splice(0, this._queue.length);
+//         this._queue = [];
+//         return data;
+//     }
 
-    get length() {
-        return this._queue.length;
-    }
-}
+//     get length() {
+//         return this._queue.length;
+//     }
+// }
 
-const influxInterver = 10000;
-const influxQueue = new InfluxQueue();
+// const influxInterver = 10000;
+// const influxQueue = new InfluxQueue();
 
-let influxInterverId = setInterval(() => {
-    if (influxQueue.length > 0) {
-        let data = influxQueue.getAll();
-        influx.writePoints(data).then(() => {
-            console.log(moment().format('YYYY-MM-DD HH:mm:ss.SSS') + ' ' + data.length + " RRD data was saved.");
-            data = null;
-        }).catch((err) => console.error(err.message));
-    }
-}, influxInterver);
+// let influxInterverId = setInterval(() => {
+//     if (influxQueue.length > 0) {
+//         let data = influxQueue.getAll();
+//         influx.writePoints(data).then(() => {
+//             console.log(moment().format('YYYY-MM-DD HH:mm:ss.SSS') + ' ' + data.length + " RRD data was saved.");
+//             data = null;
+//         }).catch((err) => console.error(err.message));
+//     }
+// }, influxInterver);
 
 const mongoose = require('mongoose');
 const mongodb = mongoose.connection;
@@ -846,64 +846,64 @@ module.exports = {
                 //console.log(rrd_value);
 
                 // softirq가 없이 오는 경우가 있다. (단말 이슈)
-                if (!isNaN(Number(cpu.idle)) &&
-                    !isNaN(Number(cpu.nice)) &&
-                    !isNaN(Number(cpu.usr)) &&
-                    !isNaN(Number(cpu.softirq)) &&
-                    !isNaN(Number(cpu.irq)) &&
-                    !isNaN(Number(cpu.io)) &&
-                    !isNaN(Number(cpu.sys))
-                ) {
-                    influxQueue.push({
-                        measurement: json.stb_sn + '_cpu',
-                        //tags: {
-                        //    serial_number: json.stb_sn
-                        //},
-                        fields: {
-                            idle: Number(cpu.idle),
-                            nice: Number(cpu.nice),
-                            usr: Number(cpu.usr),
-                            softirq: Number(cpu.softirq),
-                            irq: Number(cpu.irq),
-                            io: Number(cpu.io),
-                            sys: Number(cpu.sys)
-                        },
-                        timestamp: nowDate
-                    });
-                } else console.log("CPU DATA ERROR!");
+                // if (!isNaN(Number(cpu.idle)) &&
+                //     !isNaN(Number(cpu.nice)) &&
+                //     !isNaN(Number(cpu.usr)) &&
+                //     !isNaN(Number(cpu.softirq)) &&
+                //     !isNaN(Number(cpu.irq)) &&
+                //     !isNaN(Number(cpu.io)) &&
+                //     !isNaN(Number(cpu.sys))
+                // ) {
+                //     influxQueue.push({
+                //         measurement: json.stb_sn + '_cpu',
+                //         //tags: {
+                //         //    serial_number: json.stb_sn
+                //         //},
+                //         fields: {
+                //             idle: Number(cpu.idle),
+                //             nice: Number(cpu.nice),
+                //             usr: Number(cpu.usr),
+                //             softirq: Number(cpu.softirq),
+                //             irq: Number(cpu.irq),
+                //             io: Number(cpu.io),
+                //             sys: Number(cpu.sys)
+                //         },
+                //         timestamp: nowDate
+                //     });
+                // } else console.log("CPU DATA ERROR!");
 
-                if (!isNaN(Number(network.in)) &&
-                    !isNaN(Number(network.out))
-                ) {
-                    influxQueue.push({
-                        measurement: json.stb_sn + '_network',
-                        //tags: {
-                        //    serial_number: json.stb_sn
-                        //},
-                        fields: {
-                            in: Number(network.in),
-                            out: Number(network.out)
-                        },
-                        timestamp: nowDate
-                    });
-                } else console.log("NETWORK DATA ERROR!");
+                // if (!isNaN(Number(network.in)) &&
+                //     !isNaN(Number(network.out))
+                // ) {
+                //     influxQueue.push({
+                //         measurement: json.stb_sn + '_network',
+                //         //tags: {
+                //         //    serial_number: json.stb_sn
+                //         //},
+                //         fields: {
+                //             in: Number(network.in),
+                //             out: Number(network.out)
+                //         },
+                //         timestamp: nowDate
+                //     });
+                // } else console.log("NETWORK DATA ERROR!");
 
-                if (!isNaN(Number(disk.BytesUsed)) &&
-                    !isNaN(Number(disk.BytesAvailable))
-                ) {
-                    influxQueue.push({
-                        measurement: json.stb_sn + '_disk',
-                        //tags: {
-                        //    serial_number: json.stb_sn
-                        //},
-                        fields: {
-                            available: Number(disk.BytesAvailable),
-                            used: Number(disk.BytesUsed),
-                            util: Number(disk.BytesAvailable) + Number(disk.BytesUsed)
-                        },
-                        timestamp: nowDate
-                    });
-                } else console.log("DISK DATA ERROR!");
+                // if (!isNaN(Number(disk.BytesUsed)) &&
+                //     !isNaN(Number(disk.BytesAvailable))
+                // ) {
+                //     influxQueue.push({
+                //         measurement: json.stb_sn + '_disk',
+                //         //tags: {
+                //         //    serial_number: json.stb_sn
+                //         //},
+                //         fields: {
+                //             available: Number(disk.BytesAvailable),
+                //             used: Number(disk.BytesUsed),
+                //             util: Number(disk.BytesAvailable) + Number(disk.BytesUsed)
+                //         },
+                //         timestamp: nowDate
+                //     });
+                // } else console.log("DISK DATA ERROR!");
             }
         } else {
             console.log("RRD Value is not array.");
@@ -914,64 +914,64 @@ module.exports = {
             let network = rrd_value.network[0];
             let disk = rrd_value.disk[0];
 
-            if (!isNaN(Number(cpu.idle)) &&
-                !isNaN(Number(cpu.nice)) &&
-                !isNaN(Number(cpu.usr)) &&
-                !isNaN(Number(cpu.softirq)) &&
-                !isNaN(Number(cpu.irq)) &&
-                !isNaN(Number(cpu.io)) &&
-                !isNaN(Number(cpu.sys))
-            ) {
-                influxQueue.push({
-                    measurement: json.stb_sn + '_cpu',
-                    //tags: {
-                    //    serial_number: json.stb_sn
-                    //},
-                    fields: {
-                        idle: cpu.idle,
-                        nice: cpu.nice,
-                        usr: cpu.usr,
-                        softirq: cpu.softirq,
-                        irq: cpu.irq,
-                        io: cpu.io,
-                        sys: cpu.sys
-                    },
-                    timestamp: nowDate
-                });
-            }
+            // if (!isNaN(Number(cpu.idle)) &&
+            //     !isNaN(Number(cpu.nice)) &&
+            //     !isNaN(Number(cpu.usr)) &&
+            //     !isNaN(Number(cpu.softirq)) &&
+            //     !isNaN(Number(cpu.irq)) &&
+            //     !isNaN(Number(cpu.io)) &&
+            //     !isNaN(Number(cpu.sys))
+            // ) {
+            //     influxQueue.push({
+            //         measurement: json.stb_sn + '_cpu',
+            //         //tags: {
+            //         //    serial_number: json.stb_sn
+            //         //},
+            //         fields: {
+            //             idle: cpu.idle,
+            //             nice: cpu.nice,
+            //             usr: cpu.usr,
+            //             softirq: cpu.softirq,
+            //             irq: cpu.irq,
+            //             io: cpu.io,
+            //             sys: cpu.sys
+            //         },
+            //         timestamp: nowDate
+            //     });
+            // }
 
-            if (!isNaN(Number(network.in)) &&
-                !isNaN(Number(network.out))
-            ) {
-                influxQueue.push({
-                    measurement: json.stb_sn + '_network',
-                    //tags: {
-                    //    serial_number: json.stb_sn
-                    //},
-                    fields: {
-                        in: network.in,
-                        out: network.out
-                    },
-                    timestamp: nowDate
-                });
-            }
+            // if (!isNaN(Number(network.in)) &&
+            //     !isNaN(Number(network.out))
+            // ) {
+            //     influxQueue.push({
+            //         measurement: json.stb_sn + '_network',
+            //         //tags: {
+            //         //    serial_number: json.stb_sn
+            //         //},
+            //         fields: {
+            //             in: network.in,
+            //             out: network.out
+            //         },
+            //         timestamp: nowDate
+            //     });
+            // }
 
-            if (!isNaN(Number(disk.BytesUsed)) &&
-                !isNaN(Number(disk.BytesAvailable))
-            ) {
-                influxQueue.push({
-                    measurement: json.stb_sn + '_disk',
-                    //tags: {
-                    //    serial_number: json.stb_sn
-                    //},
-                    fields: {
-                        available: disk.BytesAvailable,
-                        used: disk.BytesUsed,
-                        util: disk.BytesAvailable + disk.BytesUsed
-                    },
-                    timestamp: nowDate
-                });
-            }
+            // if (!isNaN(Number(disk.BytesUsed)) &&
+            //     !isNaN(Number(disk.BytesAvailable))
+            // ) {
+            //     influxQueue.push({
+            //         measurement: json.stb_sn + '_disk',
+            //         //tags: {
+            //         //    serial_number: json.stb_sn
+            //         //},
+            //         fields: {
+            //             available: disk.BytesAvailable,
+            //             used: disk.BytesUsed,
+            //             util: disk.BytesAvailable + disk.BytesUsed
+            //         },
+            //         timestamp: nowDate
+            //     });
+            // }
         }
 
         send_data = {
