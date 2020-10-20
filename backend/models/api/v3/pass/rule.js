@@ -12,5 +12,5 @@ const api_v3_pass_rule = new mongoose.Schema({
     group_type : Number,
     timetable_name : String,
 })
-
+mongoose.set('useCreateIndex', true)
 module.exports = mongoose.model('api_v3_pass_rule', api_v3_pass_rule)

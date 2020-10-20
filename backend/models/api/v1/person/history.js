@@ -16,4 +16,5 @@ const api_v1_person_history_Schema = new mongoose.Schema({
     create_ut : { type: String},
 });
 api_v1_person_history_Schema.index({ user_id: 1, name: 1, avatar_file_checksum: 1, type: 1 });
+mongoose.set('useCreateIndex', true)
 module.exports = mongoose.model('history', api_v1_person_history_Schema)

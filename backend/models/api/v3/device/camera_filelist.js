@@ -15,5 +15,5 @@ const camerafilelistSchema = new mongoose.Schema({
     regdate: { type: String, default: moment().format('YYYY-MM-DD HH:mm:ss') },
 });
 camerafilelistSchema.index({ camera_obids: 1, serial_number: 1, status : 1 });
-
+mongoose.set('useCreateIndex', true)
 module.exports = mongoose.model('Camera_filelist', camerafilelistSchema);

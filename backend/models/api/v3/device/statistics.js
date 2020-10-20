@@ -11,6 +11,6 @@ const api_v3_device_statistics_Schema = new mongoose.Schema({
     statistics_obids : [{type:ObjectId, ref: 'access', required: true }],
     reference_date : { type: String },
 })
-
+mongoose.set('useCreateIndex', true)
 api_v3_device_statistics_Schema.index({ camera_obid: 1, reference_date: 1 });
 module.exports = mongoose.model('statistics', api_v3_device_statistics_Schema)

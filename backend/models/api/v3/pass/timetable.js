@@ -23,5 +23,5 @@ const api_v3_pass_timetable = new mongoose.Schema({
     }],
     id : Number,
 })
-
+mongoose.set('useCreateIndex', true)
 module.exports = mongoose.model('api_v3_pass_timetable', api_v3_pass_timetable)
