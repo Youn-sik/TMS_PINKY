@@ -75,7 +75,12 @@ mongodb.once('open', function () {
     console.log('mongodb open');
 });
 
-mongoose.connect('mongodb://' + site.mongodb_host + ':27017/' + site.mongodb_database + '?poolSize=4', { useNewUrlParser: true, useUnifiedTopology: true ,useCreateIndex: true});
+mongoose.connect('mongodb://' + site.mongodb_host + ':27017/' + site.mongodb_database, { 
+    useNewUrlParser: true, 
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    poolSize: 4,
+});
 
 const Access = require('./schema/access_Schema');
 const Camera = require('./schema/camera_Schema');
