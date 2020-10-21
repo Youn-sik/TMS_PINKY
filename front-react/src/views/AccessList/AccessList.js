@@ -60,7 +60,7 @@ const AccessList = props => {
   };
 
   const deleteAccesses = async () => {
-    if(window.confirm('삭제한 내용은 되돌릴수 없습니다\n 정말 삭제하시겠습니까?')) {
+    if(window.confirm('삭제한 내용은 되돌릴수 없습니다\n정말 삭제하시겠습니까?')) {
       await axios.delete(base_url +'/access', {
         data: {
           accesses_data : selected
@@ -169,8 +169,7 @@ const AccessList = props => {
     setLoading(false);
     setPage(1);
 
-    let count = 0 
-      _pages.data.map(i => count += parseInt(i.count));
+    let count = _pages.data[0].count;
 
     if(_pages.data.length !== 0){
       let temp = parseInt(count/rowsPerPage);
@@ -204,8 +203,7 @@ const AccessList = props => {
       cancelToken: source.token
     });
 
-    let count = 0 
-    _pages.data.map(i => count += parseInt(i.count));
+    let count = _pages.data[0].count;
 
     let _temp = parseInt(count/rowsPerPage);
     if(count%rowsPerPage)
@@ -233,8 +231,7 @@ const AccessList = props => {
       });
       setPage(1);
 
-      let count = 0 
-      _pages.data.map(i => count += parseInt(i.count));
+      let count = _pages.data[0].count;
 
       let _temp = parseInt(count/rowsPerPage);
       if(count%rowsPerPage)
@@ -265,8 +262,7 @@ const AccessList = props => {
       cancelToken: source.token
     });
 
-    let count = 0 
-    _pages.data.map(i => count += parseInt(i.count));
+    let count = _pages.data[0].count;
 
     let _temp = parseInt(count/rowsPerPage);
     if(count%rowsPerPage)

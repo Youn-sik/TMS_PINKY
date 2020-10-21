@@ -7,10 +7,15 @@ const cookie = require('cookie');
 const bodyParser = require('body-parser');
 const express = require('express');
 const path = require('path');
-const crypto = require('crypto')
+const crypto = require('crypto');
+const schedule = require('node-schedule');
+const moment = require('moment');
+require('moment-timezone'); 
+moment.tz.setDefault("Asia/Seoul"); 
 
 //model
 const User = require('./models/User')
+const Access = require('./models/api/v1/person/access')
 
 //router
 const usersRouter = require('./routes/api/v1/person/user');
@@ -31,6 +36,8 @@ const accountRouter = require('./routes/account');
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(cors())
+
+//router
 app.use('/user',usersRouter);
 app.use('/account',accountRouter);
 app.use('/access',accessRouter);
@@ -46,15 +53,17 @@ app.use('/statistics',statisticsRouter);
 app.use('/history',historyRouter);
 app.use('/operation',operationRouter);
 
+//static
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/image',express.static('./image'));
 app.use('/stream',express.static('./videos'));
+app.use('/noImage',express.static('./defaultImage'));
 
+//swagger
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerOption = require('./routes/swagger');
 const swaggerSpec = swaggerJSDoc(swaggerOption);
 const swaggerUi = require('swagger-ui-express');
-
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.post('/login', async function(req, res) {
@@ -136,6 +145,33 @@ app.get('/auth', async function(req, res) {
         });
     }
     
+});
+
+app.get('/schedule',(req,res) => {
+    res.send({term})
+})
+
+app.put('/schedule',(req,res) => {
+    term = req.body.term;
+    res.send({term})
+})
+
+//사진보관 기간 설정
+let term = 7; //기본 보관 날짜 7일
+let s = schedule.scheduleJob('0 0 0 * * *', async function(){//스케쥴 설정
+    let dateTime = moment().subtract(term-1,'days').format('YYYY-MM-DD') + " 00:00:00"//moment 보관 기간 만큼을 뺀 날짜
+    let result = await Access.find().lt('access_time',dateTime)
+    if(result.length > 0){
+        let images = result.map(access => access.avatar_file_url);
+        let ip = images[0].split(":3000")[0]
+        images.map(image => {
+            fs.unlink(image.avatar_file_url.replace(ip+':3000/','/var/www/backend/'),() => {})
+        })
+        await Access.updateMany(
+            {access_time: {$lt:dateTime}},
+            {$set:{avatar_file_url : ip+":3000"+"/noImage/noImage.png"}
+        })
+    }   
 });
 
 

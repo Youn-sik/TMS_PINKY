@@ -261,93 +261,95 @@ const DeviceTable = props => {
   };
 
   const mqttPubl = name => {
-    if (name === 'capture_start')
-      client.publish(
-        '/control/capture/start/' + selectedObject[0].serial_number,
-        JSON.stringify({
-          stb_sn: selectedObject[0].serial_number,
-          capture_time: `${
-            captureTime.min.length === 1
-              ? '0' + captureTime.min
-              : captureTime.min
-          }:${
-            captureTime.sec.length === 1
-              ? '0' + captureTime.sec
-              : captureTime.sec
-          }`,
-          capture_size: '320*240',
-          capture_status: 'Y'
-        })
-      );
-    else if (name === 'capture_end')
-      client.publish(
-        '/control/capture/end/' + selectedObject[0].serial_number,
-        JSON.stringify({
-          stb_sn: selectedObject[0].serial_number,
-          stb_id: '',
-          capture_time: `${
-            captureTime.min.length === 1
-              ? '0' + captureTime.min
-              : captureTime.min
-          }:${
-            captureTime.sec.length === 1
-              ? '0' + captureTime.sec
-              : captureTime.sec
-          }`,
-          capture_size: '320*240',
-          capture_status: 'N'
-        })
-      );
-    else if (name === 'log')
-      client.publish(
-        '/control/log/' + selectedObject[0].serial_number,
-        JSON.stringify({ stb_sn: selectedObject[0].serial_number })
-      );
-    else if (name === 'sd')
-      client.publish(
-        '/control/sdcard/delete/' + selectedObject[0].serial_number,
-        JSON.stringify({ stb_sn: selectedObject[0].serial_number })
-      );
-    else if (name === 'sd_unused')
-      client.publish(
-        '/control/sdcard/part/delete/' + selectedObject[0].serial_number,
-        JSON.stringify({ stb_sn: selectedObject[0].serial_number })
-      );
-    else if (name === 'reboot')
-      client.publish(
-        '/control/reboot/' + selectedObject[0].serial_number,
-        JSON.stringify({
-          stb_sn: selectedObject[0].serial_number,
-          message: 'reboot'
-        })
-      );
-    else if (name === 'contents')
-      client.publish(
-        '/control/get_device_file_list/' + selectedObject[0].serial_number,
-        JSON.stringify({
-          stb_sn: selectedObject[0].serial_number,
-          message: 'get_device_file_list'
-        })
-      );
-    else if (name === 'reset')
-      client.publish(
-        '/control/reset/' + selectedObject[0].serial_number,
-        JSON.stringify({ stb_sn: selectedObject[0].serial_number })
-      );
-    else if (name === 'temp') {
-      if (temp.split('.')[1] === '') {
-        setTemp(temp + '0');
+    if(window.confirm('정말 제어 하시겠습니까?')) {
+      if (name === 'capture_start')
+        client.publish(
+          '/control/capture/start/' + selectedObject[0].serial_number,
+          JSON.stringify({
+            stb_sn: selectedObject[0].serial_number,
+            capture_time: `${
+              captureTime.min.length === 1
+                ? '0' + captureTime.min
+                : captureTime.min
+            }:${
+              captureTime.sec.length === 1
+                ? '0' + captureTime.sec
+                : captureTime.sec
+            }`,
+            capture_size: '320*240',
+            capture_status: 'Y'
+          })
+        );
+      else if (name === 'capture_end')
+        client.publish(
+          '/control/capture/end/' + selectedObject[0].serial_number,
+          JSON.stringify({
+            stb_sn: selectedObject[0].serial_number,
+            stb_id: '',
+            capture_time: `${
+              captureTime.min.length === 1
+                ? '0' + captureTime.min
+                : captureTime.min
+            }:${
+              captureTime.sec.length === 1
+                ? '0' + captureTime.sec
+                : captureTime.sec
+            }`,
+            capture_size: '320*240',
+            capture_status: 'N'
+          })
+        );
+      else if (name === 'log')
+        client.publish(
+          '/control/log/' + selectedObject[0].serial_number,
+          JSON.stringify({ stb_sn: selectedObject[0].serial_number })
+        );
+      else if (name === 'sd')
+        client.publish(
+          '/control/sdcard/delete/' + selectedObject[0].serial_number,
+          JSON.stringify({ stb_sn: selectedObject[0].serial_number })
+        );
+      else if (name === 'sd_unused')
+        client.publish(
+          '/control/sdcard/part/delete/' + selectedObject[0].serial_number,
+          JSON.stringify({ stb_sn: selectedObject[0].serial_number })
+        );
+      else if (name === 'reboot')
+        client.publish(
+          '/control/reboot/' + selectedObject[0].serial_number,
+          JSON.stringify({
+            stb_sn: selectedObject[0].serial_number,
+            message: 'reboot'
+          })
+        );
+      else if (name === 'contents')
+        client.publish(
+          '/control/get_device_file_list/' + selectedObject[0].serial_number,
+          JSON.stringify({
+            stb_sn: selectedObject[0].serial_number,
+            message: 'get_device_file_list'
+          })
+        );
+      else if (name === 'reset')
+        client.publish(
+          '/control/reset/' + selectedObject[0].serial_number,
+          JSON.stringify({ stb_sn: selectedObject[0].serial_number })
+        );
+      else if (name === 'temp') {
+        if (temp.split('.')[1] === '') {
+          setTemp(temp + '0');
+        }
+        client.publish(
+          '/control/temperature/' + selectedObject[0].serial_number,
+          JSON.stringify({
+            type: 1,
+            stb_sn: selectedObject[0].serial_number,
+            temperature_max: temp
+          })
+        );
       }
-      client.publish(
-        '/control/temperature/' + selectedObject[0].serial_number,
-        JSON.stringify({
-          type: 1,
-          stb_sn: selectedObject[0].serial_number,
-          temperature_max: temp
-        })
-      );
+      alert('제어성공');
     }
-    alert('제어성공');
   };
 
   const devicesMqttPubl = name => {
@@ -409,11 +411,17 @@ const DeviceTable = props => {
         '/control/sdcard/part/delete/devices',
         JSON.stringify({ stb_sn: stb_sns })
       );
-    else if (name === 'reboot')
+    else if (name === 'reboot'){
+      if(check) {
+        props.device.map(device => device.status = "N")
+      } else {
+        selectedObject.map(device => device.status = "N")
+      }
       client.publish(
         '/control/reboot/devices',
         JSON.stringify({ stb_sn: stb_sns, message: 'reboot' })
       );
+    }
     else if (name === 'contents')
       client.publish(
         '/control/get_device_file_list/devices',

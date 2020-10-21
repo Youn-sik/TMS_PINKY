@@ -5,6 +5,7 @@ require('moment-timezone');
 moment.tz.setDefault("Asia/Seoul"); 
 const boom = require('boom')
 const api_v1_person_access = require('../../../../models/api/v1/person/access')
+const fs = require('fs')
 
 router.get('/',async function(req, res) {
     try {
@@ -25,11 +26,6 @@ router.get('/',async function(req, res) {
                         count: { $sum: 1 }
                     }
                 },
-                {
-                    $sort: {
-                        lastDate : -1
-                    }   
-                }
             ]).allowDiskUse(true);
         } else if(req.query.type === 'weekStatistics') {
             get_data = await api_v1_person_access.aggregate([
@@ -44,11 +40,6 @@ router.get('/',async function(req, res) {
                         count: { $sum: 1 }
                     }
                 },
-                {
-                    $sort: {
-                        lastDate : -1
-                    }   
-                }
             ]).allowDiskUse(true);
         } else if(req.query.type === 'deviceStats') {
             let date = req.query.date.split('/');
@@ -319,10 +310,7 @@ router.get('/',async function(req, res) {
                             }
                         },
                         {
-                            $group: {
-                                _id: {"type":"$avatar_contraction_data"},
-                                count: { $sum: 1 }
-                            }
+                            $count : 'count'
                         }
                     ]).allowDiskUse(true);
                 } else {
@@ -339,10 +327,7 @@ router.get('/',async function(req, res) {
                             }
                         },
                         {
-                            $group: {
-                                _id: {"type":"$avatar_contraction_data"},
-                                count: { $sum: 1 }
-                            }
+                            $count : 'count'
                         }
                     ]).allowDiskUse(true);
                 }
@@ -359,10 +344,7 @@ router.get('/',async function(req, res) {
                         }
                     },
                     {
-                        $group: {
-                            _id: {"type":"$avatar_contraction_data"},
-                            count: { $sum: 1 }
-                        }
+                        $count : 'count'
                     }
                 ]).allowDiskUse(true);
             } else if (avatar_temperature && tempType) {//온도 타입만 선택한 경우
@@ -379,10 +361,7 @@ router.get('/',async function(req, res) {
                             }
                         },
                         {
-                            $group: {
-                                _id: {"type":"$avatar_contraction_data"},
-                                count: { $sum: 1 }
-                            }
+                            $count : 'count'
                         }
                     ]).allowDiskUse(true);
                 } else {
@@ -398,10 +377,7 @@ router.get('/',async function(req, res) {
                             }
                         },
                         {
-                            $group: {
-                                _id: {"type":"$avatar_contraction_data"},
-                                count: { $sum: 1 }
-                            }
+                            $count : 'count'
                         }
                     ]).allowDiskUse(true);
                 }   
@@ -417,10 +393,7 @@ router.get('/',async function(req, res) {
                         }
                     },
                     {
-                        $group: {
-                            _id: {"type":"$avatar_type"},
-                            count: { $sum: 1 }
-                        }
+                        $count : 'count'
                     }
                 ]).allowDiskUse(true);
             }
@@ -592,10 +565,10 @@ router.delete('/',async function(req, res) {
             }
         })
         req.body.accesses_data.map(access => {
-            let ip = access.avatar_file_url.split(':')[0]
+            let ip = access.avatar_file_url.split(':3000')[0]
             fs.unlink(access.avatar_file_url.replace(ip+':3000/','/var/www/backend/'),() => {})
         })
-        res.send(delete_data)
+        res.send('delete_data')
     } catch (err) {
         throw boom.boomify(err)
     }
