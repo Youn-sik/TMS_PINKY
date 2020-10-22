@@ -182,17 +182,17 @@ router.get('/',async function(req, res) {
             if(device) {
                 get_data = {
                     access : await Statistics.find()
-                    .regex('access_date' , new RegExp(date[0])),
+                    .where('access_date' , date[0]),
                     temp : await StatisticsTemp.find()
-                    .regex('access_date' , new RegExp(date[0]))
+                    .where('access_date' , date[0])
                 }
             } else {
                 get_data = {
                     access : await Statistics.find()
-                    .regex('access_date' , new RegExp(date[0]))
+                    .regex('access_date' , date[0])
                     .where('serial_number' ,device),
                     temp : await StatisticsTemp.find()
-                    .regex('access_date' , new RegExp(date[0]))
+                    .regex('access_date' , date[0])
                     .where('serial_number' ,device)
                 }
             }
