@@ -112,29 +112,29 @@ newUser.save(function (error, data2){
 })
 */
 
-const getOverlayValues = landmarks => {
-    const nose = landmarks.getNose()
-    const jawline = landmarks.getJawOutline()
+// const getOverlayValues = landmarks => {
+//     const nose = landmarks.getNose()
+//     const jawline = landmarks.getJawOutline()
   
-    const jawLeft = jawline[0]
-    const jawRight = jawline.splice(-1)[0]
-    const adjacent = jawRight.x - jawLeft.x
-    const opposite = jawRight.y - jawLeft.y
-    const jawLength = Math.sqrt(Math.pow(adjacent, 2) + Math.pow(opposite, 2))
+//     const jawLeft = jawline[0]
+//     const jawRight = jawline.splice(-1)[0]
+//     const adjacent = jawRight.x - jawLeft.x
+//     const opposite = jawRight.y - jawLeft.y
+//     const jawLength = Math.sqrt(Math.pow(adjacent, 2) + Math.pow(opposite, 2))
   
-    // Both of these work. The chat believes atan2 is better.
-    // I don't know why. (It doesn’t break if we divide by zero.)
-    // const angle = Math.round(Math.tan(opposite / adjacent) * 100)
-    const angle = Math.atan2(opposite, adjacent) * (180 / Math.PI)
-    const width = jawLength * 2.2
+//     // Both of these work. The chat believes atan2 is better.
+//     // I don't know why. (It doesn’t break if we divide by zero.)
+//     // const angle = Math.round(Math.tan(opposite / adjacent) * 100)
+//     const angle = Math.atan2(opposite, adjacent) * (180 / Math.PI)
+//     const width = jawLength * 2.2
   
-    return {
-      width,
-      angle,
-      leftOffset: jawLeft.x - width * 0.27,
-      topOffset: nose[0].y - width * 0.47,
-    }
-  }
+//     return {
+//       width,
+//       angle,
+//       leftOffset: jawLeft.x - width * 0.27,
+//       topOffset: nose[0].y - width * 0.47,
+//     }
+//   }
   
 
 module.exports = {
@@ -465,7 +465,7 @@ module.exports = {
                 img.src = "data:image/png;base64,"+element.avatar_file
 
                 let detections = await faceapi.detectAllFaces(img)
-                .withFaceLandmarks(true)
+                .withFaceLandmarks()
                 .withFaceDescriptors();
 
                 // const overlayValues = getOverlayValues(detection.landmarks)
@@ -537,11 +537,15 @@ module.exports = {
                 .where('camera_obid').equals(camera._id)
                 .where('access_date').equals(moment().format('YYYY-MM-DD'));
                 
-                let hours = element.access_time.split(' ')[1].split(':')[0]
+                let hours = element.access_time.split(' ')[1].split(':')[0];
+                if(hours[0] === '0') hours = hours.replace('0','');
                 
+
                 if(todayStatistics === null) {
                     todayStatistics = new Statistics({
                         camera_obid : camera._id,
+                        serial_number : json.stb_sn,
+                        authority : camera.authority,
                         access_date: moment().format('YYYY-MM-DD'),
                         all_count : 1,
                         [hours] : 1,

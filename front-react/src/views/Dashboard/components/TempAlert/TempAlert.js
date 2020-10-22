@@ -74,7 +74,7 @@ const TempAlert = props => {
             </TableHead>
             <TableBody>
               {temp.map(access =>
-                access.avatar_temperature >= tempLimit ? (
+                access.avatar_temperature ? access.avatar_temperature : 0 >= tempLimit ? (
                   <TableRow
                     className={classes.highTempRow}
                     onClick={() => {

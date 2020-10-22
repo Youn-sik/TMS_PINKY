@@ -4,6 +4,7 @@ const ObjectId = mongoose.Schema.Types.ObjectId
 const statisticsSchema = new mongoose.Schema({
     camera_obid : { type : ObjectId, ref : 'Camera', required: true },
     serial_number : { type : String },
+    access_date : { type : String },
     all_count : { type: Number ,default:0},
     00 : { type: Number ,default:0},
     01 : { type: Number ,default:0},
@@ -33,5 +34,5 @@ const statisticsSchema = new mongoose.Schema({
 });
 
 mongoose.set('useCreateIndex', true)
-api_v3_device_statistics_Schema.index({ camera_obid: 1, reference_date: 1 });
-module.exports = mongoose.model('statistics', api_v3_device_statistics_Schema)
+statisticsSchema.index({ camera_obid: 1, reference_date: 1 });
+module.exports = mongoose.model('statistics', statisticsSchema)
