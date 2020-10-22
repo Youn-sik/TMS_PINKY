@@ -113,16 +113,9 @@ const Statistics = props => {
   };
 
   const filterAccesses = result => {
-    let employee = result.filter(
-      access => access._id.avatar_type === 1
-    );
-    let stranger = result.filter(
-      access => access._id.avatar_type === 3
-    );
-    let black = result.filter(
-      access => access._id.avatar_type === 4
-    );
-    
+    let employee = [0,0,0,0,0,0,0];
+    let black = [0,0,0,0,0,0,0];
+    let stranger = [0,0,0,0,0,0,0]
     let dates = [
       date[0],
       dateChange(date[0], 1),
@@ -133,13 +126,21 @@ const Statistics = props => {
       date[1]
     ];
 
-    let temp = statsData(employee, stranger, black, dates);
+    dates.map((date, index) => {
+      result.map(data => {
+        if(data.access_date === date) {
+          employee[index] += data.employee
+          black[index] += data.black
+          stranger[index] += data.stranger
+        }
+      })
+    })
 
     setPeopleData({
-      employee: temp[0],
-      visitor: temp[1],
-      stranger: temp[2],
-      black: temp[3]
+      employee: employee,
+      visitor: stranger,
+      stranger: stranger,
+      black: black
     });
   };
 

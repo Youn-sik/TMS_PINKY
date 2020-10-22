@@ -134,57 +134,27 @@ router.get('/',async function(req, res) {
             ]
         } else if(req.query.type === 'deviceStats') {
             let date = req.query.date.split('/');
-            let device = new RegExp("^"+req.query.device+"$");
+            let device = req.query.device
 
             if(device === '')
                 device = new RegExp('')
-
-            get_data = await api_v1_person_access.aggregate([
-                {
-                    $match: {
-                        access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
-                        stb_sn : {$regex : device}
-                    }
-                },
-                { 
-                    $project : { 
-                        date_time : { 
-                            $split: ["$access_time", " "] 
-                        },
-                        avatar_type : 1
-                    } 
-                },
-                {
-                    $project : {
-                        date : {$arrayElemAt:["$date_time",0]},
-                        avatar_type : 1
-                    }
-                },
-                {
-                    $group : {
-                        _id : {
-                            avatar_type:"$avatar_type",
-                            date:"$date"
-                        },
-                        count: { $sum: 1 },
-                    }
-                },
-                {
-                    $sort:{
-                        "_id.date":1
-                    }
-                },
-            ]).allowDiskUse(true);
+            else
+                device = new RegExp("^"+req.query.device+"$");
+            
+            get_data = await Statistics.find()
+            .gte("access_date",date[0])
+            .lte("access_date",date[1])
+            .regex('serial_number', device)
         } else if(req.query.type === 'deviceGroupAccesses') {
             let date = req.query.date.split('/');
-            let device = req.query.device === 'all' ? null : req.query.device;
+            let device = req.query.device
             
-            if(device) {
+            if(device === 'all') {
                 get_data = {
                     access : await Statistics.find()
-                    .where('access_date' , date[0]),
+                    .regex('access_date' , date[0]),
                     temp : await StatisticsTemp.find()
-                    .where('access_date' , date[0])
+                    .regex('access_date' , date[0])
                 }
             } else {
                 get_data = {

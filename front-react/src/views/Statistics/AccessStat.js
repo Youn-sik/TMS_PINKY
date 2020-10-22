@@ -51,13 +51,14 @@ const AccessStat = props => {
   }
 
   const filterAccesses = () => {
-    let access = JSON.parse(JSON.stringify(peopleData.access));
-    let temp = JSON.parse(JSON.stringify(peopleData.temp));
+    let access = peopleData.access
+    let temp = peopleData.temp
     let labels = [];
     let data = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     let maxTemp = [];
     // accessData.push({avatar_file_url:i.maxUrl,avatar_type:i.maxType});
     let accessData = [];
+
     if(device === 'all') {
       ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
       .forEach(function(time,index) {
@@ -68,6 +69,7 @@ const AccessStat = props => {
         
         for(let i = 0; i<temp.length -1 ; i++){
           if(temp[i][time].split('|')[1] > temp[i+1][time].split('|')[1]) {
+            // console.log(temp[i][time].split('|')[1],temp[i+1][time].split('|')[1])
             let maxData = temp[i][time].split('|')
             maxTemp[index] = maxData[1]
             accessData[index] = {
@@ -84,9 +86,9 @@ const AccessStat = props => {
     } else {
       ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
       .forEach(function(time,index) {
-        let maxData = temp[i][time].split('|')
+        let maxData = temp[0][time].split('|')
         labels.push(time.length === 1 ? '0'+time : time)
-        data[index] = access[time]
+        data[index] = access[0][time]
         maxTemp[index] = maxData[1]
         accessData[index] = {
           avatar_file_url : maxData[3],
@@ -94,7 +96,11 @@ const AccessStat = props => {
           name : maxData[0]
         }
       })
+      
     }
+
+    console.log(maxTemp)
+    // console.log(maxTemp)
 
     setChartData({
       labels,
@@ -174,10 +180,10 @@ const AccessStat = props => {
   }, []);
 
   useEffect(() => {
-    if(devices.length > 0) {
+    if(devices.length > 0 && !Array.isArray(peopleData)) {
       filterAccesses();
     }
-  }, [peopleData]);
+  }, [peopleData,devices]);
 
   return (
     <div className={classes.root}>
