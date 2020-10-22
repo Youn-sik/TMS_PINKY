@@ -98,20 +98,19 @@ const AccessStat = props => {
           }
         })
       }
-    } else {
-      ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
-        .forEach(function(time,index) {
-          labels.push(time.length === 1 ? '0'+time : time)
-        })
     }
     
-
-    setChartData({
-      labels,
-      data,
-      maxTemp,
-      accessData
-    });
+    if(access.length > 0) {
+      setChartData({
+        labels,
+        data,
+        maxTemp,
+        accessData
+      });
+    } else {
+      setChartData({})
+    }
+    
     
 
     // let labels = [];
