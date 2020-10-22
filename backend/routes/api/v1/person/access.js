@@ -178,165 +178,24 @@ router.get('/',async function(req, res) {
         } else if(req.query.type === 'deviceGroupAccesses') {
             let date = req.query.date.split('/');
             let device = req.query.device === 'all' ? null : req.query.device;
-            get_data = {
-                access : await Statistics.find().regex(access_date , new RegExp(date[0])),
-                temp : await Statistics_temp.find().regex(access_date , new RegExp(date[0])),
-            }
             
-            // aggregate([
-            //     {
-            //         $match: {
-            //             access_time : { $regex: new RegExp(date[0])},
-            //             stb_sn : device 
-            //         }
-            //     },
-            // ])
-            // if(device) {
-            //     get_data = await api_v1_person_access.aggregate([
-            //         {
-            //             $match: {
-            //                 access_time : { $regex: new RegExp(date[0])},
-            //                 stb_sn : device 
-            //             }
-            //         },
-            //         {
-            //             $sort:{avatar_temperature:-1}
-            //         },
-            //         { 
-            //             $project : { 
-            //                 date_time : { 
-            //                     $split: ["$access_time", " "] 
-            //                 },
-            //                 stb_sn:"$stb_sn",
-            //                 avatar_temperature : "$avatar_temperature", 
-            //                 avatar_file_url : "$avatar_file_url", 
-            //                 name : "$name",
-            //                 avatar_type : "$avatar_type"
-            //             } 
-            //         },
-            //         {
-            //             $project : {
-            //                 date : {$arrayElemAt:["$date_time",0]},
-            //                 time : {$arrayElemAt:["$date_time",1]},
-            //                 stb_sn : 1,
-            //                 avatar_temperature : 1,
-            //                 avatar_file_url : 1,
-            //                 name : 1, 
-            //                 avatar_type: 1
-            //             }
-            //         },
-            //         { 
-            //             $project : { 
-            //                 timeArr : { 
-            //                     $split: ["$time", ":"] 
-            //                 },
-            //                 date : 1,
-            //                 stb_sn : 1,
-            //                 avatar_temperature : 1,
-            //                 avatar_file_url : 1,
-            //                 name : 1, 
-            //                 avatar_type: 1
-            //             } 
-            //         },
-            //         { 
-            //             $project : { 
-            //                 hour :  {
-            //                     $arrayElemAt:["$timeArr",0]
-            //                 },
-            //                 date : 1,
-            //                 stb_sn : 1,
-            //                 avatar_temperature : 1,
-            //                 avatar_file_url : 1,
-            //                 name : 1, 
-            //                 avatar_type: 1
-            //             } 
-            //         },
-            //         {
-            //             $group : {
-            //                 _id : "$hour",
-            //                 count: { $sum: 1 },
-            //                 maxTemp:{ $first: "$avatar_temperature" },
-            //                 maxUrl:{ $first: "$avatar_file_url" },
-            //                 maxType:{ $first: "$avatar_type" },
-            //             }
-            //         },
-            //         {
-            //             $sort: {_id:1}
-            //         }
-            //     ]).allowDiskUse(true);
-            // } else {         
-            //     get_data = await api_v1_person_access.aggregate([
-            //         {
-            //             $match: {
-            //                 access_time : { $regex: new RegExp(date[0])},
-            //             }
-            //         },
-            //         { 
-            //             $project : { 
-            //                 date_time : { 
-            //                     $split: ["$access_time", " "] 
-            //                 },
-            //                 stb_sn:"$stb_sn",
-            //                 avatar_temperature : "$avatar_temperature", 
-            //                 avatar_file_url : "$avatar_file_url", 
-            //                 name : "$name",
-            //                 avatar_type : "$avatar_type"
-            //             } 
-            //         },
-            //         {
-            //             $project : {
-            //                 date : {$arrayElemAt:["$date_time",0]},
-            //                 time : {$arrayElemAt:["$date_time",1]},
-            //                 stb_sn : 1,
-            //                 avatar_temperature : 1,
-            //                 avatar_file_url : 1,
-            //                 name : 1, 
-            //                 avatar_type: 1
-            //             }
-            //         },
-            //         { 
-            //             $project : { 
-            //                 timeArr : { 
-            //                     $split: ["$time", ":"] 
-            //                 },
-            //                 date : 1,
-            //                 stb_sn : 1,
-            //                 avatar_temperature : 1,
-            //                 avatar_file_url : 1,
-            //                 name : 1, 
-            //                 avatar_type: 1
-            //             } 
-            //         },
-            //         { 
-            //             $project : { 
-            //                 hour :  {
-            //                     $arrayElemAt:["$timeArr",0]
-            //                 },
-            //                 date : 1,
-            //                 stb_sn : 1,
-            //                 avatar_temperature : 1,
-            //                 avatar_file_url : 1,
-            //                 name : 1, 
-            //                 avatar_type: 1
-            //             } 
-            //         },
-            //         {
-            //             $sort:{avatar_temperature:-1}
-            //         },
-            //         {
-            //             $group : {
-            //                 _id : "$hour",
-            //                 count: { $sum: 1 },
-            //                 maxTemp:{ $first: "$avatar_temperature" },
-            //                 maxUrl:{ $first: "$avatar_file_url" },
-            //                 maxType:{ $first: "$avatar_type" },
-            //             }
-            //         },
-            //         {
-            //             $sort: {_id:1}
-            //         }
-            //     ]).allowDiskUse(true);
-            // }
+            if(device) {
+                get_data = {
+                    access : await Statistics.find()
+                    .regex('access_date' , new RegExp(date[0])),
+                    temp : await StatisticsTemp.find()
+                    .regex('access_date' , new RegExp(date[0]))
+                }
+            } else {
+                get_data = {
+                    access : await Statistics.find()
+                    .regex('access_date' , new RegExp(date[0]))
+                    .where('serial_number' ,device),
+                    temp : await StatisticsTemp.find()
+                    .regex('access_date' , new RegExp(date[0]))
+                    .where('serial_number' ,device)
+                }
+            }
         } 
         else if(req.query.type === 'todayAttendance') {
             get_data = await api_v1_person_access.aggregate([

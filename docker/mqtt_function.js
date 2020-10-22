@@ -572,11 +572,11 @@ module.exports = {
                         camera_obid : camera._id,
                         serial_number : json.stb_sn,
                         access_date: moment().format('YYYY-MM-DD'),
-                        [hours] : `${userName}/${element.avatar_temperature}/${element.avatar_type === 5 ? 4 : element.avatar_type}/${upload_url}`,
+                        [hours] : `${userName}|${element.avatar_temperature}|${element.avatar_type === 5 ? 4 : element.avatar_type}|${upload_url}`,
                     })
 
                     todayStatisticsTemp.save();
-                } else if(element.avatar_temperature > todayStatisticsTemp[hours].split('/')[1]){
+                } else if(element.avatar_temperature > todayStatisticsTemp[hours].split('|')[1]){
                     await Statistics.findByIdAndUpdate(todayStatistics._id,{ 
                         $inc: { 
                             all_count: 1,
@@ -590,7 +590,7 @@ module.exports = {
 
                     await Statistics_temp.findByIdAndUpdate(todayStatisticsTemp._id,{ 
                         $set: {
-                            [hours] : `${userName}/${element.avatar_temperature}/${element.avatar_type === 5 ? 4 : element.avatar_type}/${upload_url}`
+                            [hours] : `${userName}|${element.avatar_temperature}|${element.avatar_type === 5 ? 4 : element.avatar_type}|${upload_url}`
                         }
                     },
                     {
