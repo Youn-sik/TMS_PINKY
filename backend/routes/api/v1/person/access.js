@@ -177,7 +177,14 @@ router.get('/',async function(req, res) {
         } else if(req.query.type === 'deviceGroupAccesses') {
             let date = req.query.date.split('/');
             let device = req.query.device === 'all' ? null : req.query.device;
-            get_data = await Statistics.find()
+            get_data = await Statistics.aggregate([
+                {
+                    $match: {
+                        access_time : { $regex: new RegExp(date[0])},
+                        stb_sn : device 
+                    }
+                },
+            ])
             // if(device) {
             //     get_data = await api_v1_person_access.aggregate([
             //         {
