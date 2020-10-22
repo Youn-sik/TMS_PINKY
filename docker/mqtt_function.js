@@ -112,6 +112,31 @@ newUser.save(function (error, data2){
 })
 */
 
+const getOverlayValues = landmarks => {
+    const nose = landmarks.getNose()
+    const jawline = landmarks.getJawOutline()
+  
+    const jawLeft = jawline[0]
+    const jawRight = jawline.splice(-1)[0]
+    const adjacent = jawRight.x - jawLeft.x
+    const opposite = jawRight.y - jawLeft.y
+    const jawLength = Math.sqrt(Math.pow(adjacent, 2) + Math.pow(opposite, 2))
+  
+    // Both of these work. The chat believes atan2 is better.
+    // I don't know why. (It doesn’t break if we divide by zero.)
+    // const angle = Math.round(Math.tan(opposite / adjacent) * 100)
+    const angle = Math.atan2(opposite, adjacent) * (180 / Math.PI)
+    const width = jawLength * 2.2
+  
+    return {
+      width,
+      angle,
+      leftOffset: jawLeft.x - width * 0.27,
+      topOffset: nose[0].y - width * 0.47,
+    }
+  }
+  
+
 module.exports = {
 
     async chk_status () {
@@ -438,11 +463,25 @@ module.exports = {
 
                 const img = new Image();
                 img.src = "data:image/png;base64,"+element.avatar_file
-                console.time()
-                const detections = await faceapi.detectAllFaces(img)
-                .withFaceLandmarks()
+
+                let detections = await faceapi.detectAllFaces(img)
+                .withFaceLandmarks(true)
                 .withFaceDescriptors();
-                console.timeEnd()
+
+                // const overlayValues = getOverlayValues(detection.landmarks)
+
+                // img.style.cssText = `
+                //     position: absolute;
+                //     left: ${overlayValues.leftOffset * scale}px;
+                //     top: ${overlayValues.topOffset * scale}px;
+                //     width: ${overlayValues.width * scale}px;
+                //     transform: rotate(${overlayValues.angle}deg);
+                // `
+
+                // detections = await faceapi.detectAllFaces(img)
+                // .withFaceLandmarks(true)
+                // .withFaceDescriptors();
+
                 let userName = "unknown";
                 let user_obid = '';
                 if(detections.length > 0 && Users.length > 0) {
@@ -479,21 +518,46 @@ module.exports = {
                 }
 
                 insert_data = {
-                    avatar_file : element.avatar_file,
+                    // avatar_file : element.avatar_file,
                     avatar_file_checksum : element.avatar_file_checksum,
                     avatar_type : element.avatar_type === 5 ? 4 : element.avatar_type,
                     avatar_distance : element.avatar_distance,
                     avatar_contraction_data : element.avatar_contraction_data,
                     avatar_file_url : upload_url,
                     avatar_temperature : element.avatar_temperature,
-                    access_time : moment().format('YYYY-MM-DD HH:mm:ss'),
+                    access_time : element.access_time,
                     stb_sn : json.stb_sn,
                     stb_obid : camera._id,
                     stb_name : camera.name,
                     stb_location : camera.location,
                     name : userName,
                 }
+
+                let todayStatistics = await Statistics.findOne()
+                .where('camera_obid').equals(camera._id)
+                .where('access_date').equals(moment().format('YYYY-MM-DD'));
                 
+                let hours = element.access_time.split(' ')[1].split(':')[0]
+                
+                if(todayStatistics === null) {
+                    todayStatistics = new Statistics({
+                        camera_obid : camera._id,
+                        access_date: moment().format('YYYY-MM-DD'),
+                        all_count : 1,
+                        [hours] : 1,
+                    })
+                    todayStatistics.save()
+                } else {
+                    await Statistics.findByIdAndUpdate(todayStatistics._id,{ 
+                        $inc: { 
+                            all_count: 1,
+                            [hours] : 1
+                        }
+                    },
+                    {
+                        
+                    })
+                }
 
                 insert_array.push(insert_data);
             })

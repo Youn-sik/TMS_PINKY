@@ -5,42 +5,132 @@ require('moment-timezone');
 moment.tz.setDefault("Asia/Seoul"); 
 const boom = require('boom')
 const api_v1_person_access = require('../../../../models/api/v1/person/access')
+const Statistics = require('../../../../models/api/v3/device/statistics')
 const fs = require('fs')
 
 router.get('/',async function(req, res) {
     try {
+        // access_time : { $gte:week[0],$lte: week[1] }
+
         let get_data;
         let date = new RegExp(moment().format('YYYY-MM-DD'));
         let today = new RegExp(moment().format('YYYY-MM-DD'));
         let week = [moment().subtract(6, 'days').format('YYYY-MM-DD')+" 00:00:00",moment().format('YYYY-MM-DD')+" 23:59:59"]
         if(req.query.type === 'todayStatistics') {
-            get_data = await api_v1_person_access.aggregate([
+            employee = await api_v1_person_access.aggregate([
                 {
                     $match: {
+                        avatar_type : 1,
                         access_time : {$regex:date}
                     }
                 },
                 {
-                    $group: {
-                        _id: {"type":"$avatar_type"},
-                        count: { $sum: 1 }
-                    }
+                    $count: 'count'
                 },
             ]).allowDiskUse(true);
-        } else if(req.query.type === 'weekStatistics') {
-            get_data = await api_v1_person_access.aggregate([
+
+            black = await api_v1_person_access.aggregate([
                 {
                     $match: {
+                        avatar_type : 4,
+                        access_time : {$regex:date}
+                    }
+                },
+                {
+                    $count: 'count'
+                },
+            ]).allowDiskUse(true);
+
+            stranger = await api_v1_person_access.aggregate([
+                {
+                    $match: {
+                        avatar_type : 3,
+                        access_time : {$regex:date}
+                    }
+                },
+                {
+                    $count: 'count'
+                },
+            ]).allowDiskUse(true);
+
+            get_data = [
+                {
+                    _id : {
+                        type : 1
+                    },
+                    count : employee.length > 0 ? employee[0].count : 0,
+                },
+                {
+                    _id : {
+                        type : 3
+                    },
+                    count : stranger.length > 0 ? stranger[0].count : 0,
+                },
+                {
+                    _id : {
+                        type : 4
+                    },
+                    count : black.length > 0 ? black[0].count : 0,
+                },
+            ]
+
+        } else if(req.query.type === 'weekStatistics') {
+            employee = await api_v1_person_access.aggregate([
+                {
+                    $match: {
+                        avatar_type : 1,
                         access_time : { $gte:week[0],$lte: week[1] }
                     }
                 },
                 {
-                    $group: {
-                        _id: {"type":"$avatar_type"},
-                        count: { $sum: 1 }
-                    }
+                    $count: 'count'
                 },
             ]).allowDiskUse(true);
+
+            black = await api_v1_person_access.aggregate([
+                {
+                    $match: {
+                        avatar_type : 4,
+                        access_time : { $gte:week[0],$lte: week[1] }
+                    }
+                },
+                {
+                    $count: 'count'
+                },
+            ]).allowDiskUse(true);
+
+            stranger = await api_v1_person_access.aggregate([
+                {
+                    $match: {
+                        avatar_type : 3,
+                        access_time : { $gte:week[0],$lte: week[1] }
+                    }
+                },
+                {
+                    $count: 'count'
+                },
+            ]).allowDiskUse(true);
+
+            get_data = [
+                {
+                    _id : {
+                        type : 1
+                    },
+                    count : employee.length > 0 ? employee[0].count : 0,
+                },
+                {
+                    _id : {
+                        type : 3
+                    },
+                    count : stranger.length > 0 ? stranger[0].count : 0,
+                },
+                {
+                    _id : {
+                        type : 4
+                    },
+                    count : black.length > 0 ? black[0].count : 0,
+                },
+            ]
         } else if(req.query.type === 'deviceStats') {
             let date = req.query.date.split('/');
             let device = new RegExp("^"+req.query.device+"$");
@@ -87,153 +177,153 @@ router.get('/',async function(req, res) {
         } else if(req.query.type === 'deviceGroupAccesses') {
             let date = req.query.date.split('/');
             let device = req.query.device === 'all' ? null : req.query.device;
-
-            if(device) {
-                get_data = await api_v1_person_access.aggregate([
-                    {
-                        $match: {
-                            access_time : { $regex: new RegExp(date[0])},
-                            stb_sn : device 
-                        }
-                    },
-                    { 
-                        $project : { 
-                            date_time : { 
-                                $split: ["$access_time", " "] 
-                            },
-                            stb_sn:"$stb_sn",
-                            avatar_temperature : "$avatar_temperature", 
-                            avatar_file_url : "$avatar_file_url", 
-                            name : "$name",
-                            avatar_type : "$avatar_type"
-                        } 
-                    },
-                    {
-                        $project : {
-                            date : {$arrayElemAt:["$date_time",0]},
-                            time : {$arrayElemAt:["$date_time",1]},
-                            stb_sn : 1,
-                            avatar_temperature : 1,
-                            avatar_file_url : 1,
-                            name : 1, 
-                            avatar_type: 1
-                        }
-                    },
-                    { 
-                        $project : { 
-                            timeArr : { 
-                                $split: ["$time", ":"] 
-                            },
-                            date : 1,
-                            stb_sn : 1,
-                            avatar_temperature : 1,
-                            avatar_file_url : 1,
-                            name : 1, 
-                            avatar_type: 1
-                        } 
-                    },
-                    { 
-                        $project : { 
-                            hour :  {
-                                $arrayElemAt:["$timeArr",0]
-                            },
-                            date : 1,
-                            stb_sn : 1,
-                            avatar_temperature : 1,
-                            avatar_file_url : 1,
-                            name : 1, 
-                            avatar_type: 1
-                        } 
-                    },
-                    {
-                        $sort:{avatar_temperature:-1}
-                    },
-                    {
-                        $group : {
-                            _id : "$hour",
-                            count: { $sum: 1 },
-                            maxTemp:{ $first: "$avatar_temperature" },
-                            maxUrl:{ $first: "$avatar_file_url" },
-                            maxType:{ $first: "$avatar_type" },
-                        }
-                    },
-                    {
-                        $sort: {_id:1}
-                    }
-                ]).allowDiskUse(true);
-            } else {         
-                get_data = await api_v1_person_access.aggregate([
-                    {
-                        $match: {
-                            access_time : { $regex: new RegExp(date[0])},
-                        }
-                    },
-                    { 
-                        $project : { 
-                            date_time : { 
-                                $split: ["$access_time", " "] 
-                            },
-                            stb_sn:"$stb_sn",
-                            avatar_temperature : "$avatar_temperature", 
-                            avatar_file_url : "$avatar_file_url", 
-                            name : "$name",
-                            avatar_type : "$avatar_type"
-                        } 
-                    },
-                    {
-                        $project : {
-                            date : {$arrayElemAt:["$date_time",0]},
-                            time : {$arrayElemAt:["$date_time",1]},
-                            stb_sn : 1,
-                            avatar_temperature : 1,
-                            avatar_file_url : 1,
-                            name : 1, 
-                            avatar_type: 1
-                        }
-                    },
-                    { 
-                        $project : { 
-                            timeArr : { 
-                                $split: ["$time", ":"] 
-                            },
-                            date : 1,
-                            stb_sn : 1,
-                            avatar_temperature : 1,
-                            avatar_file_url : 1,
-                            name : 1, 
-                            avatar_type: 1
-                        } 
-                    },
-                    { 
-                        $project : { 
-                            hour :  {
-                                $arrayElemAt:["$timeArr",0]
-                            },
-                            date : 1,
-                            stb_sn : 1,
-                            avatar_temperature : 1,
-                            avatar_file_url : 1,
-                            name : 1, 
-                            avatar_type: 1
-                        } 
-                    },
-                    {
-                        $sort:{avatar_temperature:-1}
-                    },
-                    {
-                        $group : {
-                            _id : "$hour",
-                            count: { $sum: 1 },
-                            maxTemp:{ $first: "$avatar_temperature" },
-                            maxUrl:{ $first: "$avatar_file_url" },
-                            maxType:{ $first: "$avatar_type" },
-                        }
-                    },
-                    {
-                        $sort: {_id:1}
-                    }
-                ]).allowDiskUse(true);
-            }
+            get_data = await Statistics.find()
+            // if(device) {
+            //     get_data = await api_v1_person_access.aggregate([
+            //         {
+            //             $match: {
+            //                 access_time : { $regex: new RegExp(date[0])},
+            //                 stb_sn : device 
+            //             }
+            //         },
+            //         {
+            //             $sort:{avatar_temperature:-1}
+            //         },
+            //         { 
+            //             $project : { 
+            //                 date_time : { 
+            //                     $split: ["$access_time", " "] 
+            //                 },
+            //                 stb_sn:"$stb_sn",
+            //                 avatar_temperature : "$avatar_temperature", 
+            //                 avatar_file_url : "$avatar_file_url", 
+            //                 name : "$name",
+            //                 avatar_type : "$avatar_type"
+            //             } 
+            //         },
+            //         {
+            //             $project : {
+            //                 date : {$arrayElemAt:["$date_time",0]},
+            //                 time : {$arrayElemAt:["$date_time",1]},
+            //                 stb_sn : 1,
+            //                 avatar_temperature : 1,
+            //                 avatar_file_url : 1,
+            //                 name : 1, 
+            //                 avatar_type: 1
+            //             }
+            //         },
+            //         { 
+            //             $project : { 
+            //                 timeArr : { 
+            //                     $split: ["$time", ":"] 
+            //                 },
+            //                 date : 1,
+            //                 stb_sn : 1,
+            //                 avatar_temperature : 1,
+            //                 avatar_file_url : 1,
+            //                 name : 1, 
+            //                 avatar_type: 1
+            //             } 
+            //         },
+            //         { 
+            //             $project : { 
+            //                 hour :  {
+            //                     $arrayElemAt:["$timeArr",0]
+            //                 },
+            //                 date : 1,
+            //                 stb_sn : 1,
+            //                 avatar_temperature : 1,
+            //                 avatar_file_url : 1,
+            //                 name : 1, 
+            //                 avatar_type: 1
+            //             } 
+            //         },
+            //         {
+            //             $group : {
+            //                 _id : "$hour",
+            //                 count: { $sum: 1 },
+            //                 maxTemp:{ $first: "$avatar_temperature" },
+            //                 maxUrl:{ $first: "$avatar_file_url" },
+            //                 maxType:{ $first: "$avatar_type" },
+            //             }
+            //         },
+            //         {
+            //             $sort: {_id:1}
+            //         }
+            //     ]).allowDiskUse(true);
+            // } else {         
+            //     get_data = await api_v1_person_access.aggregate([
+            //         {
+            //             $match: {
+            //                 access_time : { $regex: new RegExp(date[0])},
+            //             }
+            //         },
+            //         { 
+            //             $project : { 
+            //                 date_time : { 
+            //                     $split: ["$access_time", " "] 
+            //                 },
+            //                 stb_sn:"$stb_sn",
+            //                 avatar_temperature : "$avatar_temperature", 
+            //                 avatar_file_url : "$avatar_file_url", 
+            //                 name : "$name",
+            //                 avatar_type : "$avatar_type"
+            //             } 
+            //         },
+            //         {
+            //             $project : {
+            //                 date : {$arrayElemAt:["$date_time",0]},
+            //                 time : {$arrayElemAt:["$date_time",1]},
+            //                 stb_sn : 1,
+            //                 avatar_temperature : 1,
+            //                 avatar_file_url : 1,
+            //                 name : 1, 
+            //                 avatar_type: 1
+            //             }
+            //         },
+            //         { 
+            //             $project : { 
+            //                 timeArr : { 
+            //                     $split: ["$time", ":"] 
+            //                 },
+            //                 date : 1,
+            //                 stb_sn : 1,
+            //                 avatar_temperature : 1,
+            //                 avatar_file_url : 1,
+            //                 name : 1, 
+            //                 avatar_type: 1
+            //             } 
+            //         },
+            //         { 
+            //             $project : { 
+            //                 hour :  {
+            //                     $arrayElemAt:["$timeArr",0]
+            //                 },
+            //                 date : 1,
+            //                 stb_sn : 1,
+            //                 avatar_temperature : 1,
+            //                 avatar_file_url : 1,
+            //                 name : 1, 
+            //                 avatar_type: 1
+            //             } 
+            //         },
+            //         {
+            //             $sort:{avatar_temperature:-1}
+            //         },
+            //         {
+            //             $group : {
+            //                 _id : "$hour",
+            //                 count: { $sum: 1 },
+            //                 maxTemp:{ $first: "$avatar_temperature" },
+            //                 maxUrl:{ $first: "$avatar_file_url" },
+            //                 maxType:{ $first: "$avatar_type" },
+            //             }
+            //         },
+            //         {
+            //             $sort: {_id:1}
+            //         }
+            //     ]).allowDiskUse(true);
+            // }
         } 
         else if(req.query.type === 'todayAttendance') {
             get_data = await api_v1_person_access.aggregate([
