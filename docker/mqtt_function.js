@@ -525,7 +525,7 @@ module.exports = {
                     avatar_contraction_data : element.avatar_contraction_data,
                     avatar_file_url : upload_url,
                     avatar_temperature : element.avatar_temperature,
-                    access_time : element.access_time,
+                    access_time : moment().format('YYYY-MM-DD HH:mm:ss'),
                     stb_sn : json.stb_sn,
                     stb_obid : camera._id,
                     stb_name : camera.name,
@@ -539,10 +539,13 @@ module.exports = {
                 .where('camera_obid').equals(camera._id)
                 .where('access_date').equals(moment().format('YYYY-MM-DD'));
                 
-                let hours = element.access_time.split(' ')[1].split(':')[0];
+                let hours = moment().format('HH:mm:ss').split(':')[0];
                 if(hours[0] === '0') hours = hours.replace('0','');
-                
 
+                let type = 'stranger';
+                if(element.avatar_type === 1) type = 'employee';
+                else if(element.avatar_type === 5) type = 'black';
+                
                 if(todayStatistics === null) {
                     todayStatistics = new Statistics({
                         camera_obid : camera._id,
@@ -551,13 +554,36 @@ module.exports = {
                         access_date: moment().format('YYYY-MM-DD'),
                         all_count : 1,
                         [hours] : 1,
+                        maxTemp : element.avatar_temperature,
+                        maxUrl : upload_url,
+                        maxType : element.avatar_type === 5 ? 4 : element.avatar_type,
+                        maxName : userName,
+                        [type] : 1
                     })
                     todayStatistics.save()
+                } else if(element.avatar_temperature > todayStatistics.maxTemp){
+                    await Statistics.findByIdAndUpdate(todayStatistics._id,{ 
+                        $inc: { 
+                            all_count: 1,
+                            [hours] : 1,
+                            [type] : 1
+                        },
+                        $set: {
+                            maxTemp : element.avatar_temperature,
+                            maxUrl : upload_url,
+                            maxType : element.avatar_type === 5 ? 4 : element.avatar_type,
+                            maxName : userName,
+                        }
+                    },
+                    {
+                        
+                    })
                 } else {
                     await Statistics.findByIdAndUpdate(todayStatistics._id,{ 
                         $inc: { 
                             all_count: 1,
-                            [hours] : 1
+                            [hours] : 1,
+                            [type] : 1
                         }
                     },
                     {
