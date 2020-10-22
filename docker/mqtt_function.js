@@ -94,7 +94,7 @@ const Camera_fail = require('./schema/camera_fail_Schema');
 const Camera_monitor = require('./schema/camera_monitor_Schema');
 const Camera_filelist = require('./schema/camera_filelist_Schema');
 const History = require('./schema/history_Schema');
-const Statistics_temp = require('./schema/Statistics_temp');
+const Statistics_temp = require('./schema/statistics_temp');
 
 /*
 let data = {
@@ -539,6 +539,10 @@ module.exports = {
                 let todayStatistics = await Statistics.findOne()
                 .where('camera_obid').equals(camera._id)
                 .where('access_date').equals(moment().format('YYYY-MM-DD'));
+
+                let todayStatisticsTemp = await Statistics_temp.findOne()
+                .where('camera_obid').equals(camera._id)
+                .where('access_date').equals(moment().format('YYYY-MM-DD'));
                 
                 let hours = moment().format('HH:mm:ss').split(':')[0];
                 if(hours[0] === '0') hours = hours.replace('0','');
@@ -568,6 +572,8 @@ module.exports = {
                         access_date: moment().format('YYYY-MM-DD'),
                         [hours] : `${userName}/${element.avatar_temperature}/${element.avatar_type === 5 ? 4 : element.avatar_type}/${upload_url}`,
                     })
+
+                    todayStatisticsTemp.save();
                 } else if(element.avatar_temperature > todayStatisticsTemp[hours].split('/')[1]){
                     await Statistics_temp.findByIdAndUpdate(todayStatisticsTemp._id,{ 
                         $set: {

@@ -37,7 +37,6 @@ const statisticsSchema = new mongoose.Schema({
     21 : { type: Number ,default:0},
     22 : { type: Number ,default:0},
     23 : { type: Number ,default:0},
-    24 : { type: Number ,default:0},
 });
 
 mongoose.set('useCreateIndex', true)

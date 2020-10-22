@@ -6,6 +6,7 @@ moment.tz.setDefault("Asia/Seoul");
 const boom = require('boom')
 const api_v1_person_access = require('../../../../models/api/v1/person/access')
 const Statistics = require('../../../../models/api/v3/device/statistics')
+const StatisticsTemp = require('../../../../models/api/v3/device/statistics_temp')
 const fs = require('fs')
 
 router.get('/',async function(req, res) {
@@ -177,14 +178,18 @@ router.get('/',async function(req, res) {
         } else if(req.query.type === 'deviceGroupAccesses') {
             let date = req.query.date.split('/');
             let device = req.query.device === 'all' ? null : req.query.device;
-            get_data = await Statistics.aggregate([
-                {
-                    $match: {
-                        access_time : { $regex: new RegExp(date[0])},
-                        stb_sn : device 
-                    }
-                },
-            ])
+            get_data = await Statistics.find()
+            get_data.concat(
+                await StatisticsTemp.find()
+            )
+            // aggregate([
+            //     {
+            //         $match: {
+            //             access_time : { $regex: new RegExp(date[0])},
+            //             stb_sn : device 
+            //         }
+            //     },
+            // ])
             // if(device) {
             //     get_data = await api_v1_person_access.aggregate([
             //         {
