@@ -518,7 +518,7 @@ module.exports = {
                 }
 
                 insert_data = {
-                    // avatar_file : element.avatar_file,
+                    avatar_file : 'avatar_file',
                     avatar_file_checksum : element.avatar_file_checksum,
                     avatar_type : element.avatar_type === 5 ? 4 : element.avatar_type,
                     avatar_distance : element.avatar_distance,
@@ -532,6 +532,8 @@ module.exports = {
                     stb_location : camera.location,
                     name : userName,
                 }
+
+                insert_array.push(insert_data);
 
                 let todayStatistics = await Statistics.findOne()
                 .where('camera_obid').equals(camera._id)
@@ -563,7 +565,6 @@ module.exports = {
                     })
                 }
 
-                insert_array.push(insert_data);
             })
             
             await Access.insertMany(insert_array)
