@@ -40,21 +40,21 @@ const DeviceStats = props => {
 
   const data = {
     datasets: [
-      {
-        label: '정상 온도',
-        data: chartData.normal,
-        backgroundColor: ['rgba(255, 99, 132, 0.2)'],
-        borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(255, 99, 132, 1)',
-          'rgba(255, 99, 132, 1)',
-          'rgba(255, 99, 132, 1)',
-          'rgba(255, 99, 132, 1)',
-          'rgba(255, 99, 132, 1)',
-          'rgba(255, 99, 132, 1)'
-        ],
-        borderWidth: 2
-      },
+      // {
+      //   label: '정상 온도',
+      //   data: chartData.normal,
+      //   backgroundColor: ['rgba(255, 99, 132, 0.2)'],
+      //   borderColor: [
+      //     'rgba(255, 99, 132, 1)',
+      //     'rgba(255, 99, 132, 1)',
+      //     'rgba(255, 99, 132, 1)',
+      //     'rgba(255, 99, 132, 1)',
+      //     'rgba(255, 99, 132, 1)',
+      //     'rgba(255, 99, 132, 1)',
+      //     'rgba(255, 99, 132, 1)'
+      //   ],
+      //   borderWidth: 2
+      // },
       // {
       //   label: '방문자',
       //   data: chartData.visitor,
@@ -70,23 +70,23 @@ const DeviceStats = props => {
       //   ],
       //   borderWidth: 2
       // },
+      // {
+      //   label: '비정상 온도',
+      //   data: chartData.abnormal,
+      //   backgroundColor: ['rgba(255, 159, 64, 0.2)'],
+      //   borderColor: [
+      //     'rgba(255, 159, 64, 1)',
+      //     'rgba(255, 159, 64, 1)',
+      //     'rgba(255, 159, 64, 1)',
+      //     'rgba(255, 159, 64, 1)',
+      //     'rgba(255, 159, 64, 1)',
+      //     'rgba(255, 159, 64, 1)',
+      //     'rgba(255, 159, 64, 1)'
+      //   ],
+      //   borderWidth: 2
+      // },
       {
-        label: '비정상 온도',
-        data: chartData.abnormal,
-        backgroundColor: ['rgba(255, 159, 64, 0.2)'],
-        borderColor: [
-          'rgba(255, 159, 64, 1)',
-          'rgba(255, 159, 64, 1)',
-          'rgba(255, 159, 64, 1)',
-          'rgba(255, 159, 64, 1)',
-          'rgba(255, 159, 64, 1)',
-          'rgba(255, 159, 64, 1)',
-          'rgba(255, 159, 64, 1)'
-        ],
-        borderWidth: 2
-      },
-      {
-        label: '모든 출입자',
+        label: '출입자 수',
         data: chartData.all,
         backgroundColor: ['rgba(255, 206, 86, 0.2)'],
         borderColor: [
@@ -129,7 +129,7 @@ const DeviceStats = props => {
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardHeader title={
             <div>
-                <span>단말별 출입자 온도 통계</span>
+                <span>단말별 출입자 통계</span>
                 <Button
                 size="small"
                 style={{float: 'right',marginRight:'10px' }} 

@@ -30,9 +30,9 @@ const useStyles = makeStyles(() => ({
   actions: {
     justifyContent: 'flex-end'
   },
-  cardStyle: {
-    height: '430px'
-  },
+  // cardStyle: {
+  //   height: '430px'
+  // },
   temp: {
     width: '15px'
   },

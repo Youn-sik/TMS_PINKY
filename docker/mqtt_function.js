@@ -80,6 +80,7 @@ const Camera_fail = require('./schema/camera_fail_Schema');
 const Camera_monitor = require('./schema/camera_monitor_Schema');
 const Camera_filelist = require('./schema/camera_filelist_Schema');
 const History = require('./schema/history_Schema');
+const Statistics_temp = require('./schema/statistics_temp');
 
 /*
 let data = {
@@ -429,7 +430,7 @@ module.exports = {
                 let user_obid = '';
 
                 insert_data = {
-                    avatar_file : element.avatar_file,
+                    avatar_file : 'avatar_file',
                     avatar_file_checksum : element.avatar_file_checksum,
                     avatar_type : element.avatar_type,
                     avatar_distance : element.avatar_distance,
@@ -443,9 +444,78 @@ module.exports = {
                     stb_obid : camera._id,
                     name : userName,
                 }
-                
 
                 insert_array.push(insert_data);
+
+                let todayStatistics = await Statistics.findOne()
+                .where('camera_obid').equals(camera._id)
+                .where('access_date').equals(moment().format('YYYY-MM-DD'));
+
+                let todayStatisticsTemp = await Statistics_temp.findOne()
+                .where('camera_obid').equals(camera._id)
+                .where('access_date').equals(moment().format('YYYY-MM-DD'));
+                
+                let hours = moment().format('HH:mm:ss').split(':')[0];
+                if(hours[0] === '0') hours = hours.replace('0','');
+
+                let type = 'stranger';
+                
+                if(todayStatistics === null) {
+                    todayStatistics = new Statistics({
+                        camera_obid : camera._id,
+                        serial_number : json.stb_sn,
+                        access_date: moment().format('YYYY-MM-DD'),
+                        all_count : 1,
+                        [hours] : 1,
+                        maxTemp : element.avatar_temperature,
+                        maxUrl : upload_url,
+                        maxType : element.avatar_type === 5 ? 4 : element.avatar_type,
+                        maxName : userName,
+                        [type] : 1
+                    })
+                    todayStatistics.save()
+
+                    todayStatisticsTemp = new Statistics_temp({
+                        camera_obid : camera._id,
+                        serial_number : json.stb_sn,
+                        access_date: moment().format('YYYY-MM-DD'),
+                        [hours] : `${userName}|${element.avatar_temperature}|${element.avatar_type === 5 ? 4 : element.avatar_type}|${upload_url}`,
+                    })
+
+                    todayStatisticsTemp.save();
+                } else if(element.avatar_temperature > todayStatisticsTemp[hours].split('|')[1]){
+                    await Statistics.findByIdAndUpdate(todayStatistics._id,{ 
+                        $inc: { 
+                            all_count: 1,
+                            [hours] : 1,
+                            [type] : 1
+                        }
+                    },
+                    {
+                        
+                    })
+
+                    await Statistics_temp.findByIdAndUpdate(todayStatisticsTemp._id,{ 
+                        $set: {
+                            [hours] : `${userName}|${element.avatar_temperature}|${element.avatar_type === 5 ? 4 : element.avatar_type}|${upload_url}`
+                        }
+                    },
+                    {
+                        
+                    })
+                } else {
+                    await Statistics.findByIdAndUpdate(todayStatistics._id,{ 
+                        $inc: { 
+                            all_count: 1,
+                            [hours] : 1,
+                            [type] : 1
+                        }
+                    },
+                    {
+                        
+                    })
+                }
+
             })
             
             await Access.insertMany(insert_array)

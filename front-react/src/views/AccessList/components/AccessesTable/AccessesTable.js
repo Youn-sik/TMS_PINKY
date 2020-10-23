@@ -18,6 +18,7 @@ import {
   TableHead,
   TableRow,
   TableContainer,
+  Dialog,
   Paper,
   Button
 } from '@material-ui/core';
@@ -74,6 +75,9 @@ const AccessesTable = props => {
     ...rest
   } = props;
 
+  const [currentUrl,setCurrnetUrl] = useState("");
+  const [imageModal,setImageModal] = useState(false)
+
   const classes = useStyles();
 
   const handlePageChange = (event, page) => {
@@ -90,8 +94,23 @@ const AccessesTable = props => {
     }
   };
 
+  const clickImage = url => {
+    setCurrnetUrl(url);
+    setImageModal(true);
+  }
+
+  const handleClose = () => {
+    setImageModal(false);
+  }
+
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
+      <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={imageModal}>
+        <img
+        alt="screenShot"
+        style={{maxWidth:'50vw'}}
+        src={currentUrl}></img>
+      </Dialog>
       <CardContent className={classes.content}>
         {loading ? <LinearProgress style={{ width: '100%' }} /> : null}
         <TableContainer component={Paper}>
@@ -149,20 +168,6 @@ const AccessesTable = props => {
                     </TableSortLabel>
                   ) : (
                     '단말기 위치'
-                  )}
-                </TableCell>
-                <TableCell>
-                  {accesses.length > 0 ? (
-                    <TableSortLabel
-                      active={activeType === 'avatar_type'}
-                      direction={sort}
-                      onClick={() => {
-                        createSortHandler('avatar_type');
-                      }}>
-                      타입
-                    </TableSortLabel>
-                  ) : (
-                    '타입'
                   )}
                 </TableCell>
                 <TableCell>
@@ -247,15 +252,6 @@ const AccessesTable = props => {
                             설치 위치
                           </TableCell>
                           <TableCell className={classes.redFont}>
-                            {access.avatar_type === 1
-                              ? '사원'
-                              : access.avatar_type === 2
-                              ? '방문자'
-                              : access.avatar_type === 4
-                              ? '블랙리스트'
-                              : '미등록자'}
-                          </TableCell>
-                          <TableCell className={classes.redFont}>
                             {access.avatar_distance
                               ? String(access.avatar_distance).substr(0, 3)
                               : 0}
@@ -303,7 +299,7 @@ const AccessesTable = props => {
                             />
                           </TableCell>
                           <TableCell>
-                            <div className={classes.nameContainer}>
+                            <div className={classes.nameContainer} style={{cursor: 'pointer'}} onClick={()=>{clickImage(access.avatar_file_url)}}>
                               <img
                                 alt="screenShot"
                                 height="90px"
@@ -313,22 +309,13 @@ const AccessesTable = props => {
                             </div>
                           </TableCell>
                           <TableCell>
-                            단말명
+                            {access.stb_name}
                           </TableCell>
                           <TableCell>
                             {access.stb_sn}
                           </TableCell>
                           <TableCell>
-                            설치 위치
-                          </TableCell>
-                          <TableCell>
-                            {access.avatar_type === 1
-                              ? '사원'
-                              : access.avatar_type === 2
-                              ? '방문자'
-                              : access.avatar_type === 4
-                              ? '블랙리스트'
-                              : '미등록자'}
+                            {access.stb_location}
                           </TableCell>
                           <TableCell>
                             {access.avatar_distance

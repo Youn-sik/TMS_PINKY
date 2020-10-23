@@ -109,6 +109,24 @@ const AccessList = props => {
     setSearchType(e.target.value);
   }
 
+  const getEmergencyFoundImg = urlImg => {
+    var img = new Image();
+    img.src = urlImg;
+    img.crossOrigin = 'Anonymous';
+  
+    var canvas = document.createElement('canvas'),
+    ctx = canvas.getContext('2d');
+  
+    console.log(img.naturalHeight)
+
+    canvas.height = img.naturalHeight;
+    canvas.width = img.naturalWidth;
+    ctx.drawImage(img, 0, 0);
+    
+    var b64 = canvas.toDataURL('image/png').replace(/^data:image.+;base64,/, '');
+    return b64;
+  };
+
   const clickExport = async () => {
 
     const wb = new ExcelJS.Workbook()
@@ -121,7 +139,7 @@ const AccessList = props => {
     accesses.map((access,index) => {
       let temp = []
       let image = wb.addImage({
-        base64: access.avatar_file,
+        base64: getEmergencyFoundImg(access.avatar_file_url),
         extension: 'png'
       })
 

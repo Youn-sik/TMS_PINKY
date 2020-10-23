@@ -5,9 +5,9 @@ import { makeStyles } from '@material-ui/styles';
 import { Typography, Link } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
-  root: {
-    padding: theme.spacing(4)
-  }
+  // root: {
+  //   padding: theme.spacing(4)
+  // }
 }));
 
 const Footer = props => {
@@ -16,14 +16,14 @@ const Footer = props => {
   const classes = useStyles();
 
   return (
-    <div {...rest} className={clsx(classes.root, className)}>
-      <Typography variant="body1">
+    <div>
+      {/* <Typography variant="body1">
         &copy;{' '}
         <Link component="a" target="_blank">
           Koolsign
         </Link>
         . 2019
-      </Typography>
+      </Typography> */}
     </div>
   );
 };

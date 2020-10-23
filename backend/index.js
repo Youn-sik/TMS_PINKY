@@ -149,6 +149,15 @@ const routes = require('./routes')
 const swagger = require('./config/swagger')
 
 
+app.get('/schedule',(req,res) => {
+    res.send({term})
+})
+
+app.put('/schedule',(req,res) => {
+    term = req.body.term;
+    res.send({term})
+})
+
 //사진보관 기간 설정
 let term = 7; //기본 보관 날짜 7일
 let s = schedule.scheduleJob('0 0 0 * * *', async function(){//스케쥴 설정
@@ -156,7 +165,7 @@ let s = schedule.scheduleJob('0 0 0 * * *', async function(){//스케쥴 설정
     let result = await Access.find().lt('access_time',dateTime)
     if(result.length > 0){
         let images = result.map(access => access.avatar_file_url);
-        let ip = images[0].split(":3000");
+        let ip = images[0].split(":3000")[0]
         images.map(image => {
             fs.unlink(image.avatar_file_url.replace(ip+':3000/','/var/www/backend/'),() => {})
         })
@@ -166,15 +175,6 @@ let s = schedule.scheduleJob('0 0 0 * * *', async function(){//스케쥴 설정
         })
     }   
 });
-
-app.get('/schedule',(req,res) => {
-    res.send({term})
-})
-
-app.put('/schedule',(req,res) => {
-    term = req.body.term;
-    res.send({term})
-})
 
 
 // Run the server!

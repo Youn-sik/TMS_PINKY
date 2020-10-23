@@ -41,102 +41,75 @@ const Statistics = props => {
       .format('YYYY-MM-DD'),
     moment().format('YYYY-MM-DD')
   ]);
-  const [allPeopleData, setAllPeopleData] = useState([]);
   const [peopleData, setPeopleData] = useState({});
   const [devices, setDevices] = useState([]);
   const [device, setDevice] = useState(' ');
-  const [count, setCount] = useState(0);
   const [errorData, setErrorData] = useState({});
-  const [allErrorData, setAllErrorData] = useState({});
   const [loading, setLoading] = useState(true);
-  const [attList, setAttList] = useState([]);
-
-  const statsData = (normal,abnormal,all, dates) => {
+  const statsData = (employee, stranger, black, dates) => {
     let temp = [
       [0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0],
-    ];
-
-    dates.map((date, index) => {
-      let normalCnt = 0
-      normal.map((i) => {if(i._id.date === date) normalCnt = i.count;})
-      let abnormalCnt = 0
-      abnormal.map((i) => {if(i._id.date === date) abnormalCnt = i.count;})
-      let allCnt = normalCnt+abnormalCnt;
-
-      if(normalCnt !== undefined)
-        temp[0][index] = normalCnt
-      if(abnormalCnt !== undefined)
-        temp[1][index] = abnormalCnt
-      if(allCnt !== undefined)
-        temp[2][index] = allCnt
-    });
-    return temp;
-  };
-
-  // error.log_no === 3 ? "연결 끊김" :
-  // error.log_no === 32 ? "CPU과다 사용" : "메모리 과다 사용"
-
-  const statsErrorData = (disconnect, cpu, memory, dates) => {
-    let temp = [
       [0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0]
     ];
+
     dates.map((date, index) => {
-      disconnect.map(i => {
-        if (i.regdate.split(' ')[0] === date) temp[0][index]++;
-        return false;
-      });
-      cpu.map(i => {
-        if (i.regdate.split(' ')[0] === date) temp[1][index]++;
-        return false;
-      });
-      memory.map(i => {
-        if (i.regdate.split(' ')[0] === date) temp[2][index]++;
-        return false;
-      });
+      
+      let empCnt = 0
+      employee.map((i) => {if(i._id.date === date) empCnt = i.count;})
+      let strCnt = 0
+      stranger.map((i) => {if(i._id.date === date) strCnt = i.count;})
+      let blackCnt = 0
+      black.map((i) => {if(i._id.date === date) blackCnt = i.count;})
+
+      if(empCnt !== undefined)
+        temp[0][index] = empCnt
+      if(strCnt !== undefined)
+        temp[2][index] = strCnt
+      if(blackCnt !== undefined)
+        temp[3][index] = blackCnt
       return false;
     });
+
     return temp;
   };
 
   const clickAccessExport = async () => {
 
-    let dates = [
-      '',
-      date[0],
-      dateChange(date[0], 1),
-      dateChange(date[0], 2),
-      dateChange(date[0], 3),
-      dateChange(date[0], 4),
-      dateChange(date[0], 5),
-      date[1]
-    ];
+    if(peopleData.stranger > 0) {
+      let dates = [
+        '',
+        date[0],
+        dateChange(date[0], 1),
+        dateChange(date[0], 2),
+        dateChange(date[0], 3),
+        dateChange(date[0], 4),
+        dateChange(date[0], 5),
+        date[1]
+      ];
 
-    const wb = new ExcelJS.Workbook()
+      const wb = new ExcelJS.Workbook()
 
-    const ws = wb.addWorksheet()
+      const ws = wb.addWorksheet()
 
-    let data = JSON.parse(JSON.stringify(peopleData));
+      let data = JSON.parse(JSON.stringify(peopleData));
 
-    data.normal.unshift('정상 온도')
-    data.abnormal.unshift('비정상 온도')
-    data.all.unshift('전체')
-    
-    ws.addRow(dates)
-    ws.addRow(data.normal)
-    ws.addRow(data.abnormal)
-    ws.addRow(data.all)
+      data.all.unshift('전체')
+      
+      ws.addRow(dates)
+      ws.addRow(data.all)
 
-    const buf = await wb.csv.writeBuffer()
+      const buf = await wb.csv.writeBuffer()
 
-    saveAs(new Blob([buf]), 'statistics.csv')
+      saveAs(new Blob([buf]), 'statistics.csv')
+    } else {
+      alert("데이터가 없습니다")
+    }
   }
 
   const clickErrorExport = async () => {
-
+    
     let dates = [
       '',
       date[0],
@@ -168,6 +141,33 @@ const Statistics = props => {
     saveAs(new Blob([buf]), 'statistics.csv')
   }
 
+  // error.log_no === 3 ? "연결 끊김" :
+  // error.log_no === 32 ? "CPU과다 사용" : "메모리 과다 사용"
+
+  const statsErrorData = (disconnect, cpu, memory, dates) => {
+    let temp = [
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0]
+    ];
+    dates.map((date, index) => {
+      disconnect.map(i => {
+        if (i.regdate.split(' ')[0] === date) temp[0][index]++;
+        return false;
+      });
+      cpu.map(i => {
+        if (i.regdate.split(' ')[0] === date) temp[1][index]++;
+        return false;
+      });
+      memory.map(i => {
+        if (i.regdate.split(' ')[0] === date) temp[2][index]++;
+        return false;
+      });
+      return false;
+    });
+    return temp;
+  };
+
   const moveUserIds = data => {
     //그룹의 obid를 한곳에 몰아넣는 작업
     if (data.children[0] !== undefined) {
@@ -182,14 +182,9 @@ const Statistics = props => {
   };
 
   const filterAccesses = result => {
-    let normal = result.filter(
-      access => access._id.temp_status === 'normal'
-    );
-    let abnormal = result.filter(
-      access => access._id.temp_status === 'abnormal'
-    );
-    let all = result
-    
+    let employee = [0,0,0,0,0,0,0];
+    let black = [0,0,0,0,0,0,0];
+    let stranger = [0,0,0,0,0,0,0]
     let dates = [
       date[0],
       dateChange(date[0], 1),
@@ -200,12 +195,21 @@ const Statistics = props => {
       date[1]
     ];
 
-    let temp = statsData(normal, abnormal, all, dates);
+    dates.map((date, index) => {
+      result.map(data => {
+        if(data.access_date === date) {
+          employee[index] += data.employee
+          black[index] += data.black
+          stranger[index] += data.stranger
+        }
+      })
+    })
 
     setPeopleData({
-      normal: temp[0],
-      abnormal: temp[1],
-      all: temp[2],
+      employee: employee,
+      visitor: stranger,
+      all: stranger,
+      black: black
     });
   };
 
@@ -239,10 +243,10 @@ const Statistics = props => {
   };
 
   async function getAccesses() {
-    let result = await axios.get(base_url + `/access?date=${date[0]}/${date[1]}&device=${device}&type=deviceStats&tempLimit=${props.tempLimit}`);
-    setAllPeopleData(result.data);
+    let local_device = device === ' ' ? '' : device
+    let result = await axios.get(base_url + `/access?date=${date[0]}/${date[1]}&device=${local_device}&type=deviceStats`);
     filterAccesses(result.data);
-
+    
     setLoading(false);
   }
 
@@ -257,7 +261,6 @@ const Statistics = props => {
 
   async function getErrors() {
     let result = await axios.get(base_url + `/glogs?type=error&date=${date[0]}/${date[1]}`);
-    setAllErrorData(result.data);
     filterErrors(result.data);
   }
 
@@ -281,7 +284,6 @@ const Statistics = props => {
       getAccesses();
       getErrors();
     }
-
   }, [device,date]);
 
   useEffect(() => {
@@ -325,10 +327,10 @@ const Statistics = props => {
               value={device}
               style={{ width: '10%', marginLeft: '10px' }}
               onChange={handleDeviceChange}>
-                <MenuItem value={' '}>전체</MenuItem>
-                {devices.map(device => (
-                  <MenuItem value={device.serial_number}>{device.name}</MenuItem>
-                ))}
+              <MenuItem value={' '}>전체</MenuItem>
+              {devices.map(device => (
+                <MenuItem value={device.serial_number}>{device.name}</MenuItem>
+              ))}
             </Select>
           </Grid>
           <Grid item lg={12} md={12} xl={12} xs={12}>
@@ -348,8 +350,8 @@ const Statistics = props => {
           </Grid>
           <Grid item lg={12} md={12} xl={12} xs={12}>
             <DeviceError
-              clickErrorExport={clickErrorExport}
               chartData={errorData}
+              clickErrorExport={clickErrorExport}
               date={[
                 date[0],
                 dateChange(date[0], 1),

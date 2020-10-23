@@ -214,10 +214,10 @@ const Dashboard = props => {
             item
             className={classes.accessCard}
             lg={6}
-            sm={6}
+            sm={12}
             xl={6}
             xs={12}>
-            <Employee history={props.history} count={strangerWeek} />
+            <Employee history={props.history} count={stranger} />
           </Grid>
           <Grid
             item
@@ -226,7 +226,7 @@ const Dashboard = props => {
             sm={12}
             xl={6}
             xs={12}>
-            <Stranger history={props.history} count={stranger} />
+            <Stranger history={props.history} count={strangerWeek} />
           </Grid>
           <Grid item lg={6} md={12} xl={6} xs={12}>
             <TempAlert

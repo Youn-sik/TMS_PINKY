@@ -47,50 +47,105 @@ const AccessStat = props => {
   const [chartData, setChartData] = useState({});
 
   async function getAccesses() {
-      setLoading(true);
-      let result = await axios.get(base_url + `/access?type=deviceGroupAccesses&device=${device}&date=${date[0]}/${date[1]}`);
-      setPeopleData(result.data);
-      setLoading(false);
+    setLoading(true);
+    let result = await axios.get(base_url + `/access?type=deviceGroupAccesses&device=${device}&date=${date[0]}/${date[1]}`);
+    setPeopleData(result.data);
+    setLoading(false);
   }
 
   const filterAccesses = () => {
-    let temp = JSON.parse(JSON.stringify(peopleData));
+    let access = peopleData.access
+    let temp = peopleData.temp
     let labels = [];
-    let data = [];
+    let data = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     let maxTemp = [];
+    // accessData.push({avatar_file_url:i.maxUrl,avatar_type:i.maxType});
     let accessData = [];
-    ['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
-    .forEach(function(time,index) {
-      if(!temp[index]) {
-        temp.push({
-          _id:time,
-          count:0,
-          maxTemp:'0',
-          maxUrl:'',
-        })
-      } else if(temp[index]._id !== time) {
-        temp.splice(index,0,{
-          _id:time,
-          count:0,
-          maxTemp:'0',
-          maxUrl:'',
-        })
-      }
 
-    })
-    temp.map(i => {
-      labels.push(i._id);
-      data.push(i.count);
-      maxTemp.push(i.maxTemp);
-      accessData.push({avatar_file_url:i.maxUrl,avatar_type:i.maxType});
-    });
+    if(device === 'all') {
+      ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
+      .forEach(function(time,index) {
+        labels.push(time.length === 1 ? '0'+time : time)
+        access.map((i) => {
+          data[index] += i[time]
+        })
+        
+        for(let i = 0; i<temp.length -1 ; i++){
+          if(temp[i][time].split('|')[1] > temp[i+1][time].split('|')[1]) {
+            // console.log(temp[i][time].split('|')[1],temp[i+1][time].split('|')[1])
+            let maxData = temp[i][time].split('|')
+            maxTemp[index] = maxData[1]
+            accessData[index] = {
+              avatar_file_url : maxData[3],
+              avatar_type : maxData[2],
+              name : maxData[0]
+            }
+          } else {
+            maxTemp[index] = temp[i+1][time].split('|')[1]
+          }
+        }
+        
+      })
+    } else {
+      ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
+      .forEach(function(time,index) {
+        let maxData = temp[0][time].split('|')
+        labels.push(time.length === 1 ? '0'+time : time)
+        data[index] = access[0][time]
+        maxTemp[index] = maxData[1]
+        accessData[index] = {
+          avatar_file_url : maxData[3],
+          avatar_type : maxData[2],
+          name : maxData[0]
+        }
+      })
+      
+    }
+
     setChartData({
       labels,
       data,
       maxTemp,
       accessData
     });
-    setAccesses(temp);
+    
+
+    // let labels = [];
+    // let data = [];
+    // let maxTemp = [];
+    // let accessData = [];
+    // ['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
+    // .forEach(function(time,index) {
+    //   if(!temp[index]) {
+    //     temp.push({
+    //       _id:time,
+    //       count:0,
+    //       maxTemp:'0',
+    //       maxUrl:'',
+    //     })
+    //   } else if(temp[index]._id !== time) {
+    //     temp.splice(index,0,{
+    //       _id:time,
+    //       count:0,
+    //       maxTemp:'0',
+    //       maxUrl:'',
+    //     })
+    //   }
+
+    // })
+    // temp.map(i => {
+    //   labels.push(i._id);
+    //   data.push(i.count);
+    //   maxTemp.push(i.maxTemp);
+    //   accessData.push({avatar_file_url:i.maxUrl,avatar_type:i.maxType});
+    // });
+    // setChartData({
+    //   labels,
+    //   data,
+    //   maxTemp,
+    //   accessData
+    // });
+    // setAccesses(temp);
   };
 
   async function getDevices() {
@@ -163,10 +218,10 @@ const AccessStat = props => {
   }, []);
 
   useEffect(() => {
-    if(devices.length > 0) { 
+    if(devices.length > 0 && !Array.isArray(peopleData)) {
       filterAccesses();
     }
-  }, [peopleData]);
+  }, [peopleData,devices]);
 
   return (
     <div className={classes.root}>

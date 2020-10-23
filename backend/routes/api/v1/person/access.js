@@ -5,6 +5,9 @@ require('moment-timezone');
 moment.tz.setDefault("Asia/Seoul"); 
 const boom = require('boom')
 const api_v1_person_access = require('../../../../models/api/v1/person/access')
+const Statistics = require('../../../../models/api/v3/device/statistics')
+const StatisticsTemp = require('../../../../models/api/v3/device/statistics_temp')
+const imageToBase64 = require('image-to-base64');
 const fs = require('fs')
 router.get('/',async function(req, res) {
     try {
@@ -13,250 +16,153 @@ router.get('/',async function(req, res) {
         let today = new RegExp(moment().format('YYYY-MM-DD'));
         let week = [moment().subtract(6, 'days').format('YYYY-MM-DD')+" 00:00:00",moment().format('YYYY-MM-DD')+" 23:59:59"]
         if(req.query.type === 'todayStatistics') {
-            get_data = await api_v1_person_access.aggregate([
+            employee = await api_v1_person_access.aggregate([
                 {
                     $match: {
+                        avatar_type : 1,
                         access_time : {$regex:date}
                     }
                 },
                 {
-                    $group: {
-                        _id: {"type":"$avatar_type"},
-                        count: { $sum: 1 }
+                    $count: 'count'
+                },
+            ]).allowDiskUse(true);
+
+            black = await api_v1_person_access.aggregate([
+                {
+                    $match: {
+                        avatar_type : 4,
+                        access_time : {$regex:date}
                     }
                 },
                 {
-                    $sort: {
-                        lastDate : -1
-                    }   
-                }
+                    $count: 'count'
+                },
             ]).allowDiskUse(true);
-        } else if(req.query.type === 'weekStatistics') {
-            get_data = await api_v1_person_access.aggregate([
+
+            stranger = await api_v1_person_access.aggregate([
                 {
                     $match: {
+                        avatar_type : 3,
+                        access_time : {$regex:date}
+                    }
+                },
+                {
+                    $count: 'count'
+                },
+            ]).allowDiskUse(true);
+
+            get_data = [
+                {
+                    _id : {
+                        type : 1
+                    },
+                    count : employee.length > 0 ? employee[0].count : 0,
+                },
+                {
+                    _id : {
+                        type : 3
+                    },
+                    count : stranger.length > 0 ? stranger[0].count : 0,
+                },
+                {
+                    _id : {
+                        type : 4
+                    },
+                    count : black.length > 0 ? black[0].count : 0,
+                },
+            ]
+
+        } else if(req.query.type === 'weekStatistics') {
+            employee = await api_v1_person_access.aggregate([
+                {
+                    $match: {
+                        avatar_type : 1,
                         access_time : { $gte:week[0],$lte: week[1] }
                     }
                 },
                 {
-                    $group: {
-                        _id: {"type":"$avatar_type"},
-                        count: { $sum: 1 }
-                    }
+                    $count: 'count'
                 },
-                {
-                    $sort: {
-                        lastDate : -1
-                    }   
-                }
             ]).allowDiskUse(true);
-        } else if(req.query.type === 'deviceStats') {
-            let date = req.query.date.split('/');
-            let device = req.query.device === ' ' ? new RegExp('') : new RegExp("^"+req.query.device+"$");
-            let tempLimit = req.query.tempLimit
-            get_data = await api_v1_person_access.aggregate([
+
+            black = await api_v1_person_access.aggregate([
                 {
                     $match: {
-                        access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
-                        stb_sn : {$regex:device}
-                    }
-                },
-                { 
-                    $project : { 
-                        date_time : { 
-                            $split: ["$access_time", " "] 
-                        },
-                        temp_status : { 
-                            $cond: {
-                                if: {
-                                    $gte: ["$avatar_temperature" , tempLimit]
-                                },
-                                then: 'abnormal',
-                                else: 'normal'
-                            }
-                        },
-                    } 
-                },
-                {
-                    $project : {
-                        date : {$arrayElemAt:["$date_time",0]},
-                        temp_status: 1,
+                        avatar_type : 4,
+                        access_time : { $gte:week[0],$lte: week[1] }
                     }
                 },
                 {
-                    $group : {
-                        _id : {
-                            temp_status:"$temp_status",
-                            date:"$date"
-                        },
-                        count: { $sum: 1 },
-                    }
-                },
-                {
-                    $sort:{
-                        "_id.date":1
-                    }
+                    $count: 'count'
                 },
             ]).allowDiskUse(true);
+
+            stranger = await api_v1_person_access.aggregate([
+                {
+                    $match: {
+                        avatar_type : 3,
+                        access_time : { $gte:week[0],$lte: week[1] }
+                    }
+                },
+                {
+                    $count: 'count'
+                },
+            ]).allowDiskUse(true);
+
+            get_data = [
+                {
+                    _id : {
+                        type : 1
+                    },
+                    count : employee.length > 0 ? employee[0].count : 0,
+                },
+                {
+                    _id : {
+                        type : 3
+                    },
+                    count : stranger.length > 0 ? stranger[0].count : 0,
+                },
+                {
+                    _id : {
+                        type : 4
+                    },
+                    count : black.length > 0 ? black[0].count : 0,
+                },
+            ]
+        } else if(req.query.type === 'deviceStats') {
+            let date = req.query.date.split('/');
+            let device = req.query.device
+
+            if(device === '')
+                device = new RegExp('')
+            else
+                device = new RegExp("^"+req.query.device+"$");
+            
+            get_data = await Statistics.find()
+            .gte("access_date",date[0])
+            .lte("access_date",date[1])
+            .regex('serial_number', device)
         } else if(req.query.type === 'deviceGroupAccesses') {
             let date = req.query.date.split('/');
-            let device = req.query.device === 'all' ? null : req.query.device;
-
-            if(device) {
-                get_data = await api_v1_person_access.aggregate([
-                    {
-                        $match: {
-                            access_time : { $regex: new RegExp(date[0])},
-                            stb_sn : device 
-                        }
-                    },
-                    { 
-                        $project : { 
-                            date_time : { 
-                                $split: ["$access_time", " "] 
-                            },
-                            stb_sn:"$stb_sn",
-                            avatar_temperature : "$avatar_temperature", 
-                            avatar_file_url : "$avatar_file_url", 
-                            avatar_file : "$avatar_file", 
-                            name : "$name",
-                            avatar_type : "$avatar_type"
-                        } 
-                    },
-                    {
-                        $project : {
-                            date : {$arrayElemAt:["$date_time",0]},
-                            time : {$arrayElemAt:["$date_time",1]},
-                            stb_sn : 1,
-                            avatar_temperature : 1,
-                            avatar_file_url : 1,
-                            avatar_file : 1,
-                            name : 1, 
-                            avatar_type: 1
-                        }
-                    },
-                    { 
-                        $project : { 
-                            timeArr : { 
-                                $split: ["$time", ":"] 
-                            },
-                            date : 1,
-                            stb_sn : 1,
-                            avatar_temperature : 1,
-                            avatar_file_url : 1,
-                            avatar_file : 1,
-                            name : 1, 
-                            avatar_type: 1
-                        } 
-                    },
-                    { 
-                        $project : { 
-                            hour :  {
-                                $arrayElemAt:["$timeArr",0]
-                            },
-                            date : 1,
-                            stb_sn : 1,
-                            avatar_temperature : 1,
-                            avatar_file_url : 1,
-                            avatar_file : 1,
-                            name : 1, 
-                            avatar_type: 1
-                        } 
-                    },
-                    {
-                        $sort:{avatar_temperature:-1}
-                    },
-                    {
-                        $group : {
-                            _id : "$hour",
-                            count: { $sum: 1 },
-                            maxTemp:{ $first: "$avatar_temperature" },
-                            maxUrl:{ $first: "$avatar_file_url" },
-                            maxBase64:{ $first: "$avatar_file" },
-                            maxType:{ $first: "$avatar_type" },
-                        }
-                    },
-                    {
-                        $sort: {_id:1}
-                    }
-                ]).allowDiskUse(true);
-            } else {         
-                get_data = await api_v1_person_access.aggregate([
-                    {
-                        $match: {
-                            access_time : { $regex: new RegExp(date[0])},
-                        }
-                    },
-                    { 
-                        $project : { 
-                            date_time : { 
-                                $split: ["$access_time", " "] 
-                            },
-                            stb_sn:"$stb_sn",
-                            avatar_temperature : "$avatar_temperature", 
-                            avatar_file_url : "$avatar_file_url", 
-                            avatar_file : "$avatar_file", 
-                            name : "$name",
-                            avatar_type : "$avatar_type"
-                        } 
-                    },
-                    {
-                        $project : {
-                            date : {$arrayElemAt:["$date_time",0]},
-                            time : {$arrayElemAt:["$date_time",1]},
-                            stb_sn : 1,
-                            avatar_temperature : 1,
-                            avatar_file_url : 1,
-                            avatar_file : 1,
-                            name : 1, 
-                            avatar_type: 1
-                        }
-                    },
-                    { 
-                        $project : { 
-                            timeArr : { 
-                                $split: ["$time", ":"] 
-                            },
-                            date : 1,
-                            stb_sn : 1,
-                            avatar_temperature : 1,
-                            avatar_file_url : 1,
-                            avatar_file : 1,
-                            name : 1, 
-                            avatar_type: 1
-                        } 
-                    },
-                    { 
-                        $project : { 
-                            hour :  {
-                                $arrayElemAt:["$timeArr",0]
-                            },
-                            date : 1,
-                            stb_sn : 1,
-                            avatar_temperature : 1,
-                            avatar_file_url : 1,
-                            avatar_file : 1,
-                            name : 1, 
-                            avatar_type: 1
-                        } 
-                    },
-                    {
-                        $sort:{avatar_temperature:-1}
-                    },
-                    {
-                        $group : {
-                            _id : "$hour",
-                            count: { $sum: 1 },
-                            maxTemp:{ $first: "$avatar_temperature" },
-                            maxUrl:{ $first: "$avatar_file_url" },
-                            maxBase64:{ $first: "$avatar_file" },
-                            maxType:{ $first: "$avatar_type" },
-                        }
-                    },
-                    {
-                        $sort: {_id:1}
-                    }
-                ]).allowDiskUse(true);
+            let device = req.query.device
+            
+            if(device === 'all') {
+                get_data = {
+                    access : await Statistics.find()
+                    .regex('access_date' , date[0]),
+                    temp : await StatisticsTemp.find()
+                    .regex('access_date' , date[0])
+                }
+            } else {
+                get_data = {
+                    access : await Statistics.find()
+                    .regex('access_date' , date[0])
+                    .where('serial_number' ,device),
+                    temp : await StatisticsTemp.find()
+                    .regex('access_date' , date[0])
+                    .where('serial_number' ,device)
+                }
             }
         } 
         else if(req.query.type === 'todayAttendance') {
@@ -328,10 +234,7 @@ router.get('/',async function(req, res) {
                             }
                         },
                         {
-                            $group: {
-                                _id: {"type":"$avatar_contraction_data"},
-                                count: { $sum: 1 }
-                            }
+                            $count : 'count'
                         }
                     ]).allowDiskUse(true);
                 } else {
@@ -345,10 +248,7 @@ router.get('/',async function(req, res) {
                             }
                         },
                         {
-                            $group: {
-                                _id: {"type":"$avatar_contraction_data"},
-                                count: { $sum: 1 }
-                            }
+                            $count : 'count'
                         }
                     ]).allowDiskUse(true);
                 }
@@ -362,10 +262,7 @@ router.get('/',async function(req, res) {
                         }
                     },
                     {
-                        $group: {
-                            _id: {"type":"$avatar_contraction_data"},
-                            count: { $sum: 1 }
-                        }
+                        $count : 'count'
                     }
                 ]).allowDiskUse(true);
             } else if (avatar_temperature && tempType) {//온도 타입만 선택한 경우
@@ -379,10 +276,7 @@ router.get('/',async function(req, res) {
                             }
                         },
                         {
-                            $group: {
-                                _id: {"type":"$avatar_contraction_data"},
-                                count: { $sum: 1 }
-                            }
+                            $count : 'count'
                         }
                     ]).allowDiskUse(true);
                 } else {
@@ -395,10 +289,7 @@ router.get('/',async function(req, res) {
                             }
                         },
                         {
-                            $group: {
-                                _id: {"type":"$avatar_contraction_data"},
-                                count: { $sum: 1 }
-                            }
+                            $count : 'count'
                         }
                     ]).allowDiskUse(true);
                 }   
@@ -411,10 +302,7 @@ router.get('/',async function(req, res) {
                         }
                     },
                     {
-                        $group: {
-                            _id: {"type":"$avatar_type"},
-                            count: { $sum: 1 }
-                        }
+                        $count : 'count'
                     }
                 ]).allowDiskUse(true);
             }
@@ -581,10 +469,10 @@ router.delete('/',async function(req, res) {
             }
         })
         req.body.accesses_data.map(access => {
-            let ip = access.avatar_file_url.split(':')[0]
+            let ip = access.avatar_file_url.split(':3000')[0]
             fs.unlink(access.avatar_file_url.replace(ip+':3000/','/var/www/backend/'),() => {})
         })
-        res.send(delete_data)
+        res.send('delete_data')
     } catch (err) {
         throw boom.boomify(err)
     }

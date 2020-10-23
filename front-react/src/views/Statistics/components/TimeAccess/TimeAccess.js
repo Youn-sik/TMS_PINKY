@@ -186,7 +186,7 @@ const TimeAccess = props => {
 
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
-      <CardHeader title="단말별 출입 통계" />
+      <CardHeader title="출입 통계" />
       <Divider />
       <CardContent className={classes.cardContent}>
         <Grid
