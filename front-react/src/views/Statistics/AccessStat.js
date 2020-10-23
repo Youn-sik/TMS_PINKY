@@ -206,9 +206,9 @@ const AccessStat = props => {
     ws.addRow(maxTemp)
     ws.addRow(maxImg)
 
-    const buf = await wb.xlsx.writeBuffer()
+    const buf = await wb.csv.writeBuffer()
 
-    saveAs(new Blob([buf]), 'statistics.xlsx')
+    saveAs(new Blob([buf]), 'statistics '+moment().format('YYYY-MM-DD_HH-mm-ss')+'.csv')
   }
 
   const handleDeviceChange = e => {

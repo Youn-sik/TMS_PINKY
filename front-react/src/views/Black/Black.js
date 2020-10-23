@@ -6,6 +6,8 @@ import { Groups, UsersTable } from './components';
 import {base_url} from 'server.json';
 import ExcelJS from 'exceljs/dist/es5/exceljs.browser.js'
 import { saveAs } from 'file-saver'
+import moment from 'moment';
+import 'moment/locale/ko';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -84,9 +86,9 @@ const Black = props => {
       return 0;
     }
 
-    const buf = await wb.xlsx.writeBuffer()
+    const buf = await wb.csv.writeBuffer()
 
-    saveAs(new Blob([buf]), 'abc.xlsx')
+    saveAs(new Blob([buf]), 'balcklist '+moment().format('YYYY-MM-DD_HH-mm-ss')+'.csv')
   }
 
   const filterGroup = useCallback(

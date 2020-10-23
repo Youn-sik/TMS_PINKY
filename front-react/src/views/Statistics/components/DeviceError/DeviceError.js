@@ -40,21 +40,21 @@ const DeviceError = props => {
 
   const data = {
     datasets: [
-      {
-        label: '연결 끊김',
-        data: chartData.disconnect,
-        backgroundColor: ['rgba(255, 99, 132, 0.2)'],
-        borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(255, 99, 132, 1)',
-          'rgba(255, 99, 132, 1)',
-          'rgba(255, 99, 132, 1)',
-          'rgba(255, 99, 132, 1)',
-          'rgba(255, 99, 132, 1)',
-          'rgba(255, 99, 132, 1)'
-        ],
-        borderWidth: 2
-      },
+      // {
+      //   label: '연결 끊김',
+      //   data: chartData.disconnect,
+      //   backgroundColor: ['rgba(255, 99, 132, 0.2)'],
+      //   borderColor: [
+      //     'rgba(255, 99, 132, 1)',
+      //     'rgba(255, 99, 132, 1)',
+      //     'rgba(255, 99, 132, 1)',
+      //     'rgba(255, 99, 132, 1)',
+      //     'rgba(255, 99, 132, 1)',
+      //     'rgba(255, 99, 132, 1)',
+      //     'rgba(255, 99, 132, 1)'
+      //   ],
+      //   borderWidth: 2
+      // },
       {
         label: 'CPU 부족',
         data: chartData.cpu,

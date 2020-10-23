@@ -102,7 +102,7 @@ const Statistics = props => {
 
       const buf = await wb.csv.writeBuffer()
 
-      saveAs(new Blob([buf]), 'statistics.csv')
+      saveAs(new Blob([buf]), 'statistics '+moment().format('YYYY-MM-DD_HH-mm-ss')+'.csv')
     } else {
       alert("데이터가 없습니다")
     }
@@ -127,18 +127,18 @@ const Statistics = props => {
 
     let data = JSON.parse(JSON.stringify(errorData));
 
-    data.cpu.unshift('cpu 부족')
+    // data.cpu.unshift('cpu 부족')
     data.disconnect.unshift('연결 끊김')
     data.memory.unshift('메모리 부족')
     
     ws.addRow(dates)
-    ws.addRow(data.disconnect)
+    // ws.addRow(data.disconnect)
     ws.addRow(data.cpu)
     ws.addRow(data.memory)
 
     const buf = await wb.csv.writeBuffer()
 
-    saveAs(new Blob([buf]), 'statistics.csv')
+    saveAs(new Blob([buf]), 'statistics '+moment().format('YYYY-MM-DD_HH-mm-ss')+'.csv')
   }
 
   // error.log_no === 3 ? "연결 끊김" :

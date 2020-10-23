@@ -109,23 +109,23 @@ const AccessList = props => {
     setSearchType(e.target.value);
   }
 
-  const getEmergencyFoundImg = urlImg => {
-    var img = new Image();
-    img.src = urlImg;
-    img.crossOrigin = 'Anonymous';
+  // const getEmergencyFoundImg = urlImg => {
+  //   var img = new Image();
+  //   img.src = urlImg;
+  //   img.crossOrigin = 'Anonymous';
   
-    var canvas = document.createElement('canvas'),
-    ctx = canvas.getContext('2d');
+  //   var canvas = document.createElement('canvas'),
+  //   ctx = canvas.getContext('2d');
   
-    console.log(img.naturalHeight)
+  //   console.log(img.naturalHeight)
 
-    canvas.height = img.naturalHeight;
-    canvas.width = img.naturalWidth;
-    ctx.drawImage(img, 0, 0);
+  //   canvas.height = img.naturalHeight;
+  //   canvas.width = img.naturalWidth;
+  //   ctx.drawImage(img, 0, 0);
     
-    var b64 = canvas.toDataURL('image/png').replace(/^data:image.+;base64,/, '');
-    return b64;
-  };
+  //   var b64 = canvas.toDataURL('image/png').replace(/^data:image.+;base64,/, '');
+  //   return b64;
+  // };
 
   const clickExport = async () => {
 
@@ -135,15 +135,15 @@ const AccessList = props => {
 
     
 
-    ws.addRow(['사진', '단말기','타입','거리','온도','출입 시간'])
+    ws.addRow(['단말기','타입','거리','온도','출입 시간'])
     accesses.map((access,index) => {
       let temp = []
-      let image = wb.addImage({
-        base64: getEmergencyFoundImg(access.avatar_file_url),
-        extension: 'png'
-      })
+      // let image = wb.addImage({
+      //   base64: getEmergencyFoundImg(access.avatar_file_url),
+      //   extension: 'png'
+      // })
 
-      temp.push('');
+      // temp.push('');
       temp.push(access['stb_sn'])
       temp.push(access['avatar_type'] === 1 ? '사원' : access['avatar_type'] === 3 ? '미등록자' : '블랙리스트');
       temp.push(String(access['avatar_distance']).substring(0,3)+"M");
@@ -151,15 +151,15 @@ const AccessList = props => {
       temp.push(access['access_time']);
 
       ws.addRow(temp)
-      ws.addImage(image,{
-        tl: { col: 0, row: 1+index },
-        br: { col: 0.7, row: 2+index }
-      })
+      // ws.addImage(image,{
+      //   tl: { col: 0, row: 1+index },
+      //   br: { col: 0.7, row: 2+index }
+      // })
     })
 
-    const buf = await wb.xlsx.writeBuffer()
+    const buf = await wb.csv.writeBuffer()
 
-    saveAs(new Blob([buf]), 'abc.xlsx')
+    saveAs(new Blob([buf]), 'access_list '+moment().format('YYYY-MM-DD_HH-mm-ss')+'.csv')
   }
 
   const clickSearch = async () => {
