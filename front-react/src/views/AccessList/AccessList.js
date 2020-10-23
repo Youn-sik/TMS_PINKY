@@ -59,6 +59,24 @@ const AccessList = props => {
     setSelected([]);
   };
 
+  const getEmergencyFoundImg = urlImg => {
+    var img = new Image();
+    img.src = urlImg;
+    img.crossOrigin = '*';
+  
+    var canvas = document.createElement('canvas'),
+      ctx = canvas.getContext('2d');
+  
+    canvas.height = img.naturalHeight;
+    canvas.width = img.naturalWidth;
+    ctx.drawImage(img, 0, 0);
+
+    console.log(canvas.toDataURL('image/png'))
+    
+    var b64 = canvas.toDataURL('image/png').replace(/^data:image.+;base64,/, '');
+    return b64;
+  };
+
   const deleteAccesses = async () => {
     if(window.confirm('삭제한 내용은 되돌릴수 없습니다\n정말 삭제하시겠습니까?')) {
       await axios.delete(base_url +'/access', {
@@ -118,10 +136,11 @@ const AccessList = props => {
     
 
     ws.addRow(['사진', '이름', '단말기 이름','단말기 시리얼','단말기 위치','타입','거리','온도','출입 시간'])
-    accesses.map((access,index) => {
+    accesses.map(async (access,index) => {
       let temp = []
+      let base64 = getEmergencyFoundImg(access.avatar_file_url)
       let image = wb.addImage({
-        base64: access.avatar_file,
+        base64,
         extension: 'png'
       })
 

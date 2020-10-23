@@ -55,9 +55,9 @@ app.use('/operation',operationRouter);
 
 //static
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use('/image',express.static('./image'));
+app.use('/image',express.static('/var/www/backend/image'));
 app.use('/stream',express.static('./videos'));
-app.use('/noImage',express.static('./defaultImage'));
+app.use('/noImage',express.static('/var/www/backend/defaultImage'));
 
 //swagger
 const swaggerJSDoc = require('swagger-jsdoc');

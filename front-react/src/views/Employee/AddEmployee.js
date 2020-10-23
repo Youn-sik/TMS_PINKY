@@ -254,13 +254,20 @@ const AddEmployee = props => {
       let base64 = await toBase64(pictures[0][0]);
       base64 = base64.replace('data:image/jpeg;base64,', '');
       base64 = base64.replace('data:image/png;base64,', '');
-      await axios.post(base_url + '/user', {
+      let result = await axios.post(base_url + '/user', {
         ...userInfo,
         type: 1,
         groups_obids: [node._id ? node._id : undefined],
         account: props.user_id,
         avatar_file: base64
       });
+
+      if(result.data.result && result.data.result === '인식할수 없는 사진.') {
+        alert("인식할수 없는 사진 입니다.")
+        setLoading(false);
+        return 0;
+      }
+
       setLoading(false);
       alert('등록 되었습니다.');
       history.push('/users/employee');

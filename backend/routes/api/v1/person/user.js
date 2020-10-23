@@ -74,8 +74,8 @@ router.post('/',async function(req, res) {
                 .withFaceDescriptors();
             } else {
                 add.avatar_file_url = 'http://'+req.headers.host+'/image/'+add._id+'profile.jpg';
-                fs.writeFileSync('image/'+add._id+'profile.jpg',req.body.avatar_file,'base64')
-                let imageDir = await canvas.loadImage('image/'+add._id+'profile.jpg')
+                fs.writeFileSync('/var/www/backend/image/'+add._id+'profile.jpg',req.body.avatar_file,'base64')
+                let imageDir = await canvas.loadImage('/var/www/backend/image/'+add._id+'profile.jpg')
                 detections = await faceapi.detectAllFaces(imageDir)
                 .withFaceLandmarks()
                 .withFaceDescriptors();
@@ -145,7 +145,7 @@ router.put('/:id',async function(req, res) {
         req.body.avatar_file_checksum = crypto.createHash('sha256').update(req.body.avatar_file).digest('base64');
         fs.unlink('/var/www/backend/image/'+req.body._id+"profile_updated.jpg",() => {})
         fs.unlink('/var/www/backend/image/'+req.body._id+"profile.jpg",() => {})
-        fs.writeFileSync('image/'+req.body._id+'profile_updated.jpg',req.body.avatar_file,'base64');
+        fs.writeFileSync('/var/www/backend/image/'+req.body._id+'profile_updated.jpg',req.body.avatar_file,'base64');
         if(String(req.body.groups_obids) !== String(req.body.clicked_groups)) {
             req.body.groups_obids.map(async (i) => {
                 await api_v1_group_group.findOneAndUpdate({_id:i},{ $pull: { user_obids : req.body._id} }, {new: true }).exec()
