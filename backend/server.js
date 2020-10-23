@@ -9,7 +9,7 @@ const config = require("./config/config");
 
 // Connect to DB
 mongoose
-	.connect('mongodb://kool:master@172.16.135.89:27017/cloud40',{ 
+	.connect('mongodb://kool:master@127.0.0.1:27017/cloud40',{ 
 		useNewUrlParser: true ,
 		useUnifiedTopology: true,
 		poolSize:8,

@@ -598,7 +598,7 @@ const DeviceTable = props => {
                 }}
                 style={{ width: '181.58px' }}
                 color="primary">
-                단말기 로그 요청
+                단말 로그 요청
               </Button>
               <br />
               <br />
@@ -710,7 +710,7 @@ const DeviceTable = props => {
                 }}
                 style={{ width: '181.58px' }}
                 color="primary">
-                단말기 로그 요청
+                단말 로그 요청
               </Button>
               <br />
               <br />

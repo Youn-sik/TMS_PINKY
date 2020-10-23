@@ -53,7 +53,7 @@ const DeviceErrors = props => {
     <Card
       {...rest}
       className={(clsx(classes.root, className), classes.cardStyle)}>
-      <CardHeader title="단말기 에러" />
+      <CardHeader title="단말 에러" />
       <Divider />
       <CardContent className={classes.content}>
         <TableContainer>

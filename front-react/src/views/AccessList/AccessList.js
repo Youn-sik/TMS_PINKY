@@ -135,7 +135,7 @@ const AccessList = props => {
 
     
 
-    ws.addRow(['단말기','타입','거리','온도','출입 시간'])
+    ws.addRow(['단말','타입','거리','온도','출입 시간'])
     accesses.map((access,index) => {
       let temp = []
       // let image = wb.addImage({
@@ -230,6 +230,26 @@ const AccessList = props => {
     setAccesses(result.data);
   };
 
+  const deleteAllAccesses = async () => {
+    // let result = await axios.get(base_url + 
+    let firstDate = '';
+    let lastDate = '';
+    if(date[0] > date[1]) {
+      firstDate = date[1]
+      lastDate = date[0]
+    } else {
+      firstDate = date[0]
+      lastDate = date[1]
+    }
+
+    let result = await axios.delete(base_url + 
+      `/access?searchType=${searchType}&type=all&rowsPerPage=${rowsPerPage}&date=${firstDate}/${lastDate}&page=${page}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+      cancelToken: source.token
+    });
+    
+    // resetSearch()
+  }
+
   async function getAccesses() {
     setLoading(true)
     let firstDate = '';
@@ -270,6 +290,24 @@ const AccessList = props => {
       setAccesses([]);
     }
     setLoading(false);
+  }
+
+  const resetSearch = () => {
+    setSearchType('all')
+    setDate([
+      moment()
+        .locale('ko')
+        .format('YYYY-MM-DD')+" 00:00:00",
+      moment()
+        .locale('ko')
+        .format('YYYY-MM-DD')+" 23:59:59"
+    ]);
+    setType(' ');
+    setTemp('0');
+    setLoading(true);
+    setSearch('');
+    setActiveType('access_time');
+    setSort('desc');
   }
 
   async function movePage(page) {
@@ -314,24 +352,6 @@ const AccessList = props => {
   useEffect(() => {
     getAccesses();
   },[type,temp,date,rowsPerPage])
-
-  const resetSearch = () => {
-    setSearchType('all')
-    setDate([
-      moment()
-        .locale('ko')
-        .format('YYYY-MM-DD')+" 00:00:00",
-      moment()
-        .locale('ko')
-        .format('YYYY-MM-DD')+" 23:59:59"
-    ]);
-    setType(' ');
-    setTemp('0');
-    setLoading(true);
-    setSearch('');
-    setActiveType('access_time');
-    setSort('desc');
-  }
   
   const _setSort = (type) => {
     setSort(type);
@@ -358,6 +378,7 @@ const AccessList = props => {
         <AccessesToolbar
           clickExport={clickExport}
           search={search}
+          deleteAllAccesses={deleteAllAccesses}
           deleteAccesses={deleteAccesses}
           loading={loading}
           handleSearchType={handleSearchType}

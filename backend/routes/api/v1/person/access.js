@@ -461,18 +461,58 @@ router.put('/:id',async function(req, res) {
 
 router.delete('/',async function(req, res) {
     try {
-        const id = req.params === undefined ? req.id : req.params.id
-        let ids = req.body.accesses_data.map(i => i._id)
-        const delete_data = await api_v1_person_access.deleteMany({
-            _id:{
-                $in:ids
+        let delete_data;
+        if(req.query.type === 'all') {
+            let searchType = req.query.searchType
+            let date = req.query.date.split('/');
+            let search = new RegExp(req.query.search)
+            let avatarTemp = req.query.avatar_temp === ' ' ? new RegExp('') : new RegExp(req.query.avatar_temp)
+            let tempType = req.query.tempType === '0' ? {$gte : '0'} :
+                            req.query.tempType === '1' ? {$lt : req.query.avatar_temperature} :  {$gte : req.query.avatar_temperature}
+
+            if(searchType === 'stb_name') {
+                delete_data = await api_v1_person_access.deleteMany({
+                    access_time : { $gte:date[0],$lte: date[1] },
+                    stb_name : search,
+                    $and:[
+                        {avatar_temperature : tempType},
+                        {avatar_temperature : avatarTemp}
+                    ]
+                })
+            } else if(searchType === 'stb_location'){
+                delete_data = await api_v1_person_access.deleteMany({
+                    access_time : { $gte:date[0],$lte: date[1] },
+                    stb_location : search,
+                    $and:[
+                        {avatar_temperature : tempType},
+                        {avatar_temperature : avatarTemp}
+                    ]
+                })
+            } else if(searchType === 'stb_sn') {
+                delete_data = await api_v1_person_access.deleteMany({
+                    access_time : { $gte:date[0],$lte: date[1] },
+                    stb_sn : search,
+                    $and:[
+                        {avatar_temperature : tempType},
+                        {avatar_temperature : avatarTemp}
+                    ]
+                })
             }
-        })
-        req.body.accesses_data.map(access => {
-            let ip = access.avatar_file_url.split(':3000')[0]
-            fs.unlink(access.avatar_file_url.replace(ip+':3000/','/var/www/backend/'),() => {})
-        })
-        res.send('delete_data')
+            
+        } else {
+            const id = req.params === undefined ? req.id : req.params.id
+            let ids = req.body.accesses_data.map(i => i._id)
+            delete_data = await api_v1_person_access.deleteMany({
+                _id:{
+                    $in:ids
+                }
+            })
+            req.body.accesses_data.map(access => {
+                let ip = access.avatar_file_url.split(':3000')[0]
+                fs.unlink(access.avatar_file_url.replace(ip+':3000/','/var/www/backend/'),() => {})
+            })
+        }
+        res.send(delete_data)
     } catch (err) {
         throw boom.boomify(err)
     }

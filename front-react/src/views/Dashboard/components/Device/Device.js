@@ -111,7 +111,7 @@ const Device = props => {
 
   return (
     <Card {...rest} style={{height:"540px"}} className={clsx(classes.root, className)}>
-      <CardHeader title="단말기 상태" />
+      <CardHeader title="단말 상태" />
       <Divider />
       <CardContent className={classes.cardContent}>
         <Grid

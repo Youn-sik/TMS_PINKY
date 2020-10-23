@@ -164,10 +164,10 @@ const AccessesTable = props => {
                       onClick={() => {
                         createSortHandler('stb_location');
                       }}>
-                      단말기 위치
+                      단말 위치
                     </TableSortLabel>
                   ) : (
-                    '단말기 위치'
+                    '단말 위치'
                   )}
                 </TableCell>
                 <TableCell>
@@ -243,13 +243,13 @@ const AccessesTable = props => {
                             </div>
                           </TableCell>
                           <TableCell>
-                            단말명
+                            {access.stb_name}
                           </TableCell>
                           <TableCell>
                             {access.stb_sn}
                           </TableCell>
                           <TableCell>
-                            설치 위치
+                            {access.stb_location}
                           </TableCell>
                           <TableCell className={classes.redFont}>
                             {access.avatar_distance

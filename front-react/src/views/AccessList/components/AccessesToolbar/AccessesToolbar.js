@@ -14,6 +14,8 @@ import TextField from '@material-ui/core/TextField';
 import Search from '@material-ui/icons/Search';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Button from '@material-ui/core/Button';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
 // eslint-disable-next-line no-extend-native
 Date.prototype.yyyymmdd = function() {
   var yyyy = this.getFullYear().toString();
@@ -83,6 +85,7 @@ const AccessesToolbar = props => {
     resetSearch,
     date,
     typeCange,
+    deleteAllAccesses,
     searchType,
     dateChange,
     deleteRecords,
@@ -122,7 +125,7 @@ const AccessesToolbar = props => {
             }}
           />
         </IntlProvider> */}
-          <InputGroup style={{ width: 460 }}>
+          <InputGroup style={{ width: 400 }}>
           <IntlProvider locale={kor}>
             <DatePicker 
             format="YYYY-MM-DD HH:mm:ss" 
@@ -148,33 +151,43 @@ const AccessesToolbar = props => {
             
             </IntlProvider>
           </InputGroup>
+            <FormControl
+              className={classes.select}>
+            <InputLabel id="demo-simple-select-label">온도</InputLabel>
+            <Select
+              style={{ width: '50px',marginBottom:'11px'}}
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={type}
+              onChange={handleTypeChange}>
+              <MenuItem value=" ">전체</MenuItem>
+              <MenuItem value="34">34</MenuItem>
+              <MenuItem value="35">35</MenuItem>
+              <MenuItem value="36">36</MenuItem>
+              <MenuItem value="37">37</MenuItem>
+              <MenuItem value="38">38</MenuItem>
+              <MenuItem value="39">39</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl
+              className={classes.select}>
+          <InputLabel id="demo-simple-select-label">온도 상태</InputLabel>
           <Select
-            className={classes.select}
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={type}
-            onChange={handleTypeChange}>
-            <MenuItem value=" ">전체</MenuItem>
-            <MenuItem value="34">34</MenuItem>
-            <MenuItem value="35">35</MenuItem>
-            <MenuItem value="36">36</MenuItem>
-            <MenuItem value="37">37</MenuItem>
-            <MenuItem value="38">38</MenuItem>
-            <MenuItem value="39">39</MenuItem>
-          </Select>
-          <Select
-            className={classes.select}
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             value={temp}
-            style={{}}
+            style={{ width: '95px',marginBottom:'11px'}}
             onChange={handleTempChange}>
             <MenuItem value="0">전체</MenuItem>
             <MenuItem value="1">정상 온도</MenuItem>
             <MenuItem value="2">비정상 온도</MenuItem>
           </Select>
+          </FormControl>
+          <FormControl
+              className={classes.select}>
+          <InputLabel id="demo-simple-select-label">리스트</InputLabel>
           <Select
-            className={classes.select}
+            style={{width:'50px',marginBottom:'11px'}}
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             value={rowsPerPage}
@@ -186,20 +199,26 @@ const AccessesToolbar = props => {
             <MenuItem value="50">50</MenuItem>
             <MenuItem value="100">100</MenuItem>
           </Select>
-          <Button 
-          style={{width:'200px', marginLeft:'10px',marginRight:'10px' }} 
-          variant="contained" color="primary" onClick={clickExport}>
-            엑셀로 다운로드
-          </Button>
+          </FormControl>
           <Button 
           style={{marginLeft:'10px' }} 
           variant="contained" color="secondary" onClick={deleteAccesses}>
             삭제
           </Button>
+          <Button 
+          style={{marginLeft:'10px' }} 
+          variant="contained" color="secondary" onClick={deleteAllAccesses}>
+            전체 삭제
+          </Button>
           <br/>
-        <div style={{ width: '50%' }}>
+        <div style={{ float:'right',width: '45%' }}>
+          <Button 
+          style={{float: 'right' }} 
+          variant="contained" color="primary" onClick={clickExport}>
+            엑셀로 다운로드
+          </Button>
           <TextField
-            style={{ float: 'right', marginRight: '30px' }}
+            style={{ float: 'right', marginRight: '10px' }}
             className={classes.search}
             id="input-with-icon-textfield"
             // label="검색"
@@ -223,7 +242,7 @@ const AccessesToolbar = props => {
             onChange={handleSearchType}
           >
             <MenuItem value={'stb_name'}>단말명</MenuItem>
-            <MenuItem value={'stb_location'}>단말기 위치</MenuItem>
+            <MenuItem value={'stb_location'}>단말 위치</MenuItem>
             <MenuItem value={'stb_sn'}>시리얼 번호</MenuItem>
           </Select>
           <Button 

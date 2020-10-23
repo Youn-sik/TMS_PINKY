@@ -86,11 +86,11 @@ const Sidebar = props => {
       href: '/device/list',
       children: [
         {
-          title: '단말기 목록',
+          title: '단말 목록',
           href: '/device/list'
         },
         {
-          title: '단말기 에러 로그',
+          title: '단말 에러 로그',
           href: '/device/error'
         },
         // {
@@ -105,7 +105,7 @@ const Sidebar = props => {
       href: '/stats',
       children: [
         {
-          title: '단말기 통계',
+          title: '단말 통계',
           href: '/stats/device'
         },
         // {

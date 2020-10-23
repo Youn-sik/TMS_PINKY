@@ -143,6 +143,7 @@ const Dashboard = props => {
       setVisitor(visitor => visitor + 1);
     } else if (values[0].avatar_type === 3) {
       setStranger(stranger => stranger + 1);
+      setStrangerWeek(strangerWeek => strangerWeek + 1);
     } else {
       setBlack(black => black + 1);
     }
