@@ -62,52 +62,62 @@ const AccessStat = props => {
     // accessData.push({avatar_file_url:i.maxUrl,avatar_type:i.maxType});
     let accessData = [];
 
-    if(device === 'all') {
-      ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
-      .forEach(function(time,index) {
-        labels.push(time.length === 1 ? '0'+time : time)
-        access.map((i) => {
-          data[index] += i[time]
-        })
-        
-        for(let i = 0; i<temp.length -1 ; i++){
-          if(temp[i][time].split('|')[1] > temp[i+1][time].split('|')[1]) {
-            // console.log(temp[i][time].split('|')[1],temp[i+1][time].split('|')[1])
-            let maxData = temp[i][time].split('|')
-            maxTemp[index] = maxData[1]
-            accessData[index] = {
-              avatar_file_url : maxData[3],
-              avatar_type : maxData[2],
-              name : maxData[0]
+    if(access.length > 0) {
+      if(device === 'all') {
+        ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
+        .forEach(function(time,index) {
+          labels.push(time.length === 1 ? '0'+time : time)
+          access.map((i) => {
+            data[index] += i[time]
+          })
+          
+          for(let i = 0; i<temp.length -1 ; i++){
+            if(temp[i][time].split('|')[1] > temp[i+1][time].split('|')[1]) {
+              // console.log(temp[i][time].split('|')[1],temp[i+1][time].split('|')[1])
+              let maxData = temp[i][time].split('|')
+              maxTemp[index] = maxData[1]
+              accessData[index] = {
+                avatar_file_url : maxData[3],
+                avatar_type : maxData[2],
+                name : maxData[0]
+              }
+            } else {
+              maxTemp[index] = temp[i+1][time].split('|')[1]
             }
-          } else {
-            maxTemp[index] = temp[i+1][time].split('|')[1]
           }
-        }
-        
-      })
+          
+        })
+      } else {
+        ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
+        .forEach(function(time,index) {
+          let maxData = temp[0][time].split('|')
+          labels.push(time.length === 1 ? '0'+time : time)
+          data[index] = access[0][time]
+          maxTemp[index] = maxData[1]
+          accessData[index] = {
+            avatar_file_url : maxData[3],
+            avatar_type : maxData[2],
+            name : maxData[0]
+          }
+        })
+      }
     } else {
       ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
-      .forEach(function(time,index) {
-        let maxData = temp[0][time].split('|')
-        labels.push(time.length === 1 ? '0'+time : time)
-        data[index] = access[0][time]
-        maxTemp[index] = maxData[1]
-        accessData[index] = {
-          avatar_file_url : maxData[3],
-          avatar_type : maxData[2],
-          name : maxData[0]
-        }
-      })
-      
+        .forEach(function(time,index) {
+          labels.push(time.length === 1 ? '0'+time : time)
+        })
     }
 
-    setChartData({
-      labels,
-      data,
-      maxTemp,
-      accessData
-    });
+    if(access.length > 0) {
+      setChartData({
+        labels,
+        data,
+        maxTemp,
+        accessData
+      });
+    } else {
+      setChartData({})
+    }
     
 
     // let labels = [];

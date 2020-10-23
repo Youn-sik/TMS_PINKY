@@ -423,8 +423,8 @@ module.exports = {
                 mkdirp.sync(file_path);
                 fs.writeFileSync(file_path + file_name, buff, 'utf-8')
 
-                const img = new Image();
-                img.src = "data:image/png;base64,"+element.avatar_file
+                // const img = new Image();
+                // img.src = "data:image/png;base64,"+element.avatar_file
 
                 let userName = "unknown";
                 let user_obid = '';

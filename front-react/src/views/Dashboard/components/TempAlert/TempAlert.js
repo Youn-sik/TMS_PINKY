@@ -30,9 +30,9 @@ const useStyles = makeStyles(() => ({
   actions: {
     justifyContent: 'flex-end'
   },
-  // cardStyle: {
-  //   height: '430px'
-  // },
+  cardStyle: {
+    height: '540px'
+  },
   temp: {
     width: '15px'
   },
@@ -67,7 +67,7 @@ const TempAlert = props => {
                 }}>
                 <TableCell>사진</TableCell>
                 <TableCell>온도</TableCell>
-                <TableCell>타입</TableCell>
+                {/* <TableCell>타입</TableCell> */}
                 <TableCell>날짜</TableCell>
               </TableRow>
             </TableHead>
@@ -92,7 +92,7 @@ const TempAlert = props => {
                         ? String(access.avatar_temperature).substring(0, 4)
                         : '비정상 체온'}
                     </TableCell>
-                    <TableCell className={classes.redFont}>
+                    {/* <TableCell className={classes.redFont}>
                       {access.avatar_type === 1
                         ? '사원'
                         : access.avatar_type === 2
@@ -100,7 +100,7 @@ const TempAlert = props => {
                         : access.avatar_type === 3
                         ? '미등록자'
                         : '블랙리스트'}
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell className={classes.redFont}>
                       {access.access_time}
                     </TableCell>

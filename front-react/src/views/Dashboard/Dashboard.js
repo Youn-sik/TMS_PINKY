@@ -236,7 +236,7 @@ const Dashboard = props => {
               temp={temp}
             />
           </Grid>
-          <Grid item lg={6} md={6} xl={6} xs={12}>
+          <Grid item lg={6} md={12} xl={6} xs={12}>
             <Device history={props.history} on={on} off={off} />
           </Grid>
           {/* <Grid item lg={4} md={6} xl={4} xs={12}>

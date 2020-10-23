@@ -198,9 +198,7 @@ const Statistics = props => {
     dates.map((date, index) => {
       result.map(data => {
         if(data.access_date === date) {
-          employee[index] += data.employee
-          black[index] += data.black
-          stranger[index] += data.stranger
+          stranger[index] += data.all_count
         }
       })
     })
