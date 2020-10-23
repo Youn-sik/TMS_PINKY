@@ -13,6 +13,7 @@ mongoose
 		useNewUrlParser: true ,
 		useUnifiedTopology: true,
 		poolSize:8,
+		useFindAndModify: false,
 		socketTimeoutMS: 1000*60*10, //10분
 	})
 	.then(() => console.log('MongoDB connected...'))

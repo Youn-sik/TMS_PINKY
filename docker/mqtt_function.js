@@ -64,6 +64,7 @@ mongoose.connect('mongodb://' + site.mongodb_host + ':27017/' + site.mongodb_dat
     useNewUrlParser: true, 
     useUnifiedTopology: true,
     useCreateIndex: true,
+    useFindAndModify: false,
     poolSize: 8,
     socketTimeoutMS: 1000*60*10, //10분
 });
