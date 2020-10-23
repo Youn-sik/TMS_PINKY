@@ -136,10 +136,10 @@ const AccessesTable = props => {
                       onClick={() => {
                         createSortHandler('stb_name');
                       }}>
-                      단말기명
+                      단말명
                     </TableSortLabel>
                   ) : (
-                    '단말기명'
+                    '단말명'
                   )}
                 </TableCell>
                 <TableCell>

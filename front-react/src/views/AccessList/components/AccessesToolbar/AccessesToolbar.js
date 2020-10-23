@@ -222,7 +222,7 @@ const AccessesToolbar = props => {
             value={searchType}
             onChange={handleSearchType}
           >
-            <MenuItem value={'stb_name'}>단말기명</MenuItem>
+            <MenuItem value={'stb_name'}>단말명</MenuItem>
             <MenuItem value={'stb_location'}>단말기 위치</MenuItem>
             <MenuItem value={'stb_sn'}>시리얼 번호</MenuItem>
           </Select>

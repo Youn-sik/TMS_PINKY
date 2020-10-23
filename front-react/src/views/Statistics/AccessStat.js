@@ -71,20 +71,31 @@ const AccessStat = props => {
             data[index] += i[time]
           })
           
-          for(let i = 0; i<temp.length -1 ; i++){
-            if(temp[i][time].split('|')[1] > temp[i+1][time].split('|')[1]) {
-              // console.log(temp[i][time].split('|')[1],temp[i+1][time].split('|')[1])
-              let maxData = temp[i][time].split('|')
+          if(access.length === 1) {
+            let maxData = temp[0][time].split('|')
               maxTemp[index] = maxData[1]
               accessData[index] = {
                 avatar_file_url : maxData[3],
                 avatar_type : maxData[2],
                 name : maxData[0]
               }
-            } else {
-              maxTemp[index] = temp[i+1][time].split('|')[1]
+          } else {
+            for(let i = 0; i<temp.length -1 ; i++){
+              if(temp[i][time].split('|')[1] > temp[i+1][time].split('|')[1]) {
+                // console.log(temp[i][time].split('|')[1],temp[i+1][time].split('|')[1])
+                let maxData = temp[i][time].split('|')
+                maxTemp[index] = maxData[1]
+                accessData[index] = {
+                  avatar_file_url : maxData[3],
+                  avatar_type : maxData[2],
+                  name : maxData[0]
+                }
+              } else {
+                maxTemp[index] = temp[i+1][time].split('|')[1]
+              }
             }
           }
+          
           
         })
       } else {
