@@ -49,6 +49,7 @@ const AccessList = props => {
   const [sort, setSort] = useState('desc');
   const [rowsPerPage,setRowsPerPage] = useState('7');
   const [selected, setSelected] = useState([]);
+  const [accessCount,setAccessCount] = useState(0);
 
   const handleSelectAllClick = event => {
     if (event.target.checked) {
@@ -310,6 +311,64 @@ const AccessList = props => {
     setSort('desc');
   }
 
+  async function excelExport() {
+    let headerType = activeType
+    let firstDate = '';
+    let lastDate = '';
+    if(date[0] > date[1]) {
+      firstDate = date[1]
+      lastDate = date[0]
+    } else {
+      firstDate = date[0]
+      lastDate = date[1]
+    }
+
+    if(sort === 'desc') 
+      headerType = '-'+headerType;
+
+    let _pages = await axios.get(base_url + 
+      `/access?searchType=${searchType}&search=${search}&type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+      cancelToken: source.token
+    });
+
+    let count = 0 
+    _pages.data.map(i => count += parseInt(i.count));
+
+    let _temp = parseInt(count/5000);
+    if(count%5000)
+      _temp++;
+
+    let accesses = [];
+    for(let i = 1; i <= _temp; i++) {
+      let result = await axios.get(base_url + `/access?searchType=${searchType}&search=${search}&date=${firstDate}/${lastDate}&avatar_temp=${type}&page=${page}&headerType=${headerType}&rowsPerPage=${5000}`, {
+        cancelToken: source.tfirstDate
+      });
+      accesses = accesses.concat(result.data)
+    }
+    
+    const wb = new ExcelJS.Workbook()
+
+    const ws = wb.addWorksheet("Info", {properties:{ defaultRowHeight: 50 }})
+    
+    ws.addRow(['단말명','시리얼 번호','단말 위치','거리','온도','출입 시간'])
+    accesses.map((access,index) => {
+      let temp = []
+      temp.push(access['stb_name'])
+      temp.push(access['stb_sn'])
+      temp.push(access['stb_locatoin'])
+      temp.push(String(access['avatar_distance']).substring(0,3)+"M");
+      temp.push(access['avatar_temperature'].length < 4 ? access['avatar_temperature'] : access['avatar_temperature'].substring(0,4));
+      temp.push(access['access_time']);
+
+      ws.addRow(temp)
+    })
+
+    const buf = await wb.csv.writeBuffer()
+
+    saveAs(new Blob([buf]), 'access_list '+moment().format('YYYY-MM-DD_HH-mm-ss')+'.csv')
+    
+  }
+
   async function movePage(page) {
     let headerType = activeType
     setLoading(true);
@@ -376,7 +435,7 @@ const AccessList = props => {
     <div className={classes.root}>
       <Card className={(classes.root, classes.cardcontent)}>
         <AccessesToolbar
-          clickExport={clickExport}
+          clickExport={excelExport}
           search={search}
           deleteAllAccesses={deleteAllAccesses}
           deleteAccesses={deleteAccesses}

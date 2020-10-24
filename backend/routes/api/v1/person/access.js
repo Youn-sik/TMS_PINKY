@@ -211,6 +211,9 @@ router.get('/',async function(req, res) {
             let tempType = req.query.tempType;
             let avatar_temperature = req.query.avatar_temperature;
             let selected_temp = req.query.avatar_temp;
+            let stb_sn = new RegExp('');
+            let stb_name = new RegExp('');
+            let stb_location = new RegExp('');
 
             if(selected_temp !== ' ') {
                 selected_temp_chk = true
@@ -219,8 +222,13 @@ router.get('/',async function(req, res) {
             else
                 selected_temp = new RegExp("")
 
-            if(req.query.search) 
-                search = req.query.search;
+            if(req.query.searchType === 'stb_name') {
+                stb_name = new RegExp(search)
+            } else if(req.query.searchType === 'stb_location') {
+                stb_location = new RegExp(search)
+            } else if(req.query.searchType === 'stb_sn') {
+                stb_sn = new RegExp(search)
+            }
             
             if(selected_temp_chk && avatar_temperature && tempType) { //온도,타입 모두 설정한 경우
                 if(tempType === '2') {
@@ -228,7 +236,9 @@ router.get('/',async function(req, res) {
                         {
                             $match: {
                                 access_time : { $gte:date[0],$lte: date[1] },
-                                stb_sn : { $regex:search },
+                                stb_sn : { $regex:stb_sn },
+                                stb_location : { $regex:stb_location },
+                                stb_name : { $regex:stb_name },
                                 avatar_temperature : { $gte: avatar_temperature },
                                 avatar_temperature : { $regex:selected_temp },
                             }
@@ -242,7 +252,9 @@ router.get('/',async function(req, res) {
                         {
                             $match: {
                                 access_time : { $gte:date[0],$lte: date[1]},
-                                stb_sn : { $regex:search },
+                                stb_sn : { $regex:stb_sn },
+                                stb_location : { $regex:stb_location },
+                                stb_name : { $regex:stb_name },
                                 avatar_temperature : { $lt: avatar_temperature },
                                 avatar_temperature : { $regex:selected_temp },
                             }
@@ -257,7 +269,9 @@ router.get('/',async function(req, res) {
                     {
                         $match: {
                             access_time : { $gte:date[0],$lte: date[1] },
-                            stb_sn : { $regex:search },
+                            stb_sn : { $regex:stb_sn },
+                            stb_location : { $regex:stb_location },
+                            stb_name : { $regex:stb_name },
                             avatar_temperature : { $regex:selected_temp },
                         }
                     },
@@ -271,7 +285,9 @@ router.get('/',async function(req, res) {
                         {
                             $match: {
                                 access_time : { $gte:date[0],$lte: date[1] },
-                                stb_sn : { $regex:search },
+                                stb_sn : { $regex:stb_sn },
+                                stb_location : { $regex:stb_location },
+                                stb_name : { $regex:stb_name },
                                 avatar_temperature : { $gte: avatar_temperature }
                             }
                         },
@@ -284,7 +300,9 @@ router.get('/',async function(req, res) {
                         {
                             $match: {
                                 access_time : { $gte:date[0],$lte: date[1] },
-                                stb_sn : { $regex:search },
+                                stb_sn : { $regex:stb_sn },
+                                stb_location : { $regex:stb_location },
+                                stb_name : { $regex:stb_name },
                                 avatar_temperature : { $lt: avatar_temperature }
                             }
                         },
@@ -298,7 +316,9 @@ router.get('/',async function(req, res) {
                     {
                         $match: {
                             access_time : { $gte:date[0],$lte: date[1] },
-                            stb_sn : { $regex:search },
+                            stb_sn : { $regex:stb_sn },
+                            stb_location : { $regex:stb_location },
+                            stb_name : { $regex:stb_name },
                         }
                     },
                     {
@@ -353,7 +373,6 @@ router.get('/',async function(req, res) {
                 if(tempType === '2') {
                     get_data = await api_v1_person_access.find()
                     .sort(headerType)
-                    
                     .gte('avatar_temperature', parseFloat(avatar_temperature))
                     .gte("access_time",date[0])
                     .regex("avatar_temperature",selected_temp)
