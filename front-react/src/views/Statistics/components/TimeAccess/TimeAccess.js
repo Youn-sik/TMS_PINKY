@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
   },
   chartContainer: {
     position: 'relative',
-    // height: '300px',
+    height: '600px',
     width: '100%'
   },
   stats: {
@@ -87,7 +87,11 @@ const TimeAccess = props => {
     scaleStartValue : 0 ,
     responsive: true,
     animation: false,
+    cutoutPercentage: 80,
+    layout: { padding: 0 },
+    maintainAspectRatio: false,
     onHover : function(e) {
+      console.log(e.relatedTarget)
       if(e.type === 'mouseout')
         setPositionAndData({
           accessCount: 0,

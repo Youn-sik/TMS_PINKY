@@ -89,7 +89,7 @@ const TempAlert = props => {
                         src={access.avatar_file_url}
                       />
                     </TableCell>
-                    <TableCell className={classes.redFont}>{access.location}</TableCell>
+                    <TableCell className={classes.redFont}>{access.stb_location}</TableCell>
                     <TableCell className={classes.redFont}>{access.stb_sn}</TableCell>
                     <TableCell className={classes.redFont}>{access.stb_name}</TableCell>
                     <TableCell className={classes.redFont}>

@@ -5,7 +5,9 @@ const operation = require('../../../../models/api/v1/person/operation')
 
 router.get('/',async function(req, res) {
     try {
-        let get_data = await operation.find().populate("id",'user_id');
+        let get_data = await operation.find()
+        .where("id").ne(null)
+        .populate("id",'user_id');
         res.send(get_data)
     } catch (err) {
         throw boom.boomify(err)

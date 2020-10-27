@@ -135,7 +135,7 @@ const Device = props => {
           )}
           <div className={classes.stats}>
             {devices.map(device => (
-              <div className={classes.device} key={device.title}>
+              <div className={classes.device} style={{cursor: 'pointer'}} onClick={() => {props.history.push('device/list');}} key={device.title}>
                 <span className={classes.deviceIcon}>{device.icon}</span>
                 <Typography variant="body1">{device.title}</Typography>
                 <Typography style={{ color: device.color }} variant="h2">
