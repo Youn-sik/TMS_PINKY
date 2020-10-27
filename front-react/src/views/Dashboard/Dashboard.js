@@ -193,7 +193,9 @@ const Dashboard = props => {
   useEffect(() => {
     client.on('message', function(topic, message) {
       if (topic.indexOf('/access/realtime/result/') > -1) {
-        _setRealtime(JSON.parse(message.toString()).values);
+        let result = JSON.parse(message.toString()).values
+        if(result[0].authority === props.authority)
+          _setRealtime(result);
       }
     });
   }, []);
