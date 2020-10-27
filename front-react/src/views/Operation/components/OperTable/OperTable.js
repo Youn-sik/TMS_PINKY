@@ -88,20 +88,6 @@ const OperTable = props => {
                 <TableCell>
                   {oper.length > 0 ? (
                     <TableSortLabel
-                      active={activeType === 'date'}
-                      direction={sort}
-                      onClick={() => {
-                        createSortHandler('date');
-                      }}>
-                      날짜
-                    </TableSortLabel>
-                  ) : (
-                    '날짜'
-                  )}
-                </TableCell>
-                <TableCell>
-                  {oper.length > 0 ? (
-                    <TableSortLabel
                       active={activeType === 'action'}
                       direction={sort}
                       onClick={() => {
@@ -127,6 +113,20 @@ const OperTable = props => {
                     '상세'
                   )}
                 </TableCell>
+                <TableCell>
+                  {oper.length > 0 ? (
+                    <TableSortLabel
+                      active={activeType === 'date'}
+                      direction={sort}
+                      onClick={() => {
+                        createSortHandler('date');
+                      }}>
+                      날짜
+                    </TableSortLabel>
+                  ) : (
+                    '날짜'
+                  )}
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -142,9 +142,9 @@ const OperTable = props => {
                       <TableCell>
                         {oper.id === null ? '탈퇴한 회원' : oper.id.user_id}
                       </TableCell>
-                      <TableCell>{oper.date}</TableCell>
                       <TableCell>{oper.action}</TableCell>
                       <TableCell>{oper.description}</TableCell>
+                      <TableCell>{oper.date}</TableCell>
                     </TableRow>
                   );
                 })}

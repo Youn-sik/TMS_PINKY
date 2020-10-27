@@ -50,6 +50,7 @@ const AccessList = props => {
   const [rowsPerPage,setRowsPerPage] = useState('7');
   const [selected, setSelected] = useState([]);
   const [accessCount,setAccessCount] = useState(0);
+  const [excelLoading,setExcelLoading] = useState(false);
 
   const handleSelectAllClick = event => {
     if (event.target.checked) {
@@ -61,7 +62,7 @@ const AccessList = props => {
   };
 
   const deleteAccesses = async () => {
-    if(window.confirm('삭제한 내용은 되돌릴수 없습니다\n 정말 삭제하시겠습니까?')) {
+    if(window.confirm('삭제한 내용은 되돌릴수 없습니다\n정말 삭제하시겠습니까?')) {
       await axios.delete(base_url +'/access', {
         data: {
           accesses_data : selected
@@ -234,7 +235,7 @@ const AccessList = props => {
   };
 
   const deleteAllAccesses = async () => {
-    if(window.confirm('정말 삭제 하시겠습니까?')) {
+    if(window.confirm('삭제한 내용은 되돌릴수 없습니다\n정말 삭제하시겠습니까?')) {
       // let result = await axios.get(base_url + 
       let firstDate = '';
       let lastDate = '';
@@ -458,6 +459,7 @@ const AccessList = props => {
         <AccessesToolbar
           clickExport={excelExport}
           search={search}
+          selected={selected}
           deleteAllAccesses={deleteAllAccesses}
           deleteAccesses={deleteAccesses}
           loading={loading}

@@ -5,7 +5,16 @@ const operation = require('../../../../models/api/v1/person/operation')
 
 router.get('/',async function(req, res) {
     try {
-        let get_data = await operation.find()
+        let search = req.query.search
+        let date = req.query.date.split('/');
+        let get_data
+
+        // if(search) {
+
+        // }
+        get_data = await operation.find()
+        .gte("date",date[0])
+        .lte("date",date[1])
         .where("id").ne(null)
         .populate("id",'user_id');
         res.send(get_data)

@@ -226,7 +226,8 @@ const AccessesToolbar = props => {
             <MenuItem value="100">100</MenuItem>
           </Select>
           </FormControl>
-          <Button 
+          <Button
+          disabled={props.selected.length === 0 ? true : false}
           style={{marginLeft:'10px' }} 
           variant="contained" color="secondary" onClick={deleteAccesses}>
             삭제
@@ -238,6 +239,11 @@ const AccessesToolbar = props => {
           </Button> */}
           <br/>
         <div style={{ float:'right',width: '50%' }}>
+          <Button 
+            style={{float: 'right',marginLeft: '10px'}} 
+            variant="contained" color="secondary" onClick={resetSearch}>
+              검색 초기화
+          </Button>
           <Button 
           style={{float: 'right' }} 
           variant="contained" color="primary" onClick={clickExport}>
@@ -271,11 +277,6 @@ const AccessesToolbar = props => {
             <MenuItem value={'stb_location'}>단말 위치</MenuItem>
             <MenuItem value={'stb_sn'}>시리얼 번호</MenuItem>
           </Select>
-          <Button 
-          style={{float: 'right',marginRight: '20px'}} 
-          variant="contained" color="primary" onClick={resetSearch}>
-            검색 초기화
-          </Button>
         </div>
       </div>
     </div>

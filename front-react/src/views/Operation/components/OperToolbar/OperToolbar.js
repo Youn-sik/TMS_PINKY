@@ -102,7 +102,7 @@ const OperToolbar = props => {
             />
           </IntlProvider>
         </Grid>
-        <Grid container justify="flex-end">
+        {/* <Grid container justify="flex-end">
           <TextField
             className={classes.search}
             id="input-with-icon-textfield"
@@ -118,7 +118,7 @@ const OperToolbar = props => {
               )
             }}
           />
-        </Grid>
+        </Grid> */}
       </div>
     </div>
   );
