@@ -127,7 +127,7 @@ const AccessesTable = props => {
                     onChange={handleSelectAllClick}
                   />
                 </TableCell>
-                <TableCell>사진</TableCell>
+                <TableCell style={{paddingLeft:"38px"}}>사진</TableCell>
                 <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel
@@ -232,9 +232,10 @@ const AccessesTable = props => {
                               checked={isItemSelected}
                             />
                           </TableCell>
-                          <TableCell>
+                          <TableCell >
                             <div className={classes.nameContainer}>
                               <img
+                                style={{cursor: 'pointer'}} onClick={()=>{clickImage(access.avatar_file_url)}}
                                 alt="screenShot"
                                 height="90px"
                                 width="70px"
@@ -242,13 +243,13 @@ const AccessesTable = props => {
                                 src={access.avatar_file_url}></img>
                             </div>
                           </TableCell>
-                          <TableCell>
+                          <TableCell className={classes.redFont}>
                             {access.stb_location}
                           </TableCell>
-                          <TableCell>
+                          <TableCell className={classes.redFont}>
                             {access.stb_name}
                           </TableCell>
-                          <TableCell>
+                          <TableCell className={classes.redFont}>
                             {access.stb_sn}
                           </TableCell>
                           <TableCell className={classes.redFont}>
@@ -298,9 +299,10 @@ const AccessesTable = props => {
                               checked={isItemSelected}
                             />
                           </TableCell>
-                          <TableCell>
-                            <div className={classes.nameContainer} style={{cursor: 'pointer'}} onClick={()=>{clickImage(access.avatar_file_url)}}>
+                          <TableCell >
+                            <div className={classes.nameContainer}>
                               <img
+                                style={{cursor: 'pointer'}} onClick={()=>{clickImage(access.avatar_file_url)}}
                                 alt="screenShot"
                                 height="90px"
                                 width="70px"
