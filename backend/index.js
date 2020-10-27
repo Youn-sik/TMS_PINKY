@@ -162,12 +162,40 @@ app.put('/schedule',(req,res) => {
 let term = 7; //기본 보관 날짜 7일
 let s = schedule.scheduleJob('0 0 0 * * *', async function(){//스케쥴 설정
     let dateTime = moment().subtract(term-1,'days').format('YYYY-MM-DD') + " 00:00:00"//moment 보관 기간 만큼을 뺀 날짜
-    let result = await Access.find().lt('access_time',dateTime)
-    if(result.length > 0){
-        let images = result.map(access => access.avatar_file_url);
-        let ip = images[0].split(":3000")[0]
+    let accesses = []
+    let count = await Access.aggregate([
+        {
+            $match: {
+                access_time : {$lt:dateTime}
+            }
+        },
+        {
+            $count: 'count'
+        },
+    ]).allowDiskUse(true);
+
+    let pages = parseInt(count.count/5000);
+
+    if(accessCount%5000)
+        pages++;
+
+
+    for(let i = 0; i < pages; i++) {
+        let result = await Access.find()
+        .lt('access_time',dateTime)
+        .skio(page*5000)
+        limit(5000)
+
+        accesses = accesses.concat(result.data);
+    }
+
+
+
+    if(accesses.length > 0){
+        let images = accesses.map(access => access.avatar_file_url);
         images.map(image => {
-            fs.unlink(image.avatar_file_url.replace(ip+':3000/','/var/www/backend/'),() => {})
+            let ip = image.split(":3000")[0]
+            fs.unlink(image.replace(ip+':3000/','/var/www/backend/'),() => {})
         })
         await Access.updateMany(
             {access_time: {$lt:dateTime}},
