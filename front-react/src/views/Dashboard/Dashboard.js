@@ -247,9 +247,9 @@ const Dashboard = props => {
               late={late}
             />
           </Grid> */}
-          <Grid item lg={12} md={12} xl={12} xs={12}>
+          {/* <Grid item lg={12} md={12} xl={12} xs={12}>
             <DeviceErrors history={props.history} errors={errors} />
-          </Grid>
+          </Grid> */}
         </Grid>
       )}
     </div>

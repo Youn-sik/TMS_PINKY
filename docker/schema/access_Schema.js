@@ -13,6 +13,7 @@ const accessSchema = new mongoose.Schema({
     user_obid : { type:ObjectId, ref: 'User' },
     avatar_type : { type : Number },
     access_time : { type: String },
+    authority : { type: String },
     stb_sn : { type:String},
     stb_name : { type:String},
     stb_location : { type:String},

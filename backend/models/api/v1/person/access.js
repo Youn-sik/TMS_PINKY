@@ -14,6 +14,7 @@ const api_v1_person_access_Schema = new mongoose.Schema({
     avatar_distance : { type: Number},
     user_obid : { type:ObjectId, ref: 'User' },
     avatar_type : { type : Number },
+    authority : { type: String },
     stb_sn : { type:String},
     stb_name : { type:String},
     stb_location : { type:String},

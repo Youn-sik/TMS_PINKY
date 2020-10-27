@@ -82,22 +82,22 @@ const Sidebar = props => {
     // },
     {
       title: '단말 관리',
-      // href: '/device',
       href: '/device/list',
-      children: [
-        {
-          title: '단말 목록',
-          href: '/device/list'
-        },
-        {
-          title: '단말 에러 로그',
-          href: '/device/error'
-        },
+      href: '/device/list',
+      // children: [
+      //   {
+      //     title: '단말 목록',
+      //     href: '/device/list'
+      //   },
+        // {
+        //   title: '단말 에러 로그',
+        //   href: '/device/error'
+        // },
         // {
         //   title: '단말기 스크린샷',
         //   href: '/device/screen'
         // }
-      ],
+      // ],
       icon: <DnsIcon />
     },
     {

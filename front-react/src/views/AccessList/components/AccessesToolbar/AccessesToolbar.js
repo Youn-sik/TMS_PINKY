@@ -231,13 +231,13 @@ const AccessesToolbar = props => {
           variant="contained" color="secondary" onClick={deleteAccesses}>
             삭제
           </Button>
-          <Button 
+          {/* <Button 
           style={{marginLeft:'10px' }} 
           variant="contained" color="secondary" onClick={deleteAllAccesses}>
             전체 삭제
-          </Button>
+          </Button> */}
           <br/>
-        <div style={{ float:'right',width: '45%' }}>
+        <div style={{ float:'right',width: '50%' }}>
           <Button 
           style={{float: 'right' }} 
           variant="contained" color="primary" onClick={clickExport}>

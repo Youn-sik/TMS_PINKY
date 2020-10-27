@@ -93,14 +93,14 @@ const Routes = props => {
         layout={MainLayout}
         path="/device/screen"
       /> */}
-      <RouteWithLayout
+      {/* <RouteWithLayout
         component={DeviceErrorView}
         exact
         user_id={props.user_id}
         authority={props.authority}
         layout={MainLayout}
         path="/device/error"
-      />
+      /> */}
       <RouteWithLayout
         component={AddDeviceView}
         exact

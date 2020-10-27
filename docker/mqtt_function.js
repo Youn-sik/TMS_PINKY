@@ -431,6 +431,7 @@ module.exports = {
                 let user_obid = '';
 
                 insert_data = {
+                    authority : camera.authority,
                     avatar_file : 'avatar_file',
                     avatar_file_checksum : element.avatar_file_checksum,
                     avatar_type : element.avatar_type,
