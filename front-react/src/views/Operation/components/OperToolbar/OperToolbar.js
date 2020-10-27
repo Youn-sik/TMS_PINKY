@@ -64,6 +64,23 @@ const OperToolbar = props => {
     ...rest
   } = props;
 
+  const locale = {
+    sunday: '일',
+    monday: '월',
+    tuesday: '화',
+    wednesday: '수',
+    thursday: '목',
+    friday: '금',
+    saturday: '토',
+    ok: '적용',
+    today: '오늘',
+    yesterday: '어제',
+    hours: '시간',
+    minutes: '분',
+    seconds: '초',
+    last7Days: '일주일전'
+  }
+
   const classes = useStyles();
 
   useEffect(() => {}, []);
@@ -74,6 +91,7 @@ const OperToolbar = props => {
         <Grid container justify="flex-start">
           <IntlProvider locale={kor}>
             <DateRangePicker
+              locale={locale}
               loading={loading}
               cleanable={false}
               showOneCalendar

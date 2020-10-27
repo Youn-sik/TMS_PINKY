@@ -46,6 +46,23 @@ const AccessStat = props => {
   const [accesses, setAccesses] = useState([]);
   const [chartData, setChartData] = useState({});
 
+  const locale = {
+    sunday: '일',
+    monday: '월',
+    tuesday: '화',
+    wednesday: '수',
+    thursday: '목',
+    friday: '금',
+    saturday: '토',
+    ok: '적용',
+    today: '오늘',
+    yesterday: '어제',
+    hours: '시간',
+    minutes: '분',
+    seconds: '초',
+    last7Days: '일주일전'
+  }
+
   async function getAccesses() {
     setLoading(true);
     let result = await axios.get(base_url + `/access?type=deviceGroupAccesses&device=${device}&date=${date[0]}/${date[1]}`);
@@ -260,6 +277,7 @@ const AccessStat = props => {
           <Grid item lg={12} md={12} xl={12} xs={12}>
             <IntlProvider locale={kor}>
               <DateRangePicker
+                locale={locale}
                 cleanable={false}
                 oneTap
                 showOneCalendar

@@ -190,7 +190,6 @@ router.get('/',async function(req, res) {
             get_data = await api_v1_person_access.find()
                 .where('avatar_temperature')
                 .sort('-access_time')
-                .select('access_time avatar_file_url avatar_temperature avatar_type name')
                 .limit(5)
         } else if(req.query.type === 'attendance') {
             get_data = await api_v1_person_access.aggregate([
@@ -206,7 +205,7 @@ router.get('/',async function(req, res) {
             ]).allowDiskUse(true);
         } else if(req.query.type === 'dateCount') {
             let date = req.query.date.split('/');
-            let search = '';
+            let search = req.query.search;
             let selected_temp_chk = false;
             let tempType = req.query.tempType;
             let avatar_temperature = req.query.avatar_temperature;

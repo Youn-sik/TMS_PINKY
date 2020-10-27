@@ -131,6 +131,20 @@ const AccessesTable = props => {
                 <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel
+                      active={activeType === 'stb_location'}
+                      direction={sort}
+                      onClick={() => {
+                        createSortHandler('stb_location');
+                      }}>
+                      단말 위치
+                    </TableSortLabel>
+                  ) : (
+                    '단말 위치'
+                  )}
+                </TableCell>
+                <TableCell>
+                  {accesses.length > 0 ? (
+                    <TableSortLabel
                       active={activeType === 'stb_name'}
                       direction={sort}
                       onClick={() => {
@@ -154,20 +168,6 @@ const AccessesTable = props => {
                     </TableSortLabel>
                   ) : (
                     '시리얼 번호'
-                  )}
-                </TableCell>
-                <TableCell>
-                  {accesses.length > 0 ? (
-                    <TableSortLabel
-                      active={activeType === 'stb_location'}
-                      direction={sort}
-                      onClick={() => {
-                        createSortHandler('stb_location');
-                      }}>
-                      단말 위치
-                    </TableSortLabel>
-                  ) : (
-                    '단말 위치'
                   )}
                 </TableCell>
                 <TableCell>
@@ -243,13 +243,13 @@ const AccessesTable = props => {
                             </div>
                           </TableCell>
                           <TableCell>
+                            {access.stb_location}
+                          </TableCell>
+                          <TableCell>
                             {access.stb_name}
                           </TableCell>
                           <TableCell>
                             {access.stb_sn}
-                          </TableCell>
-                          <TableCell>
-                            {access.stb_location}
                           </TableCell>
                           <TableCell className={classes.redFont}>
                             {access.avatar_distance
@@ -309,13 +309,13 @@ const AccessesTable = props => {
                             </div>
                           </TableCell>
                           <TableCell>
+                            {access.stb_location}
+                          </TableCell>
+                          <TableCell>
                             {access.stb_name}
                           </TableCell>
                           <TableCell>
                             {access.stb_sn}
-                          </TableCell>
-                          <TableCell>
-                            {access.stb_location}
                           </TableCell>
                           <TableCell>
                             {access.avatar_distance
