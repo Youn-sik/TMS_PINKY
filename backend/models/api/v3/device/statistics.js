@@ -34,5 +34,7 @@ const statisticsSchema = new mongoose.Schema({
 });
 
 mongoose.set('useCreateIndex', true)
-statisticsSchema.index({ camera_obid: 1, reference_date: 1 });
+statisticsSchema.index({ camera_obid: 1 });
+statisticsSchema.index({ access_date: 1 });
+statisticsSchema.index({ camera_obid: 1, access_date: 1 });
 module.exports = mongoose.model('statistics', statisticsSchema)

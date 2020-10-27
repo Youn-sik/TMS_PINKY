@@ -213,6 +213,7 @@ router.get('/',async function(req, res) {
             let stb_sn = new RegExp('');
             let stb_name = new RegExp('');
             let stb_location = new RegExp('');
+            let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$");
 
             if(selected_temp !== ' ') {
                 selected_temp_chk = true
@@ -240,6 +241,7 @@ router.get('/',async function(req, res) {
                                 stb_name : { $regex:stb_name },
                                 avatar_temperature : { $gte: avatar_temperature },
                                 avatar_temperature : { $regex:selected_temp },
+                                authority : {$regex:auth}
                             }
                         },
                         {
@@ -256,6 +258,7 @@ router.get('/',async function(req, res) {
                                 stb_name : { $regex:stb_name },
                                 avatar_temperature : { $lt: avatar_temperature },
                                 avatar_temperature : { $regex:selected_temp },
+                                authority : {$regex:auth}
                             }
                         },
                         {
@@ -272,6 +275,7 @@ router.get('/',async function(req, res) {
                             stb_location : { $regex:stb_location },
                             stb_name : { $regex:stb_name },
                             avatar_temperature : { $regex:selected_temp },
+                            authority : {$regex:auth}
                         }
                     },
                     {
@@ -287,7 +291,8 @@ router.get('/',async function(req, res) {
                                 stb_sn : { $regex:stb_sn },
                                 stb_location : { $regex:stb_location },
                                 stb_name : { $regex:stb_name },
-                                avatar_temperature : { $gte: avatar_temperature }
+                                avatar_temperature : { $gte: avatar_temperature },
+                                authority : {$regex:auth}
                             }
                         },
                         {
@@ -302,7 +307,8 @@ router.get('/',async function(req, res) {
                                 stb_sn : { $regex:stb_sn },
                                 stb_location : { $regex:stb_location },
                                 stb_name : { $regex:stb_name },
-                                avatar_temperature : { $lt: avatar_temperature }
+                                avatar_temperature : { $lt: avatar_temperature },
+                                authority : {$regex:auth}
                             }
                         },
                         {
@@ -318,6 +324,7 @@ router.get('/',async function(req, res) {
                             stb_sn : { $regex:stb_sn },
                             stb_location : { $regex:stb_location },
                             stb_name : { $regex:stb_name },
+                            authority : {$regex:auth}
                         }
                     },
                     {
@@ -375,6 +382,7 @@ router.get('/',async function(req, res) {
                     .gte('avatar_temperature', parseFloat(avatar_temperature))
                     .gte("access_time",date[0])
                     .regex("avatar_temperature",selected_temp)
+                    .regex("authority",auth)
                     .lte("access_time",date[1])
                     .regex("stb_sn",stb_sn)
                     .regex("stb_name",stb_name)
@@ -386,6 +394,7 @@ router.get('/',async function(req, res) {
                     .sort(headerType)
                     .lt('avatar_temperature', parseFloat(avatar_temperature))
                     .gte("access_time",date[0])
+                    .regex("authority",auth)
                     .regex("avatar_temperature",selected_temp)
                     .lte("access_time",date[1])
                     .regex("stb_sn",stb_sn)
@@ -398,6 +407,7 @@ router.get('/',async function(req, res) {
                 get_data = await api_v1_person_access.find()
                 .sort(headerType)
                 .gte("access_time",date[0])
+                .regex("authority",auth)
                 .lte("access_time",date[1])
                 .regex("avatar_temperature",selected_temp)
                 .regex("stb_sn",stb_sn)
@@ -411,6 +421,7 @@ router.get('/',async function(req, res) {
                     .sort(headerType)
                     .gte('avatar_temperature', parseFloat(avatar_temperature))
                     .gte("access_time",date[0])
+                    .regex("authority",auth)
                     .lte("access_time",date[1])
                     .regex("stb_sn",stb_sn)
                     .regex("stb_name",stb_name)
@@ -422,6 +433,7 @@ router.get('/',async function(req, res) {
                     .sort(headerType)
                     .lt('avatar_temperature', parseFloat(avatar_temperature))
                     .gte("access_time",date[0])
+                    .regex("authority",auth)
                     .lte("access_time",date[1])
                     .regex("stb_sn",stb_sn)
                     .regex("stb_name",stb_name)
@@ -433,6 +445,7 @@ router.get('/',async function(req, res) {
                 get_data = await api_v1_person_access.find()
                 .sort(headerType)
                 .gte("access_time",date[0])
+                .regex("authority",auth)
                 .lte("access_time",date[1])
                 .regex("stb_sn",stb_sn)
                 .regex("stb_name",stb_name)

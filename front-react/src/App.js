@@ -39,6 +39,7 @@ export default class App extends React.Component {
     if (browserHistory.location.pathname !== '/sign-in') {
       //URL 직접 변경 감지
       var value = document.cookie.match('(^|;) ?token=([^;]*)(;|$)');
+      console.log(value[2]);
       if (Array.isArray(value)) {
         await axios.get(base_url + '/auth?token=' + value[2]).then(res => {
           if (res.data.auth === false) {
@@ -72,6 +73,7 @@ export default class App extends React.Component {
       //클릭을 통한 페이지 이동 감지
       if (location.pathname !== '/sign-in') {
         var value = document.cookie.match('(^|;) ?token=([^;]*)(;|$)');
+        console.log(value[2]);
         if (Array.isArray(value)) {
           axios.get(base_url + '/auth?token=' + value[2]).then(res => {
             if (res.data.auth === false) {

@@ -13,8 +13,8 @@ router.get('/',async function(req, res) {
 
         // }
         get_data = await operation.find()
-        .gte("date",date[0])
-        .lte("date",date[1])
+        .gte("date",date[0]+" 00:00:00")
+        .lte("date",date[1]+" 23:59:59")
         .where("id").ne(null)
         .populate("id",'user_id');
         res.send(get_data)
