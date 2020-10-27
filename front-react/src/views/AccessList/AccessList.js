@@ -3,6 +3,9 @@ import { makeStyles } from '@material-ui/styles';
 import axios from 'axios';
 import { AccessesToolbar, AccessesTable } from './components';
 import Card from '@material-ui/core/Card';
+import Dialog from '@material-ui/core/Dialog';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import DialogContent from '@material-ui/core/DialogContent';
 import moment from 'moment';
 import 'moment/locale/ko';
 import {base_url} from 'server.json';
@@ -329,6 +332,7 @@ const AccessList = props => {
   }
 
   async function excelExport() {
+    setExcelLoading(true);
     let headerType = activeType
     let firstDate = '';
     let lastDate = '';
@@ -386,7 +390,7 @@ const AccessList = props => {
     const buf = await wb.csv.writeBuffer()
 
     saveAs(new Blob(["\uFEFF"+buf]), 'access_list '+moment().format('YYYY-MM-DD_HH-mm-ss')+'.csv',{type: 'text/plain;charset=utf-8'})
-    
+    setExcelLoading(false);
   }
 
   async function movePage(page) {
@@ -456,6 +460,12 @@ const AccessList = props => {
   return (
     <div className={classes.root}>
       <Card className={(classes.root, classes.cardcontent)}>
+        <Dialog open={excelLoading}>
+          <DialogContent>
+            <LinearProgress style={{marginTop:"20px"}}/>
+            <p style={{width:"30vw",textAlign: 'right',padding:"10px 25px 10px 10px"}}>출입 목록을 불러오는 중입니다...</p>
+          </DialogContent>
+        </Dialog>
         <AccessesToolbar
           clickExport={excelExport}
           search={search}
