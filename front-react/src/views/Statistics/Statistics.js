@@ -76,8 +76,6 @@ const Statistics = props => {
   };
 
   const clickAccessExport = async () => {
-
-    if(peopleData.stranger > 0) {
       let dates = [
         '',
         date[0],
@@ -103,9 +101,6 @@ const Statistics = props => {
       const buf = await wb.csv.writeBuffer()
 
       saveAs(new Blob([buf]), 'statistics '+moment().format('YYYY-MM-DD_HH-mm-ss')+'.csv')
-    } else {
-      alert("데이터가 없습니다")
-    }
   }
 
   const clickErrorExport = async () => {
@@ -364,7 +359,7 @@ const Statistics = props => {
               ]}
             />
           </Grid>
-          <Grid item lg={12} md={12} xl={12} xs={12}>
+          {/* <Grid item lg={12} md={12} xl={12} xs={12}>
             <DeviceError
               chartData={errorData}
               clickErrorExport={clickErrorExport}
@@ -378,7 +373,7 @@ const Statistics = props => {
                 date[1]
               ]}
             />
-          </Grid>
+          </Grid> */}
         </Grid>
       )}
     </div>

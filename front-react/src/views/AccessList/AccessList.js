@@ -30,7 +30,7 @@ const AccessList = props => {
   const { tempLimit, tempType } = props;
   const [accesses, setAccesses] = useState([]);
   const [page,setPage] = useState(1);//현재 페이지
-  const [pages,setPages] = useState(0);//페이지 갯수
+  const [pages,setPages] = useState(0);//출입자 갯수
   const [searchType,setSearchType] = useState('stb_name')
   const [date, setDate] = useState([
     moment()
@@ -189,6 +189,8 @@ const AccessList = props => {
     let count = 0 
       _pages.data.map(i => count += parseInt(i.count));
 
+    setAccessCount(count)
+
     if(_pages.data.length !== 0){
       let temp = parseInt(count/rowsPerPage);
 
@@ -232,21 +234,30 @@ const AccessList = props => {
   };
 
   const deleteAllAccesses = async () => {
-    // let result = await axios.get(base_url + 
-    let firstDate = '';
-    let lastDate = '';
-    if(date[0] > date[1]) {
-      firstDate = date[1]
-      lastDate = date[0]
-    } else {
-      firstDate = date[0]
-      lastDate = date[1]
-    }
+    if(window.confirm('정말 삭제 하시겠습니까?')) {
+      // let result = await axios.get(base_url + 
+      let firstDate = '';
+      let lastDate = '';
+      if(date[0] > date[1]) {
+        firstDate = date[1]
+        lastDate = date[0]
+      } else {
+        firstDate = date[0]
+        lastDate = date[1]
+      }
 
-    let result = await axios.delete(base_url + 
-      `/access?searchType=${searchType}&type=all&rowsPerPage=${rowsPerPage}&date=${firstDate}/${lastDate}&page=${page}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
-      cancelToken: source.token
-    });
+      let _pages = parseInt(accessCount/5000);
+
+      if(accessCount%5000)
+        _pages++;
+
+      let result = await axios.delete(base_url + 
+        `/access?searchType=${searchType}&pages=${_pages}&type=all&rowsPerPage=${rowsPerPage}&date=${firstDate}/${lastDate}&page=${page}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+        cancelToken: source.token
+      });
+
+      alert('삭제 되었습니다')
+    }
     
     // resetSearch()
   }
@@ -279,6 +290,8 @@ const AccessList = props => {
 
       let count = 0 
       _pages.data.map(i => count += parseInt(i.count));
+
+      setAccessCount(count)
 
       let _temp = parseInt(count/rowsPerPage);
       if(count%rowsPerPage)
@@ -334,13 +347,16 @@ const AccessList = props => {
     let count = 0 
     _pages.data.map(i => count += parseInt(i.count));
 
+    setAccessCount(count)
+
     let _temp = parseInt(count/5000);
     if(count%5000)
       _temp++;
 
     let accesses = [];
     for(let i = 1; i <= _temp; i++) {
-      let result = await axios.get(base_url + `/access?searchType=${searchType}&search=${search}&date=${firstDate}/${lastDate}&avatar_temp=${type}&page=${page}&headerType=${headerType}&rowsPerPage=${5000}`, {
+      
+      let result = await axios.get(base_url + `/access?searchType=${searchType}&rowsPerPage=${rowsPerPage}&headerType=${headerType}&date=${firstDate}/${lastDate}&page=${page}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
         cancelToken: source.tfirstDate
       });
       accesses = accesses.concat(result.data)
@@ -350,12 +366,12 @@ const AccessList = props => {
 
     const ws = wb.addWorksheet("Info", {properties:{ defaultRowHeight: 50 }})
     
-    ws.addRow(['단말명','시리얼 번호','단말 위치','거리','온도','출입 시간'])
+    ws.addRow(['단말 위치','단말명','시리얼 번호','거리','온도','출입 시간'])
     accesses.map((access,index) => {
       let temp = []
+      temp.push(access['stb_location'])
       temp.push(access['stb_name'])
       temp.push(access['stb_sn'])
-      temp.push(access['stb_locatoin'])
       temp.push(String(access['avatar_distance']).substring(0,3)+"M");
       temp.push(access['avatar_temperature'].length < 4 ? access['avatar_temperature'] : access['avatar_temperature'].substring(0,4));
       temp.push(access['access_time']);
@@ -397,6 +413,8 @@ const AccessList = props => {
 
     let count = 0 
     _pages.data.map(i => count += parseInt(i.count));
+
+    setAccessCount(count)
 
     let _temp = parseInt(count/rowsPerPage);
     if(count%rowsPerPage)

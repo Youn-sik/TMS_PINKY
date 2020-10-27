@@ -5,7 +5,7 @@ moment.tz.setDefault("Asia/Seoul");
 const ObjectId = mongoose.Schema.Types.ObjectId
 
 const operrion = new mongoose.Schema({
-    id : { type: ObjectId,ref:'account'},
+    id : { type: ObjectId,ref:'account', required: true},
     action : { type: String,},
     date : { type: String },
     description : { type: String},

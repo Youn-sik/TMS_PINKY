@@ -480,6 +480,7 @@ router.put('/:id',async function(req, res) {
 router.delete('/',async function(req, res) {
     try {
         let delete_data;
+        let deleted_accesses = [];
         if(req.query.type === 'all') {
             let searchType = req.query.searchType
             let date = req.query.date.split('/');
@@ -487,6 +488,38 @@ router.delete('/',async function(req, res) {
             let avatarTemp = req.query.avatar_temp === ' ' ? new RegExp('') : new RegExp(req.query.avatar_temp)
             let tempType = req.query.tempType === '0' ? {$gte : '0'} :
                             req.query.tempType === '1' ? {$lt : req.query.avatar_temperature} :  {$gte : req.query.avatar_temperature}
+            let pages = req.query.pages;
+
+            for(let i = 0; i < pages; i++) {
+                let temp
+                if(searchType === 'stb_name') {
+                    temp = await api_v1_person_access.find()
+                    .gte("access_time",date[0])
+                    .lte("access_time",date[1])
+                    .regex("stb_name",stb_name)
+                    .and([{ avatar_temperature: tempType }, { avatar_temperature: avatarTemp }])
+                    .skip(i*5000)
+                    .limit(5000)
+                } else if(searchType === 'stb_location'){
+                    temp = await api_v1_person_access.find()
+                    .gte("access_time",date[0])
+                    .lte("access_time",date[1])
+                    .regex("stb_location",stb_location)
+                    .and([{ avatar_temperature: tempType }, { avatar_temperature: avatarTemp }])
+                    .skip(i*5000)
+                    .limit(5000)
+                } else if(searchType === 'stb_sn') {
+                    temp = await api_v1_person_access.find()
+                    .gte("access_time",date[0])
+                    .lte("access_time",date[1])
+                    .regex("stb_sn",stb_sn)
+                    .and([{ avatar_temperature: tempType }, { avatar_temperature: avatarTemp }])
+                    .skip(i*5000)
+                    .limit(5000)
+                }
+
+                deleted_accesses = deleted_accesses.concat(temp);
+            }
 
             if(searchType === 'stb_name') {
                 delete_data = await api_v1_person_access.deleteMany({
@@ -516,6 +549,12 @@ router.delete('/',async function(req, res) {
                     ]
                 })
             }
+
+            deleted_accesses.map(access => {
+                let ip = access.avatar_file_url.split(':3000')[0]
+                fs.unlink(access.avatar_file_url.replace(ip+':3000/','/var/www/backend/'),() => {})
+            })
+
             
         } else {
             const id = req.params === undefined ? req.id : req.params.id
