@@ -187,7 +187,7 @@ router.get('/',async function(req, res) {
                 },
             ]).allowDiskUse(true);
         } else if(req.query.type === 'temperature') {
-            let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.)
+            let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$");
             get_data = await api_v1_person_access.find()
                 .where('avatar_temperature')
                 .sort('-access_time')

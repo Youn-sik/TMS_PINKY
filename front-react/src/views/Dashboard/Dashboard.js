@@ -123,7 +123,7 @@ const Dashboard = props => {
   }
 
   async function temp_alerts() {
-    let result = await axios.get(base_url + '/access?type=temperature');
+    let result = await axios.get(base_url + '/access?type=temperature&auth='+props.authority);
     setTemp(result.data);
   }
 
