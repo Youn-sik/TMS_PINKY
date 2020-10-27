@@ -160,7 +160,7 @@ const AccessList = props => {
 
     const buf = await wb.csv.writeBuffer()
 
-    saveAs(new Blob([buf]), 'access_list '+moment().format('YYYY-MM-DD_HH-mm-ss')+'.csv',{type: 'text/plain;charset=utf-8'})
+    saveAs(new Blob(["\uFEFF"+buf]), 'access_list '+moment().format('YYYY-MM-DD_HH-mm-ss')+'.csv',{type: 'text/plain;charset=utf-8'})
   }
 
   const clickSearch = async () => {
@@ -381,7 +381,7 @@ const AccessList = props => {
 
     const buf = await wb.csv.writeBuffer()
 
-    saveAs(new Blob([buf]), 'access_list '+moment().format('YYYY-MM-DD_HH-mm-ss')+'.csv',{type: 'text/plain;charset=utf-8'})
+    saveAs(new Blob(["\uFEFF"+buf]), 'access_list '+moment().format('YYYY-MM-DD_HH-mm-ss')+'.csv',{type: 'text/plain;charset=utf-8'})
     
   }
 
