@@ -88,7 +88,7 @@ const Black = props => {
 
     const buf = await wb.csv.writeBuffer()
 
-    saveAs(new Blob([buf]), 'balcklist '+moment().format('YYYY-MM-DD_HH-mm-ss')+'.csv')
+    saveAs(new Blob([buf]), 'balcklist '+moment().format('YYYY-MM-DD_HH-mm-ss')+'.csv',{type: 'text/plain;charset=utf-8'})
   }
 
   const filterGroup = useCallback(

@@ -150,7 +150,11 @@ const AccessesToolbar = props => {
             loading={loading}
             cleanable={false}
             onChange={val => {
-              dateChange([val.yyyymmddhhmmss(), 0]);
+              if(val.yyyymmddhhmmss() > date[1]){
+                alert('날짜 범위가 잘못되었습니다\n다시 설정해 주세요.')
+              } else {
+                dateChange([val.yyyymmddhhmmss(), 0]);
+              }
             }}
             locale={locale}
             value={new Date(date[0])}
@@ -162,12 +166,15 @@ const AccessesToolbar = props => {
             loading={loading}
             cleanable={false}
             onChange={val => {
-              dateChange([0, val.yyyymmddhhmmss()]);
+              if(val.yyyymmddhhmmss() < date[0]){
+                alert('날짜 범위가 잘못되었습니다\n다시 설정해 주세요.')
+              } else {
+                dateChange([0, val.yyyymmddhhmmss()]);
+              }
             }}
             locale={locale}
             value={new Date(date[1])}
             defaultValue={new Date(`${moment().format('YYYY-MM-DD')}T23:59:59`)}/>
-            
             </IntlProvider>
           </InputGroup>
             <FormControl

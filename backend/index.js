@@ -174,35 +174,37 @@ let s = schedule.scheduleJob('0 0 0 * * *', async function(){//스케쥴 설정
         },
     ]).allowDiskUse(true);
 
-    let pages = parseInt(count.count/5000);
 
-    if(accessCount%5000)
+    let pages = parseInt(count[0].count/5000);
+
+    if(count[0].count%5000)
         pages++;
-
 
     for(let i = 0; i < pages; i++) {
         let result = await Access.find()
         .lt('access_time',dateTime)
-        .skio(page*5000)
-        limit(5000)
+        .skip (i*5000)
+        .limit(5000)
 
-        accesses = accesses.concat(result.data);
+        accesses = accesses.concat(result);
     }
-
 
 
     if(accesses.length > 0){
         let images = accesses.map(access => access.avatar_file_url);
+        let ip = images[0].split(":3000")[0]
         images.map(image => {
-            let ip = image.split(":3000")[0]
             fs.unlink(image.replace(ip+':3000/','/var/www/backend/'),() => {})
         })
-        await Access.updateMany(
+        let result = await Access.updateMany(
             {access_time: {$lt:dateTime}},
-            {$set:{avatar_file_url : ip+":3000"+"/noImage/noImage.png"}
+            {$set:{'avatar_file_url' : ip+":3000"+"/noImage/noImage.png"}
         })
-    }   
+
+        console.log(result)
+    }
 });
+
 
 
 // Run the server!
