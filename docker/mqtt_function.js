@@ -8,7 +8,21 @@ require('moment-timezone');
 moment.tz.setDefault("Asia/Seoul"); 
 const mkdirp = require('mkdirp');
 const client = require('./mqtt_load');
+const canvas = require("canvas");
+const { loadImage, Canvas, Image, ImageData } = canvas;
+const fetch = require('node-fetch')
+var asyncJSON = require('async-json');
+const tf = require('@tensorflow/tfjs-node');
+//require('@tensorflow/tfjs-backend-webgl');
+const faceapi = require('@vladmandic/face-api');
 
+Promise.all([
+    // tf.setBackend('webgl'),
+    faceapi.nets.ssdMobilenetv1.loadFromDisk(`${__dirname}/schema/face-models/`),
+    faceapi.nets.faceRecognitionNet.loadFromDisk(`${__dirname}/schema/face-models/`),
+    faceapi.nets.faceLandmark68Net.loadFromDisk(`${__dirname}/schema/face-models/`),
+    faceapi.env.monkeyPatch({ Canvas, Image, ImageData,fetch: fetch }),
+])
 const mqtt_option = {
     retain: false,
     qos: 0
@@ -68,25 +82,15 @@ mongoose.connect('mongodb://' + site.mongodb_host + ':27017/' + site.mongodb_dat
     poolSize: 8,
     socketTimeoutMS: 1000*60*10, //10분
 });
-mongoose.connect('mongodb://' + site.mongodb_host + ':27017/' + site.mongodb_database, { 
-    useNewUrlParser: true, 
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-    poolSize: 8,
-});
 
 const Access = require('./schema/access_Schema');
 const Camera = require('./schema/camera_Schema');
-const Gateway = require('./schema/gateway_Schema');
-const Group = require('./schema/group_Schema');
 const Statistics = require('./schema/statistics_Schema');
 const User = require('./schema/user_Schema');
-const Version = require('./schema/version_Schema');
 const glogs = require('./schema/glogs_Schema');
 const Camera_fail = require('./schema/camera_fail_Schema');
 const Camera_monitor = require('./schema/camera_monitor_Schema');
 const Camera_filelist = require('./schema/camera_filelist_Schema');
-const History = require('./schema/history_Schema');
 const Statistics_temp = require('./schema/statistics_temp');
 
 /*

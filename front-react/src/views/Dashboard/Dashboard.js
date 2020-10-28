@@ -217,31 +217,50 @@ const Dashboard = props => {
         <Grid container spacing={4}>
           <Grid
             item
-            className={classes.accessCard}
-            lg={6}
+            style={{paddingBottom:"2px",paddingTop:"2px"}}
+            lg={12}
             sm={12}
-            xl={6}
+            xl={12}
             xs={12}>
-            <Employee history={props.history} count={stranger} />
+              <CardHeader style={{padding:0}} title="금일 출입" />
           </Grid>
           <Grid
             item
             className={classes.accessCard}
-            lg={6}
-            sm={12}
-            xl={6}
+            lg={4}
+            sm={6}
+            xl={4}
             xs={12}>
-            <Stranger history={props.history} count={strangerWeek} />
+            <Employee history={props.history} count={employee} />
           </Grid>
-          <Grid item lg={6} md={12} xl={6} xs={12}>
-            <TempAlert
-              tempType={props.tempType}
-              tempLimit={props.tempLimit}
+          <Grid
+            item
+            className={classes.accessCard}
+            lg={4}
+            sm={6}
+            xl={4}
+            xs={12}>
+            <Black history={props.history} count={black} />
+          </Grid>
+          <Grid
+            item
+            className={classes.accessCard}
+            lg={4}
+            sm={12}
+            xl={4}
+            xs={12}>
+            <Stranger history={props.history} count={stranger} />
+          </Grid>
+          <Grid item lg={6} md={6} xl={6} xs={12}>
+            <Access
               history={props.history}
-              temp={temp}
+              employee={employeeWeek}
+              visitor={visitorWeek}
+              black={blackWeek}
+              stranger={strangerWeek}
             />
           </Grid>
-          <Grid item lg={6} md={12} xl={6} xs={12}>
+          <Grid item lg={6} md={6} xl={6} xs={12}>
             <Device history={props.history} on={on} off={off} />
           </Grid>
           {/* <Grid item lg={4} md={6} xl={4} xs={12}>
@@ -251,9 +270,17 @@ const Dashboard = props => {
               late={late}
             />
           </Grid> */}
-          {/* <Grid item lg={12} md={12} xl={12} xs={12}>
+          <Grid item lg={6} md={12} xl={6} xs={12}>
             <DeviceErrors history={props.history} errors={errors} />
-          </Grid> */}
+          </Grid>
+          <Grid item lg={6} md={12} xl={6} xs={12}>
+            <TempAlert
+              tempType={props.tempType}
+              tempLimit={props.tempLimit}
+              history={props.history}
+              temp={temp}
+            />
+          </Grid>
         </Grid>
       )}
     </div>

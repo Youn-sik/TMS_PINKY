@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles,useTheme } from '@material-ui/styles';
 import { Card, CardContent, Grid, Typography, Avatar } from '@material-ui/core';
-import GroupIcon from '@material-ui/icons/Group';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 700
   },
   avatar: {
-    backgroundColor: theme.palette.success.main,
+    backgroundColor: '#bdbdbd',
     color: theme.palette.white,
     height: 56,
     width: 56
@@ -44,7 +44,7 @@ const Stranger = props => {
               color="inherit"
               gutterBottom
               variant="body2">
-              주간 출입
+              미등록자
             </Typography>
             <Typography color="inherit" variant="h3">
               {props.count}명
@@ -57,7 +57,7 @@ const Stranger = props => {
                 props.history.push('access/records');
               }}
               className={classes.avatar}>
-              <GroupIcon className={classes.icon} />
+              <HelpOutlineIcon className={classes.icon} />
             </Avatar>
           </Grid>
         </Grid>
