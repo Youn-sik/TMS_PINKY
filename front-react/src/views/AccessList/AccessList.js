@@ -34,7 +34,6 @@ const AccessList = props => {
   const [accesses, setAccesses] = useState([]);
   const [page,setPage] = useState(1);//현재 페이지
   const [pages,setPages] = useState(0);//출입자 갯수
-  const [searchType,setSearchType] = useState('stb_name')
   const [date, setDate] = useState([
     moment()
       .locale('ko')
@@ -55,26 +54,6 @@ const AccessList = props => {
   const [selected, setSelected] = useState([]);
   const [accessCount,setAccessCount] = useState(0);
   const [excelLoading,setExcelLoading] = useState(false);
-
-  const handleClick = (event, node, index) => {
-    const selectedIndex = selected.findIndex(i => i._id == node._id);
-    if (selectedIndex === -1) {
-    let newSelected = [];
-      node.index = index;
-      newSelected = newSelected.concat(selected, node);
-    } else if (selectedIndex === 0) {
-
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-      newSelected = newSelected.concat(
-    } else if (selectedIndex > 0) {
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-    setSelected(newSelected);
-  };
 
   const isSelected = _id => selected.findIndex(i => i._id == _id) !== -1;
   
@@ -118,8 +97,6 @@ const AccessList = props => {
     setSelected(newSelected);
   };
 
-  const isSelected = _id => selected.findIndex(i => i._id == _id) !== -1;
-
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
@@ -145,7 +122,7 @@ const AccessList = props => {
 
     
 
-    ws.addRow(['사진', '이름', '단말기 이름','단말기 시리얼','단말기 위치','타입','거리','온도','출입 시간'])
+    ws.addRow(['이름','타입', '단말기 이름','단말기 시리얼','단말기 위치','타입','거리','온도','출입 시간'])
     accesses.map(async (access,index) => {
       let temp = []
       // let image = wb.addImage({
@@ -153,9 +130,9 @@ const AccessList = props => {
       //   extension: 'png'
       // })
 
-      temp.push(access['stb_name'])
       temp.push(access['name']);
-      // temp.push('');
+      temp.push(access['avatar_type']);
+      temp.push(access['stb_name'])
       temp.push(access['stb_sn'])
       temp.push(access['stb_location'])
       temp.push(access['avatar_type'] === 1 ? '사원' : access['avatar_type'] === 3 ? '미등록자' : '블랙리스트');
@@ -234,13 +211,14 @@ const AccessList = props => {
       headerType = '_id'
     if(_type === 'desc') 
       headerType = '-'+headerType;
-      let result = await axios.get(base_url + 
-        `/access?searchType=${searchType}&rowsPerPage=${rowsPerPage}&headerType=${headerType}&date=${date[0]}/${date[1]}&page=${page}&search=${search}&avatar_type=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
-      cancelToken: source.token
-    });
 
     let result = await axios.get(base_url + 
       `/access?searchType=${searchType}&rowsPerPage=${rowsPerPage}&headerType=${headerType}&date=${firstDate}/${lastDate}&page=${page}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+      cancelToken: source.token
+    });
+
+    let _pages = await axios.get(base_url + 
+      `/access?searchType=${searchType}&type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&search=${search}&avatar_type=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
 
@@ -392,9 +370,11 @@ const AccessList = props => {
 
     const ws = wb.addWorksheet("Info", {properties:{ defaultRowHeight: 50 }})
     
-    ws.addRow(['단말 위치','단말명','시리얼 번호','거리','온도','출입 시간'])
+    ws.addRow(['이름','타입','단말 위치','단말명','시리얼 번호','거리','온도','출입 시간'])
     accesses.map((access,index) => {
       let temp = []
+      temp.push(access['name'])
+      temp.push(access['avatar_type'] === 1 ? '사원' : access['avatar_type'] === 3 ? '미등록자' : "블랙리스트")
       temp.push(access['stb_location'])
       temp.push(access['stb_name'])
       temp.push(access['stb_sn'])

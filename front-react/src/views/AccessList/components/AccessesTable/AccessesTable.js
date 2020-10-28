@@ -127,18 +127,22 @@ const AccessesTable = props => {
                     onChange={handleSelectAllClick}
                   />
                 </TableCell>
-                <TableCell>사진</TableCell>
-                <TableCell>
-                  <Checkbox
-                    checked={
-                      selected.length === accesses.length && accesses.length !== 0
-                        ? true
-                        : false
-                    }
-                    onChange={handleSelectAllClick}
-                  />
-                </TableCell>
                 <TableCell style={{paddingLeft:"38px"}}>사진</TableCell>
+                <TableCell>
+                  {accesses.length > 0 ? (
+                    <TableSortLabel
+                      active={activeType === 'name'}
+                      direction={sort}
+                      onClick={() => {
+                        createSortHandler('name');
+                      }}>
+                      이름
+                    </TableSortLabel>
+                  ) : (
+                    '이름'
+                  )}
+                </TableCell>
+                <TableCell>타입</TableCell>
                 <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel
@@ -179,34 +183,6 @@ const AccessesTable = props => {
                     </TableSortLabel>
                   ) : (
                     '단말기 시리얼'
-                  )}
-                </TableCell>
-                <TableCell>
-                  {accesses.length > 0 ? (
-                    <TableSortLabel
-                      active={activeType === 'stb_location'}
-                      direction={sort}
-                      onClick={() => {
-                        createSortHandler('stb_location');
-                      }}>
-                      단말기 위치
-                    </TableSortLabel>
-                  ) : (
-                    '단말기 위치'
-                  )}
-                </TableCell>
-                <TableCell>
-                  {accesses.length > 0 ? (
-                    <TableSortLabel
-                      active={activeType === 'avatar_type'}
-                      direction={sort}
-                      onClick={() => {
-                        createSortHandler('stb_sn');
-                      }}>
-                      시리얼 번호
-                    </TableSortLabel>
-                  ) : (
-                    '시리얼 번호'
                   )}
                 </TableCell>
                 <TableCell>
@@ -282,14 +258,19 @@ const AccessesTable = props => {
                                 src={access.avatar_file_url}></img>
                             </div>
                           </TableCell>
-                        <TableCell>{access.name === 'unknown' ? null : access.name}</TableCell>
                           <TableCell>
-                            {access.stb_name ? access.stb_name : ''}
+                            {access.name!=='unknown' ? access.name : ''}
                           </TableCell>
-                          <TableCell>
-                            {access.stb_sn}
+                          <TableCell className={classes.redFont}>
+                            {access.avatar_type === 1
+                              ? '사원'
+                              : access.avatar_type === 2
+                              ? '방문자'
+                              : access.avatar_type === 4
+                              ? '블랙리스트'
+                              : '미등록자'}
                           </TableCell>
-                          <TableCell>
+                          <TableCell className={classes.redFont}>
                             {access.stb_location ? access.stb_location : ''}
                           </TableCell>
                           <TableCell className={classes.redFont}>
@@ -357,13 +338,7 @@ const AccessesTable = props => {
                             </div>
                           </TableCell>
                           <TableCell>
-                            {access.stb_name ? access.stb_name : ''}
-                          </TableCell>
-                          <TableCell>
-                            {access.stb_sn}
-                          </TableCell>
-                          <TableCell>
-                            {access.stb_location ? access.stb_location : ''}
+                            {access.name !== 'unknown'? access.name : ''}
                           </TableCell>
                           <TableCell>
                             {access.avatar_type === 1
@@ -373,6 +348,12 @@ const AccessesTable = props => {
                               : access.avatar_type === 4
                               ? '블랙리스트'
                               : '미등록자'}
+                          </TableCell>
+                          <TableCell>
+                            {access.stb_location ? access.stb_location : ''}
+                          </TableCell>
+                          <TableCell>
+                            {access.stb_name}
                           </TableCell>
                           <TableCell>
                             {access.stb_sn}

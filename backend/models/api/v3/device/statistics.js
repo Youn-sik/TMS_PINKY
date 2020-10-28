@@ -31,10 +31,11 @@ const statisticsSchema = new mongoose.Schema({
     22 : { type: Number ,default:0},
     23 : { type: Number ,default:0},
     24 : { type: Number ,default:0},
-});
     employee : { type: Number ,default:0},
     balck : { type: Number ,default:0},
     stranger : { type: Number ,default:0},
+});
+    
 
 mongoose.set('useCreateIndex', true)
 statisticsSchema.index({ camera_obid: 1 });

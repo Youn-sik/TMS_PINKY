@@ -404,6 +404,7 @@ const SignIn = props => {
       alert('밀어서 확인을 해주세요.');
       return false;
     } else {
+      document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
       let result = await axios
         .post(base_url + '/login', {
           user_id: formState.values.id,

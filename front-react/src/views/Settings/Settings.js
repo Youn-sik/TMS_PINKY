@@ -123,20 +123,6 @@ const Settings = props => {
           )}
           <br />
           <br />
-          출입자 사진 보관 기간
-          <br />
-          <FormControl>
-            <Input
-              id="standard-adornment-weight"
-              value={term}
-              onChange={handleTerm}
-              endAdornment={<InputAdornment position="end">일</InputAdornment>}
-              aria-describedby="standard-weight-helper-text"
-              InputProps={{
-                inputComponent: NumberFormatCustom
-              }}
-            />
-          </FormControl>
           <br />
           <br />
           온도 경고 기준 설정

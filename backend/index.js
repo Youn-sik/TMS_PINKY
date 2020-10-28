@@ -154,24 +154,6 @@ app.put('/schedule',(req,res) => {
     res.send({term})
 })
 
-//사진보관 기간 설정
-let term = 7; //기본 보관 날짜 7일
-let s = schedule.scheduleJob('0 0 0 * * *', async function(){//스케쥴 설정
-    let dateTime = moment().subtract(term-1,'days').format('YYYY-MM-DD') + " 00:00:00"//moment 보관 기간 만큼을 뺀 날짜
-    let result = await Access.find().lt('access_time',dateTime)
-    if(result.length > 0){
-        let images = result.map(access => access.avatar_file_url);
-        let ip = images[0].split(":3000")[0]
-        images.map(image => {
-            fs.unlink(image.avatar_file_url.replace(ip+':3000/','/var/www/backend/'),() => {})
-        })
-        await Access.updateMany(
-            {access_time: {$lt:dateTime}},
-            {$set:{avatar_file_url : ip+":3000"+"/noImage/noImage.png"}
-        })
-    }   
-});
-
 
 
 //const mongoose = require('mongoose')

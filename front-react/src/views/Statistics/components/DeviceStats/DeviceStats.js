@@ -40,54 +40,9 @@ const DeviceStats = props => {
 
   const data = {
     datasets: [
-      // {
-      //   label: '정상 온도',
-      //   data: chartData.normal,
-      //   backgroundColor: ['rgba(255, 99, 132, 0.2)'],
-      //   borderColor: [
-      //     'rgba(255, 99, 132, 1)',
-      //     'rgba(255, 99, 132, 1)',
-      //     'rgba(255, 99, 132, 1)',
-      //     'rgba(255, 99, 132, 1)',
-      //     'rgba(255, 99, 132, 1)',
-      //     'rgba(255, 99, 132, 1)',
-      //     'rgba(255, 99, 132, 1)'
-      //   ],
-      //   borderWidth: 2
-      // },
-      // {
-      //   label: '방문자',
-      //   data: chartData.visitor,
-      //   backgroundColor: ['rgba(75, 192, 192, 0.2)'],
-      //   borderColor: [
-      //     'rgba(75, 192, 192, 1)',
-      //     'rgba(75, 192, 192, 1)',
-      //     'rgba(75, 192, 192, 1)',
-      //     'rgba(75, 192, 192, 1)',
-      //     'rgba(75, 192, 192, 1)',
-      //     'rgba(75, 192, 192, 1)',
-      //     'rgba(75, 192, 192, 1)'
-      //   ],
-      //   borderWidth: 2
-      // },
-      // {
-      //   label: '비정상 온도',
-      //   data: chartData.abnormal,
-      //   backgroundColor: ['rgba(255, 159, 64, 0.2)'],
-      //   borderColor: [
-      //     'rgba(255, 159, 64, 1)',
-      //     'rgba(255, 159, 64, 1)',
-      //     'rgba(255, 159, 64, 1)',
-      //     'rgba(255, 159, 64, 1)',
-      //     'rgba(255, 159, 64, 1)',
-      //     'rgba(255, 159, 64, 1)',
-      //     'rgba(255, 159, 64, 1)'
-      //   ],
-      //   borderWidth: 2
-      // },
       {
-        label: '출입자 수',
-        data: chartData.all,
+        label: '사원',
+        data: chartData.employee,
         backgroundColor: ['rgba(255, 99, 132, 0.2)'],
         borderColor: [
           'rgba(255, 99, 132, 1)',
@@ -99,7 +54,37 @@ const DeviceStats = props => {
           'rgba(255, 99, 132, 1)'
         ],
         borderWidth: 2
-      }
+      },
+      {
+        label: '미등록자',
+        data: chartData.stranger,
+        backgroundColor: ['rgba(75, 192, 192, 0.2)'],
+        borderColor: [
+          'rgba(75, 192, 192, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(75, 192, 192, 1)'
+        ],
+        borderWidth: 2
+      },
+      {
+        label: '블랙리스트',
+        data: chartData.black,
+        backgroundColor: ['rgba(255, 159, 64, 0.2)'],
+        borderColor: [
+          'rgba(255, 159, 64, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 2
+      },
     ],
     labels: date
   };
@@ -130,7 +115,7 @@ const DeviceStats = props => {
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardHeader title={
             <div>
-                <span>단말별 출입자 통계</span>
+                <span>단말별 통계</span>
                 <Button
                 size="small"
                 style={{float: 'right',marginRight:'10px' }} 

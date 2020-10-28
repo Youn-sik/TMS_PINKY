@@ -137,7 +137,7 @@ const Routes = props => {
         tempType={props.tempType}
         path="/users/Stranger"
       /> */}
-      {/* <RouteWithLayout
+      <RouteWithLayout
         component={AddStrangerView}
         exact
         user_id={props.user_id}
@@ -192,8 +192,8 @@ const Routes = props => {
         authority={props.authority}
         layout={MainLayout}
         path="/users/black/edit"
-      /> */}
-      {/* <RouteWithLayout
+      />
+      <RouteWithLayout
         component={VisitorView}
         exact
         user_id={props.user_id}
@@ -216,7 +216,7 @@ const Routes = props => {
         authority={props.authority}
         layout={MainLayout}
         path="/users/visitor/edit"
-      /> */}
+      />
       {/* <RouteWithLayout
         component={FaceDetectionView}
         exact

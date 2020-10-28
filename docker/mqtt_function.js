@@ -443,17 +443,10 @@ module.exports = {
             // let Users = await User.find()
             if(camera) {
                 json.values.forEach(async function(element){
-                    let folder_date_path = "/uploads/accesss/temp/" + moment().format('YYYYMMDD');
-                    let file_name = json.stb_sn + "_" + moment().format('YYYYMMDDHHmmss') + ".png";
-                    let file_path = site.base_server_document + folder_date_path + "/" + json.stb_sn + "/";
-                    let upload_url = "http://"+server_ip+ ':3000' + folder_date_path + "/" + json.stb_sn + "/" + file_name;
-                    let buff = Buffer.from(element.avatar_file, 'base64');
                     if(element.avatar_distance === undefined) {
                         element.avatar_distance = 0
                     }
                     
-                    mkdirp.sync(file_path);
-                    fs.writeFileSync(file_path + file_name, buff, 'utf-8')
 
                     // const img = new Image();
                     // img.src = "data:image/png;base64,"+element.avatar_file
@@ -501,48 +494,25 @@ module.exports = {
                                 )
                             )
                         })
-                        todayStatistics.save()
-
-                        todayStatisticsTemp = new Statistics_temp({
-                            camera_obid : camera._id,
-                            serial_number : json.stb_sn,
-                            access_date: moment().format('YYYY-MM-DD'),
-                            [hours] : `${userName}|${element.avatar_temperature}|${element.avatar_type === 5 ? 4 : element.avatar_type}|${upload_url}`,
-                        })
-
-                        todayStatisticsTemp.save();
-                    } else if(element.avatar_temperature > todayStatisticsTemp[hours].split('|')[1]){
-                        await Statistics.findByIdAndUpdate(todayStatistics._id,{ 
-                            $inc: { 
-                                all_count: 1,
-                                [hours] : 1,
-                                [type] : 1
-                            }
-                        },
-                        {
-                            
-                        })
-
-                        await Statistics_temp.findByIdAndUpdate(todayStatisticsTemp._id,{ 
-                            $set: {
-                                [hours] : `${userName}|${element.avatar_temperature}|${element.avatar_type === 5 ? 4 : element.avatar_type}|${upload_url}`
-                            }
-                        },
-                        {
-                            
-                        })
-                    } else {
-                        await Statistics.findByIdAndUpdate(todayStatistics._id,{ 
-                            $inc: { 
-                                all_count: 1,
-                                [hours] : 1,
-                                [type] : 1
-                            }
-                        },
-                        {
-                            
-                        })
+                    );
+                    const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.6)
+                    const bestMatch = detections.map(d => faceMatcher.findBestMatch(d.descriptor))
+                    const filteredMatch = bestMatch.filter(match => match._distance < 0.5)
+                    if(filteredMatch.length > 0 && filteredMatch[0]._label !== 'unknown') {
+                        let userData = filteredMatch[0]._label.split('|')
+                        userName = userData[0]
+                        element.avatar_type = parseInt(userData[7])
+                        user_obid = userData[10]
                     }
+                }  
+
+                let folder_date_path = "/uploads/accesss/temp/" + moment().format('YYYYMMDD');
+                let file_name = json.stb_sn +"_"+element.avatar_type+ "_"+element.avatar_temperature+"_"+ + moment().format('YYYYMMDDHHmmss') + ".png";
+                let file_path = site.base_server_document + folder_date_path + "/" + json.stb_sn + "/";
+                let upload_url = "http://"+server_ip+ ':3000' + folder_date_path + "/" + json.stb_sn + "/" + file_name;
+                let buff = Buffer.from(element.avatar_file, 'base64');
+                mkdirp.sync(file_path);
+                fs.writeFileSync(file_path + file_name, buff, 'utf-8')
 
                 insert_data = {
                     avatar_file : 'avatar_file',
@@ -637,7 +607,12 @@ module.exports = {
 
             })
             
-            await Access.insertMany(insert_array)
+                await Access.insertMany(insert_array)
+
+                send_data = {
+                    stb_sn: json.stb_sn,
+                    values: insert_array
+                };
 
                 // avatar_temperature name avatar_file_url access_time avatar_type
                 client.publish('/access/realtime/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);

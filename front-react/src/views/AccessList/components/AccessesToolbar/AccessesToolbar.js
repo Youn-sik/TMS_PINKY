@@ -78,11 +78,7 @@ const AccessesToolbar = props => {
     search,
     setSearch,
     temp,
-    handleSearchType,
-    handleRowsPerPage,
-    rowsPerPage,
     temp_change,
-    date,
     deleteAccesses,
     type,
     type_change,
@@ -90,7 +86,6 @@ const AccessesToolbar = props => {
     date,
     typeCange,
     deleteAllAccesses,
-    searchType,
     dateChange,
     searchType,
     deleteRecords,
@@ -182,24 +177,6 @@ const AccessesToolbar = props => {
             defaultValue={new Date(`${moment().format('YYYY-MM-DD')}T23:59:59`)}/>
             </IntlProvider>
           </InputGroup>
-            <FormControl
-              className={classes.select}>
-            <InputLabel id="demo-simple-select-label">온도</InputLabel>
-            <Select
-              style={{ width: '50px',marginBottom:'11px'}}
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={type}
-              onChange={handleTypeChange}>
-              <MenuItem value=" ">전체</MenuItem>
-              <MenuItem value="34">34</MenuItem>
-              <MenuItem value="35">35</MenuItem>
-              <MenuItem value="36">36</MenuItem>
-              <MenuItem value="37">37</MenuItem>
-              <MenuItem value="38">38</MenuItem>
-              <MenuItem value="39">39</MenuItem>
-            </Select>
-          </FormControl>
           <FormControl
               className={classes.select}>
           <InputLabel id="demo-simple-select-label">온도 상태</InputLabel>
@@ -281,17 +258,6 @@ const AccessesToolbar = props => {
             <MenuItem value={'name'}>이름</MenuItem>
             <MenuItem value={'stb_name'}>단말기명</MenuItem>
             <MenuItem value={'stb_location'}>단말기 위치</MenuItem>
-            <MenuItem value={'stb_sn'}>시리얼 번호</MenuItem>
-          </Select>
-          <Select
-            style={{ float: 'right',marginRight: '20px',width:"100px" }}
-            labelId="demo-simple-select-outlined-label"
-            id="demo-simple-select-outlined"
-            value={searchType}
-            onChange={handleSearchType}
-          >
-            <MenuItem value={'stb_name'}>단말명</MenuItem>
-            <MenuItem value={'stb_location'}>단말 위치</MenuItem>
             <MenuItem value={'stb_sn'}>시리얼 번호</MenuItem>
           </Select>
         </div>

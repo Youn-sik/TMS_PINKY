@@ -36,10 +36,12 @@ const Statistics = props => {
   const classes = useStyles();
   const { allowedDays } = DateRangePicker;
   const [date, setDate] = useState([
-    moment()
-      .subtract(6, 'days')
-      .format('YYYY-MM-DD'),
-    moment().format('YYYY-MM-DD')
+    new Date(
+      moment()
+        .subtract(6, 'days')
+        .format('YYYY-MM-DD')
+    ),
+    new Date()
   ]);
   const [peopleData, setPeopleData] = useState({});
   const [devices, setDevices] = useState([]);
@@ -132,8 +134,8 @@ const Statistics = props => {
     ws.addRow(data.memory)
 
     const buf = await wb.csv.writeBuffer()
-
-    saveAs(new Blob([buf]), 'statistics '+moment().format('YYYY-MM-DD_HH-mm-ss')+'.csv')
+    
+    saveAs(new Blob(["\uFEFF"+buf]), 'statistics '+moment().format('YYYY-MM-DD_HH-mm-ss')+'.csv',{type: 'text/plain;charset=utf-8'})
   }
 
   // error.log_no === 3 ? "연결 끊김" :
@@ -239,7 +241,7 @@ const Statistics = props => {
 
   async function getAccesses() {
     let local_device = device === ' ' ? '' : device
-    let result = await axios.get(base_url + `/access?date=${date[0]}/${date[1]}&device=${local_device}&type=deviceStats`);
+    let result = await axios.get(base_url + `/access?date=${date[0].yyyymmdd()}/${date[1].yyyymmdd()}&device=${local_device}&type=deviceStats`);
     filterAccesses(result.data);
     
     setLoading(false);
@@ -255,7 +257,7 @@ const Statistics = props => {
   }
 
   async function getErrors() {
-    let result = await axios.get(base_url + `/glogs?type=error&date=${date[0]}/${date[1]}`);
+    let result = await axios.get(base_url + `/glogs?type=error&date=${date[0].yyyymmdd()}/${date[1].yyyymmdd()}`);
     filterErrors(result.data);
   }
 
@@ -322,15 +324,11 @@ const Statistics = props => {
                 cleanable={false}
                 disabledDate={allowedDays(7)}
                 defaultValue={[
-                  new Date(
-                    moment()
-                      .subtract(6, 'days')
-                      .format('YYYY-MM-DD')
-                  ),
-                  new Date()
+                  date[0],
+                  date[1]
                 ]}
                 onChange={val => {
-                  handleDate([val[0].yyyymmdd(), val[1].yyyymmdd()]);
+                  handleDate([val[0], val[1]]);
                 }}
                 ranges={[]}
               />
@@ -351,13 +349,13 @@ const Statistics = props => {
               chartData={peopleData}
               clickAccessExport={clickAccessExport}
               date={[
-                date[0],
-                dateChange(date[0], 1),
-                dateChange(date[0], 2),
-                dateChange(date[0], 3),
-                dateChange(date[0], 4),
-                dateChange(date[0], 5),
-                date[1]
+                date[0].yyyymmdd(),
+                dateChange(date[0].yyyymmdd(), 1),
+                dateChange(date[0].yyyymmdd(), 2),
+                dateChange(date[0].yyyymmdd(), 3),
+                dateChange(date[0].yyyymmdd(), 4),
+                dateChange(date[0].yyyymmdd(), 5),
+                date[1].yyyymmdd()
               ]}
             />
           </Grid>
