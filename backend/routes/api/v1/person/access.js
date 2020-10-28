@@ -189,11 +189,11 @@ router.get('/',async function(req, res) {
                 },
             ]).allowDiskUse(true);
         } else if(req.query.type === 'temperature') {
-            // let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$");
+            let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$");
             get_data = await api_v1_person_access.find()
                 .where('avatar_temperature')
                 .sort('-access_time')
-                // .regex('authority',auth)
+                .regex('authority',auth)
                 .limit(5)
         } else if(req.query.type === 'attendance') {
             get_data = await api_v1_person_access.aggregate([
@@ -217,6 +217,7 @@ router.get('/',async function(req, res) {
             let stb_name = '';
             let stb_location = '';
             let name = ''
+            let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$");
 
             if(search === '') {
                 search === new RegExp('')
@@ -244,7 +245,7 @@ router.get('/',async function(req, res) {
                                 stb_location : { $regex:new RegExp(stb_location) },
                                 avatar_type : avatar_type,
                                 avatar_temperature : { $gte: avatar_temperature },
-                                // authority : {$regex:auth}
+                                authority : {$regex:auth}
                             }
                         },
                         {
@@ -262,7 +263,7 @@ router.get('/',async function(req, res) {
                                 stb_location : { $regex:new RegExp(stb_location) },
                                 avatar_type : avatar_type,
                                 avatar_temperature : { $lt: avatar_temperature },
-                                // authority : {$regex:auth}
+                                authority : {$regex:auth}
                             }
                         },
                         {
@@ -279,7 +280,7 @@ router.get('/',async function(req, res) {
                             stb_sn : { $regex:new RegExp(stb_sn) },
                             stb_name : { $regex:new RegExp(stb_name) },
                             stb_location : { $regex:new RegExp(stb_location) },
-                            // authority : {$regex:auth},
+                            authority : {$regex:auth},
                             avatar_type : avatar_type,
                         }
                     },
@@ -298,7 +299,7 @@ router.get('/',async function(req, res) {
                                 stb_name : { $regex:new RegExp(stb_name) },
                                 stb_location : { $regex:new RegExp(stb_location) },
                                 avatar_temperature : { $gte: avatar_temperature },
-                                // authority : {$regex:auth}
+                                authority : {$regex:auth}
                             }
                         },
                         {
@@ -315,7 +316,7 @@ router.get('/',async function(req, res) {
                                 stb_name : { $regex:new RegExp(stb_name) },
                                 stb_location : { $regex:new RegExp(stb_location) },
                                 avatar_temperature : { $lt: avatar_temperature },
-                                // authority : {$regex:auth}
+                                authority : {$regex:auth}
                             }
                         },
                         {
@@ -332,7 +333,7 @@ router.get('/',async function(req, res) {
                             stb_sn : { $regex:new RegExp(stb_sn) },
                             stb_name : { $regex:new RegExp(stb_name) },
                             stb_location : { $regex:new RegExp(stb_location) },
-                            // authority : {$regex:auth}
+                            authority : {$regex:auth}
                         }
                     },
                     {
@@ -354,7 +355,7 @@ router.get('/',async function(req, res) {
             let stb_sn = '';
             let stb_name = '';
             let stb_location = '';
-            // let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$");
+            let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$");
 
             if(req.query.search) 
                 search = new RegExp(req.query.search)
@@ -392,7 +393,7 @@ router.get('/',async function(req, res) {
                     .regex("stb_location",new RegExp(stb_location))
                     .skip(page*rowPerPage)
                     .limit(rowPerPage)
-                    // .regex("authority",auth)
+                    .regex("authority",auth)
                 } else {
                     get_data = await api_v1_person_access.find()
                     .sort(headerType)
@@ -406,7 +407,7 @@ router.get('/',async function(req, res) {
                     .regex("stb_location",new RegExp(stb_location))
                     .skip(page*rowPerPage)
                     .limit(rowPerPage)
-                    // .regex("authority",auth)
+                    .regex("authority",auth)
                 }
             } else if (avatar_type) { //아바타 온도만 선택한 경우
                 get_data = await api_v1_person_access.find()
@@ -420,7 +421,7 @@ router.get('/',async function(req, res) {
                 .regex("name",new RegExp(name))
                 .skip(page*rowPerPage)
                 .limit(rowPerPage)
-                // .regex("authority",auth)
+                .regex("authority",auth)
             } else if (avatar_temperature && tempType) {//온도 타입만 선택한 경우
                 if(tempType === '2') {
                     get_data = await api_v1_person_access.find()
@@ -435,7 +436,7 @@ router.get('/',async function(req, res) {
                     .regex("stb_location",new RegExp(stb_location))
                     .skip(page*rowPerPage)
                     .limit(rowPerPage)
-                    // .regex("authority",auth)
+                    .regex("authority",auth)
                 } else {
                     get_data = await api_v1_person_access.find()
                     .sort(headerType)
@@ -449,7 +450,7 @@ router.get('/',async function(req, res) {
                     .regex("name",new RegExp(name))
                     .skip(page*rowPerPage)
                     .limit(rowPerPage)
-                    // .regex("authority",auth)
+                    .regex("authority",auth)
                 }   
             }else { //모두 전체일경우
                 get_data = await api_v1_person_access.find()
@@ -463,7 +464,7 @@ router.get('/',async function(req, res) {
                 .regex("name",new RegExp(name))
                 .skip(page*rowPerPage)
                 .limit(rowPerPage)
-                // .regex("authority",auth)
+                .regex("authority",auth)
             }
         }
         res.send(get_data)

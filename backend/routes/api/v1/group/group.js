@@ -2,23 +2,24 @@ var express = require('express');
 var router = express.Router();
 const boom = require('boom')
 const api_v1_group_group = require('../../../../models/api/v1/group/group')
+const api_v1_person_user = require('../../../../models/api/v1/person/user')
+var fs = require('fs')
 
 router.get('/',async function(req, res) {
     try {
         const type = req.query.type;
+        let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$")
         if(type === undefined) {
             const get_data = await api_v1_group_group.find()
             .where('parent',null)
             .where('rootParent',null)
-            .populate('user_obids')
+            .regex('authority',auth)
             .populate({
                 path : 'children',
                 populate : [
                     {
                         path: 'children',
-                        populate:{path:'user_obids'}
                     },
-                    {path: 'user_obids'},
                 ],
             })
             res.send(get_data);
@@ -26,16 +27,14 @@ router.get('/',async function(req, res) {
             const get_data = await api_v1_group_group.find({type:type})
             .where('parent',null)
             .where('rootParent',null)
+            .regex('authority',auth)
             .where('type',type)
-            .populate('user_obids')
             .populate({
                 path : 'children',
                 populate : [
                     {
                         path: 'children',
-                        populate:{path:'user_obids'}
                     },
-                    {path: 'user_obids'},
                 ],
             })
             res.send(get_data);
@@ -57,6 +56,7 @@ router.get('/:id',async function(req, res) {
 
 router.post('/',async function(req, res) {
     try {
+        console.log(req.body.authority);
         const add = new api_v1_group_group(req.body)
         const parent = req.body.parent === undefined ? null : req.body.parent;
         const parentObject = await api_v1_group_group.findById(parent);
@@ -89,26 +89,15 @@ router.delete('/:id',async function(req, res) {
         const id = req.params === undefined ? req.id : req.params.id
         const delete_data = await api_v1_group_group.findByIdAndRemove(id)
 
-        let update_data = await api_v1_group_group.findOneAndUpdate({name:'undefined',type:delete_data.type},{ 
-            $addToSet: { 
-                user_obids : { 
-                    $each: delete_data.user_obids 
-                },
-                children : { 
-                    $each: delete_data.children 
-                }
-            } 
-        }, {new: true }).exec()
-        
-        if(!update_data) {
-            update_data = new api_v1_group_group({name:'undefined',type:delete_data.type,user_obids:delete_data.user_obids,children:delete_data.children})
-            update_data.save();
-        }
+        delete_data.user_obids.map(user_obid => {
+            fs.unlink('/var/www/backend/image/'+user_obid+"profile.jpg",() => {})
+            fs.unlink('/var/www/backend/image/'+user_obid+"profile_updated.jpg",() => {})
+        })
 
-        res.send(update_data);
+        res.send(delete_data);
     } catch (err) {
         throw boom.boomify(err)
     }
 });
- 
+
 module.exports = router;

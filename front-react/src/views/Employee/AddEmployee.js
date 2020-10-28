@@ -249,7 +249,7 @@ const AddEmployee = props => {
     else if (userInfo.location === '') alert('근무지를 입력해주세요');
     else if (userInfo.position === '') alert('직급을 입력해주세요');
     else if (userInfo.department_id === '') alert('부서를 입력해주세요');
-    else {
+    else if(node._id) {
       setLoading(true);
       let base64 = await toBase64(pictures[0][0]);
       base64 = base64.replace('data:image/jpeg;base64,', '');
@@ -259,6 +259,7 @@ const AddEmployee = props => {
         type: 1,
         groups_obids: [node._id ? node._id : undefined],
         account: props.user_id,
+        authority : props.authority,
         avatar_file: base64
       });
 
@@ -271,6 +272,8 @@ const AddEmployee = props => {
       setLoading(false);
       alert('등록 되었습니다.');
       history.push('/users/employee');
+    } else {
+      alert('그룹을 선택해주세요.')
     }
   };
   return (

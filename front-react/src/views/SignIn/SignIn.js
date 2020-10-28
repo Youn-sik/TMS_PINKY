@@ -416,7 +416,7 @@ const SignIn = props => {
         });
       // props.getAuth(result.data.authority);
       if (result.data && result.data.token) {
-        document.cookie = 'token=' + result.data.token;
+        document.cookie = 'token=' + result.data.token+";path=/;";
         props.getAuth(result.data.authority);
         history.push('/');
       } else if (result.data) {

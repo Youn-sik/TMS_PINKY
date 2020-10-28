@@ -479,24 +479,24 @@ const Black = props => {
     setSearch(e.target.value);
   };
 
-  const moveUserIds = data => {
+   const countChildren = data => {
     //그룹의 obid를 한곳에 몰아넣는 작업
     if (data.children[0] !== undefined) {
       data.children.map(i => {
-        moveUserIds(i);
+        countChildren(i);
         return false;
       });
     }
     if (data.user_obids[0] !== undefined) {
-      data.children = data.children.concat(data.user_obids);
+      data.userCount = data.user_obids.length;
+      data.groupCount = data.children.length;
     }
   };
 
   async function getGroups() {
-    let tempGroups = await axios.get(base_url + '/group?type=5');
+    let tempGroups = await axios.get(base_url + '/group?type=5&auth='+props.authority);
     tempGroups.data.map(i => {
-      //user_obids에 있는 데이터 children으로 옮기기
-      moveUserIds(i);
+      countChildren(i);
       return false;
     });
     let index = tempGroups.data.findIndex(i => i.name === 'undefined');
@@ -522,22 +522,15 @@ const Black = props => {
   const deleteGroupNode = async node => {
     if (
       window.confirm(
-        '삭제시 해당 그룹의 사용자는 undefined 그룹으로 \n변경됩니다 삭제 하시겠습니까?'
+        '삭제시 되돌릴수 없습니다.\n정말 삭제 하시겠습니까?'
       )
     ) {
-      await axios.delete(base_url + '/group/' + node._id);
-      let tempGroups = await axios.get(base_url + '/group?type=5');
-      tempGroups.data.map(i => {
-        //user_obids에 있는 데이터 children으로 옮기기
-        moveUserIds(i);
-        return false;
+      await axios.delete(base_url + '/group/' + node._id,{
+        data: {
+          type : 5
+        }
       });
-      let index = tempGroups.data.findIndex(i => i.name === 'undefined');
-      if (index !== -1) {
-        let undefinedGroup = tempGroups.data.splice(index, 1);
-        tempGroups.data.push(undefinedGroup[0]);
-      }
-      setGroups(tempGroups.data);
+      getGroups()
       setSelectedNode([]);
       setClickedNode({});
       setUsers([]);
@@ -556,45 +549,35 @@ const Black = props => {
         }
       });
 
-      selectedUsers.sort((a, b) => {
-        if (a.index > b.index) {
-          return 1;
-        } else {
-          return -1;
-        }
-      });
-
-      let temp = JSON.parse(JSON.stringify(users)); //테이블에서 제거
-      if (temp.length === selectedUsers) {
-        temp = [];
-      } else {
-        selectedUsers.map((user, index) => {
-          temp.splice(user.index - index, 1);
-          return false;
-        });
-      }
-      await setUsers(temp);
-
-      let groups_list = clickedNode.children.filter(child =>
-        Array.isArray(child.children)
-      );
-      let groups_length = groups_list.length;
-      clickedNode.children.splice(groups_length);
-      temp.map(i => clickedNode.children.push(i));
-
-      setCount(!count);
+      getUsers();
     }
   };
+
+  const getUsers = async () => {
+    if(clickedNode._id) {
+      let result = await axios.get(base_url + '/user?type=5&group_obid='+clickedNode._id+'&auth='+props.authority)
+      setFilteredUsers([]);
+      setSearch('')
+      setActiveType('create_at');
+      setUsers(result.data);
+    }
+  }
+
+  useEffect(() => {
+    getUsers()
+  },[clickedNode])
 
   useEffect(() => {
     getGroups();
   }, []);
+
 
   return (
     <div className={classes.root}>
       <Grid container spacing={4}>
         <Grid item lg={4} md={4} xl={3} xs={12}>
           <Groups
+            authority={props.authority}
             user_id={props.user_id}
             setClickedNode={_setClickedNode}
             setSelectedNode={_setSelectedNode}
@@ -610,6 +593,7 @@ const Black = props => {
         <Grid item lg={8} md={8} xl={9} xs={12}>
           {/* <AccountDetails users={users}/> */}
           <UsersTable
+            authority={props.authority}
             exportExcel={exportExcel}
             setClickedNode={_setClickedNode}
             clickedNode={clickedNode}

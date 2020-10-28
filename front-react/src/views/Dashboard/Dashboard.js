@@ -270,10 +270,10 @@ const Dashboard = props => {
               late={late}
             />
           </Grid> */}
-          <Grid item lg={6} md={12} xl={6} xs={12}>
+          {/* <Grid item lg={6} md={12} xl={6} xs={12}>
             <DeviceErrors history={props.history} errors={errors} />
-          </Grid>
-          <Grid item lg={6} md={12} xl={6} xs={12}>
+          </Grid> */}
+          <Grid item lg={12} md={12} xl={12} xs={12}>
             <TempAlert
               tempType={props.tempType}
               tempLimit={props.tempLimit}

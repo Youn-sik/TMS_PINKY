@@ -154,8 +154,6 @@ app.put('/schedule',(req,res) => {
     res.send({term})
 })
 
-
-
 //const mongoose = require('mongoose')
 const routes = require('./routes')
 const swagger = require('./config/swagger')

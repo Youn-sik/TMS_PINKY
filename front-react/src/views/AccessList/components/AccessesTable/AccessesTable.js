@@ -227,7 +227,7 @@ const AccessesTable = props => {
                     '출입시간'
                   )}
                 </TableCell>
-                {/* <TableCell>사용자 등록</TableCell> */}
+                <TableCell>사용자 등록</TableCell>
               </TableRow>
             </TableHead>
             {
@@ -296,7 +296,7 @@ const AccessesTable = props => {
                           <TableCell className={classes.redFont}>
                             {access.access_time}
                           </TableCell>
-                          {/* <TableCell>
+                          <TableCell>
                             {
                               access.avatar_type === 3 ? 
                               <RouterLink
@@ -314,7 +314,7 @@ const AccessesTable = props => {
                                 </Button>
                               </RouterLink> : null
                             }
-                          </TableCell> */}
+                          </TableCell>
                         </TableRow>
                       );
                     } else {

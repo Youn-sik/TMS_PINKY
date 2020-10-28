@@ -10,6 +10,7 @@ const api_v1_group_group_Schema = new mongoose.Schema({
     name : { type: String, required: true },
     type : { type: Number, required: true },
     company_id : { type: String },
+    authority : { type: String },
     user_obids : [{type:ObjectId, ref: 'user'}],
     device_obids :[{type:ObjectId, ref: 'camera'}],
     create_at : { type: String, default: moment().format('YYYY-MM-DD HH:mm:ss') },

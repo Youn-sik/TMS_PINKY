@@ -129,6 +129,7 @@ const Groups = props => {
     let result = await axios.post(base_url + '/group', {
       name: groupName,
       type: 2,
+      authority : props.authority,
       parent,
       account: props.user_id
     });

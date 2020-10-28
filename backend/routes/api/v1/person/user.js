@@ -20,15 +20,28 @@ var moment = require('moment');
 require('moment-timezone'); 
 moment.tz.setDefault("Asia/Seoul"); 
 
+Promise.all([
+    faceapi.nets.ssdMobilenetv1.loadFromDisk(`${__dirname}/face-models/`),
+    faceapi.nets.faceRecognitionNet.loadFromDisk(`${__dirname}/face-models/`),
+    faceapi.nets.faceLandmark68Net.loadFromDisk(`${__dirname}/face-models/`),
+    faceapi.env.monkeyPatch({ Canvas, Image, ImageData,fetch: fetch }),
+])
+
 router.get('/',async function(req, res) {
     try {
         let get_data
-        if(req.query.type === '1') {
-            get_data = await api_v1_person_user.find({type:'1'}).select('-avatar_file -avatar_file_checksum')
+        let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.quth+"$");
+        if(req.query.group_obid) {
+            get_data = await api_v1_person_user.find({type:req.query.type})
+            .regex('authority',auth)
+            .where("groups_obids")
+            .in([req.query.group_obid])
+        } else if(req.query.type === '1') {
+            get_data = await api_v1_person_user.find({type:'1'}).regex('authority',auth)
         } else if(req.query.type === '2') {
-            get_data = await api_v1_person_user.find({type:'2'}).select('-avatar_file -avatar_file_checksum')
+            get_data = await api_v1_person_user.find({type:'2'}).regex('authority',auth)
         } else if(req.query.type === '5') {
-            get_data = await api_v1_person_user.find({type:'5'}).select('-avatar_file -avatar_file_checksum')
+            get_data = await api_v1_person_user.find({type:'5'}).regex('authority',auth)
         } else {
             get_data = await api_v1_person_user.find()
         }
@@ -60,7 +73,12 @@ router.post('/',async function(req, res) {
             add.face_detection = overlap_check.face_detection;
         } else {
             let detections
-            if(req.body.avatar_file !== undefined) {
+            if(req.body.avatar_file === undefined) {
+                let imageDir = await canvas.loadImage(req.body.avatar_file_url)
+                detections = await faceapi.detectAllFaces(imageDir)
+                .withFaceLandmarks()
+                .withFaceDescriptors();
+            } else {
                 add.avatar_file_url = 'http://'+req.headers.host+'/image/'+add._id+'profile.jpg';
                 fs.writeFileSync('/var/www/backend/image/'+add._id+'profile.jpg',req.body.avatar_file,'base64')
                 let imageDir = await canvas.loadImage('/var/www/backend/image/'+add._id+'profile.jpg')
@@ -75,6 +93,9 @@ router.post('/',async function(req, res) {
                 })
                 return false;
             }
+            asyncJSON.stringify(detections[0].descriptor,function(err, jsonValue) {
+                add.face_detection = jsonValue;
+            })
 
             add.avatar_file_checksum = "avatar_file_checksum";
         }
@@ -83,16 +104,18 @@ router.post('/',async function(req, res) {
             groups.map((i) => {
                 api_v1_group_group.findByIdAndUpdate(i ,{ $addToSet: { user_obids : add._id} }, {new: true }).exec()//groups의 children에 add의 _id값 push
             })
+            add.groups_obids = groups
         } else {
             let groups = await api_v1_group_group.find({name:'undefined',type:req.body.type});
             if(groups.length === 0) {
-                group = new api_v1_group_group({name:'undefined',type:req.body.type,user_obids:[add._id]})
+                group = new api_v1_group_group({name:'undefined',authority:req.body.authority,type:req.body.type,user_obids:[add._id]})
                 group.save();
+                add.groups_obids = [group._id];
             } else {
                 await api_v1_group_group.findOneAndUpdate({name:'undefined',type:req.body.type},{ $addToSet: { user_obids : add._id} }, {new: true }).exec()
+                add.groups_obids = [groups[0]._id];
             }
-            group = group === null ? await api_v1_group_group.find({name:'undefined',type:req.body.type}) : group
-            add.groups_obids = [group._id];
+            
         }
         let type = '';
         if(add.type === 1) type = '사원';
@@ -142,7 +165,7 @@ router.put('/:id',async function(req, res) {
                 })
             } else {
                 if(await api_v1_group_group.findOne({name:'undefined',type:req.body.type}) === null) {
-                    group = new api_v1_group_group({name:'undefined',type:req.body.type,user_obids:[req.body._id]})
+                    group = new api_v1_group_group({name:'undefined',authority:req.body.authority,type:req.body.type,user_obids:[req.body._id]})
                     group.save();
                 } else {
                     await api_v1_group_group.findOneAndUpdate({name:'undefined',type:req.body.type},{ $addToSet: { user_obids : req.body._id} }, {new: true }).exec()

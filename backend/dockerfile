@@ -5,5 +5,5 @@ COPY package*.json /usr/src/app/
 RUN npm install
 RUN npm install express-graphql
 COPY . /usr/src/app
-CMD [ "npm", "start" ]
+CMD [ "node", "index.js" ]
 EXPOSE 3000

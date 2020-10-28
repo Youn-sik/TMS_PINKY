@@ -26,6 +26,7 @@ const api_v1_person_user_Schema = new mongoose.Schema({
     guest_purpose : { type: String },
     count : { type : Number, default: 0},
     gender : { type : Number },
+    authority : { type: String },
     prompt : { type: String },
     type : { type : Number },
     create_at : { type: String, default: moment().format('YYYY-MM-DD HH:mm:ss') },

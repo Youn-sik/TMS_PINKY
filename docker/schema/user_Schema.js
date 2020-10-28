@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
     user_id : { type: String },
     password : { type: String },
     mobile : { type: String },
+    authority : { type: String },
     count : { type : Number, default: 0},
     name : { type: String },
     company_id : { type: String },

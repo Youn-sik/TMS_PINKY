@@ -444,7 +444,7 @@ module.exports = {
         try {
             let insert_array = [];
             let camera = await Camera.findOne( { serial_number : json.stb_sn });
-            // let Users = await User.find()
+            let Users = await User.find()
             if(camera) {
                 json.values.forEach(async function(element){
                     if(element.avatar_distance === undefined) {
@@ -511,7 +511,7 @@ module.exports = {
                 }  
 
                 let folder_date_path = "/uploads/accesss/temp/" + moment().format('YYYYMMDD');
-                let file_name = json.stb_sn +"_"+element.avatar_type+ "_"+element.avatar_temperature+"_"+ + moment().format('YYYYMMDDHHmmss') + ".png";
+                let file_name = json.stb_sn +"_"+userName+"_"+element.avatar_type+ "_"+element.avatar_temperature+"_"+ + moment().format('YYYYMMDDHHmmss') + ".png";
                 let file_path = site.base_server_document + folder_date_path + "/" + json.stb_sn + "/";
                 let upload_url = "http://"+server_ip+ ':3000' + folder_date_path + "/" + json.stb_sn + "/" + file_name;
                 let buff = Buffer.from(element.avatar_file, 'base64');
@@ -531,6 +531,7 @@ module.exports = {
                     stb_obid : camera._id,
                     stb_name : camera.name,
                     stb_location : camera.location,
+                    authority: camera.authority,
                     name : userName,
                 }
 

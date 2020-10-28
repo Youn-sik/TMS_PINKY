@@ -128,6 +128,7 @@ const AddDevice = props => {
     await axios.post(base_url + '/gateway', {
       ...gate,
       [port]: parseInt(gate.port),
+      authority : props.authority,
       account: props.user_id
     });
     window.alert('게이트웨이 등록 완료.');

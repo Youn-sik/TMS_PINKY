@@ -176,7 +176,7 @@ const AddStranger = props => {
   };
 
   const getGroups = async () => {
-    let result = await axios(base_url + '/group');
+    let result = await axios(base_url + '/group?auth='+props.authority);
     let filteredGroups = result.data.filter(group => group.type === type);
     setGroups(filteredGroups);
     setAllGroups(result.data);
@@ -250,7 +250,9 @@ const AddStranger = props => {
       else if (userInfo.location === '') alert('근무지를 입력해주세요');
       else if (userInfo.position === '') alert('직급을 입력해주세요');
       else if (userInfo.department_id === '') alert('부서를 입력해주세요');
-      else {
+      else if(selectedGroup._id) {
+        alert('그룹을 선택해주세요')
+      } else {
         setLoading(true);
         let result = await axios.post(base_url + '/user?type=stranger', {
           name: userInfo.name,
@@ -264,6 +266,7 @@ const AddStranger = props => {
           position: userInfo.position,
           mobile: userInfo.mobile,
           mail: userInfo.mail,
+          authority : props.authority,
           type: type,
           groups_obids: [
             selectedGroup._id ? selectedGroup._id : undefined
@@ -294,6 +297,7 @@ const AddStranger = props => {
             base64 === undefined ? userObject.avatar_file_url : undefined,
           stranger_id: userObject._id,
           mobile: userInfo.mobile,
+          authority : props.authority,
           mail: userInfo.mail,
           type: type,
           groups_obids: [
@@ -320,6 +324,7 @@ const AddStranger = props => {
           stranger_id: userObject._id,
           mobile: userInfo.mobile,
           mail: userInfo.mail,
+          authority : props.authority,
           type: type,
           groups_obids: [
             selectedGroup._id ? selectedGroup._id : groups[groups.length - 1]

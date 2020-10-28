@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import Pagination from '@material-ui/lab/Pagination';
@@ -144,6 +144,17 @@ const UsersTable = props => {
     setUserSearch(e.target.value);
   };
 
+  useEffect(() => {
+    if(users.length > 0) {
+      setPage(1);
+    }
+  },[users])
+
+  useEffect(() => {
+    setSelectedObject([])
+    setSelected([])
+  },[page])
+
   const isSelected = _id => selected.indexOf(_id) !== -1;
 
   return (
@@ -238,7 +249,7 @@ const UsersTable = props => {
                 <TableCell padding="checkbox">
                   <Checkbox
                     checked={
-                      selected.length === users.length && users.length !== 0
+                      selected.length === 7
                         ? true
                         : false
                     }

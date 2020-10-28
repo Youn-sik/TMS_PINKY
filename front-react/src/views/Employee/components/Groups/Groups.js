@@ -143,10 +143,14 @@ const Groups = props => {
     setGroupName('');
     let parent =
       Object.keys(clickedNode).length === 0 || topGroupCheck ? undefined : clickedNode;
-    console.log(topGroupCheck,parent);
+    if(groupName === '') {
+      alert('이름을 입력해주세요.')
+      return 0;
+    }
     let result = await axios.post(base_url + '/group', {
       name: groupName,
       type: 1,
+      authority : props.authority,
       parent,
       account: props.user_id
     });
@@ -214,7 +218,7 @@ const Groups = props => {
         <Typography style={{ width: '100%' }} variant="h5" component="h2">
           그룹 목록
         </Typography>
-        {clickedNode.name !== undefined && clickedNode.name !== 'undefined' ? (
+        {clickedNode.name !== undefined ? (
           <Button
             variant="contained"
             className={classes.uploadButton}
