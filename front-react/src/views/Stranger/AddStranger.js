@@ -250,7 +250,7 @@ const AddStranger = props => {
       else if (userInfo.location === '') alert('근무지를 입력해주세요');
       else if (userInfo.position === '') alert('직급을 입력해주세요');
       else if (userInfo.department_id === '') alert('부서를 입력해주세요');
-      else if(selectedGroup._id) {
+      else if(!selectedGroup._id) {
         alert('그룹을 선택해주세요')
       } else {
         setLoading(true);
