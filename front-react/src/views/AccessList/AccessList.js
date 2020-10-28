@@ -412,18 +412,18 @@ const AccessList = props => {
       cancelToken: source.token
     });
 
-    let _pages = await axios.get(base_url + 
-      `/access?auth=${props.authority}&searchType=${searchType}&search=${search}&type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&search=${search}&avatar_type=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
-      cancelToken: source.token
-    });
+    // let _pages = await axios.get(base_url + 
+    //   `/access?auth=${props.authority}&searchType=${searchType}&search=${search}&type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&search=${search}&avatar_type=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+    //   cancelToken: source.token
+    // });
 
-    let count = _pages.data[0].count;
+    // let count = _pages.data[0].count;
 
-    let _temp = parseInt(count/rowsPerPage);
-    if(count%rowsPerPage)
-      _temp++;
+    // let _temp = parseInt(count/rowsPerPage);
+    // if(count%rowsPerPage)
+    //   _temp++;
 
-    setPages(_temp);
+    // setPages(_temp);
 
     setLoading(false);
     setAccesses(result.data);

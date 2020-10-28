@@ -142,7 +142,18 @@ const AccessesTable = props => {
                     '이름'
                   )}
                 </TableCell>
-                <TableCell>타입</TableCell>
+                <TableCell>{accesses.length > 0 ? (
+                    <TableSortLabel
+                      active={activeType === 'avatar_type'}
+                      direction={sort}
+                      onClick={() => {
+                        createSortHandler('avatar_type');
+                      }}>
+                      타입
+                    </TableSortLabel>
+                  ) : (
+                    '타입'
+                  )}</TableCell>
                 <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel
@@ -373,7 +384,7 @@ const AccessesTable = props => {
                               : '정상 체온'}
                           </TableCell>
                           <TableCell>{access.access_time}</TableCell>
-                          {/* <TableCell>
+                          <TableCell>
                             {
                               access.avatar_type === 3 ? 
                               <RouterLink
@@ -391,7 +402,7 @@ const AccessesTable = props => {
                                 </Button>
                               </RouterLink> : null
                             }
-                          </TableCell> */}
+                          </TableCell>
                         </TableRow>
                       );
                     }
