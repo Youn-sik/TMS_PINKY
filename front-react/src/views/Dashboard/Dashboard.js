@@ -194,7 +194,7 @@ const Dashboard = props => {
     client.on('message', function(topic, message) {
       if (topic.indexOf('/access/realtime/result/') > -1) {
         let result = JSON.parse(message.toString()).values
-        if(result[0].authority === props.authority)
+        // if(result[0].authority === props.authority)
           _setRealtime(result);
       }
     });

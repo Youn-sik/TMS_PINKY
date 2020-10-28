@@ -56,14 +56,19 @@ const Settings = props => {
   };
 
   const clickEdit = async () => {
-    await axios.put(base_url + '/account/' + props.user_id, {
-      tempLimit,
-      tempType
-    });
-    await axios.put(base_url + '/schedule', {
-      term
-    });
-    alert('수정 되었습니다.');
+    if(isNaN(tempLimit) || isNaN(term)) {
+      alert("숫자만 입력해주세요")
+    } else {
+      await axios.put(base_url + '/account/' + props.user_id, {
+        tempLimit,
+        tempType
+      });
+      await axios.put(base_url + '/schedule', {
+        term
+      });
+      alert('수정 되었습니다.');
+    }
+    
   };
 
   const getTerm = async () => {
