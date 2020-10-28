@@ -173,13 +173,13 @@ const AccessList = props => {
     });
 
     setLoading(false);
-    setPage(1);
-
-    let count = _pages.data[0].count;
-
-    setAccessCount(count)
 
     if(_pages.data.length !== 0){
+      setPage(1);
+
+      let count = _pages.data[0].count;
+
+      setAccessCount(count)
       let temp = parseInt(count/rowsPerPage);
 
       if(count%rowsPerPage)

@@ -30,7 +30,7 @@ Promise.all([
 router.get('/',async function(req, res) {
     try {
         let get_data
-        let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.quth+"$");
+        let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$");
         if(req.query.group_obid) {
             get_data = await api_v1_person_user.find({type:req.query.type})
             .regex('authority',auth)
@@ -73,6 +73,7 @@ router.post('/',async function(req, res) {
             add.face_detection = overlap_check.face_detection;
         } else {
             let detections
+            console.log(req.body.avatar_file)
             if(req.body.avatar_file === undefined) {
                 let imageDir = await canvas.loadImage(req.body.avatar_file_url)
                 detections = await faceapi.detectAllFaces(imageDir)
@@ -121,17 +122,6 @@ router.post('/',async function(req, res) {
         if(add.type === 1) type = '사원';
         else if(add.type === 2) type = '방문자'
         else if(add.type === 5) type = '블랙리스트'
-        const history = new History({
-            avatar_file : add.avatar_file,
-            avatar_contraction_data : add.avatar_contraction_data,
-            avatar_file_checksum : add.avatar_file_checksum,
-            avatar_file_url : add.avatar_file_url,
-            name : add.name,
-            type : add.type,
-            create_at : moment().format('YYYY-MM-DD HH:mm:ss'),
-            create_ut : Date.now(),
-            action : '생성'
-        });
         const operation = new Operation({
             id:req.body.account,
             action: '유저 생성',
@@ -139,7 +129,6 @@ router.post('/',async function(req, res) {
             description : add.name + ' ' + type +'에 추가'
         })
         operation.save();
-        history.save();
         add.save();
         res.send(add);
     } catch (err) {

@@ -17,12 +17,14 @@ router.get('/',async function(req, res) {
         let date = new RegExp(moment().format('YYYY-MM-DD'));
         let today = new RegExp(moment().format('YYYY-MM-DD'));
         let week = [moment().subtract(6, 'days').format('YYYY-MM-DD')+" 00:00:00",moment().format('YYYY-MM-DD')+" 23:59:59"]
+        let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$")
         if(req.query.type === 'todayStatistics') {
             employee = await api_v1_person_access.aggregate([
                 {
                     $match: {
                         avatar_type : 1,
-                        access_time : {$regex:date}
+                        access_time : {$regex:date},
+                        authority : {$regex:auth}
                     }
                 },
                 {
@@ -34,7 +36,8 @@ router.get('/',async function(req, res) {
                 {
                     $match: {
                         avatar_type : 4,
-                        access_time : {$regex:date}
+                        access_time : {$regex:date},
+                        authority : {$regex:auth}
                     }
                 },
                 {
@@ -46,7 +49,8 @@ router.get('/',async function(req, res) {
                 {
                     $match: {
                         avatar_type : 3,
-                        access_time : {$regex:date}
+                        access_time : {$regex:date},
+                        authority : {$regex:auth}
                     }
                 },
                 {
@@ -80,7 +84,8 @@ router.get('/',async function(req, res) {
                 {
                     $match: {
                         avatar_type : 1,
-                        access_time : { $gte:week[0],$lte: week[1] }
+                        access_time : { $gte:week[0],$lte: week[1] },
+                        authority : {$regex:auth}
                     }
                 },
                 {
@@ -92,7 +97,8 @@ router.get('/',async function(req, res) {
                 {
                     $match: {
                         avatar_type : 4,
-                        access_time : { $gte:week[0],$lte: week[1] }
+                        access_time : { $gte:week[0],$lte: week[1] },
+                        authority : {$regex:auth}
                     }
                 },
                 {
@@ -104,7 +110,8 @@ router.get('/',async function(req, res) {
                 {
                     $match: {
                         avatar_type : 3,
-                        access_time : { $gte:week[0],$lte: week[1] }
+                        access_time : { $gte:week[0],$lte: week[1] },
+                        authority : {$regex:auth}
                     }
                 },
                 {
@@ -172,7 +179,8 @@ router.get('/',async function(req, res) {
                 {
                     $match: {
                         access_time : {$regex:today},
-                        avatar_type : 1
+                        avatar_type : 1,
+                        authority : {$regex:auth}
                     }
                 },
                 {
@@ -198,7 +206,8 @@ router.get('/',async function(req, res) {
         } else if(req.query.type === 'attendance') {
             get_data = await api_v1_person_access.aggregate([
                 {
-                    $match: {avatar_type : 1}
+                    $match: {avatar_type : 1},
+                    authority : {$regex:auth}
                 },
                 {
                     $project : {avatar_file:0,avatar_file_checksum: 0},
@@ -210,6 +219,7 @@ router.get('/',async function(req, res) {
         } else if(req.query.type === 'dateCount') {
             let date = req.query.date.split('/');
             let search = req.query.search;
+            console.log(search)
             let avatar_type = parseInt(req.query.avatar_type);
             let tempType = req.query.tempType;
             let avatar_temperature = req.query.avatar_temperature;
@@ -372,7 +382,9 @@ router.get('/',async function(req, res) {
                 stb_location = search
             } else if(req.query.searchType === 'stb_sn') {
                 stb_sn = search
-            }
+            } else if(req.query.searchType === 'name') {
+                name = search
+            } 
 
             if(req.query.execPage) {
                 page = parseInt(req.query.execPage) - 1

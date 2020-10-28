@@ -285,7 +285,9 @@ const AddStranger = props => {
       else if (userInfo.guest_company === '') alert('회사명을 입력해주세요');
       else if (userInfo.guest_purpose === '') alert('방문 목적을 입력해주세요');
       else if (userInfo.position === '') alert('직급을 입력해주세요');
-      else {
+      else if(!selectedGroup._id) {
+        alert('그룹을 선택해주세요')
+      } else {
         await axios.post(base_url + '/user?type=stranger', {
           name: userInfo.name,
           gender: userInfo.gender,
@@ -312,7 +314,9 @@ const AddStranger = props => {
       if (userInfo.name === '') alert('이름을 입력해주세요');
       else if (userInfo.location === '') alert('장소를 입력해주세요');
       else if (userInfo.position === '') alert('사유를 입력해주세요');
-      else {
+      else if(!selectedGroup._id) {
+        alert('그룹을 선택해주세요')
+      } else {
         await axios.post(base_url + '/user?type=stranger', {
           name: userInfo.name,
           gender: userInfo.gender,

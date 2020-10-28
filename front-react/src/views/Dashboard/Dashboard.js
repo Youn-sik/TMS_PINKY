@@ -68,7 +68,7 @@ const Dashboard = props => {
   const [attendanceData, setAttendanceData] = useState([]);
 
   async function countWeekAccess() {
-    let result = await axios.get(base_url + '/access?type=weekStatistics');
+    let result = await axios.get(base_url + '/access?type=weekStatistics&auth='+props.authority);
     setLoading(false);
     result.data.map(i => {
       if (i._id.type === 1) setEmployeeWeek(i.count);
@@ -80,7 +80,7 @@ const Dashboard = props => {
   }
 
   async function countAccess() {
-    let result = await axios.get(base_url + '/access?type=todayStatistics');
+    let result = await axios.get(base_url + '/access?type=todayStatistics&auth='+props.authority);
     setLoading(false);
     result.data.map(i => {
       if (i._id.type === 1) setEmployee(i.count);
@@ -106,7 +106,7 @@ const Dashboard = props => {
   }
 
   async function attendanceChart() {
-    let result = await axios.get(base_url + '/access?type=todayAttendance');
+    let result = await axios.get(base_url + '/access?type=todayAttendance&auth='+props.authority);
     setAttendanceData(result.data);
     result.data.map(i => {
       if (i.access_time.split(' ')[1] <= '09:00:00') {
@@ -118,12 +118,12 @@ const Dashboard = props => {
     });
   }
   async function device_errors() {
-    let result = await axios.get(base_url + '/glogs?type=limit5errors');
+    let result = await axios.get(base_url + '/glogs?type=limit5errors&auth='+props.authority);
     setErrors(result.data);
   }
 
   async function temp_alerts() {
-    let result = await axios.get(base_url + '/access?type=temperature&auth=admin');
+    let result = await axios.get(base_url + '/access?type=temperature&auth='+props.authority);
     setTemp(result.data);
   }
 
