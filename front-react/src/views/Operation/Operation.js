@@ -41,9 +41,10 @@ const Operation = props => {
   const [loading, setLoading] = useState(true);
   const [activeType, setActiveType] = useState('');
   const [search, setSearch] = useState('');
+  const [searchType, setSearchType] = useState('');
 
   const getOper = useCallback(async () => {
-    let result = await axios.get(base_url + '/operation');
+    let result = await axios.get(base_url + `/operation?date=${date[0]}/${date[1]}`);
     result.data.reverse();
     // setOriginUsers(result.data)
     setAllOper(result.data);
@@ -55,16 +56,22 @@ const Operation = props => {
       )
     );
     setLoading(false);
-    setDate([
-      moment()
-        .locale('ko')
-        .format('YYYY-MM-DD'),
-      moment()
-        .locale('ko')
-        .format('YYYY-MM-DD')
-    ]);
-    setSearchVal('');
   }, [date]);
+
+  const searchOper = async () => {
+    let result = await axios.get(base_url + `/operation?date=${date[0]}/${date[1]}&search=${search}&searchType=${searchType}`);
+    result.data.reverse();
+    // setOriginUsers(result.data)
+    setAllOper(result.data);
+    setOper(
+      result.data.filter(
+        user =>
+          user.date.split(' ')[0] >= date[0] &&
+          user.date.split(' ')[0] <= date[1]
+      )
+    );
+    setLoading(false);
+  }
 
   const sortAccesses = (type, headerType) => {
     setActiveType(headerType);
@@ -135,16 +142,16 @@ const Operation = props => {
     setSearchVal(e.target.value);
   };
 
-  useEffect(() => {}, [searchVal]);
+  useEffect(() => {
+    getOper();
+  }, [date]);
 
   const handleDate = val => {
     setDate(val);
-    let date_oper = allOper.filter(
-      user =>
-        user.date.split(' ')[0] >= val[0] && user.date.split(' ')[0] <= val[1]
-    );
-    setOper(date_oper);
   };
+
+
+  
 
   return (
     <div className={classes.root}>

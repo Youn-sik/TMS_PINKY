@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
   },
   chartContainer: {
     position: 'relative',
-    // height: '300px',
+    height: '600px',
     width: '100%'
   },
   stats: {
@@ -87,7 +87,11 @@ const TimeAccess = props => {
     scaleStartValue : 0 ,
     responsive: true,
     animation: false,
+    cutoutPercentage: 80,
+    layout: { padding: 0 },
+    maintainAspectRatio: false,
     onHover : function(e) {
+      console.log(e.relatedTarget)
       if(e.type === 'mouseout')
         setPositionAndData({
           accessCount: 0,
@@ -95,7 +99,7 @@ const TimeAccess = props => {
     },
     tooltips: {
       enabled: false,
-      custom: tooltipModel => {
+      custom: (tooltipModel) => {
         // if chart is not defined, return early
         let chart = _chartRef.current;
         if (!chart) {
@@ -186,7 +190,7 @@ const TimeAccess = props => {
 
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
-      <CardHeader title="단말별 출입 통계" />
+      <CardHeader title="출입 통계" />
       <Divider />
       <CardContent className={classes.cardContent}>
         <Grid
@@ -201,11 +205,11 @@ const TimeAccess = props => {
           </div>
           {tooltip.accessCount !== 0 ? (
             <div
-              style={{
-                position: 'absolute',
-                top: tooltip.top,
-                left: tooltip.left
-              }}>
+            style={{
+              position: 'absolute',
+              top: tooltip.top,
+              left: tooltip.left
+            }}>
               <div className="arrow_box">
                 <div style={{ color: 'white' }}>
                   출입자 수: {tooltip.accessCount}명<br />

@@ -110,8 +110,8 @@ const Device = props => {
   ];
 
   return (
-    <Card {...rest} className={clsx(classes.root, className)}>
-      <CardHeader title="단말기 상태" />
+    <Card {...rest} style={{height:"540px"}} className={clsx(classes.root, className)}>
+      <CardHeader title="단말 상태" />
       <Divider />
       <CardContent className={classes.cardContent}>
         <Grid
@@ -135,7 +135,7 @@ const Device = props => {
           )}
           <div className={classes.stats}>
             {devices.map(device => (
-              <div className={classes.device} key={device.title}>
+              <div className={classes.device} style={{cursor: 'pointer'}} onClick={() => {props.history.push('device/list');}} key={device.title}>
                 <span className={classes.deviceIcon}>{device.icon}</span>
                 <Typography variant="body1">{device.title}</Typography>
                 <Typography style={{ color: device.color }} variant="h2">

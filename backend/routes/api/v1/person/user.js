@@ -20,13 +20,6 @@ var moment = require('moment');
 require('moment-timezone'); 
 moment.tz.setDefault("Asia/Seoul"); 
 
-Promise.all([
-    faceapi.nets.ssdMobilenetv1.loadFromDisk(`${__dirname}/face-models/`),
-    faceapi.nets.faceRecognitionNet.loadFromDisk(`${__dirname}/face-models/`),
-    faceapi.nets.faceLandmark68Net.loadFromDisk(`${__dirname}/face-models/`),
-    faceapi.env.monkeyPatch({ Canvas, Image, ImageData,fetch: fetch }),
-])
-
 router.get('/',async function(req, res) {
     try {
         let get_data
@@ -67,12 +60,7 @@ router.post('/',async function(req, res) {
             add.face_detection = overlap_check.face_detection;
         } else {
             let detections
-            if(req.body.avatar_file === undefined) {
-                let imageDir = await canvas.loadImage(req.body.avatar_file_url)
-                detections = await faceapi.detectAllFaces(imageDir)
-                .withFaceLandmarks()
-                .withFaceDescriptors();
-            } else {
+            if(req.body.avatar_file !== undefined) {
                 add.avatar_file_url = 'http://'+req.headers.host+'/image/'+add._id+'profile.jpg';
                 fs.writeFileSync('/var/www/backend/image/'+add._id+'profile.jpg',req.body.avatar_file,'base64')
                 let imageDir = await canvas.loadImage('/var/www/backend/image/'+add._id+'profile.jpg')
@@ -87,9 +75,6 @@ router.post('/',async function(req, res) {
                 })
                 return false;
             }
-            asyncJSON.stringify(detections[0].descriptor,function(err, jsonValue) {
-                add.face_detection = jsonValue;
-            })
 
             add.avatar_file_checksum = "avatar_file_checksum";
         }

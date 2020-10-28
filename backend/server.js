@@ -10,10 +10,11 @@ const config = require("./config/config");
 // Connect to DB
 mongoose
 	.connect('mongodb://kool:master@127.0.0.1:27017/cloud40',{ 
-		useNewUrlParser: true, 
+		useNewUrlParser: true ,
 		useUnifiedTopology: true,
-		useCreateIndex: true,
-		poolSize: 8,
+		poolSize:8,
+		useFindAndModify: false,
+		socketTimeoutMS: 1000*60*10, //10분
 	})
 	.then(() => console.log('MongoDB connected...'))
 	.catch(err => console.log(err))

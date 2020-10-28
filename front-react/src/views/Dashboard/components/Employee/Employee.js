@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { Card, CardContent, Grid, Typography, Avatar } from '@material-ui/core';
-import PermIdentity from '@material-ui/icons/PermIdentity';
+import Person from '@material-ui/icons/Person';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -54,7 +54,7 @@ const Employee = props => {
               color="textSecondary"
               gutterBottom
               variant="body2">
-              사원 출입
+              금일 출입
             </Typography>
             <Typography variant="h3">{props.count}명</Typography>
           </Grid>
@@ -65,7 +65,7 @@ const Employee = props => {
                 props.history.push('access/records');
               }}
               className={classes.avatar}>
-              <PermIdentity className={classes.icon} />
+              <Person className={classes.icon} />
             </Avatar>
           </Grid>
         </Grid>

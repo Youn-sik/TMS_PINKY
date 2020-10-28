@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
-import { Card, CardHeader, CardContent, Divider } from '@material-ui/core';
+import { Card, CardHeader, CardContent, Divider,Button } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -34,27 +34,27 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const DeviceStats = props => {
-  const { chartData, className, date, ...rest } = props;
+  const { chartData,clickAccessExport, className, date, ...rest } = props;
 
   const classes = useStyles();
 
   const data = {
     datasets: [
-      {
-        label: '사원',
-        data: chartData.employee,
-        backgroundColor: ['rgba(255, 99, 132, 0.2)'],
-        borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(255, 99, 132, 1)',
-          'rgba(255, 99, 132, 1)',
-          'rgba(255, 99, 132, 1)',
-          'rgba(255, 99, 132, 1)',
-          'rgba(255, 99, 132, 1)',
-          'rgba(255, 99, 132, 1)'
-        ],
-        borderWidth: 2
-      },
+      // {
+      //   label: '정상 온도',
+      //   data: chartData.normal,
+      //   backgroundColor: ['rgba(255, 99, 132, 0.2)'],
+      //   borderColor: [
+      //     'rgba(255, 99, 132, 1)',
+      //     'rgba(255, 99, 132, 1)',
+      //     'rgba(255, 99, 132, 1)',
+      //     'rgba(255, 99, 132, 1)',
+      //     'rgba(255, 99, 132, 1)',
+      //     'rgba(255, 99, 132, 1)',
+      //     'rgba(255, 99, 132, 1)'
+      //   ],
+      //   borderWidth: 2
+      // },
       // {
       //   label: '방문자',
       //   data: chartData.visitor,
@@ -70,32 +70,33 @@ const DeviceStats = props => {
       //   ],
       //   borderWidth: 2
       // },
+      // {
+      //   label: '비정상 온도',
+      //   data: chartData.abnormal,
+      //   backgroundColor: ['rgba(255, 159, 64, 0.2)'],
+      //   borderColor: [
+      //     'rgba(255, 159, 64, 1)',
+      //     'rgba(255, 159, 64, 1)',
+      //     'rgba(255, 159, 64, 1)',
+      //     'rgba(255, 159, 64, 1)',
+      //     'rgba(255, 159, 64, 1)',
+      //     'rgba(255, 159, 64, 1)',
+      //     'rgba(255, 159, 64, 1)'
+      //   ],
+      //   borderWidth: 2
+      // },
       {
-        label: '미등록자',
-        data: chartData.stranger,
-        backgroundColor: ['rgba(255, 159, 64, 0.2)'],
+        label: '출입자 수',
+        data: chartData.all,
+        backgroundColor: ['rgba(255, 99, 132, 0.2)'],
         borderColor: [
-          'rgba(255, 159, 64, 1)',
-          'rgba(255, 159, 64, 1)',
-          'rgba(255, 159, 64, 1)',
-          'rgba(255, 159, 64, 1)',
-          'rgba(255, 159, 64, 1)',
-          'rgba(255, 159, 64, 1)',
-          'rgba(255, 159, 64, 1)'
-        ],
-        borderWidth: 2
-      },
-      {
-        label: '블랙리스트',
-        data: chartData.black,
-        backgroundColor: ['rgba(255, 206, 86, 0.2)'],
-        borderColor: [
-          'rgba(255, 206, 86, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(255, 206, 86, 1)'
+          'rgba(255, 99, 132, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(255, 99, 132, 1)'
         ],
         borderWidth: 2
       }
@@ -127,7 +128,17 @@ const DeviceStats = props => {
 
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
-      <CardHeader title="단말별 출입 통계" />
+      <CardHeader title={
+            <div>
+                <span>단말별 출입자 통계</span>
+                <Button
+                size="small"
+                style={{float: 'right',marginRight:'10px' }} 
+                variant="contained" color="primary" onClick={clickAccessExport}>
+                  엑셀로 다운로드
+                </Button>
+            </div>
+          }/>
       <Divider />
       <CardContent className={classes.cardContent}>
         <Grid

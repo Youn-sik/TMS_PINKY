@@ -9,6 +9,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import 'moment/locale/ko';
 import { DeviceStats, DeviceError } from './components';
 import {base_url} from 'server.json';
+import Button from '@material-ui/core/Button';
+import { saveAs } from 'file-saver'
+import ExcelJS from 'exceljs/dist/es5/exceljs.browser.js'
 // eslint-disable-next-line no-extend-native
 Date.prototype.yyyymmdd = function() {
   var yyyy = this.getFullYear().toString();
@@ -71,6 +74,67 @@ const Statistics = props => {
 
     return temp;
   };
+
+  const clickAccessExport = async () => {
+      let dates = [
+        '',
+        date[0],
+        dateChange(date[0], 1),
+        dateChange(date[0], 2),
+        dateChange(date[0], 3),
+        dateChange(date[0], 4),
+        dateChange(date[0], 5),
+        date[1]
+      ];
+
+      const wb = new ExcelJS.Workbook()
+
+      const ws = wb.addWorksheet()
+
+      let data = JSON.parse(JSON.stringify(peopleData));
+
+      data.all.unshift('전체')
+      
+      ws.addRow(dates)
+      ws.addRow(data.all)
+
+      const buf = await wb.csv.writeBuffer()
+
+      saveAs(new Blob(["\uFEFF"+buf]), 'statistics '+moment().format('YYYY-MM-DD_HH-mm-ss')+'.csv',{type: 'text/plain;charset=utf-8'})
+  }
+
+  const clickErrorExport = async () => {
+    
+    let dates = [
+      '',
+      date[0],
+      dateChange(date[0], 1),
+      dateChange(date[0], 2),
+      dateChange(date[0], 3),
+      dateChange(date[0], 4),
+      dateChange(date[0], 5),
+      date[1]
+    ];
+
+    const wb = new ExcelJS.Workbook()
+
+    const ws = wb.addWorksheet()
+
+    let data = JSON.parse(JSON.stringify(errorData));
+
+    // data.cpu.unshift('cpu 부족')
+    data.disconnect.unshift('연결 끊김')
+    data.memory.unshift('메모리 부족')
+    
+    ws.addRow(dates)
+    // ws.addRow(data.disconnect)
+    ws.addRow(data.cpu)
+    ws.addRow(data.memory)
+
+    const buf = await wb.csv.writeBuffer()
+
+    saveAs(new Blob([buf]), 'statistics '+moment().format('YYYY-MM-DD_HH-mm-ss')+'.csv')
+  }
 
   // error.log_no === 3 ? "연결 끊김" :
   // error.log_no === 32 ? "CPU과다 사용" : "메모리 과다 사용"
@@ -221,6 +285,23 @@ const Statistics = props => {
     getDevices();
   },[])
 
+  const locale = {
+    sunday: '일',
+    monday: '월',
+    tuesday: '화',
+    wednesday: '수',
+    thursday: '목',
+    friday: '금',
+    saturday: '토',
+    ok: '적용',
+    today: '오늘',
+    yesterday: '어제',
+    hours: '시간',
+    minutes: '분',
+    seconds: '초',
+    last7Days: '일주일전'
+  }
+
   return (
     <div className={classes.root}>
       {loading ? (
@@ -237,6 +318,7 @@ const Statistics = props => {
           <Grid item lg={12} md={12} xl={12} xs={12}>
             <IntlProvider locale={kor}>
               <DateRangePicker
+                locale={locale}
                 cleanable={false}
                 disabledDate={allowedDays(7)}
                 defaultValue={[
@@ -267,6 +349,7 @@ const Statistics = props => {
           <Grid item lg={12} md={12} xl={12} xs={12}>
             <DeviceStats
               chartData={peopleData}
+              clickAccessExport={clickAccessExport}
               date={[
                 date[0],
                 dateChange(date[0], 1),
@@ -278,9 +361,10 @@ const Statistics = props => {
               ]}
             />
           </Grid>
-          <Grid item lg={12} md={12} xl={12} xs={12}>
+          {/* <Grid item lg={12} md={12} xl={12} xs={12}>
             <DeviceError
               chartData={errorData}
+              clickErrorExport={clickErrorExport}
               date={[
                 date[0],
                 dateChange(date[0], 1),
@@ -291,7 +375,7 @@ const Statistics = props => {
                 date[1]
               ]}
             />
-          </Grid>
+          </Grid> */}
         </Grid>
       )}
     </div>

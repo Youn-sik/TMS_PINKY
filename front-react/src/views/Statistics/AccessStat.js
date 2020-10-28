@@ -6,9 +6,12 @@ import { DateRangePicker, IntlProvider } from 'rsuite';
 import kor from 'rsuite/lib/IntlProvider/locales/ko_KR';
 import moment from 'moment';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Button from '@material-ui/core/Button';
 import 'moment/locale/ko';
 import { TimeAccess } from './components';
 import {base_url} from 'server.json';
+import { saveAs } from 'file-saver'
+import ExcelJS from 'exceljs/dist/es5/exceljs.browser.js'
 // eslint-disable-next-line no-extend-native
 Date.prototype.yyyymmdd = function() {
   var yyyy = this.getFullYear().toString();
@@ -43,6 +46,23 @@ const AccessStat = props => {
   const [accesses, setAccesses] = useState([]);
   const [chartData, setChartData] = useState({});
 
+  const locale = {
+    sunday: '일',
+    monday: '월',
+    tuesday: '화',
+    wednesday: '수',
+    thursday: '목',
+    friday: '금',
+    saturday: '토',
+    ok: '적용',
+    today: '오늘',
+    yesterday: '어제',
+    hours: '시간',
+    minutes: '분',
+    seconds: '초',
+    last7Days: '일주일전'
+  }
+
   async function getAccesses() {
     setLoading(true);
     let result = await axios.get(base_url + `/access?type=deviceGroupAccesses&device=${device}&date=${date[0]}/${date[1]}`);
@@ -68,20 +88,31 @@ const AccessStat = props => {
             data[index] += i[time]
           })
           
-          for(let i = 0; i<temp.length -1 ; i++){
-            if(temp[i][time].split('|')[1] > temp[i+1][time].split('|')[1]) {
-              // console.log(temp[i][time].split('|')[1],temp[i+1][time].split('|')[1])
-              let maxData = temp[i][time].split('|')
+          if(access.length === 1) {
+            let maxData = temp[0][time].split('|')
               maxTemp[index] = maxData[1]
               accessData[index] = {
                 avatar_file_url : maxData[3],
                 avatar_type : maxData[2],
                 name : maxData[0]
               }
-            } else {
-              maxTemp[index] = temp[i+1][time].split('|')[1]
+          } else {
+            for(let i = 0; i<temp.length -1 ; i++){
+              if(temp[i][time].split('|')[1] > temp[i+1][time].split('|')[1]) {
+                // console.log(temp[i][time].split('|')[1],temp[i+1][time].split('|')[1])
+                let maxData = temp[i][time].split('|')
+                maxTemp[index] = maxData[1]
+                accessData[index] = {
+                  avatar_file_url : maxData[3],
+                  avatar_type : maxData[2],
+                  name : maxData[0]
+                }
+              } else {
+                maxTemp[index] = temp[i+1][time].split('|')[1]
+              }
             }
           }
+          
           
         })
       } else {
@@ -98,8 +129,13 @@ const AccessStat = props => {
           }
         })
       }
+    } else {
+      ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
+        .forEach(function(time,index) {
+          labels.push(time.length === 1 ? '0'+time : time)
+        })
     }
-    
+
     if(access.length > 0) {
       setChartData({
         labels,
@@ -110,7 +146,6 @@ const AccessStat = props => {
     } else {
       setChartData({})
     }
-    
     
 
     // let labels = [];
@@ -166,6 +201,44 @@ const AccessStat = props => {
       .format('YYYY-MM-DD');
   };
 
+  const clickExport = async () => {
+
+    const wb = new ExcelJS.Workbook()
+
+    const ws = wb.addWorksheet()
+
+    let data = JSON.parse(JSON.stringify(accesses));
+    let time = ['시간'] ;
+    let count = ['출입자수'];
+    let maxTemp = ['최고 발열자 온도'];
+    let maxImg = ['최고 발열자 사진',' '];
+    data.map((i, index) => {
+      time.push(i._id)
+      count.push(i.count)
+      maxTemp.push(i.maxTemp)
+
+      if(i.maxBase64) {
+        let image = wb.addImage({
+          base64: i.maxBase64,
+          extension: 'png'
+        })
+        ws.addImage(image,{
+          tl: { col: 1.5+index, row: 3 },
+          br: { col: 2+index, row: 5.5 }
+        })
+      }
+    });
+    
+    ws.addRow(time)
+    ws.addRow(count)
+    ws.addRow(maxTemp)
+    ws.addRow(maxImg)
+
+    const buf = await wb.csv.writeBuffer()
+
+    saveAs(new Blob(["\uFEFF"+buf]), 'statistics '+moment().format('YYYY-MM-DD_HH-mm-ss')+'.csv',{type: 'text/plain;charset=utf-8'})
+  }
+
   const handleDeviceChange = e => {
     setDevice(e.target.value);
   };
@@ -204,6 +277,7 @@ const AccessStat = props => {
           <Grid item lg={12} md={12} xl={12} xs={12}>
             <IntlProvider locale={kor}>
               <DateRangePicker
+                locale={locale}
                 cleanable={false}
                 oneTap
                 showOneCalendar
@@ -224,6 +298,12 @@ const AccessStat = props => {
                 <MenuItem value={device.serial_number}>{device.name}</MenuItem>
               ))}
             </Select>
+            <Button
+            size="small"
+            style={{float: 'right',marginRight:'10px' }} 
+            variant="contained" color="primary" onClick={clickExport}>
+              엑셀로 다운로드
+            </Button>
           </Grid>
           <Grid item lg={12} md={12} xl={12} xs={12}>
             <TimeAccess date={date} chartData={chartData}></TimeAccess>

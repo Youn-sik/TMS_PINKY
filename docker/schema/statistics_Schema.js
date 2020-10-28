@@ -6,13 +6,6 @@ const statisticsSchema = new mongoose.Schema({
     serial_number : { type : String },
     access_date : { type : String },
     all_count : { type: Number ,default:0},
-    employee : { type: Number ,default:0},
-    balck : { type: Number ,default:0},
-    stranger : { type: Number ,default:0},
-    maxTemp : { type:String },
-    maxName : { type:String },
-    maxUrl : { type:String},
-    maxType : { type:String},
     00 : { type: Number ,default:0},
     01 : { type: Number ,default:0},
     02 : { type: Number ,default:0},
@@ -37,8 +30,15 @@ const statisticsSchema = new mongoose.Schema({
     21 : { type: Number ,default:0},
     22 : { type: Number ,default:0},
     23 : { type: Number ,default:0},
+    24 : { type: Number ,default:0},
+    employee : { type: Number ,default:0},
+    balck : { type: Number ,default:0},
+    stranger : { type: Number ,default:0},
 });
 
-statisticsSchema.index({ camera_obid: 1, reference_date: 1 });
+mongoose.set('useCreateIndex', true)
+statisticsSchema.index({ camera_obid: 1 });
+statisticsSchema.index({ access_date: 1 });
+statisticsSchema.index({ camera_obid: 1, access_date: 1 });
 
 module.exports = mongoose.model('Statistics', statisticsSchema);

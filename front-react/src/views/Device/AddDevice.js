@@ -101,11 +101,11 @@ const AddDevice = props => {
 
   const addDevice = async () => {
     if(device.name === '') {
-      alert("단말기 이름을 입력해주세요.")
+      alert("단말 이름을 입력해주세요.")
     } else if(device.location === '') {
-      alert("단말기 장소를 입력해주세요.")
+      alert("단말 장소를 입력해주세요.")
     } else if(device.serial_number === '') {
-      alert("단말기 시리얼 넘버를 입력해주세요.")
+      alert("단말 시리얼 넘버를 입력해주세요.")
     } else {
       let result = await axios.post(base_url + '/camera', {
         ...device,
@@ -116,7 +116,7 @@ const AddDevice = props => {
       if(result.data.error) {
         alert('중복된 시리얼 넘버 입니다.')
       } else {
-        window.alert('단말기 등록 완료.');
+        window.alert('단말 등록 완료.');
         history.push('/device/list');
       }
       

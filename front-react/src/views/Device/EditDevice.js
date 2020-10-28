@@ -79,18 +79,18 @@ const EditDevice = props => {
 
   const editDevice = async () => {
     if(device.name === '') {
-      alert("단말기 이름을 입력해주세요.")
+      alert("단말 이름을 입력해주세요.")
     } else if(device.location === '') {
-      alert("단말기 장소를 입력해주세요.")
+      alert("단말 장소를 입력해주세요.")
     } else if(device.serial_number === '') {
-      alert("단말기 시리얼 넘버를 입력해주세요.")
+      alert("단말 시리얼 넘버를 입력해주세요.")
     } else {
       await axios.put(base_url + '/camera/' + deviceObject._id, {
         ...device,
         account: props.user_id,
         authority: props.authority
       });
-      window.alert('단말기 수정 완료.');
+      window.alert('단말 수정 완료.');
       history.push('/device/list');
     }
   };

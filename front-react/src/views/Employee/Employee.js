@@ -86,9 +86,9 @@ const Employee = props => {
       return 0;
     }
 
-    const buf = await wb.xlsx.writeBuffer()
+    const buf = await wb.csv.writeBuffer()
 
-    saveAs(new Blob([buf]), 'employee'+moment().locale('ko').format('YYYY-MM-DD HH:mm:ss')+'.xlsx')
+    saveAs(new Blob([buf]), 'employee '+moment().format('YYYY-MM-DD_HH-mm-ss')+'.csv')
   }
 
   const filterGroup = useCallback(

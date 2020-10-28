@@ -14,4 +14,5 @@ const api_v1_server_version_Schema = new mongoose.Schema({
 })
 mongoose.set('useCreateIndex', true)
 api_v1_server_version_Schema.index({ user_obid: 1, edition: 1 });
+mongoose.set('useCreateIndex', true)
 module.exports = mongoose.model('version', api_v1_server_version_Schema)

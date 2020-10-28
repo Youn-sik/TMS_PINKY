@@ -10,6 +10,7 @@ const path = require('path');
 const crypto = require('crypto');
 const schedule = require('node-schedule');
 const moment = require('moment');
+const fs = require('fs');
 require('moment-timezone'); 
 moment.tz.setDefault("Asia/Seoul"); 
 
@@ -57,7 +58,7 @@ app.use('/operation',operationRouter);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/image',express.static('/var/www/backend/image'));
 app.use('/stream',express.static('./videos'));
-app.use('/noImage',express.static('/var/www/backend/defaultImage'));
+app.use('/noImage',express.static('./defaultImage'));
 
 //swagger
 const swaggerJSDoc = require('swagger-jsdoc');
@@ -110,7 +111,6 @@ app.post('/login', async function(req, res) {
 app.get('/auth', async function(req, res) {
     let token = req.query.token;
     let tokenAuth = {user_id:null};
-    console.log(token);
     if(token === undefined && req.headers.cookie !== undefined) {
         token = cookie.parse(req.headers.cookie).token;
     }
@@ -139,9 +139,7 @@ app.get('/auth', async function(req, res) {
         });
     } else {
         res.send({
-            auth, 
-            user_id:tokenAuth.user_id, 
-            authority : tokenAuth.authority,
+            auth
         });
     }
     
@@ -179,6 +177,65 @@ let s = schedule.scheduleJob('0 0 0 * * *', async function(){//스케쥴 설정
 //const mongoose = require('mongoose')
 const routes = require('./routes')
 const swagger = require('./config/swagger')
+
+
+app.get('/schedule',(req,res) => {
+    res.send({term})
+})
+
+app.put('/schedule',(req,res) => {
+    term = req.body.term;
+    res.send({term})
+})
+
+//사진보관 기간 설정
+let term = 7; //기본 보관 날짜 7일
+let s = schedule.scheduleJob('0 0 0 * * *', async function(){//스케쥴 설정
+    let dateTime = moment().subtract(term-1,'days').format('YYYY-MM-DD') + " 00:00:00"//moment 보관 기간 만큼을 뺀 날짜
+    let accesses = []
+    let count = await Access.aggregate([
+        {
+            $match: {
+                access_time : {$lt:dateTime}
+            }
+        },
+        {
+            $count: 'count'
+        },
+    ]).allowDiskUse(true);
+
+
+    let pages = parseInt(count[0].count/5000);
+
+    if(count[0].count%5000)
+        pages++;
+
+    for(let i = 0; i < pages; i++) {
+        let result = await Access.find()
+        .lt('access_time',dateTime)
+        .skip (i*5000)
+        .limit(5000)
+
+        accesses = accesses.concat(result);
+    }
+
+
+    if(accesses.length > 0){
+        let images = accesses.map(access => access.avatar_file_url);
+        let ip = images[0].split(":3000")[0]
+        images.map(image => {
+            fs.unlink(image.replace(ip+':3000/','/var/www/backend/'),() => {})
+        })
+        let result = await Access.updateMany(
+            {access_time: {$lt:dateTime}},
+            {$set:{'avatar_file_url' : ip+":3000"+"/noImage/noImage.png"}
+        })
+
+        console.log(result)
+    }
+});
+
+
 
 // Run the server!
 const start = async () => {

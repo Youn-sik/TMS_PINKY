@@ -1,9 +1,9 @@
 import React from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles,useTheme } from '@material-ui/styles';
 import { Card, CardContent, Grid, Typography, Avatar } from '@material-ui/core';
-import AttachMoneyIcon from '@material-ui/icons/HelpOutline';
+import GroupIcon from '@material-ui/icons/Group';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 700
   },
   avatar: {
-    backgroundColor: theme.palette.action.main,
+    backgroundColor: theme.palette.success.main,
     color: theme.palette.white,
     height: 56,
     width: 56
@@ -32,6 +32,7 @@ const Stranger = props => {
   const { className, ...rest } = props;
 
   const classes = useStyles();
+  const theme = useTheme();
 
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
@@ -43,7 +44,7 @@ const Stranger = props => {
               color="inherit"
               gutterBottom
               variant="body2">
-              미등록자 출입
+              주간 출입
             </Typography>
             <Typography color="inherit" variant="h3">
               {props.count}명
@@ -56,7 +57,7 @@ const Stranger = props => {
                 props.history.push('access/records');
               }}
               className={classes.avatar}>
-              <AttachMoneyIcon className={classes.icon} />
+              <GroupIcon className={classes.icon} />
             </Avatar>
           </Grid>
         </Grid>

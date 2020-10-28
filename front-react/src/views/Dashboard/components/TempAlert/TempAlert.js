@@ -31,7 +31,7 @@ const useStyles = makeStyles(() => ({
     justifyContent: 'flex-end'
   },
   cardStyle: {
-    height: '430px'
+    height: '540px'
   },
   temp: {
     width: '15px'
@@ -66,9 +66,10 @@ const TempAlert = props => {
                   props.history.push('access/records');
                 }}>
                 <TableCell>사진</TableCell>
-                <TableCell>이름</TableCell>
+                <TableCell>단말 위치</TableCell>
+                <TableCell>시리얼번호</TableCell>
+                <TableCell>단말명</TableCell>
                 <TableCell>온도</TableCell>
-                <TableCell>타입</TableCell>
                 <TableCell>날짜</TableCell>
               </TableRow>
             </TableHead>
@@ -88,15 +89,15 @@ const TempAlert = props => {
                         src={access.avatar_file_url}
                       />
                     </TableCell>
-                    <TableCell className={classes.redFont}>
-                      {access.name === 'unknown' ? null : access.name}
-                    </TableCell>
+                    <TableCell className={classes.redFont}>{access.stb_location}</TableCell>
+                    <TableCell className={classes.redFont}>{access.stb_sn}</TableCell>
+                    <TableCell className={classes.redFont}>{access.stb_name}</TableCell>
                     <TableCell className={classes.redFont}>
                       {tempType === 1
                         ? String(access.avatar_temperature).substring(0, 4)
                         : '비정상 체온'}
                     </TableCell>
-                    <TableCell className={classes.redFont}>
+                    {/* <TableCell className={classes.redFont}>
                       {access.avatar_type === 1
                         ? '사원'
                         : access.avatar_type === 2
@@ -104,7 +105,7 @@ const TempAlert = props => {
                         : access.avatar_type === 3
                         ? '미등록자'
                         : '블랙리스트'}
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell className={classes.redFont}>
                       {access.access_time}
                     </TableCell>
@@ -123,15 +124,15 @@ const TempAlert = props => {
                         src={access.avatar_file_url}
                       />
                     </TableCell>
-                    <TableCell>
-                      {access.name === 'unknown' ? null : access.name}
-                    </TableCell>
+                    <TableCell>{access.stb_location}</TableCell>
+                    <TableCell>{access.stb_sn}</TableCell>
+                    <TableCell>{access.stb_name}</TableCell>
                     <TableCell>
                       {tempType === 1
                         ? String(access.avatar_temperature).substring(0, 4)
                         : '정상 체온'}
                     </TableCell>
-                    <TableCell>
+                    {/* <TableCell>
                       {access.avatar_type === 1
                         ? '사원'
                         : access.avatar_type === 2
@@ -139,7 +140,7 @@ const TempAlert = props => {
                         : access.avatar_type === 3
                         ? '미등록자'
                         : '블랙리스트'}
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>{access.access_time}</TableCell>
                   </TableRow>
                 )

@@ -121,8 +121,6 @@ const Access = props => {
             <TableHead>
               <TableRow>
                 <TableCell>사진</TableCell>
-                <TableCell>이름</TableCell>
-                <TableCell>타입</TableCell>
                 <TableCell>거리</TableCell>
                 <TableCell>
                   {props.temp.length > 0 ? (
@@ -177,18 +175,6 @@ const Access = props => {
                                 className={classes.hightTempAvatar}
                                 src={access.avatar_file_url}></img>
                             </div>
-                          </TableCell>
-                          <TableCell className={classes.redFont}>
-                            {access.name === 'unknown' ? null : access.name}
-                          </TableCell>
-                          <TableCell className={classes.redFont}>
-                            {access.avatar_type === 1
-                              ? '사원'
-                              : access.avatar_type === 2
-                              ? '방문자'
-                              : access.avatar_type === 4
-                              ? '블랙리스트'
-                              : '미등록자'}
                           </TableCell>
                           <TableCell className={classes.redFont}>
                             {access.avatar_distance

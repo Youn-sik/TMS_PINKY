@@ -8,21 +8,6 @@ require('moment-timezone');
 moment.tz.setDefault("Asia/Seoul"); 
 const mkdirp = require('mkdirp');
 const client = require('./mqtt_load');
-const canvas = require("canvas");
-const { loadImage, Canvas, Image, ImageData } = canvas;
-const fetch = require('node-fetch')
-var asyncJSON = require('async-json');
-const tf = require('@tensorflow/tfjs-node');
-//require('@tensorflow/tfjs-backend-webgl');
-const faceapi = require('@vladmandic/face-api');
-
-Promise.all([
-    // tf.setBackend('webgl'),
-    faceapi.nets.ssdMobilenetv1.loadFromDisk(`${__dirname}/schema/face-models/`),
-    faceapi.nets.faceRecognitionNet.loadFromDisk(`${__dirname}/schema/face-models/`),
-    faceapi.nets.faceLandmark68Net.loadFromDisk(`${__dirname}/schema/face-models/`),
-    faceapi.env.monkeyPatch({ Canvas, Image, ImageData,fetch: fetch }),
-])
 
 const mqtt_option = {
     retain: false,
@@ -75,6 +60,14 @@ mongodb.once('open', function () {
     console.log('mongodb open');
 });
 
+mongoose.connect('mongodb://' + site.mongodb_host + ':27017/' + site.mongodb_database, { 
+    useNewUrlParser: true, 
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+    poolSize: 8,
+    socketTimeoutMS: 1000*60*10, //10분
+});
 mongoose.connect('mongodb://' + site.mongodb_host + ':27017/' + site.mongodb_database, { 
     useNewUrlParser: true, 
     useUnifiedTopology: true,
@@ -275,12 +268,12 @@ module.exports = {
                             }
                             client.publish('/login/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
 
-                            let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 1, log_message: 'login', create_dt: json.create_time });
-                            newGlogs.save(function (error, data) {
-                                if (error) {
-                                    console.log(error);
-                                }
-                            });
+                            // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 1, log_message: 'login', create_dt: json.create_time });
+                            // newGlogs.save(function (error, data) {
+                            //     if (error) {
+                            //         console.log(error);
+                            //     }
+                            // });
                         }
                     });
                 }
@@ -301,12 +294,12 @@ module.exports = {
                         if(err){
                             console.log(err);
                         }else{
-                            let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 2, log_message: 'logout', create_dt: json.create_time });
-                            newGlogs.save(function (error, data) {
-                                if (error) {
-                                    console.log(error);
-                                }
-                            });
+                            // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 2, log_message: 'logout', create_dt: json.create_time });
+                            // newGlogs.save(function (error, data) {
+                            //     if (error) {
+                            //         console.log(error);
+                            //     }
+                            // });
                         }
                     });
                 }
@@ -355,12 +348,12 @@ module.exports = {
                             if(err){
                                 console.log(err);
                             }else{
-                                let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 4, log_message: 'contents_down_success', create_dt: json.create_time });
-                                newGlogs.save(function (error, data) {
-                                    if (error) {
-                                        console.log(error);
-                                    }
-                                });
+                                // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 4, log_message: 'contents_down_success', create_dt: json.create_time });
+                                // newGlogs.save(function (error, data) {
+                                //     if (error) {
+                                //         console.log(error);
+                                //     }
+                                // });
 
                                 send_data = {
                                     stb_sn: json.stb_sn,
@@ -416,12 +409,12 @@ module.exports = {
                         };
                         client.publish('/access/request/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
         
-                        let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 5, log_message: 'access_request', create_dt: json.create_time });
-                        newGlogs.save(function (error, data) {
-                            if (error) {
-                                console.log(error);
-                            }
-                        });
+                        // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 5, log_message: 'access_request', create_dt: json.create_time });
+                        // newGlogs.save(function (error, data) {
+                        //     if (error) {
+                        //         console.log(error);
+                        //     }
+                        // });
                     }
                 })
             }
@@ -433,12 +426,12 @@ module.exports = {
             if (err) {
                 console.log(err);
             }else{
-                let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 6, log_message: 'access_request_success', create_dt: json.create_time });
-                newGlogs.save(function (error, data) {
-                    if (error) {
-                        console.log(error);
-                    }
-                });
+                // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 6, log_message: 'access_request_success', create_dt: json.create_time });
+                // newGlogs.save(function (error, data) {
+                //     if (error) {
+                //         console.log(error);
+                //     }
+                // });
             }
         })
     },
@@ -447,20 +440,23 @@ module.exports = {
         try {
             let insert_array = [];
             let camera = await Camera.findOne( { serial_number : json.stb_sn });
-            let Users = await User.find()
+            // let Users = await User.find()
+            if(camera) {
+                json.values.forEach(async function(element){
+                    let folder_date_path = "/uploads/accesss/temp/" + moment().format('YYYYMMDD');
+                    let file_name = json.stb_sn + "_" + moment().format('YYYYMMDDHHmmss') + ".png";
+                    let file_path = site.base_server_document + folder_date_path + "/" + json.stb_sn + "/";
+                    let upload_url = "http://"+server_ip+ ':3000' + folder_date_path + "/" + json.stb_sn + "/" + file_name;
+                    let buff = Buffer.from(element.avatar_file, 'base64');
+                    if(element.avatar_distance === undefined) {
+                        element.avatar_distance = 0
+                    }
+                    
+                    mkdirp.sync(file_path);
+                    fs.writeFileSync(file_path + file_name, buff, 'utf-8')
 
-            json.values.forEach(async function(element){
-                let folder_date_path = "/uploads/accesss/temp/" + moment().format('YYYYMMDD');
-                let file_name = json.stb_sn + "_" + moment().format('YYYYMMDDHHmmss') + ".png";
-                let file_path = site.base_server_document + folder_date_path + "/" + json.stb_sn + "/";
-                let upload_url = "http://"+server_ip+ ':3000' + folder_date_path + "/" + json.stb_sn + "/" + file_name;
-                let buff = Buffer.from(element.avatar_file, 'base64');
-                if(element.avatar_distance === undefined) {
-                    element.avatar_distance = 0
-                }
-                
-                mkdirp.sync(file_path);
-                fs.writeFileSync(file_path + file_name, buff, 'utf-8')
+                    // const img = new Image();
+                    // img.src = "data:image/png;base64,"+element.avatar_file
 
                 const img = new Image();
                 img.src = "data:image/png;base64,"+element.avatar_file
@@ -505,18 +501,48 @@ module.exports = {
                                 )
                             )
                         })
-                    );
-    
-                    const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.6)
-                    const bestMatch = detections.map(d => faceMatcher.findBestMatch(d.descriptor))
-                    const filteredMatch = bestMatch.filter(match => match._distance < 0.5)
-                    if(filteredMatch.length > 0 && filteredMatch[0]._label !== 'unknown') {
-                        let userData = filteredMatch[0]._label.split('|')
-                        userName = userData[0]
-                        element.avatar_type = parseInt(userData[7])
-                        user_obid = userData[10]
+                        todayStatistics.save()
+
+                        todayStatisticsTemp = new Statistics_temp({
+                            camera_obid : camera._id,
+                            serial_number : json.stb_sn,
+                            access_date: moment().format('YYYY-MM-DD'),
+                            [hours] : `${userName}|${element.avatar_temperature}|${element.avatar_type === 5 ? 4 : element.avatar_type}|${upload_url}`,
+                        })
+
+                        todayStatisticsTemp.save();
+                    } else if(element.avatar_temperature > todayStatisticsTemp[hours].split('|')[1]){
+                        await Statistics.findByIdAndUpdate(todayStatistics._id,{ 
+                            $inc: { 
+                                all_count: 1,
+                                [hours] : 1,
+                                [type] : 1
+                            }
+                        },
+                        {
+                            
+                        })
+
+                        await Statistics_temp.findByIdAndUpdate(todayStatisticsTemp._id,{ 
+                            $set: {
+                                [hours] : `${userName}|${element.avatar_temperature}|${element.avatar_type === 5 ? 4 : element.avatar_type}|${upload_url}`
+                            }
+                        },
+                        {
+                            
+                        })
+                    } else {
+                        await Statistics.findByIdAndUpdate(todayStatistics._id,{ 
+                            $inc: { 
+                                all_count: 1,
+                                [hours] : 1,
+                                [type] : 1
+                            }
+                        },
+                        {
+                            
+                        })
                     }
-                }
 
                 insert_data = {
                     avatar_file : 'avatar_file',
@@ -613,19 +639,16 @@ module.exports = {
             
             await Access.insertMany(insert_array)
 
-            send_data = {
-                stb_sn: json.stb_sn,
-                values: insert_array
-            };
-            // avatar_temperature name avatar_file_url access_time avatar_type
-            client.publish('/access/realtime/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
+                // avatar_temperature name avatar_file_url access_time avatar_type
+                client.publish('/access/realtime/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
+            }
 
-            let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 7, log_message: 'realtime_access', create_dt: json.create_time });
-            newGlogs.save(function (error, data) {
-                if (error) {
-                    console.log(error);
-                }
-            });
+            // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 7, log_message: 'realtime_access', create_dt: json.create_time });
+            // newGlogs.save(function (error, data) {
+            //     if (error) {
+            //         console.log(error);
+            //     }
+            // });
         } catch (error) {
             console.log(error);
         }
@@ -670,12 +693,12 @@ module.exports = {
             };
             client.publish('/access/addpeople/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
 
-            let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 8, log_message: 'add_people', create_dt: json.create_time });
-            newGlogs.save(function (error, data) {
-                if (error) {
-                    console.log(error);
-                }
-            });
+            // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 8, log_message: 'add_people', create_dt: json.create_time });
+            // newGlogs.save(function (error, data) {
+            //     if (error) {
+            //         console.log(error);
+            //     }
+            // });
         } catch (error){
             console.log(error);
         }
@@ -698,12 +721,12 @@ module.exports = {
             // };
             // client.publish('/access/addpeople/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
 
-            let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 10, log_message: 'control_log_result', create_dt: json.create_time });
-            newGlogs.save(function (error, data) {
-                if (error) {
-                    console.log(error);
-                }
-            });
+            // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 10, log_message: 'control_log_result', create_dt: json.create_time });
+            // newGlogs.save(function (error, data) {
+            //     if (error) {
+            //         console.log(error);
+            //     }
+            // });
         } catch (error){
             console.log(error);
         }
@@ -718,12 +741,12 @@ module.exports = {
                     "config_data.capture_size":json.capture_size,
                 }
             }, {new: true })
-            let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 11, log_message: 'capture_start', create_dt: json.create_time });
-            newGlogs.save(function (error, data) {
-                if (error) {
-                    console.log(error);
-                }
-            });
+            // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 11, log_message: 'capture_start', create_dt: json.create_time });
+            // newGlogs.save(function (error, data) {
+            //     if (error) {
+            //         console.log(error);
+            //     }
+            // });
         } catch (error){
             console.log(error);
         }
@@ -778,12 +801,12 @@ module.exports = {
                 }
             }, 
                 {new: true })
-            let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 12, log_message: 'capture_stop', create_dt: json.create_time });
-            newGlogs.save(function (error, data) {
-                if (error) {
-                    console.log(error);
-                }
-            });
+            // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 12, log_message: 'capture_stop', create_dt: json.create_time });
+            // newGlogs.save(function (error, data) {
+            //     if (error) {
+            //         console.log(error);
+            //     }
+            // });
         } catch (error){
             console.log(error);
         }
@@ -792,12 +815,12 @@ module.exports = {
     async control_sdcard_delete_result(json) {
         try{
             let camera = await Camera.findOne( { serial_number : json.stb_sn });
-            let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 13, log_message: 'sdcard_delete', create_dt: json.create_time });
-            newGlogs.save(function (error, data) {
-                if (error) {
-                    console.log(error);
-                }
-            });
+            // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 13, log_message: 'sdcard_delete', create_dt: json.create_time });
+            // newGlogs.save(function (error, data) {
+            //     if (error) {
+            //         console.log(error);
+            //     }
+            // });
 
             send_data = {
                 stb_sn: camera.serial_number,
@@ -812,12 +835,12 @@ module.exports = {
     async control_sdcard_part_delete_result(json) {
         try{
             let camera = await Camera.findOne( { serial_number : json.stb_sn });
-            let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 15, log_message: 'part_sdcard_delete', create_dt: json.create_time });
-            newGlogs.save(function (error, data) {
-                if (error) {
-                    console.log(error);
-                }
-            });
+            // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 15, log_message: 'part_sdcard_delete', create_dt: json.create_time });
+            // newGlogs.save(function (error, data) {
+            //     if (error) {
+            //         console.log(error);
+            //     }
+            // });
 
             send_data = {
                 stb_sn: camera.serial_number,
@@ -832,12 +855,12 @@ module.exports = {
     async control_reboot_result(json) {
         try{
             let camera = await Camera.findOne( { serial_number : json.stb_sn });
-            let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 16, log_message: 'reboot_success', create_dt: json.create_time });
-            newGlogs.save(function (error, data) {
-                if (error) {
-                    console.log(error);
-                }
-            });
+            // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 16, log_message: 'reboot_success', create_dt: json.create_time });
+            // newGlogs.save(function (error, data) {
+            //     if (error) {
+            //         console.log(error);
+            //     }
+            // });
         } catch (error){
             console.log(error);
         }
@@ -882,12 +905,12 @@ module.exports = {
     async control_reset_result(json) {
         try{
             let camera = await Camera.findOne( { serial_number : json.stb_sn });
-            let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 24, log_message: 'stb_reset', create_dt: json.create_time });
-            newGlogs.save(function (error, data) {
-                if (error) {
-                    console.log(error);
-                }
-            });
+            // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 24, log_message: 'stb_reset', create_dt: json.create_time });
+            // newGlogs.save(function (error, data) {
+            //     if (error) {
+            //         console.log(error);
+            //     }
+            // });
         } catch (error){
             console.log(error);
         }
@@ -927,12 +950,12 @@ module.exports = {
                     client.publish('/control/device_info/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
                 }
             });
-            let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 29, log_message: 'control_device_info', create_dt: json.create_time });
-            newGlogs.save(function (error, data) {
-                if (error) {
-                    console.log(error);
-                }
-            });
+            // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 29, log_message: 'control_device_info', create_dt: json.create_time });
+            // newGlogs.save(function (error, data) {
+            //     if (error) {
+            //         console.log(error);
+            //     }
+            // });
         } catch (error) {
             console.log(error);
         }
@@ -1092,12 +1115,12 @@ module.exports = {
         };
         client.publish('/control/rrd/result/' + camera.serial_number, JSON.stringify(send_data), mqtt_option);
 
-        let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 30, log_message: 'control_rrd', create_dt: json.create_time });
-        newGlogs.save(function (error, data) {
-            if (error) {
-                console.log(error);
-            }
-        });
+        // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 30, log_message: 'control_rrd', create_dt: json.create_time });
+        // newGlogs.save(function (error, data) {
+        //     if (error) {
+        //         console.log(error);
+        //     }
+        // });
     },
 
     async log_status(json) {

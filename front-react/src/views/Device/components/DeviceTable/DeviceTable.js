@@ -11,11 +11,16 @@ import { NavLink as RouterLink } from 'react-router-dom';
 import NumberFormat from 'react-number-format';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
+
 import {
   Card,
+  InputLabel,
+  MenuItem,
+  Select,
   CardActions,
   DialogTitle,
   CardContent,
+  FormControl,
   Dialog,
   FormControlLabel,
   Checkbox,
@@ -144,7 +149,7 @@ const DeviceTable = props => {
   // const history = props.history;
   const classes = useStyles();
 
-  const rowsPerPage = 7;
+  const [rowsPerPage,setRowsPerPage] = useState(7);
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState([]);
   const [selectedObject, setSelectedObject] = useState([]);
@@ -170,6 +175,10 @@ const DeviceTable = props => {
   const handleClose = () => {
     setOpen(false);
   };
+  
+  const handleRowsPerPage = (e) => {
+    setRowsPerPage(e.target.value)
+  }
 
   const handlePageChange = (event, page) => {
     setPage(page);
@@ -606,7 +615,7 @@ const DeviceTable = props => {
                 }}
                 style={{ width: '181.58px' }}
                 color="primary">
-                단말기 로그 요청
+                단말 로그 요청
               </Button>
               <br />
               <br />
@@ -718,7 +727,7 @@ const DeviceTable = props => {
                 }}
                 style={{ width: '181.58px' }}
                 color="primary">
-                단말기 로그 요청
+                단말 로그 요청
               </Button>
               <br />
               <br />
@@ -758,6 +767,7 @@ const DeviceTable = props => {
       <CardActions className={classes.action}>
         <TextField
           className={classes.search}
+          style={{marginTop:'5px'}}
           id="input-with-icon-textfield"
           // label="검색"
           value={userSearch}
@@ -771,6 +781,22 @@ const DeviceTable = props => {
             )
           }}
         />
+        <FormControl>
+        <InputLabel id="demo-simple-select-label">리스트</InputLabel>
+          <Select
+            style={{width:'50px',marginBottom:'11px'}}
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={rowsPerPage}
+            onChange={handleRowsPerPage}
+            >
+            <MenuItem value="7">7</MenuItem>
+            <MenuItem value="10">10</MenuItem>
+            <MenuItem value="30">30</MenuItem>
+            <MenuItem value="50">50</MenuItem>
+            <MenuItem value="100">100</MenuItem>
+          </Select>
+        </FormControl>
         <Grid container justify="flex-end" className={classes.buttonActions}>
           {selected.length >= 1 ? (
             <Button

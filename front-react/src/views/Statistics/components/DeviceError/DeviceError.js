@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
-import { Card, CardHeader, CardContent, Divider } from '@material-ui/core';
+import { Card, CardHeader, CardContent, Divider, Button } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -34,27 +34,27 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const DeviceError = props => {
-  const { chartData, className, date, ...rest } = props;
+  const { chartData,clickErrorExport, className, date, ...rest } = props;
 
   const classes = useStyles();
 
   const data = {
     datasets: [
-      {
-        label: '연결 끊김',
-        data: chartData.disconnect,
-        backgroundColor: ['rgba(255, 99, 132, 0.2)'],
-        borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(255, 99, 132, 1)',
-          'rgba(255, 99, 132, 1)',
-          'rgba(255, 99, 132, 1)',
-          'rgba(255, 99, 132, 1)',
-          'rgba(255, 99, 132, 1)',
-          'rgba(255, 99, 132, 1)'
-        ],
-        borderWidth: 2
-      },
+      // {
+      //   label: '연결 끊김',
+      //   data: chartData.disconnect,
+      //   backgroundColor: ['rgba(255, 99, 132, 0.2)'],
+      //   borderColor: [
+      //     'rgba(255, 99, 132, 1)',
+      //     'rgba(255, 99, 132, 1)',
+      //     'rgba(255, 99, 132, 1)',
+      //     'rgba(255, 99, 132, 1)',
+      //     'rgba(255, 99, 132, 1)',
+      //     'rgba(255, 99, 132, 1)',
+      //     'rgba(255, 99, 132, 1)'
+      //   ],
+      //   borderWidth: 2
+      // },
       {
         label: 'CPU 부족',
         data: chartData.cpu,
@@ -113,7 +113,17 @@ const DeviceError = props => {
 
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
-      <CardHeader title="단말기 에러 통계" />
+      <CardHeader title={
+            <div>
+                <span>단말별 에러 통계</span>
+                <Button
+                size="small"
+                style={{float: 'right',marginRight:'10px' }} 
+                variant="contained" color="primary" onClick={clickErrorExport}>
+                  엑셀로 다운로드
+                </Button>
+            </div>
+          }/>
       <Divider />
       <CardContent className={classes.cardContent}>
         <Grid

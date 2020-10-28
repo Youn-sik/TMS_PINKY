@@ -5,7 +5,18 @@ const operation = require('../../../../models/api/v1/person/operation')
 
 router.get('/',async function(req, res) {
     try {
-        let get_data = await operation.find().populate("id",'user_id');
+        let search = req.query.search
+        let date = req.query.date.split('/');
+        let get_data
+
+        // if(search) {
+
+        // }
+        get_data = await operation.find()
+        .gte("date",date[0]+" 00:00:00")
+        .lte("date",date[1]+" 23:59:59")
+        .where("id").ne(null)
+        .populate("id",'user_id');
         res.send(get_data)
     } catch (err) {
         throw boom.boomify(err)

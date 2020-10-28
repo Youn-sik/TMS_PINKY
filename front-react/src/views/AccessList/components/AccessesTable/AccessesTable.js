@@ -18,6 +18,7 @@ import {
   TableHead,
   TableRow,
   TableContainer,
+  Dialog,
   Paper,
   Button
 } from '@material-ui/core';
@@ -74,6 +75,9 @@ const AccessesTable = props => {
     ...rest
   } = props;
 
+  const [currentUrl,setCurrnetUrl] = useState("");
+  const [imageModal,setImageModal] = useState(false)
+
   const classes = useStyles();
 
   const handlePageChange = (event, page) => {
@@ -90,8 +94,23 @@ const AccessesTable = props => {
     }
   };
 
+  const clickImage = url => {
+    setCurrnetUrl(url);
+    setImageModal(true);
+  }
+
+  const handleClose = () => {
+    setImageModal(false);
+  }
+
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
+      <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={imageModal}>
+        <img
+        alt="screenShot"
+        style={{maxWidth:'50vw'}}
+        src={currentUrl}></img>
+      </Dialog>
       <CardContent className={classes.content}>
         {loading ? <LinearProgress style={{ width: '100%' }} /> : null}
         <TableContainer component={Paper}>
@@ -110,17 +129,28 @@ const AccessesTable = props => {
                 </TableCell>
                 <TableCell>사진</TableCell>
                 <TableCell>
+                  <Checkbox
+                    checked={
+                      selected.length === accesses.length && accesses.length !== 0
+                        ? true
+                        : false
+                    }
+                    onChange={handleSelectAllClick}
+                  />
+                </TableCell>
+                <TableCell style={{paddingLeft:"38px"}}>사진</TableCell>
+                <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel
-                      active={activeType === 'name'}
+                      active={activeType === 'stb_location'}
                       direction={sort}
                       onClick={() => {
-                        createSortHandler('name');
+                        createSortHandler('stb_location');
                       }}>
-                      이름
+                      단말 위치
                     </TableSortLabel>
                   ) : (
-                    '이름'
+                    '단말 위치'
                   )}
                 </TableCell>
                 <TableCell>
@@ -143,7 +173,7 @@ const AccessesTable = props => {
                       active={activeType === 'stb_sn'}
                       direction={sort}
                       onClick={() => {
-                        createSortHandler('stb_sn');
+                        createSortHandler('stb_name');
                       }}>
                       단말기 시리얼
                     </TableSortLabel>
@@ -171,12 +201,12 @@ const AccessesTable = props => {
                       active={activeType === 'avatar_type'}
                       direction={sort}
                       onClick={() => {
-                        createSortHandler('avatar_type');
+                        createSortHandler('stb_sn');
                       }}>
-                      타입
+                      시리얼 번호
                     </TableSortLabel>
                   ) : (
-                    '타입'
+                    '시리얼 번호'
                   )}
                 </TableCell>
                 <TableCell>
@@ -221,7 +251,7 @@ const AccessesTable = props => {
                     '출입시간'
                   )}
                 </TableCell>
-                <TableCell>사용자 등록</TableCell>
+                {/* <TableCell>사용자 등록</TableCell> */}
               </TableRow>
             </TableHead>
             {
@@ -244,6 +274,7 @@ const AccessesTable = props => {
                           <TableCell>
                             <div className={classes.nameContainer}>
                               <img
+                                style={{cursor: 'pointer'}} onClick={()=>{clickImage(access.avatar_file_url)}}
                                 alt="screenShot"
                                 height="90px"
                                 width="70px"
@@ -262,13 +293,10 @@ const AccessesTable = props => {
                             {access.stb_location ? access.stb_location : ''}
                           </TableCell>
                           <TableCell className={classes.redFont}>
-                            {access.avatar_type === 1
-                              ? '사원'
-                              : access.avatar_type === 2
-                              ? '방문자'
-                              : access.avatar_type === 4
-                              ? '블랙리스트'
-                              : '미등록자'}
+                            {access.stb_name}
+                          </TableCell>
+                          <TableCell className={classes.redFont}>
+                            {access.stb_sn}
                           </TableCell>
                           <TableCell className={classes.redFont}>
                             {access.avatar_distance
@@ -287,7 +315,7 @@ const AccessesTable = props => {
                           <TableCell className={classes.redFont}>
                             {access.access_time}
                           </TableCell>
-                          <TableCell>
+                          {/* <TableCell>
                             {
                               access.avatar_type === 3 ? 
                               <RouterLink
@@ -305,7 +333,7 @@ const AccessesTable = props => {
                                 </Button>
                               </RouterLink> : null
                             }
-                          </TableCell>
+                          </TableCell> */}
                         </TableRow>
                       );
                     } else {
@@ -320,6 +348,7 @@ const AccessesTable = props => {
                           <TableCell>
                             <div className={classes.nameContainer}>
                               <img
+                                style={{cursor: 'pointer'}} onClick={()=>{clickImage(access.avatar_file_url)}}
                                 alt="screenShot"
                                 height="90px"
                                 width="70px"
@@ -327,7 +356,6 @@ const AccessesTable = props => {
                                 src={access.avatar_file_url}></img>
                             </div>
                           </TableCell>
-                          <TableCell>{access.name === 'unknown' ? null : access.name}</TableCell>
                           <TableCell>
                             {access.stb_name ? access.stb_name : ''}
                           </TableCell>
@@ -347,6 +375,9 @@ const AccessesTable = props => {
                               : '미등록자'}
                           </TableCell>
                           <TableCell>
+                            {access.stb_sn}
+                          </TableCell>
+                          <TableCell>
                             {access.avatar_distance
                               ? String(access.avatar_distance).substr(0, 3)
                               : 0}
@@ -361,7 +392,7 @@ const AccessesTable = props => {
                               : '정상 체온'}
                           </TableCell>
                           <TableCell>{access.access_time}</TableCell>
-                          <TableCell>
+                          {/* <TableCell>
                             {
                               access.avatar_type === 3 ? 
                               <RouterLink
@@ -379,7 +410,7 @@ const AccessesTable = props => {
                                 </Button>
                               </RouterLink> : null
                             }
-                          </TableCell>
+                          </TableCell> */}
                         </TableRow>
                       );
                     }

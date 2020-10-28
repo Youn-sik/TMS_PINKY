@@ -56,7 +56,9 @@ const Settings = props => {
   };
 
   const clickEdit = async () => {
-    if(window.confirm('정말 수정 하시겠습니까?')) {
+    if(isNaN(tempLimit) || isNaN(term)) {
+      alert("숫자만 입력해주세요")
+    } else {
       await axios.put(base_url + '/account/' + props.user_id, {
         tempLimit,
         tempType
@@ -66,6 +68,7 @@ const Settings = props => {
       });
       alert('수정 되었습니다.');
     }
+    
   };
 
   const getTerm = async () => {
@@ -152,6 +155,20 @@ const Settings = props => {
           </FormControl>
           <br />
           <br />
+          출입자 사진 보관 기간
+          <br />
+          <FormControl>
+            <Input
+              id="standard-adornment-weight"
+              value={term}
+              onChange={handleTerm}
+              endAdornment={<InputAdornment position="end">일</InputAdornment>}
+              aria-describedby="standard-weight-helper-text"
+              InputProps={{
+                inputComponent: NumberFormatCustom
+              }}
+            />
+          </FormControl>
           <br />
           <br />
           <div style={{ textAlign: 'center' }}>

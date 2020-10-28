@@ -57,18 +57,18 @@ const Sidebar = props => {
       //   },
       // ]
     },
-    {
-      title: '인사관리',
-      href: '/users',
-      children: [
-        {
-          title: '사원 관리',
-          href: '/users/employee'
-        },
-        {
-          title: '블랙리스트 관리',
-          href: '/users/black'
-        },
+    // {
+    //   title: '인사관리',
+    //   href: '/users',
+    //   children: [
+    //     {
+    //       title: '사원 관리',
+    //       href: '/users/employee'
+    //     },
+    //     {
+    //       title: '블랙리스트 관리',
+    //       href: '/users/black'
+    //     },
         // {
         //   title: '미등록자 관리',
         //   href: '/users/stranger'
@@ -77,27 +77,27 @@ const Sidebar = props => {
         //   title:'얼굴 인식',
         //   href:'/users/face-detection'
         // }
-      ],
-      icon: <PeopleIcon />
-    },
+    //   ],
+    //   icon: <PeopleIcon />
+    // },
     {
       title: '단말 관리',
-      // href: '/device',
       href: '/device/list',
-      children: [
-        {
-          title: '단말기 목록',
-          href: '/device/list'
-        },
-        {
-          title: '단말기 에러 로그',
-          href: '/device/error'
-        },
+      href: '/device/list',
+      // children: [
+      //   {
+      //     title: '단말 목록',
+      //     href: '/device/list'
+      //   },
+        // {
+        //   title: '단말 에러 로그',
+        //   href: '/device/error'
+        // },
         // {
         //   title: '단말기 스크린샷',
         //   href: '/device/screen'
         // }
-      ],
+      // ],
       icon: <DnsIcon />
     },
     {
@@ -105,7 +105,7 @@ const Sidebar = props => {
       href: '/stats',
       children: [
         {
-          title: '단말기 통계',
+          title: '단말 통계',
           href: '/stats/device'
         },
         // {
