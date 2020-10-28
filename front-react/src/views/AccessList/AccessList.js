@@ -283,14 +283,14 @@ const AccessList = props => {
     }
 
     let _pages = await axios.get(base_url + 
-      `/access?searchType=${searchType}&auth=${props.authority}&search=${search}&type=dateCount&rowsPerPage=${rowsPerPage}&date=${firstDate}/${lastDate}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+      `/access?searchType=${searchType}&auth=admin&search=${search}&type=dateCount&rowsPerPage=${rowsPerPage}&date=${firstDate}/${lastDate}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
 
     setLoading(false);
     if(_pages.data.length !== 0) {
       let result = await axios.get(base_url + 
-        `/access?searchType=${searchType}&auth=${props.authority}&search=${search}&date=${firstDate}/${lastDate}&&rowsPerPage=${rowsPerPage}page=${page}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+        `/access?searchType=${searchType}&auth=admin&search=${search}&date=${firstDate}/${lastDate}&&rowsPerPage=${rowsPerPage}page=${page}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
         cancelToken: source.token
       });
       setPage(1);
@@ -348,7 +348,7 @@ const AccessList = props => {
       headerType = '-'+headerType;
 
     let _pages = await axios.get(base_url + 
-      `/access?searchType=${searchType}&auth=${props.authority}&search=${search}&type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${5000}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+      `/access?searchType=${searchType}&auth=admin&search=${search}&type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${5000}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
 
@@ -364,7 +364,7 @@ const AccessList = props => {
     let accesses = [];
     for(let i = 1; i <= _temp; i++) {
       
-      let result = await axios.get(base_url + `/access?searchType=${searchType}&auth=${props.authority}&rowsPerPage=${5000}&headerType=${headerType}&date=${firstDate}/${lastDate}&page=${page}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+      let result = await axios.get(base_url + `/access?searchType=${searchType}&auth=admin&rowsPerPage=${5000}&headerType=${headerType}&date=${firstDate}/${lastDate}&page=${page}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
         cancelToken: source.tfirstDate
       });
       accesses = accesses.concat(result.data)
@@ -410,12 +410,12 @@ const AccessList = props => {
     if(sort === 'desc') 
       headerType = '-'+headerType;
       
-    let result = await axios.get(base_url + `/access?searchType=${searchType}&auth=${props.authority}&search=${search}&date=${firstDate}/${lastDate}&avatar_temp=${type}&page=${page}&headerType=${headerType}&rowsPerPage=${rowsPerPage}`, {
+    let result = await axios.get(base_url + `/access?searchType=${searchType}&auth=admin&search=${search}&date=${firstDate}/${lastDate}&avatar_temp=${type}&page=${page}&headerType=${headerType}&rowsPerPage=${rowsPerPage}`, {
       cancelToken: source.tfirstDate
     });
 
     let _pages = await axios.get(base_url + 
-      `/access?searchType=${searchType}&search=${search}&auth=${props.authority}&type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+      `/access?searchType=${searchType}&search=${search}&auth=admin&type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
 
