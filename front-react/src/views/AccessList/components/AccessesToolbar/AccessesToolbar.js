@@ -238,14 +238,14 @@ const AccessesToolbar = props => {
           <br/>
         <div style={{ float:'right',width: '50%' }}>
           <Button 
-            style={{float: 'right',marginLeft: '10px'}} 
-            variant="contained" color="secondary" onClick={resetSearch}>
-              검색 초기화
-          </Button>
-          <Button 
-          style={{float: 'right' }} 
+          style={{float: 'right' ,marginLeft: '10px'}} 
           variant="contained" color="primary" onClick={clickExport}>
             엑셀로 다운로드
+          </Button>
+          <Button 
+            style={{float: 'right'}} 
+            variant="contained" color="secondary" onClick={resetSearch}>
+              검색 초기화
           </Button>
           <TextField
             style={{ float: 'right', marginRight: '10px' }}

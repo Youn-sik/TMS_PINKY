@@ -174,6 +174,7 @@ const EditEmployee = props => {
 
   useEffect(() => {
     if (!userObject) {
+      alert('잘못된 접근 방법 입니다.')
       history.go(-1);
     } else {
       let user = JSON.parse(JSON.stringify(userObject[0]));
@@ -301,7 +302,7 @@ const EditEmployee = props => {
                 }}>
                 <img
                   style={{ width: '100%', verticalAlign: 'middle' }}
-                  src={userObject[0].avatar_file_url}></img>
+                  src={userObject ? userObject[0].avatar_file_url : null}></img>
               </div>
             ) : null}
             <CardContent style={{ width: '50%', margin: '0 auto' }}>
@@ -408,7 +409,7 @@ const EditEmployee = props => {
                   {userObject ? (
                     <TreeView
                       defaultExpanded={selectedNode}
-                      defaultSelected={userObject[0].groups_obids}
+                      defaultSelected={userObject ? userObject[0].groups_obids : null}
                       className={classes.tree}
                       defaultCollapseIcon={<ArrowDropDownIcon />}
                       defaultExpandIcon={<ArrowRightIcon />}
