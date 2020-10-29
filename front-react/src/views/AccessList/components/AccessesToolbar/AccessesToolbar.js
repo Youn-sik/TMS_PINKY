@@ -150,10 +150,10 @@ const AccessesToolbar = props => {
             loading={loading}
             cleanable={false}
             onChange={val => {
-              if(val.yyyymmddhhmmss() > date[1]){
+              if(val.yyyymmdd() > date[1]){
                 alert('날짜 범위가 잘못되었습니다\n다시 설정해 주세요.')
               } else {
-                dateChange([val.yyyymmddhhmmss(), 0]);
+                dateChange([val.yyyymmdd(), 0]);
               }
             }}
             locale={locale}
@@ -166,10 +166,10 @@ const AccessesToolbar = props => {
             loading={loading}
             cleanable={false}
             onChange={val => {
-              if(val.yyyymmddhhmmss() < date[0]){
+              if(val.yyyymmdd() < date[0]){
                 alert('날짜 범위가 잘못되었습니다\n다시 설정해 주세요.')
               } else {
-                dateChange([0, val.yyyymmddhhmmss()]);
+                dateChange([0, val.yyyymmdd()]);
               }
             }}
             locale={locale}
