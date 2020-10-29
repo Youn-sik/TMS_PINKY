@@ -587,11 +587,13 @@ router.delete('/',async function(req, res) {
             let firstDate = moment(date[0])
             let lastDate = moment(date[1]).add(1, 'days')
 
+            console.log ('현재 경로:: ', __dirname, process.cwd());
+
             while (firstDate.isBefore(lastDate, 'day')) {
                 let deleteDate = firstDate.format('YYYYMMDD')
 
                 if(devices.length > 0) {
-                    devices = devices.map(device => exec(`find ./uploads/accesses/temp/${deleteDate} | egrep '([^_]*)${device.serial_number}([^_]*)_([^_]*)${name}([^_]*)_${type}${tempRegex}([0-9]*).png' | tr '\\n' '\\0' | xargs -0 rm`, (error, stdout, stderr) => {
+                    devices = devices.map(device => exec(`find ./uploads/accesss/temp/${deleteDate} | egrep '([^_]*)${device.serial_number}([^_]*)_([^_]*)${name}([^_]*)_${type}${tempRegex}([0-9]*).png' | tr '\\n' '\\0' | xargs -0 rm`, (error, stdout, stderr) => {
                         if (error) {
                             console.log(error);
                             return;
@@ -602,7 +604,7 @@ router.delete('/',async function(req, res) {
                     }))
                 } else {
                     console.log('test')
-                    exec(`find ./uploads/accesses/temp/${deleteDate} | egrep '([^_]*)([^_]*)_([^_]*)${name}([^_]*)_${type}${tempRegex}([0-9]*).png' | tr '\\n' '\\0' | xargs -0 rm`, (error, stdout, stderr) => {
+                    exec(`find ./uploads/accesss/temp/${deleteDate} | egrep '([^_]*)([^_]*)_([^_]*)${name}([^_]*)_${type}${tempRegex}([0-9]*).png' | tr '\\n' '\\0' | xargs -0 rm`, (error, stdout, stderr) => {
                         if (error) {
                             console.log(error);
                             return;

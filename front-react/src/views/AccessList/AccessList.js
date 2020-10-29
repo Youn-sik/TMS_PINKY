@@ -310,7 +310,7 @@ const AccessList = props => {
   }
 
   const resetSearch = () => {
-    setSearchType('all')
+    setSearchType('name')
     setDate([
       moment()
         .locale('ko')
