@@ -5,8 +5,10 @@ require('moment-timezone');
 moment.tz.setDefault("Asia/Seoul"); 
 const boom = require('boom')
 const api_v1_person_access = require('../../../../models/api/v1/person/access')
+const api_v3_device_camera = require('../../../../models/api/v3/device/camera')
 const Statistics = require('../../../../models/api/v3/device/statistics')
 const StatisticsTemp = require('../../../../models/api/v3/device/statistics_temp')
+const exec = require('child_process').exec;
 const fs = require('fs')
 
 router.get('/',async function(req, res) {
@@ -525,6 +527,29 @@ function regExp(str){
     }  
 }
 
+const createNumberRegex = (target, type) => {
+    if (target > 89 || target < 20) {
+        return null;
+    }
+
+    console.log(type)
+
+    let ten = Math.floor(target / 10),
+        one = Math.floor(target % 10),
+        under = Number((target % 1).toFixed(1)) * 10, regex = null;
+
+    if (type == '2') {
+        // 이상
+        regex = `_((${ten}${one}\.[${under}-9][0-9]{0,})|${one != 9 ? `(${ten}[${one + 1}-9])\.([0-9]{0,})|` : ''}([${ten + 1}-9][0-9]|[0-9]{3,})\.([0-9]{0,}))_`;
+    } else if (type == '1') {
+        // 미만
+        regex = `_(${under != 0 ? `(${ten}${one}\.[0-${under - 1}][0-9]{0,})|` : ''}${one != 0 ? `(${ten}[0-${one - 1}])\.([0-9]{0,})|` : ''}([1-${ten - 1}][0-9]|[0-9]{1})\.([0-9]{0,}))_`;
+    } else {
+        regex = '_([0-9.]*)_'
+    }
+
+    return regex;
+};
 
 router.delete('/',async function(req, res) {
     try {
@@ -532,88 +557,58 @@ router.delete('/',async function(req, res) {
         let deleted_accesses = [];
         if(req.query.type === 'all') {
             let searchType = req.query.searchType
-            let search = new RegExp(req.query.search)
+            let search = req.query.search
             let date = req.query.date.split('/');
-            let avatarTemp = new RegExp('');
-            let tempType = req.query.tempType === '0' ? {$gte : '0'} :
-                            req.query.tempType === '1' ? {$lt : req.query.avatar_temperature} :  {$gte : req.query.avatar_temperature}
+            let tempType = req.query.tempType
+            let tempLimit = req.query.avatar_temperature
+            let devices = [];
+            let name = '';
+            let type = req.query.avatar_type === '0' ? '([0-9]*)' : req.query.avatar_type;
+            let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$")
 
-            // if(searchType === 'stb_name') {
-            //     delete_data = await api_v1_person_access.deleteMany({
-            //         access_time : { $gte:date[0]+ " 00:00:00",$lte: date[1]+" 23:59:59"},
-            //         stb_name : search,
-            //         $and:[
-            //             {avatar_temperature : tempType},
-            //             {avatar_temperature : avatarTemp}
-            //         ]
-            //     })
-            // } else if(searchType === 'stb_location'){
-            //     delete_data = await api_v1_person_access.deleteMany({
-            //         access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59"},
-            //         stb_location : search,
-            //         $and:[
-            //             {avatar_temperature : tempType},
-            //             {avatar_temperature : avatarTemp}
-            //         ]
-            //     })
-            // } else if(searchType === 'stb_sn') {
-            //     delete_data = await api_v1_person_access.deleteMany({
-            //         access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
-            //         stb_sn : search,
-            //         $and:[
-            //             {avatar_temperature : tempType},
-            //             {avatar_temperature : avatarTemp}
-            //         ]
-            //     })
-            // }
-
-            // deleted_accesses.map(access => {
-            //     let ip = access.avatar_file_url.split(':3000')[0]
-            //     fs.unlink(access.avatar_file_url.replace(ip+':3000/','/var/www/backend/'),() => {})
-            // })
-
-
-            // let firstDate = regExp(date[0]+" 00:00:00").replace(' ','')
-            // let lastDate = regExp(date[1]+" 23:59:59").replace(' ','')
-            // if(date[0].split(' ')[0] === date[1].split(' ')[0]){
-            //     if(date[0].split(' ')[1] === "00:00:00" && date[1].split(' ')[1] === '23:59:59') {
-            //         if(req.query.search === '' && req.query.tempType === '0') {//해당 날짜 폴더 전체 삭제
-                        
-            //         } else if(req.query.tempType === '0') { //tempType만 0일때
-            //             if(req.query.searchType === 'name') { //해당 날짜 폴더내에 해당 이름 전부 삭제
-
-            //             } else { //해당 날짜 폴더내의 해당 시리얼 번호 폴더 전부 삭제
-
-            //             }
-            //         } else if(req.query.search === '') { //search만 공백일때
-            //             if(req.query.tempType === '1') { //정상 온도
-
-            //             } else { //비정상 온도
-
-            //             }
-            //         } else { //둘다 선택
-            //             if(req.query.tempType === '1') { //정상 온도
-            //                 if(req.query.searchType === 'name') { //해당 날짜 폴더내의 해당 온도, 해당 이름 전부 삭제
-
-            //                 } else { //해당 날짜 폴더내의 해당 온도, 해당 시리얼 번호 폴더 전부 삭제
-    
-            //                 }
-            //             } else { //비정상 온도
-            //                 if(req.query.searchType === 'name') { //해당 날짜 폴더내의 해당 온도, 해당 이름 전부 삭제
-
-            //                 } else { //해당 날짜 폴더내의 해당 온도, 해당 시리얼 번호 폴더 전부 삭제
-    
-            //                 }
-            //             }
-            //         }
-            //     } else {
-            //       //해당 하는 시간내 삭제
-            //     }
-            // } else {
-                
-            // }
-
+            if(searchType === 'stb_location') {
+                devices = await api_v3_device_camera.find()
+                .regex('authority',auth)
+                .regex('location',new RegExp(search))
+                .select('serial_number')
+            } else if(searchType === 'stb_name'){
+                devices = await api_v3_device_camera.find()
+                .regex('authority',auth)
+                .regex('name',new RegExp(search))
+                .select('serial_number')
+            } else if(searchType === 'stb_sn'){
+                devices = [search]
+            } else if(searchType === 'name'){
+                name = search
+            }
             
+            let tempRegex = createNumberRegex(parseFloat(tempLimit), tempType)
+            
+            let firstDate = moment(date[0])
+            let lastDate = moment(date[1]).add(1, 'days')
+
+            while (firstDate.isBefore(lastDate, 'day')) {
+                let deleteDate = firstDate.format('YYYYMMDD')
+
+                console.log(`find ./uploads/accesses/temp/${deleteDate} | egrep '([^_]*)([^_]*)_([^_]*)${name}([^_]*)_${type}${tempRegex}([0-9]*).png' | tr '\\n' '\\0' | xargs -0 rm`);
+
+                if(devices.length > 0) {
+                    //devices = devices.map(device => exec(`find ./uploads/accesses/temp/${deleteDate} | egrep '([^_]*)${device.serial_number}([^_]*)_([^_]*)${name}([^_]*)_${type}${tempRegex}([0-9]*).png' | tr '\\n' '\\0' | xargs -0 rm`))
+                } else {
+                    //exec(`find ./uploads/accesses/temp/${deleteDate} | egrep '([^_]*)([^_]*)_([^_]*)${name}([^_]*)_${type}${tempRegex}([0-9]*).png' | tr '\\n' '\\0' | xargs -0 rm`);
+                }
+
+                firstDate.add(1, 'days');
+            }
+
+            // find ./uploads/accesses/temp/20201026 | egrep '([^_]*)([^_]*)_([^_]*)테스([^_]*)_([0-9]*)null([0-9]*).png'
+
+            // if(devices.length > 0) {
+            //     devices = devices.map(device => exec(`find . | egrep '([^_]*)${device.serial_number}([^_]*)_([^_]*)${name}([^_]*)_${type}${tempRegex}([0-9]*).png' | tr '\n' '\0' | xargs -0 rm`))
+            // } else {
+            //     exec(`find ./uploads/accesses/temp/${} | egrep '([^_]*)([^_]*)_([^_]*)${name}([^_]*)_${type}${tempRegex}([0-9]*).png' | tr '\n' '\0' | xargs -0 rm`);
+            // }
+
         } else {
             const id = req.params === undefined ? req.id : req.params.id
             let ids = req.body.accesses_data.map(i => i._id)

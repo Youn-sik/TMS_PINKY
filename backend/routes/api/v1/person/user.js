@@ -73,8 +73,15 @@ router.post('/',async function(req, res) {
             add.face_detection = overlap_check.face_detection;
         } else {
             let detections
-            console.log(req.body.avatar_file)
             if(req.body.avatar_file === undefined) {
+                // console.log('test');
+                // "/var/www/backend/image/5f991742124ed642e2180c3eprofile.jpg"
+                let dir = req.body.avatar_file_url.split(":3000")[1];
+                let oriDir = "/var/www/backend"+dir;
+                let cpDir = "/var/www/backend/image/"+dir.split('/')[6]
+                console.log(oriDir,cpDir)
+                fs.copyFileSync(oriDir, cpDir);
+                add.avatar_file_url = 'http://'+req.headers.host+'/image/'+dir.split('/')[6]
                 let imageDir = await canvas.loadImage(req.body.avatar_file_url)
                 detections = await faceapi.detectAllFaces(imageDir)
                 .withFaceLandmarks()
@@ -184,17 +191,17 @@ router.put('/:id',async function(req, res) {
         if(update.type === 1) type = '사원';
         else if(update.type === 2) type = '방문자'
         else if(update.type === 5) type = '블랙리스트'
-        const history = new History({
-            avatar_file : update.avatar_file,
-            avatar_contraction_data : update.avatar_contraction_data,
-            avatar_file_checksum : update.avatar_file_checksum,
-            avatar_file_url : update.avatar_file_url,
-            name : update.name,
-            type : update.type,
-            create_at : moment().format('YYYY-MM-DD HH:mm:ss'),
-            create_ut : Date.now(),
-            action : '수정',
-        });
+        // const history = new History({
+        //     avatar_file : update.avatar_file,
+        //     avatar_contraction_data : update.avatar_contraction_data,
+        //     avatar_file_checksum : update.avatar_file_checksum,
+        //     avatar_file_url : update.avatar_file_url,
+        //     name : update.name,
+        //     type : update.type,
+        //     create_at : moment().format('YYYY-MM-DD HH:mm:ss'),
+        //     create_ut : Date.now(),
+        //     action : '수정',
+        // });
         const operation = new Operation({
             id:req.body.account,
             action: '유저 업데이트',
@@ -202,7 +209,7 @@ router.put('/:id',async function(req, res) {
             description : update.name+' '+type+' 수정'
         })
         operation.save();
-        history.save();
+        // history.save();
         res.send(update);
     } catch (err) {
         throw boom.boomify(err)
@@ -222,17 +229,17 @@ router.delete('/:id',async function(req, res) {
             if(delete_data.type === 1) type = '사원';
             else if(delete_data.type === 2) type = '방문자'
             else if(delete_data.type === 5) type = '블랙리스트'
-            const history = new History({
-                avatar_file : delete_data.avatar_file,
-                avatar_contraction_data : delete_data.avatar_contraction_data,
-                avatar_file_checksum : delete_data.avatar_file_checksum,
-                avatar_file_url : delete_data.avatar_file_url,
-                name : delete_data.name,
-                type : delete_data.type,
-                create_at : moment().format('YYYY-MM-DD HH:mm:ss'),
-                create_ut : Date.now(),
-                action : '삭제',
-            });
+            // const history = new History({
+            //     avatar_file : delete_data.avatar_file,
+            //     avatar_contraction_data : delete_data.avatar_contraction_data,
+            //     avatar_file_checksum : delete_data.avatar_file_checksum,
+            //     avatar_file_url : delete_data.avatar_file_url,
+            //     name : delete_data.name,
+            //     type : delete_data.type,
+            //     create_at : moment().format('YYYY-MM-DD HH:mm:ss'),
+            //     create_ut : Date.now(),
+            //     action : '삭제',
+            // });
             const operation = new Operation({
                 id:req.body.account,
                 action: '유저 삭제',
@@ -240,7 +247,7 @@ router.delete('/:id',async function(req, res) {
                 description : delete_data.name +' 삭제'
             })
             operation.save();
-            history.save();
+            // history.save();
             res.send(delete_data);
         } catch (err) {
             throw boom.boomify(err)
@@ -259,17 +266,17 @@ router.delete('/:id',async function(req, res) {
                         if(i.type === 1) type = '사원';
                         else if(i.type === 2) type = '방문자'
                         else if(i.type === 5) type = '블랙리스트'
-                        const history = new History({
-                            avatar_file : i.avatar_file,
-                            avatar_contraction_data : i.avatar_contraction_data,
-                            avatar_file_checksum : i.avatar_file_checksum,
-                            avatar_file_url : i.avatar_file_url,
-                            name : i.name,
-                            type : i.type,
-                            create_at : moment().format('YYYY-MM-DD HH:mm:ss'),
-                            create_ut : Date.now(),
-                            action : '삭제',
-                        });
+                        // const history = new History({
+                        //     avatar_file : i.avatar_file,
+                        //     avatar_contraction_data : i.avatar_contraction_data,
+                        //     avatar_file_checksum : i.avatar_file_checksum,
+                        //     avatar_file_url : i.avatar_file_url,
+                        //     name : i.name,
+                        //     type : i.type,
+                        //     create_at : moment().format('YYYY-MM-DD HH:mm:ss'),
+                        //     create_ut : Date.now(),
+                        //     action : '삭제',
+                        // });
                         const operation = new Operation({
                             id:req.body.account,
                             action: '유저 삭제',
@@ -277,7 +284,7 @@ router.delete('/:id',async function(req, res) {
                             description : i.name+' '+type+' 삭제'
                         })
                         operation.save();
-                        history.save();
+                        // history.save();
                     })
                     res.send(deletedList)
                 }

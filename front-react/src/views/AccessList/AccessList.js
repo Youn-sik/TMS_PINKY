@@ -252,7 +252,7 @@ const AccessList = props => {
         _pages++;
 
       let result = await axios.delete(base_url + 
-        `/access?searchType=${searchType}&pages=${_pages}&type=all&rowsPerPage=${rowsPerPage}&date=${firstDate}/${lastDate}&page=${page}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+        `/access?auth=${props.authority}&searchType=${searchType}&pages=${_pages}&type=all&rowsPerPage=${rowsPerPage}&date=${firstDate}/${lastDate}&page=${page}&search=${search}&avatar_type=${type}&tempType=${temp}&avatar_temperature=${props.tempLimit}`, {
         cancelToken: source.token
       });
 
@@ -475,7 +475,7 @@ const AccessList = props => {
           setSearch={_setSearch}
           handleRowsPerPage={handleRowsPerPage}
           rowsPerPage={rowsPerPage}
-          accesses={search !== '' ? filteredAccesses : accesses}
+          accesses={accesses}
           className={classes.toolbar}
           dateChange={handleDate}
           type_change={handleType}

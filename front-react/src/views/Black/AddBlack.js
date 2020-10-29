@@ -145,7 +145,7 @@ const AddBlack = props => {
   };
 
   const getGroups = async () => {
-    let result = await axios.get(base_url+'/group?type=5')
+    let result = await axios.get(base_url+'/group?type=5&auth='+props.authority)
     setGroups(result.data);
   }
 
