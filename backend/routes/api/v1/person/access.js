@@ -565,33 +565,32 @@ router.delete('/',async function(req, res) {
             let name = '';
             let type = req.query.avatar_type === '0' ? '([0-9]*)' : req.query.avatar_type;
             let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$")
+            let temperature = req.query.tempType === '0' ? {$gte : '0'} :
+                            req.query.tempType === '1' ? {$lt : req.query.avatar_temperature} :  {$gte : req.query.avatar_temperature}
 
             if(searchType === 'stb_name') {
                 delete_data = await api_v1_person_access.deleteMany({
                     access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59"},
-                    stb_name : search,
-                    $and:[
-                        {avatar_temperature : tempType},
-                        {avatar_temperature : avatarTemp}
-                    ]
+                    stb_name : new RegExp(search),
+                    avatar_temperature : temperature
                 })
             } else if(searchType === 'stb_location'){
                 delete_data = await api_v1_person_access.deleteMany({
                     access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59"},
-                    stb_location : search,
-                    $and:[
-                        {avatar_temperature : tempType},
-                        {avatar_temperature : avatarTemp}
-                    ]
+                    stb_location : new RegExp(search),
+                    avatar_temperature : temperature
                 })
             } else if(searchType === 'stb_sn') {
                 delete_data = await api_v1_person_access.deleteMany({
                     access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
-                    stb_sn : search,
-                    $and:[
-                        {avatar_temperature : tempType},
-                        {avatar_temperature : avatarTemp}
-                    ]
+                    stb_sn : new RegExp(search),
+                    avatar_temperature : temperature
+                })
+            } else if (searchType === 'name') {
+                delete_data = await api_v1_person_access.deleteMany({
+                    access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
+                    name : new RegExp(search),
+                    avatar_temperature : temperature
                 })
             }
             
@@ -606,7 +605,7 @@ router.delete('/',async function(req, res) {
                 let deleteDate = firstDate.format('YYYYMMDD')
 
                 if(devices.length > 0) {
-                    devices = devices.map(device => exec(`find ./uploads/accesss/temp/${deleteDate} | egrep '([^_]*)${device.serial_number}([^_]*)_([^_]*)${name}([^_]*)_${type}${tempRegex}([0-9]*).png' | tr '\\n' '\\0' | xargs -0 rm`, (error, stdout, stderr) => {
+                    devices = devices.map(device => exec(`find /var/www/uploads/accesss/temp/${deleteDate} | egrep '([^_]*)${device.serial_number}([^_]*)_([^_]*)${name}([^_]*)_${type}${tempRegex}([0-9]*).png' | tr '\\n' '\\0' | xargs -0 rm`, (error, stdout, stderr) => {
                         if (error) {
                             console.log(error);
                             return;
@@ -617,7 +616,7 @@ router.delete('/',async function(req, res) {
                     }))
                 } else {
                     console.log('test')
-                    exec(`find ./uploads/accesss/temp/${deleteDate} | egrep '([^_]*)([^_]*)_([^_]*)${name}([^_]*)_${type}${tempRegex}([0-9]*).png' | tr '\\n' '\\0' | xargs -0 rm`, (error, stdout, stderr) => {
+                    exec(`find /var/www/uploads/accesss/temp/${deleteDate} | egrep '([^_]*)([^_]*)_([^_]*)${name}([^_]*)_${type}${tempRegex}([0-9]*).png' | tr '\\n' '\\0' | xargs -0 rm`, (error, stdout, stderr) => {
                         if (error) {
                             console.log(error);
                             return;
