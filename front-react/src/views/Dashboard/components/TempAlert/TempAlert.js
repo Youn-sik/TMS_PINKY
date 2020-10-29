@@ -66,9 +66,11 @@ const TempAlert = props => {
                   props.history.push('access/records');
                 }}>
                 <TableCell>사진</TableCell>
+                <TableCell>이름</TableCell>
+                <TableCell>타입</TableCell>
                 <TableCell>단말 위치</TableCell>
-                <TableCell>시리얼번호</TableCell>
                 <TableCell>단말명</TableCell>
+                <TableCell>시리얼번호</TableCell>
                 <TableCell>온도</TableCell>
                 <TableCell>날짜</TableCell>
               </TableRow>
@@ -89,6 +91,16 @@ const TempAlert = props => {
                         src={access.avatar_file_url}
                       />
                     </TableCell>
+                    <TableCell className={classes.redFont}>{access.name === 'unknown' ? null : access.name}</TableCell>
+                    <TableCell className={classes.redFont}>
+                      {access.avatar_type === 1
+                        ? '사원'
+                        : access.avatar_type === 2
+                        ? '방문자'
+                        : access.avatar_type === 3
+                        ? '미등록자'
+                        : '블랙리스트'}
+                    </TableCell>
                     <TableCell className={classes.redFont}>{access.stb_location}</TableCell>
                     <TableCell className={classes.redFont}>{access.stb_sn}</TableCell>
                     <TableCell className={classes.redFont}>{access.stb_name}</TableCell>
@@ -97,15 +109,6 @@ const TempAlert = props => {
                         ? String(access.avatar_temperature).substring(0, 4)
                         : '비정상 체온'}
                     </TableCell>
-                    {/* <TableCell className={classes.redFont}>
-                      {access.avatar_type === 1
-                        ? '사원'
-                        : access.avatar_type === 2
-                        ? '방문자'
-                        : access.avatar_type === 3
-                        ? '미등록자'
-                        : '블랙리스트'}
-                    </TableCell> */}
                     <TableCell className={classes.redFont}>
                       {access.access_time}
                     </TableCell>
@@ -123,6 +126,16 @@ const TempAlert = props => {
                         className={classes.image}
                         src={access.avatar_file_url}
                       />
+                    </TableCell>
+                    <TableCell>{access.name === 'unknown' ? null : access.name}</TableCell>
+                    <TableCell>
+                      {access.avatar_type === 1
+                        ? '사원'
+                        : access.avatar_type === 2
+                        ? '방문자'
+                        : access.avatar_type === 3
+                        ? '미등록자'
+                        : '블랙리스트'}
                     </TableCell>
                     <TableCell>{access.stb_location}</TableCell>
                     <TableCell>{access.stb_sn}</TableCell>

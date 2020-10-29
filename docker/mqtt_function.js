@@ -558,6 +558,7 @@ module.exports = {
                 if(todayStatistics === null) {
                     todayStatistics = new Statistics({
                         camera_obid : camera._id,
+                        authority : camera.authority,
                         serial_number : json.stb_sn,
                         access_date: moment().format('YYYY-MM-DD'),
                         all_count : 1,
@@ -572,6 +573,7 @@ module.exports = {
 
                     todayStatisticsTemp = new Statistics_temp({
                         camera_obid : camera._id,
+                        authority : camera.authority,
                         serial_number : json.stb_sn,
                         access_date: moment().format('YYYY-MM-DD'),
                         [hours] : `${userName}|${element.avatar_temperature}|${element.avatar_type === 5 ? 4 : element.avatar_type}|${upload_url}`,
@@ -670,7 +672,8 @@ module.exports = {
             await User.insertMany(insert_array)
             
             send_data = {
-                stb_sn: json.stb_sn
+                stb_sn: json.stb_sn,
+                values:insert_array
             };
             client.publish('/access/addpeople/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
 

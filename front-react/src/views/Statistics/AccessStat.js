@@ -65,7 +65,7 @@ const AccessStat = props => {
 
   async function getAccesses() {
     setLoading(true);
-    let result = await axios.get(base_url + `/access?type=deviceGroupAccesses&device=${device}&date=${date[0]}/${date[1]}`);
+    let result = await axios.get(base_url + `/access?type=deviceGroupAccesses&device=${device}&date=${date[0]}/${date[1]}&auth=${props.authority}`);
     setPeopleData(result.data);
     setLoading(false);
   }

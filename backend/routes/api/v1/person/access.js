@@ -142,6 +142,7 @@ router.get('/',async function(req, res) {
         } else if(req.query.type === 'deviceStats') {
             let date = req.query.date.split('/');
             let device = req.query.device
+            let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$");
 
             if(device === '')
                 device = new RegExp('')
@@ -151,17 +152,21 @@ router.get('/',async function(req, res) {
             get_data = await Statistics.find()
             .gte("access_date",date[0])
             .lte("access_date",date[1])
+            .regex('authority',auth)
             .regex('serial_number', device)
         } else if(req.query.type === 'deviceGroupAccesses') {
             let date = req.query.date.split('/');
             let device = req.query.device
+            let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$");
             
             if(device === 'all') {
                 get_data = {
                     access : await Statistics.find()
-                    .regex('access_date' , date[0]),
+                    .regex('access_date' , date[0])
+                    .regex('authority',auth),
                     temp : await StatisticsTemp.find()
                     .regex('access_date' , date[0])
+                    .regex('authority',auth)
                 }
             } else {
                 get_data = {
@@ -219,7 +224,6 @@ router.get('/',async function(req, res) {
         } else if(req.query.type === 'dateCount') {
             let date = req.query.date.split('/');
             let search = req.query.search;
-            console.log(search)
             let avatar_type = parseInt(req.query.avatar_type);
             let tempType = req.query.tempType;
             let avatar_temperature = req.query.avatar_temperature;

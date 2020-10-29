@@ -241,7 +241,7 @@ const Statistics = props => {
 
   async function getAccesses() {
     let local_device = device === ' ' ? '' : device
-    let result = await axios.get(base_url + `/access?date=${date[0].yyyymmdd()}/${date[1].yyyymmdd()}&device=${local_device}&type=deviceStats`);
+    let result = await axios.get(base_url + `/access?date=${date[0].yyyymmdd()}/${date[1].yyyymmdd()}&device=${local_device}&type=deviceStats&auth=${props.authority}`);
     filterAccesses(result.data);
     
     setLoading(false);

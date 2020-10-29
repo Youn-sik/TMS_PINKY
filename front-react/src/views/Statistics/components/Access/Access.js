@@ -216,9 +216,9 @@ const Access = props => {
                               ? '사원'
                               : access.avatar_type === 2
                               ? '방문자'
-                              : access.avatar_type === 4
-                              ? '블랙리스트'
-                              : '미등록자'}
+                              : access.avatar_type === 3
+                              ? '미등록자'
+                              : '블랙리스트'}
                           </TableCell>
                           <TableCell>
                             {access.avatar_distance

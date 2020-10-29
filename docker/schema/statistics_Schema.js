@@ -6,6 +6,7 @@ const statisticsSchema = new mongoose.Schema({
     serial_number : { type : String },
     access_date : { type : String },
     all_count : { type: Number ,default:0},
+    authority : {type:String},
     00 : { type: Number ,default:0},
     01 : { type: Number ,default:0},
     02 : { type: Number ,default:0},

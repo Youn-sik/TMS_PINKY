@@ -5,6 +5,7 @@ const statisticsTempSchema = new mongoose.Schema({
     camera_obid : { type : ObjectId, ref : 'Camera', required: true },
     serial_number : { type : String },
     access_date : { type : String },
+    authority : {type:String},
     00 : { type: String,default : "0|0|0|0" },
     01 : { type: String,default : "0|0|0|0" },
     02 : { type: String,default : "0|0|0|0" },
