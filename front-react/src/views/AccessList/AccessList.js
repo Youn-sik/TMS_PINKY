@@ -256,10 +256,10 @@ const AccessList = props => {
         cancelToken: source.token
       });
 
-      // alert('삭제 되었습니다')
+      alert('삭제 되었습니다')
     }
     
-    // resetSearch()
+    resetSearch()
   }
 
   async function getAccesses() {
