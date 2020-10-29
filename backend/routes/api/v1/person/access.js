@@ -566,20 +566,33 @@ router.delete('/',async function(req, res) {
             let type = req.query.avatar_type === '0' ? '([0-9]*)' : req.query.avatar_type;
             let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$")
 
-            if(searchType === 'stb_location') {
-                devices = await api_v3_device_camera.find()
-                .regex('authority',auth)
-                .regex('location',new RegExp(search))
-                .select('serial_number')
-            } else if(searchType === 'stb_name'){
-                devices = await api_v3_device_camera.find()
-                .regex('authority',auth)
-                .regex('name',new RegExp(search))
-                .select('serial_number')
-            } else if(searchType === 'stb_sn'){
-                devices = [search]
-            } else if(searchType === 'name'){
-                name = search
+            if(searchType === 'stb_name') {
+                delete_data = await api_v1_person_access.deleteMany({
+                    access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59"},
+                    stb_name : search,
+                    $and:[
+                        {avatar_temperature : tempType},
+                        {avatar_temperature : avatarTemp}
+                    ]
+                })
+            } else if(searchType === 'stb_location'){
+                delete_data = await api_v1_person_access.deleteMany({
+                    access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59"},
+                    stb_location : search,
+                    $and:[
+                        {avatar_temperature : tempType},
+                        {avatar_temperature : avatarTemp}
+                    ]
+                })
+            } else if(searchType === 'stb_sn') {
+                delete_data = await api_v1_person_access.deleteMany({
+                    access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
+                    stb_sn : search,
+                    $and:[
+                        {avatar_temperature : tempType},
+                        {avatar_temperature : avatarTemp}
+                    ]
+                })
             }
             
             let tempRegex = createNumberRegex(parseFloat(tempLimit), tempType)

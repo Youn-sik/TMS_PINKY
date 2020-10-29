@@ -314,12 +314,12 @@ const AccessList = props => {
     setDate([
       moment()
         .locale('ko')
-        .format('YYYY-MM-DD')+" 00:00:00",
+        .format('YYYY-MM-DD'),
       moment()
         .locale('ko')
-        .format('YYYY-MM-DD')+" 23:59:59"
+        .format('YYYY-MM-DD')
     ]);
-    setType(' ');
+    setType('0');
     setTemp('0');
     setLoading(true);
     setSearch('');
