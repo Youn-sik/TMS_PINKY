@@ -590,12 +590,10 @@ router.delete('/',async function(req, res) {
             while (firstDate.isBefore(lastDate, 'day')) {
                 let deleteDate = firstDate.format('YYYYMMDD')
 
-                console.log(`find ./uploads/accesses/temp/${deleteDate} | egrep '([^_]*)([^_]*)_([^_]*)${name}([^_]*)_${type}${tempRegex}([0-9]*).png' | tr '\\n' '\\0' | xargs -0 rm`);
-
                 if(devices.length > 0) {
-                    //devices = devices.map(device => exec(`find ./uploads/accesses/temp/${deleteDate} | egrep '([^_]*)${device.serial_number}([^_]*)_([^_]*)${name}([^_]*)_${type}${tempRegex}([0-9]*).png' | tr '\\n' '\\0' | xargs -0 rm`))
+                    devices.forEach(device => exec(`find ./uploads/accesss/temp/${deleteDate} | egrep '([^_]*)${device.serial_number}([^_]*)_([^_]*)${name}([^_]*)_${type}${tempRegex}([0-9]*).png' | tr '\\n' '\\0' | xargs -0 rm`))
                 } else {
-                    //exec(`find ./uploads/accesses/temp/${deleteDate} | egrep '([^_]*)([^_]*)_([^_]*)${name}([^_]*)_${type}${tempRegex}([0-9]*).png' | tr '\\n' '\\0' | xargs -0 rm`);
+                    exec(`find ./uploads/accesss/temp/${deleteDate} | egrep '([^_]*)([^_]*)_([^_]*)${name}([^_]*)_${type}${tempRegex}([0-9]*).png' | tr '\\n' '\\0' | xargs -0 rm`);
                 }
 
                 firstDate.add(1, 'days');
