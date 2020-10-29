@@ -183,14 +183,15 @@ const Statistics = props => {
     let black = [0,0,0,0,0,0,0];
     let stranger = [0,0,0,0,0,0,0]
     let dates = [
-      date[0],
+      date[0].yyyymmdd(),
       dateChange(date[0], 1),
       dateChange(date[0], 2),
       dateChange(date[0], 3),
       dateChange(date[0], 4),
       dateChange(date[0], 5),
-      date[1]
+      date[1].yyyymmdd()
     ];
+
 
     dates.map((date, index) => {
       result.map(data => {

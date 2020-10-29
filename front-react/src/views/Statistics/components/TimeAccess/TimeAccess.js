@@ -90,48 +90,8 @@ const TimeAccess = props => {
     cutoutPercentage: 80,
     layout: { padding: 0 },
     maintainAspectRatio: false,
-    onHover : function(e) {
-      console.log(e.relatedTarget)
-      if(e.type === 'mouseout')
-        setPositionAndData({
-          accessCount: 0,
-        });
-    },
     tooltips: {
-      enabled: false,
-      custom: (tooltipModel) => {
-        // if chart is not defined, return early
-        let chart = _chartRef.current;
-        if (!chart) {
-          return;
-        }
-
-        // hide the tooltip when chartjs determines you've hovered out
-        if (tooltipModel.opacity === 0) {
-          this.hide();
-          return;
-        }
-
-        const position = chart.chartInstance.canvas.getBoundingClientRect();
-
-        const left =
-          position.left + window.pageXOffset + tooltipModel.caretX + 'px';
-        const top =
-          position.top + window.pageYOffset + tooltipModel.caretY + 'px';
-
-        const date = tooltipModel.dataPoints[0].xLabel;
-        const value = tooltipModel.dataPoints[0].yLabel;
-        setPositionAndData({
-          top,
-          left,
-          date,
-          value,
-          title: tooltipModel.title[0],
-          maxTemp: chartData.maxTemp[tooltipModel.dataPoints[0].index],
-          accessCount: chartData.data[tooltipModel.dataPoints[0].index],
-          accessData: chartData.accessData[tooltipModel.dataPoints[0].index]
-        });
-      }
+      enabled: true,
     },
     elements: {
       line: {
@@ -203,40 +163,6 @@ const TimeAccess = props => {
           <div className={classes.chartContainer}>
             <Bar data={data} options={options} ref={_chartRef} />
           </div>
-          {tooltip.accessCount !== 0 ? (
-            <div
-            style={{
-              position: 'absolute',
-              top: tooltip.top,
-              left: tooltip.left
-            }}>
-              <div className="arrow_box">
-                <div style={{ color: 'white' }}>
-                  출입자 수: {tooltip.accessCount}명<br />
-                </div>
-                <div style={{ color: 'white' }}>
-                  최고 발열자 :<br />
-                  <img
-                    style={{ width: '80px', height: 'auto' }}
-                    src={tooltip.accessData.avatar_file_url}></img>
-                  <br />
-                  타입 :
-                  {tooltip.accessData.avatar_type === 1
-                    ? ' 사원'
-                    : tooltip.accessData.avatar_type === 2
-                    ? ' 방문자'
-                    : tooltip.accessData.avatar_type === 3
-                    ? ' 미등록자'
-                    : ' 블랙리스트'}
-                  <br />
-                  {tooltip.accessData.avatar_type === 1
-                    ? '이름 : ' + tooltip.accessData.name
-                    : null}<br />
-                  온도 : {tooltip.maxTemp}
-                </div>
-              </div>
-            </div>
-          ) : null}
           {/* {props.employee + props.visitor + props.black + props.stranger !== 0 ?
         <div className={classes.chartContainer}>
           <Line

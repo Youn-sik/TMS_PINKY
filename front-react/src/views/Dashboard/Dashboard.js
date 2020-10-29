@@ -255,7 +255,7 @@ const Dashboard = props => {
             item
             className={classes.accessCard}
             lg={3}
-            sm={12}
+            sm={6}
             xl={3}
             xs={12}>
             <Stranger history={props.history} count={stranger} />

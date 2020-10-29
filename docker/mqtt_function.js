@@ -542,9 +542,9 @@ module.exports = {
                 .where('camera_obid').equals(camera._id)
                 .where('access_date').equals(moment().format('YYYY-MM-DD'));
 
-                let todayStatisticsTemp = await Statistics_temp.findOne()
-                .where('camera_obid').equals(camera._id)
-                .where('access_date').equals(moment().format('YYYY-MM-DD'));
+                // let todayStatisticsTemp = await Statistics_temp.findOne()
+                // .where('camera_obid').equals(camera._id)
+                // .where('access_date').equals(moment().format('YYYY-MM-DD'));
                 
                 let hours = moment().format('HH:mm:ss').split(':')[0];
                 if(hours[0] === '0') hours = hours.replace('0','');
@@ -571,35 +571,35 @@ module.exports = {
                     })
                     todayStatistics.save()
 
-                    todayStatisticsTemp = new Statistics_temp({
-                        camera_obid : camera._id,
-                        authority : camera.authority,
-                        serial_number : json.stb_sn,
-                        access_date: moment().format('YYYY-MM-DD'),
-                        [hours] : `${userName}|${element.avatar_temperature}|${element.avatar_type === 5 ? 4 : element.avatar_type}|${upload_url}`,
-                    })
+                    // todayStatisticsTemp = new Statistics_temp({
+                    //     camera_obid : camera._id,
+                    //     authority : camera.authority,
+                    //     serial_number : json.stb_sn,
+                    //     access_date: moment().format('YYYY-MM-DD'),
+                    //     [hours] : `${userName}|${element.avatar_temperature}|${element.avatar_type === 5 ? 4 : element.avatar_type}|${upload_url}`,
+                    // })
 
-                    todayStatisticsTemp.save();
-                } else if(element.avatar_temperature > todayStatisticsTemp[hours].split('|')[1]){
-                    await Statistics.findByIdAndUpdate(todayStatistics._id,{ 
-                        $inc: { 
-                            all_count: 1,
-                            [hours] : 1,
-                            [type] : 1
-                        }
-                    },
-                    {
+                    // todayStatisticsTemp.save();
+                // } else if(element.avatar_temperature > todayStatisticsTemp[hours].split('|')[1]){
+                //     await Statistics.findByIdAndUpdate(todayStatistics._id,{ 
+                //         $inc: { 
+                //             all_count: 1,
+                //             [hours] : 1,
+                //             [type] : 1
+                //         }
+                //     },
+                //     {
                         
-                    })
+                //     })
 
-                    await Statistics_temp.findByIdAndUpdate(todayStatisticsTemp._id,{ 
-                        $set: {
-                            [hours] : `${userName}|${element.avatar_temperature}|${element.avatar_type === 5 ? 4 : element.avatar_type}|${upload_url}`
-                        }
-                    },
-                    {
+                //     await Statistics_temp.findByIdAndUpdate(todayStatisticsTemp._id,{ 
+                //         $set: {
+                //             [hours] : `${userName}|${element.avatar_temperature}|${element.avatar_type === 5 ? 4 : element.avatar_type}|${upload_url}`
+                //         }
+                //     },
+                //     {
                         
-                    })
+                //     })
                 } else {
                     await Statistics.findByIdAndUpdate(todayStatistics._id,{ 
                         $inc: { 

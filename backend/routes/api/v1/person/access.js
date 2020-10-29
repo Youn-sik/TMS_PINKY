@@ -158,7 +158,7 @@ router.get('/',async function(req, res) {
             let date = req.query.date.split('/');
             let device = req.query.device
             let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$");
-            
+
             if(device === 'all') {
                 get_data = {
                     access : await Statistics.find()
