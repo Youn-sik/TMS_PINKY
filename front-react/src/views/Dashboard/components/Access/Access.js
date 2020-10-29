@@ -98,6 +98,12 @@ const Access = props => {
 
   const accesses = [
     {
+      title: '총합',
+      value: props.employee+props.black+props.stranger,
+      icon: <PeopleIcon />,
+      color: theme.palette.success.main
+    },
+    {
       title: '사원',
       value: props.employee,
       icon: <PermIdentity />,

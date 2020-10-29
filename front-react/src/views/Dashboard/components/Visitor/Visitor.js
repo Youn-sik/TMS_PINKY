@@ -55,7 +55,7 @@ const Visitor = props => {
               color="textSecondary"
               gutterBottom
               variant="body2">
-              방문자 출입
+              총합
             </Typography>
             <Typography variant="h3">{props.count}명</Typography>
           </Grid>

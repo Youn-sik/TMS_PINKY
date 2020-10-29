@@ -227,27 +227,36 @@ const Dashboard = props => {
           <Grid
             item
             className={classes.accessCard}
-            lg={4}
+            lg={3}
             sm={6}
-            xl={4}
+            xl={3}
+            xs={12}>
+            <Visitor history={props.history} count={employee+black+stranger} />
+          </Grid>
+          <Grid
+            item
+            className={classes.accessCard}
+            lg={3}
+            sm={6}
+            xl={3}
             xs={12}>
             <Employee history={props.history} count={employee} />
           </Grid>
           <Grid
             item
             className={classes.accessCard}
-            lg={4}
+            lg={3}
             sm={6}
-            xl={4}
+            xl={3}
             xs={12}>
             <Black history={props.history} count={black} />
           </Grid>
           <Grid
             item
             className={classes.accessCard}
-            lg={4}
+            lg={3}
             sm={12}
-            xl={4}
+            xl={3}
             xs={12}>
             <Stranger history={props.history} count={stranger} />
           </Grid>

@@ -164,18 +164,12 @@ router.get('/',async function(req, res) {
                     access : await Statistics.find()
                     .regex('access_date' , date[0])
                     .regex('authority',auth),
-                    temp : await StatisticsTemp.find()
-                    .regex('access_date' , date[0])
-                    .regex('authority',auth)
                 }
             } else {
                 get_data = {
                     access : await Statistics.find()
                     .regex('access_date' , date[0])
                     .where('serial_number' ,device),
-                    temp : await StatisticsTemp.find()
-                    .regex('access_date' , date[0])
-                    .where('serial_number' ,device)
                 }
             }
         } 

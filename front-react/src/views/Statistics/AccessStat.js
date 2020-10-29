@@ -88,30 +88,30 @@ const AccessStat = props => {
             data[index] += i[time]
           })
           
-          if(access.length === 1) {
-            let maxData = temp[0][time].split('|')
-              maxTemp[index] = maxData[1]
-              accessData[index] = {
-                avatar_file_url : maxData[3],
-                avatar_type : maxData[2],
-                name : maxData[0]
-              }
-          } else {
-            for(let i = 0; i<temp.length -1 ; i++){
-              if(temp[i][time].split('|')[1] > temp[i+1][time].split('|')[1]) {
-                // console.log(temp[i][time].split('|')[1],temp[i+1][time].split('|')[1])
-                let maxData = temp[i][time].split('|')
-                maxTemp[index] = maxData[1]
-                accessData[index] = {
-                  avatar_file_url : maxData[3],
-                  avatar_type : maxData[2],
-                  name : maxData[0]
-                }
-              } else {
-                maxTemp[index] = temp[i+1][time].split('|')[1]
-              }
-            }
-          }
+          // if(access.length === 1) {
+          //   let maxData = temp[0][time].split('|')
+          //     maxTemp[index] = maxData[1]
+          //     accessData[index] = {
+          //       avatar_file_url : maxData[3],
+          //       avatar_type : maxData[2],
+          //       name : maxData[0]
+          //     }
+          // } else {
+          //   for(let i = 0; i<temp.length -1 ; i++){
+          //     if(temp[i][time].split('|')[1] > temp[i+1][time].split('|')[1]) {
+          //       // console.log(temp[i][time].split('|')[1],temp[i+1][time].split('|')[1])
+          //       let maxData = temp[i][time].split('|')
+          //       maxTemp[index] = maxData[1]
+          //       accessData[index] = {
+          //         avatar_file_url : maxData[3],
+          //         avatar_type : maxData[2],
+          //         name : maxData[0]
+          //       }
+          //     } else {
+          //       maxTemp[index] = temp[i+1][time].split('|')[1]
+          //     }
+          //   }
+          // }
           
           
         })
@@ -121,12 +121,12 @@ const AccessStat = props => {
           let maxData = temp[0][time].split('|')
           labels.push(time.length === 1 ? '0'+time : time)
           data[index] = access[0][time]
-          maxTemp[index] = maxData[1]
-          accessData[index] = {
-            avatar_file_url : maxData[3],
-            avatar_type : maxData[2],
-            name : maxData[0]
-          }
+          // maxTemp[index] = maxData[1]
+          // accessData[index] = {
+          //   avatar_file_url : maxData[3],
+          //   avatar_type : maxData[2],
+          //   name : maxData[0]
+          // }
         })
       }
     } else {
@@ -140,8 +140,8 @@ const AccessStat = props => {
       setChartData({
         labels,
         data,
-        maxTemp,
-        accessData
+        // maxTemp,
+        // accessData
       });
     } else {
       setChartData({})
@@ -210,29 +210,29 @@ const AccessStat = props => {
     let data = JSON.parse(JSON.stringify(accesses));
     let time = ['시간'] ;
     let count = ['출입자수'];
-    let maxTemp = ['최고 발열자 온도'];
-    let maxImg = ['최고 발열자 사진',' '];
+    // let maxTemp = ['최고 발열자 온도'];
+    // let maxImg = ['최고 발열자 사진',' '];
     data.map((i, index) => {
       time.push(i._id)
       count.push(i.count)
-      maxTemp.push(i.maxTemp)
+      // maxTemp.push(i.maxTemp)
 
-      if(i.maxBase64) {
-        let image = wb.addImage({
-          base64: i.maxBase64,
-          extension: 'png'
-        })
-        ws.addImage(image,{
-          tl: { col: 1.5+index, row: 3 },
-          br: { col: 2+index, row: 5.5 }
-        })
-      }
+      // if(i.maxBase64) {
+      //   let image = wb.addImage({
+      //     base64: i.maxBase64,
+      //     extension: 'png'
+      //   })
+      //   ws.addImage(image,{
+      //     tl: { col: 1.5+index, row: 3 },
+      //     br: { col: 2+index, row: 5.5 }
+      //   })
+      // }
     });
     
     ws.addRow(time)
     ws.addRow(count)
-    ws.addRow(maxTemp)
-    ws.addRow(maxImg)
+    // ws.addRow(maxTemp)
+    // ws.addRow(maxImg)
 
     const buf = await wb.csv.writeBuffer()
 

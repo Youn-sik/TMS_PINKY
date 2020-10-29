@@ -56,19 +56,19 @@ const TimeAccess = props => {
   const data = {
     // labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
     datasets: [
-      {
-        label: '최고 발열자',
-        type: 'line',
-        data: chartData.maxTemp,
-        fill: false,
-        borderColor: '#EC932F',
-        backgroundColor: '#EC932F',
-        pointBorderColor: '#EC932F',
-        pointBackgroundColor: '#EC932F',
-        pointHoverBackgroundColor: '#EC932F',
-        pointHoverBorderColor: '#EC932F',
-        yAxisID: 'y-axis-2'
-      },
+      // {
+      //   label: '최고 발열자',
+      //   type: 'line',
+      //   data: chartData.maxTemp,
+      //   fill: false,
+      //   borderColor: '#EC932F',
+      //   backgroundColor: '#EC932F',
+      //   pointBorderColor: '#EC932F',
+      //   pointBackgroundColor: '#EC932F',
+      //   pointHoverBackgroundColor: '#EC932F',
+      //   pointHoverBorderColor: '#EC932F',
+      //   yAxisID: 'y-axis-2'
+      // },
       {
         type: 'bar',
         label: '출입자 수',

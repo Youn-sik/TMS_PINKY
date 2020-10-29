@@ -45,7 +45,7 @@ const Black = props => {
               color="textSecondary"
               gutterBottom
               variant="body2">
-              블랙리스트 출입
+              블랙리스트
             </Typography>
             <Typography variant="h3">{props.count}명</Typography>
           </Grid>
