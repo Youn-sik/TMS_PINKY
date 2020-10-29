@@ -37,12 +37,12 @@ const AccessList = props => {
   const [date, setDate] = useState([
     moment()
       .locale('ko')
-      .format('YYYY-MM-DD')+" 00:00:00",
+      .format('YYYY-MM-DD'),
     moment()
       .locale('ko')
-      .format('YYYY-MM-DD')+" 23:59:59"
+      .format('YYYY-MM-DD')
   ]); 
-  const [type, setType] = useState(' ');
+  const [type, setType] = useState('0');
   const [temp, setTemp] = useState('0');
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -236,7 +236,6 @@ const AccessList = props => {
 
   const deleteAllAccesses = async () => {
     if(window.confirm('삭제한 내용은 되돌릴수 없습니다\n정말 삭제하시겠습니까?')) {
-      // let result = await axios.get(base_url + 
       let firstDate = '';
       let lastDate = '';
       if(date[0] > date[1]) {
@@ -257,7 +256,7 @@ const AccessList = props => {
         cancelToken: source.token
       });
 
-      alert('삭제 되었습니다')
+      // alert('삭제 되었습니다')
     }
     
     // resetSearch()

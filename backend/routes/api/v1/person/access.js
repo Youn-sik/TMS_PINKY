@@ -150,8 +150,8 @@ router.get('/',async function(req, res) {
                 device = new RegExp("^"+req.query.device+"$");
             
             get_data = await Statistics.find()
-            .gte("access_date",date[0])
-            .lte("access_date",date[1])
+            .gte("access_date",date[0]+" 00:00:00")
+            .lte("access_date",date[1]+" 23:59:59")
             .regex('authority',auth)
             .regex('serial_number', device)
         } else if(req.query.type === 'deviceGroupAccesses') {
@@ -246,7 +246,7 @@ router.get('/',async function(req, res) {
                     get_data = await api_v1_person_access.aggregate([
                         {
                             $match: {
-                                access_time : { $gte:date[0],$lte: date[1] },
+                                access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
                                 name : { $regex:new RegExp(name) },
                                 stb_sn : { $regex:new RegExp(stb_sn) },
                                 stb_name : { $regex:new RegExp(stb_name) },
@@ -264,7 +264,7 @@ router.get('/',async function(req, res) {
                     get_data = await api_v1_person_access.aggregate([
                         {
                             $match: {
-                                access_time : { $gte:date[0],$lte: date[1]},
+                                access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59"},
                                 name : { $regex:new RegExp(name) },
                                 stb_sn : { $regex:new RegExp(stb_sn) },
                                 stb_name : { $regex:new RegExp(stb_name) },
@@ -283,7 +283,7 @@ router.get('/',async function(req, res) {
                 get_data = await api_v1_person_access.aggregate([
                     {
                         $match: {
-                            access_time : { $gte:date[0],$lte: date[1] },
+                            access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59"},
                             name : { $regex:new RegExp(name) },
                             stb_sn : { $regex:new RegExp(stb_sn) },
                             stb_name : { $regex:new RegExp(stb_name) },
@@ -301,7 +301,7 @@ router.get('/',async function(req, res) {
                     get_data = await api_v1_person_access.aggregate([
                         {
                             $match: {
-                                access_time : { $gte:date[0],$lte: date[1] },
+                                access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59"},
                                 name : { $regex:new RegExp(name) },
                                 stb_sn : { $regex:new RegExp(stb_sn) },
                                 stb_name : { $regex:new RegExp(stb_name) },
@@ -318,7 +318,7 @@ router.get('/',async function(req, res) {
                     get_data = await api_v1_person_access.aggregate([
                         {
                             $match: {
-                                access_time : { $gte:date[0],$lte: date[1] },
+                                access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59"},
                                 name : { $regex:new RegExp(name) },
                                 stb_sn : { $regex:new RegExp(stb_sn) },
                                 stb_name : { $regex:new RegExp(stb_name) },
@@ -336,7 +336,7 @@ router.get('/',async function(req, res) {
                 get_data = await api_v1_person_access.aggregate([
                     {
                         $match: {
-                            access_time : { $gte:date[0],$lte: date[1] },
+                            access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59"},
                             name : { $regex:new RegExp(name) },
                             stb_sn : { $regex:new RegExp(stb_sn) },
                             stb_name : { $regex:new RegExp(stb_name) },
@@ -419,7 +419,7 @@ router.get('/',async function(req, res) {
                     .limit(rowPerPage)
                     .regex("authority",auth)
                 }
-            } else if (avatar_type) { //아바타 온도만 선택한 경우
+            } else if (avatar_type) { //아바타 타입만 선택한 경우
                 get_data = await api_v1_person_access.find()
                 .sort(headerType)
                 .where("avatar_type").equals(avatar_type)
@@ -513,6 +513,19 @@ router.put('/:id',async function(req, res) {
     }
 });
 
+function regExp(str){  
+    var reg = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi
+    //특수문자 검증
+    if(reg.test(str)){
+        //특수문자 제거후 리턴
+        return str.replace(reg, "");    
+    } else {
+        //특수문자가 없으므로 본래 문자 리턴
+        return str;
+    }  
+}
+
+
 router.delete('/',async function(req, res) {
     try {
         let delete_data;
@@ -524,72 +537,81 @@ router.delete('/',async function(req, res) {
             let avatarTemp = new RegExp('');
             let tempType = req.query.tempType === '0' ? {$gte : '0'} :
                             req.query.tempType === '1' ? {$lt : req.query.avatar_temperature} :  {$gte : req.query.avatar_temperature}
-            let pages = req.query.pages;
 
-            for(let i = 0; i < pages; i++) {
-                let temp
-                if(searchType === 'stb_name') {
-                    temp = await api_v1_person_access.find()
-                    .gte("access_time",date[0])
-                    .lte("access_time",date[1])
-                    .regex("stb_name",search)
-                    .and([{ avatar_temperature: tempType }, { avatar_temperature: avatarTemp }])
-                    .skip(i*5000)
-                    .limit(5000)
-                } else if(searchType === 'stb_location'){
-                    temp = await api_v1_person_access.find()
-                    .gte("access_time",date[0])
-                    .lte("access_time",date[1])
-                    .regex("stb_location",search)
-                    .and([{ avatar_temperature: tempType }, { avatar_temperature: avatarTemp }])
-                    .skip(i*5000)
-                    .limit(5000)
-                } else if(searchType === 'stb_sn') {
-                    temp = await api_v1_person_access.find()
-                    .gte("access_time",date[0])
-                    .lte("access_time",date[1])
-                    .regex("stb_sn",search)
-                    .and([{ avatar_temperature: tempType }, { avatar_temperature: avatarTemp }])
-                    .skip(i*5000)
-                    .limit(5000)
-                }
+            // if(searchType === 'stb_name') {
+            //     delete_data = await api_v1_person_access.deleteMany({
+            //         access_time : { $gte:date[0]+ " 00:00:00",$lte: date[1]+" 23:59:59"},
+            //         stb_name : search,
+            //         $and:[
+            //             {avatar_temperature : tempType},
+            //             {avatar_temperature : avatarTemp}
+            //         ]
+            //     })
+            // } else if(searchType === 'stb_location'){
+            //     delete_data = await api_v1_person_access.deleteMany({
+            //         access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59"},
+            //         stb_location : search,
+            //         $and:[
+            //             {avatar_temperature : tempType},
+            //             {avatar_temperature : avatarTemp}
+            //         ]
+            //     })
+            // } else if(searchType === 'stb_sn') {
+            //     delete_data = await api_v1_person_access.deleteMany({
+            //         access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
+            //         stb_sn : search,
+            //         $and:[
+            //             {avatar_temperature : tempType},
+            //             {avatar_temperature : avatarTemp}
+            //         ]
+            //     })
+            // }
 
-                deleted_accesses = deleted_accesses.concat(temp);
-            }
+            // deleted_accesses.map(access => {
+            //     let ip = access.avatar_file_url.split(':3000')[0]
+            //     fs.unlink(access.avatar_file_url.replace(ip+':3000/','/var/www/backend/'),() => {})
+            // })
 
-            if(searchType === 'stb_name') {
-                delete_data = await api_v1_person_access.deleteMany({
-                    access_time : { $gte:date[0],$lte: date[1] },
-                    stb_name : search,
-                    $and:[
-                        {avatar_temperature : tempType},
-                        {avatar_temperature : avatarTemp}
-                    ]
-                })
-            } else if(searchType === 'stb_location'){
-                delete_data = await api_v1_person_access.deleteMany({
-                    access_time : { $gte:date[0],$lte: date[1] },
-                    stb_location : search,
-                    $and:[
-                        {avatar_temperature : tempType},
-                        {avatar_temperature : avatarTemp}
-                    ]
-                })
-            } else if(searchType === 'stb_sn') {
-                delete_data = await api_v1_person_access.deleteMany({
-                    access_time : { $gte:date[0],$lte: date[1] },
-                    stb_sn : search,
-                    $and:[
-                        {avatar_temperature : tempType},
-                        {avatar_temperature : avatarTemp}
-                    ]
-                })
-            }
 
-            deleted_accesses.map(access => {
-                let ip = access.avatar_file_url.split(':3000')[0]
-                fs.unlink(access.avatar_file_url.replace(ip+':3000/','/var/www/backend/'),() => {})
-            })
+            // let firstDate = regExp(date[0]+" 00:00:00").replace(' ','')
+            // let lastDate = regExp(date[1]+" 23:59:59").replace(' ','')
+            // if(date[0].split(' ')[0] === date[1].split(' ')[0]){
+            //     if(date[0].split(' ')[1] === "00:00:00" && date[1].split(' ')[1] === '23:59:59') {
+            //         if(req.query.search === '' && req.query.tempType === '0') {//해당 날짜 폴더 전체 삭제
+                        
+            //         } else if(req.query.tempType === '0') { //tempType만 0일때
+            //             if(req.query.searchType === 'name') { //해당 날짜 폴더내에 해당 이름 전부 삭제
+
+            //             } else { //해당 날짜 폴더내의 해당 시리얼 번호 폴더 전부 삭제
+
+            //             }
+            //         } else if(req.query.search === '') { //search만 공백일때
+            //             if(req.query.tempType === '1') { //정상 온도
+
+            //             } else { //비정상 온도
+
+            //             }
+            //         } else { //둘다 선택
+            //             if(req.query.tempType === '1') { //정상 온도
+            //                 if(req.query.searchType === 'name') { //해당 날짜 폴더내의 해당 온도, 해당 이름 전부 삭제
+
+            //                 } else { //해당 날짜 폴더내의 해당 온도, 해당 시리얼 번호 폴더 전부 삭제
+    
+            //                 }
+            //             } else { //비정상 온도
+            //                 if(req.query.searchType === 'name') { //해당 날짜 폴더내의 해당 온도, 해당 이름 전부 삭제
+
+            //                 } else { //해당 날짜 폴더내의 해당 온도, 해당 시리얼 번호 폴더 전부 삭제
+    
+            //                 }
+            //             }
+            //         }
+            //     } else {
+            //       //해당 하는 시간내 삭제
+            //     }
+            // } else {
+                
+            // }
 
             
         } else {
@@ -621,5 +643,5 @@ router.delete('/',async function(req, res) {
 //         throw boom.boomify(err)
 //     }
 // }
- 
+
 module.exports = router;

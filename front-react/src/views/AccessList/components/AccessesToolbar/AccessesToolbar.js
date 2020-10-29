@@ -142,10 +142,10 @@ const AccessesToolbar = props => {
             }}
           />
         </IntlProvider> */}
-          <InputGroup style={{ width: 400 }}>
+          <InputGroup style={{ width: 280 }}>
           <IntlProvider locale={kor}>
             <DatePicker 
-            format="YYYY-MM-DD HH:mm:ss" 
+            format="YYYY-MM-DD" 
             block 
             loading={loading}
             cleanable={false}
@@ -158,10 +158,10 @@ const AccessesToolbar = props => {
             }}
             locale={locale}
             value={new Date(date[0])}
-            defaultValue={new Date(`${moment().format('YYYY-MM-DD')}T00:00:00`)} />
+            defaultValue={new Date(`${moment().format('YYYY-MM-DD')}`)} />
             <InputGroup.Addon>~</InputGroup.Addon>
             <DatePicker 
-            format="YYYY-MM-DD HH:mm:ss" 
+            format="YYYY-MM-DD" 
             block 
             loading={loading}
             cleanable={false}
@@ -174,9 +174,24 @@ const AccessesToolbar = props => {
             }}
             locale={locale}
             value={new Date(date[1])}
-            defaultValue={new Date(`${moment().format('YYYY-MM-DD')}T23:59:59`)}/>
+            defaultValue={new Date(`${moment().format('YYYY-MM-DD')}`)}/>
             </IntlProvider>
           </InputGroup>
+          <FormControl
+              className={classes.select}>
+          <InputLabel id="demo-simple-select-label">타입</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={props.type}
+            style={{ width: '95px',marginBottom:'11px'}}
+            onChange={handleTypeChange}>
+            <MenuItem value="0">전체</MenuItem>
+            <MenuItem value="1">사원</MenuItem>
+            <MenuItem value="3">미등록자</MenuItem>
+            <MenuItem value="4">블랙리스트</MenuItem>
+          </Select>
+          </FormControl>
           <FormControl
               className={classes.select}>
           <InputLabel id="demo-simple-select-label">온도 상태</InputLabel>
@@ -214,11 +229,11 @@ const AccessesToolbar = props => {
           variant="contained" color="secondary" onClick={deleteAccesses}>
             삭제
           </Button>
-          {/* <Button 
+          <Button 
           style={{marginLeft:'10px' }} 
           variant="contained" color="secondary" onClick={deleteAllAccesses}>
             전체 삭제
-          </Button> */}
+          </Button>
           <br/>
         <div style={{ float:'right',width: '50%' }}>
           <Button 
