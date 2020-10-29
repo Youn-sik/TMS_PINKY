@@ -230,7 +230,7 @@ const AccessesToolbar = props => {
             삭제
           </Button>
           <Button 
-          disabled={accesses.length === 0}
+          // disabled={accesses.length === 0}
           style={{marginLeft:'10px' }} 
           variant="contained" color="secondary" onClick={deleteAllAccesses}>
             전체 삭제
