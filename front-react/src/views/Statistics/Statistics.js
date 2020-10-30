@@ -80,13 +80,13 @@ const Statistics = props => {
   const clickAccessExport = async () => {
       let dates = [
         '',
-        date[0].yyyymmdd(),
-        dateChange(date[0], 1).yyyymmdd(),
-        dateChange(date[0], 2).yyyymmdd(),
-        dateChange(date[0], 3).yyyymmdd(),
-        dateChange(date[0], 4).yyyymmdd(),
-        dateChange(date[0], 5).yyyymmdd(),
-        date[1].yyyymmdd()
+        date[0],
+        dateChange(date[0], 1),
+        dateChange(date[0], 2),
+        dateChange(date[0], 3),
+        dateChange(date[0], 4),
+        dateChange(date[0], 5),
+        date[1])
       ];
 
       const wb = new ExcelJS.Workbook()
