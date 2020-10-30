@@ -564,6 +564,7 @@ router.delete('/',async function(req, res) {
             let devices = [];
             let name = '';
             let type = req.query.avatar_type === '0' ? '([0-9]*)' : req.query.avatar_type;
+            let mathchingType = req.query.avatar_type === '0' ? new RegExp('') : new RegExp(req.query.avatar_type)
             let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$")
             let temperature = req.query.tempType === '0' ? {$gte : '0'} :
                             req.query.tempType === '1' ? {$lt : req.query.avatar_temperature} :  {$gte : req.query.avatar_temperature}
@@ -572,25 +573,29 @@ router.delete('/',async function(req, res) {
                 delete_data = await api_v1_person_access.deleteMany({
                     access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59"},
                     stb_name : new RegExp(search),
-                    avatar_temperature : temperature
+                    avatar_temperature : temperature,
+                    avatar_type : mathchingType
                 })
             } else if(searchType === 'stb_location'){
                 delete_data = await api_v1_person_access.deleteMany({
                     access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59"},
                     stb_location : new RegExp(search),
-                    avatar_temperature : temperature
+                    avatar_temperature : temperature,
+                    avatar_type : mathchingType
                 })
             } else if(searchType === 'stb_sn') {
                 delete_data = await api_v1_person_access.deleteMany({
                     access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
                     stb_sn : new RegExp(search),
-                    avatar_temperature : temperature
+                    avatar_temperature : temperature,
+                    avatar_type : mathchingType
                 })
             } else if (searchType === 'name') {
                 delete_data = await api_v1_person_access.deleteMany({
                     access_time : { $gte:date[0]+" 00:00:00",$lte: date[1]+" 23:59:59" },
                     name : new RegExp(search),
-                    avatar_temperature : temperature
+                    avatar_temperature : temperature,
+                    avatar_type : mathchingType
                 })
             }
             
@@ -615,7 +620,6 @@ router.delete('/',async function(req, res) {
                         console.error(`stderr: ${stderr}`);
                     }))
                 } else {
-                    console.log('test')
                     exec(`find /var/www/uploads/accesss/temp/${deleteDate} | egrep '([^_]*)([^_]*)_([^_]*)${name}([^_]*)_${type}${tempRegex}([0-9]*).png' | tr '\\n' '\\0' | xargs -0 rm`, (error, stdout, stderr) => {
                         if (error) {
                             console.log(error);
