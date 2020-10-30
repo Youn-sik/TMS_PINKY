@@ -80,13 +80,13 @@ const Statistics = props => {
   const clickAccessExport = async () => {
       let dates = [
         '',
-        date[0],
+        date[0].yyyymmdd(),
         dateChange(date[0], 1),
         dateChange(date[0], 2),
         dateChange(date[0], 3),
         dateChange(date[0], 4),
         dateChange(date[0], 5),
-        date[1]
+        date[1].yyyymmdd()
       ];
 
       const wb = new ExcelJS.Workbook()
@@ -96,8 +96,8 @@ const Statistics = props => {
       let data = JSON.parse(JSON.stringify(peopleData));
 
       data.employee.unshift('사원')
-      data.employee.unshift('미등록자')
-      data.employee.unshift('블랙리스트')
+      data.stranger.unshift('미등록자')
+      data.black.unshift('블랙리스트')
       
       ws.addRow(dates)
       ws.addRow(data.employee)
