@@ -206,33 +206,11 @@ const AccessStat = props => {
     const wb = new ExcelJS.Workbook()
 
     const ws = wb.addWorksheet()
+    let data = JSON.parse(JSON.stringify(chartData))
+    data.labels = data.labels.map( label => label+"시")
 
-    let data = JSON.parse(JSON.stringify(accesses));
-    let time = ['시간'] ;
-    let count = ['출입자수'];
-    // let maxTemp = ['최고 발열자 온도'];
-    // let maxImg = ['최고 발열자 사진',' '];
-    data.map((i, index) => {
-      time.push(i._id)
-      count.push(i.count)
-      // maxTemp.push(i.maxTemp)
-
-      // if(i.maxBase64) {
-      //   let image = wb.addImage({
-      //     base64: i.maxBase64,
-      //     extension: 'png'
-      //   })
-      //   ws.addImage(image,{
-      //     tl: { col: 1.5+index, row: 3 },
-      //     br: { col: 2+index, row: 5.5 }
-      //   })
-      // }
-    });
-    
-    ws.addRow(time)
-    ws.addRow(count)
-    // ws.addRow(maxTemp)
-    // ws.addRow(maxImg)
+    ws.addRow(['시간'].concat(data.labels))
+    ws.addRow(['출입자 수'].concat(data.data))
 
     const buf = await wb.csv.writeBuffer()
 
