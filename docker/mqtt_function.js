@@ -511,8 +511,9 @@ module.exports = {
                     }
                 }  
 
+                let avatar_type = element.avatar_type === 5 ? 4 : element.avatar_type
                 let folder_date_path = "/uploads/accesss/temp/" + moment().format('YYYYMMDD');
-                let file_name = json.stb_sn +"_"+userName+"_"+element.avatar_type === 5 ? 4 : element.avatar_type+ "_"+element.avatar_temperature+"_"+ + moment().format('YYYYMMDDHHmmss') + ".png";
+                let file_name = json.stb_sn +"_"+userName+"_"+avatar_type+ "_"+element.avatar_temperature+"_"+ + moment().format('YYYYMMDDHHmmss') + ".png";
                 let file_path = site.base_server_document + folder_date_path + "/" + json.stb_sn + "/";
                 let upload_url = "http://"+server_ip+ ':3000' + folder_date_path + "/" + json.stb_sn + "/" + file_name;
                 let buff = Buffer.from(element.avatar_file, 'base64');

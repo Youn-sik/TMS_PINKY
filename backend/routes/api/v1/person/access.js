@@ -659,7 +659,7 @@ router.delete('/',async function(req, res) {
                 let deleteDate = firstDate.format('YYYYMMDD')
 
                 if(devices.length > 0) {
-                    devices.forEach(device => exec(`find /var/www/backend/uploads/accesss/temp/${deleteDate} | egrep '([^_]*)${device.serial_number}([^_]*)_([^_]*)${name}([^_]*)_${type}${tempRegex}([0-9]*).png' | tr '\\n' '\\0' | xargs -0 rm`, (error, stdout, stderr) => {
+                    devices.forEach(device => exec(`find /var/www/backend/uploads/accesss/temp/${deleteDate} | egrep '([^_]*)${device}([^_]*)_([^_]*)${name}([^_]*)_${type}${tempRegex}([0-9]*).png' | tr '\\n' '\\0' | xargs -0 rm`, (error, stdout, stderr) => {
                         if (error) {
                             console.log(error);
                             return;
