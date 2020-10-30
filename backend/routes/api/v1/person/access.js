@@ -632,16 +632,20 @@ router.delete('/',async function(req, res) {
                 .regex('authority',auth)
                 .regex('location',new RegExp(search))
                 .select('serial_number')
+                devices = devices.map(device => device.serial_number)
             } else if(searchType === 'stb_name'){
                 devices = await api_v3_device_camera.find()
                 .regex('authority',auth)
                 .regex('name',new RegExp(search))
                 .select('serial_number')
+                devices = devices.map(device => device.serial_number)
             } else if(searchType === 'stb_sn'){
                 devices = [search]
-            } else if(searchType === 'name'){
-                name = search
+            } else if(req.query.type === 'name') {
+                name = req.query.search
             }
+
+            
             
             
             let tempRegex = createNumberRegex(parseFloat(tempLimit), tempType)
@@ -655,7 +659,7 @@ router.delete('/',async function(req, res) {
                 let deleteDate = firstDate.format('YYYYMMDD')
 
                 if(devices.length > 0) {
-                    devices = devices.map(device => exec(`find /var/www/backend/uploads/accesss/temp/${deleteDate} | egrep '([^_]*)${device.serial_number}([^_]*)_([^_]*)${name}([^_]*)_${type}${tempRegex}([0-9]*).png' | tr '\\n' '\\0' | xargs -0 rm`, (error, stdout, stderr) => {
+                    devices.forEach(device => exec(`find /var/www/backend/uploads/accesss/temp/${deleteDate} | egrep '([^_]*)${device.serial_number}([^_]*)_([^_]*)${name}([^_]*)_${type}${tempRegex}([0-9]*).png' | tr '\\n' '\\0' | xargs -0 rm`, (error, stdout, stderr) => {
                         if (error) {
                             console.log(error);
                             return;

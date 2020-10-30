@@ -310,19 +310,11 @@ const AccessList = props => {
   }
 
   const resetSearch = () => {
+    setSearch('');
     setSearchType('name')
-    setDate([
-      moment()
-        .locale('ko')
-        .format('YYYY-MM-DD'),
-      moment()
-        .locale('ko')
-        .format('YYYY-MM-DD')
-    ]);
     setType('0');
     setTemp('0');
     setLoading(true);
-    setSearch('');
     setActiveType('access_time');
     setSort('desc');
   }
