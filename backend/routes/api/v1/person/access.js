@@ -626,6 +626,22 @@ router.delete('/',async function(req, res) {
                     })
                 }
             }
+
+            if(searchType === 'stb_location') {
+                devices = await api_v3_device_camera.find()
+                .regex('authority',auth)
+                .regex('location',new RegExp(search))
+                .select('serial_number')
+            } else if(searchType === 'stb_name'){
+                devices = await api_v3_device_camera.find()
+                .regex('authority',auth)
+                .regex('name',new RegExp(search))
+                .select('serial_number')
+            } else if(searchType === 'stb_sn'){
+                devices = [search]
+            } else if(searchType === 'name'){
+                name = search
+            }
             
             
             let tempRegex = createNumberRegex(parseFloat(tempLimit), tempType)
