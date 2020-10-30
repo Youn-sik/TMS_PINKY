@@ -247,5 +247,5 @@ module.exports = {
       }
     }
   },
-  apis: ['./routes/swagger_apis.js'] // api 파일 위치들 
+  apis: ['/var/www/backend/routes/swagger_apis.js'] // api 파일 위치들 
 };

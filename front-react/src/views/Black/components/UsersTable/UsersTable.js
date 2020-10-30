@@ -249,9 +249,13 @@ const UsersTable = props => {
                 <TableCell padding="checkbox">
                   <Checkbox
                     checked={
-                      selected.length === 7
-                        ? true
-                        : false
+                      selected.length === 7 ? 
+                        true
+                        : 
+                        selected.length === props.users.length && props.users.length !== 0 ?
+                        true 
+                        : 
+                        false
                     }
                     onChange={handleSelectAllClick}
                   />

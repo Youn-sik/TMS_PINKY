@@ -143,10 +143,21 @@ const Groups = props => {
     setGroupName('');
     let parent =
       Object.keys(clickedNode).length === 0 || topGroupCheck ? undefined : clickedNode;
+
     if(groupName === '') {
       alert('이름을 입력해주세요.')
       return 0;
+    } else if(topGroupCheck && groups.findIndex(i => i.name === groupName) > -1){
+      alert('중복된 이름 입니다.')
+      return 0;
+    } else if(!clickedNode.children && groups.findIndex(i => i.name === groupName) > -1) {
+      alert('중복된 이름 입니다.')
+      return 0;
+    } else if(clickedNode.children && clickedNode.children.findIndex(i => i.name === groupName) > -1) {
+      alert('중복된 이름 입니다.')
+      return 0;
     }
+
     let result = await axios.post(base_url + '/group', {
       name: groupName,
       type: 1,
@@ -159,7 +170,7 @@ const Groups = props => {
       let userSize = clickedNode.user_obids.length;
       clickedNode.children.splice(childrenSize - userSize, 0, result.data);
     } else {
-      groups.splice(groups.length - 1, 0, result.data);
+      groups.splice(groups.length, 0, result.data);
     }
     setGroupName('');
     setOpen(false);

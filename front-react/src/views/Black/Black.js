@@ -448,16 +448,16 @@ const Black = props => {
   };
 
   const _setUsers = (node, length) => {
-    let groupLength = 0;
-    let children = JSON.parse(JSON.stringify(node.children));
-    for (let i = 0; i < children.length; i++) {
-      if (Array.isArray(children[i].children)) {
-        groupLength++;
-      } else {
-        break;
-      }
-    }
-    setUsers(children.splice(groupLength));
+    // let groupLength = 0;
+    // let children = JSON.parse(JSON.stringify(node.children));
+    // for (let i = 0; i < children.length; i++) {
+    //   if (Array.isArray(children[i].children)) {
+    //     groupLength++;
+    //   } else {
+    //     break;
+    //   }
+    // }
+    // setUsers(children.splice(groupLength));
   };
 
   const _setSelectedNode = nodeId => {
@@ -479,7 +479,7 @@ const Black = props => {
     setSearch(e.target.value);
   };
 
-   const countChildren = data => {
+  const countChildren = data => {
     //그룹의 obid를 한곳에 몰아넣는 작업
     if (data.children[0] !== undefined) {
       data.children.map(i => {

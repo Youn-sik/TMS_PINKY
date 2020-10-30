@@ -174,7 +174,7 @@ router.put('/:id',async function(req, res) {
         const id = req.params === undefined ? req.id : req.params.id
         const update_data = req.body === undefined ? req : req.body
 
-        const imageDir = await canvas.loadImage('image/'+req.body._id+'profile_updated.jpg')
+        const imageDir = await canvas.loadImage('/var/www/backend/image/'+req.body._id+'profile_updated.jpg')
         const detections = await faceapi.detectSingleFace(imageDir)
         .withFaceLandmarks()
         .withFaceDescriptor();

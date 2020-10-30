@@ -299,26 +299,11 @@
  *                  type: array
  *                  items:
  *                      type: object
- *                  example: [{"create_at":"2020-06-17 18:10:13","avatar_file":"string","avatar_file_checksum":"string","avatar_type":1,"avatar_contraction_data":"string","avatar_file_url":"string","user_obid":"5ee30c06de50a90f050644ef","avatar_temperature":36.1,"access_time":"2020-06-18 00:16:37","create_ut":"1592439397743"}]
- *    /access?type=1,2,5:
- *       get:
- *         tags:
- *         - "access"
- *         summary: "?type=1,2,5 각각 사원,방문자,블랙리스트 출입 기록"
- *         operationId: "type"
- *         responses:
- *             "200":
- *               description: "타입별 목록"
- *               schema:
- *                  type: array
- *                  items:
- *                      type: object
- *                  example: [{"create_at":"2020-06-17 18:10:13","avatar_file":"string","avatar_file_checksum":"string","avatar_type":1,"avatar_contraction_data":"string","avatar_file_url":"string","user_obid":"5ee30c06de50a90f050644ef","avatar_temperature":36.1,"access_time":"2020-06-18 00:16:37","create_ut":"1592439397743"}]
  *    /access?type=todayStatistics:
  *       get:
  *         tags:
  *         - "access"
- *         summary: "?type=todayStatistics 오늘 출입자 타입별 카운트"
+ *         summary: "?type=todayStatistics 금일 출입 목록"
  *         operationId: "todayStatistics"
  *         responses:
  *             "200":
@@ -327,25 +312,11 @@
  *                  type: array
  *                  items:
  *                      type: object
- *                  example: [
- *                       {
- *                          _id: {
- *                              type: 3
- *                          },
- *                          count: 5
- *                       },
- *                       {
- *                          _id: {
- *                              type: 1
- *                          },
- *                          count: 1
- *                       }
- *                   ]
- *    /access?type=todayAttendance:
+ *    /access?type=weekStatistics:
  *       get:
  *         tags:
  *         - "access"
- *         summary: "?type=todayAttendance 오늘 출근한 사원 시간대 목록"
+ *         summary: "?type=weekStatistics 주간 출입 목록"
  *         operationId: "todayAttendance"
  *         responses:
  *             "200":
@@ -354,37 +325,23 @@
  *                  type: array
  *                  items:
  *                      type: object
- *                  example: [
- *                      {
- *                          _id: {
- *                          avatar_contraction_data: "string",
- *                          avatar_type: 1
- *                      },
- *                          access_time: "2020-07-06 09:30:05",
- *                          count: 1
- *                      },
- *                      {
- *                          _id: {
- *                          avatar_contraction_data: "string",
- *                          avatar_type: 1
- *                      },
- *                          access_time: "2020-07-06 08:50:17",
- *                          count: 1
- *                      },
- *                      {
- *                          _id: {
- *                          avatar_contraction_data: "string",
- *                          avatar_type: 1
- *                      },
- *                          access_time: "2020-07-06 09:22:55",
- *                          count: 1
- *                      }
- *                  ]
+ *    /access?type=deviceStats:
+ *       get:
+ *         tags:
+ *         - "access"
+ *         summary: "??type=deviceStats 단말 통계"
+ *         operationId: "deviceStats"
+ *         responses:
+ *             "200":
+ *               schema:
+ *                  type: array
+ *                  items:
+ *                      type: object
  *    /access?type=temperature:
  *       get:
  *         tags:
  *         - "access"
- *         summary: "??type=temperature 온도 38도 이상의 출입자 4명 목록"
+ *         summary: "??type=temperature 마지막 출입 5명"
  *         operationId: "temperature"
  *         responses:
  *             "200":
@@ -392,62 +349,18 @@
  *                  type: array
  *                  items:
  *                      type: object
- *                  example: [
- * {
- * _id: "5ef19cedbc752801bf35b103",
- * avatar_type: 3,
- * avatar_file_url: "string",
- * avatar_temperature: "38.355896",
- * access_time: "2020-06-23 15:10:52"
- * },
- * {
- * _id: "5ef1958abc752801bf35b059",
- * avatar_type: 3,
- * avatar_file_url: "string",
- * avatar_temperature: "38.470856",
- * access_time: "2020-06-23 14:39:22"
- * },
- * {
- * _id: "5ef1956ebc752801bf35b04f",
- * avatar_type: 3,
- * avatar_file_url: "string",
- * avatar_temperature: "38.606956",
- * access_time: "2020-06-23 14:38:53"
- * },
- * {
- * _id: "5ef19484bc752801bf35b029",
- * avatar_type: 3,
- * avatar_file_url: "string",
- * avatar_temperature: "38.486126",
- * access_time: "2020-06-23 14:35:00"
- * }
- * ]
-  *    /access?type=attendance:
+ *    /access?type=dateCount?auth=admin&avatar_type=[0,1,3,4]&searchType=[name,stb_name,stb_sn,stb_location]&search=[검색값,공백==전체]&rowsPerPage=7&date=2020-10-30/2020-10-30&avatar_temp=[0,34,35,36,37,38]&tempType=[0,1,2]:
  *       get:
  *         tags:
  *         - "access"
- *         summary: "??type=attendance 사원 출입 기록"
- *         operationId: "attendance"
+ *         summary: "?type=dateCount 페이징을 위한 검색 조건에 맞는 출입자 카운트"
+ *         operationId: "temperature"
  *         responses:
  *             "200":
  *               schema:
  *                  type: array
  *                  items:
  *                      type: object
- *                  example: [
- * {
- * _id: "5eeab2f7c386f605375ec142",
- * count: 0,
- * create_at: "2020-06-18 09:17:33",
- * avatar_type: 1,
- * avatar_contraction_data: "string",
- * avatar_file_url: "string",
- * user_obid: "5ee30c06de50a90f050644ef",
- * avatar_temperature: "0.0",
- * access_time: "2020-06-18 00:19:02",
- * create_ut: "1592439543361",
- * },
- * ]
  *    /access/{id}:
  *       get:
  *         tags:
