@@ -86,7 +86,7 @@ const Statistics = props => {
         dateChange(date[0], 3),
         dateChange(date[0], 4),
         dateChange(date[0], 5),
-        date[1])
+        date[1]
       ];
 
       const wb = new ExcelJS.Workbook()
