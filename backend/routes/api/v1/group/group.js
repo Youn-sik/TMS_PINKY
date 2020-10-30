@@ -56,7 +56,6 @@ router.get('/:id',async function(req, res) {
 
 router.post('/',async function(req, res) {
     try {
-        console.log(req.body.authority);
         const add = new api_v1_group_group(req.body)
         const parent = req.body.parent === undefined ? null : req.body.parent;
         const parentObject = await api_v1_group_group.findById(parent);
