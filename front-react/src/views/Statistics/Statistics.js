@@ -200,13 +200,14 @@ const Statistics = props => {
     dates.map((date, index) => {
       result.map(data => {
         if(data.access_date === date) {
-          employee[index] += data.employee
-          black[index] += data.black
-          stranger[index] += data.stranger
+          employee[index] += data.employee ? data.employee : 0
+          black[index] += data.black ? data.black : 0
+          stranger[index] += data.stranger ? data.stranger : 0
         }
       })
     })
 
+    console.log(black)
     setPeopleData({
       employee: employee,
       visitor: stranger,
