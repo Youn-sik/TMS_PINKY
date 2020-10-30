@@ -95,10 +95,14 @@ const Statistics = props => {
 
       let data = JSON.parse(JSON.stringify(peopleData));
 
-      data.all.unshift('전체')
+      data.employee.unshift('사원')
+      data.employee.unshift('미등록자')
+      data.employee.unshift('블랙리스트')
       
       ws.addRow(dates)
-      ws.addRow(data.all)
+      ws.addRow(data.employee)
+      ws.addRow(data.stranger)
+      ws.addRow(data.black)
 
       const buf = await wb.csv.writeBuffer()
 
