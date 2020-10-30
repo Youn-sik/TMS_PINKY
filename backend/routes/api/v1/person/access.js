@@ -641,8 +641,8 @@ router.delete('/',async function(req, res) {
                 devices = devices.map(device => device.serial_number)
             } else if(searchType === 'stb_sn'){
                 devices = [search]
-            } else if(req.query.type === 'name') {
-                name = req.query.search
+            } else if(searchType === 'name') {
+                name = req.query.search ? req.query.search : '';
             }
 
             
