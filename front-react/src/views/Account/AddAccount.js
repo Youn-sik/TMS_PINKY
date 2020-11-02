@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Grid, Card, CardContent, TextField, Button } from '@material-ui/core';
 import axios from 'axios';
@@ -62,10 +62,18 @@ const AddAccount = props => {
     user_lang: 'KOR',
     user_pw: '',
     pw_chk: '',
-    authority: props.authority === 'admin' ? 'admin' : 'user'
+    authority: props.authority === 'admin' ? 'admin' : 
+    props.authority.split('-').length === 2 ? 'manager' : 'user'
   });
 
+  useEffect(() => {
+    console.log(accountInfo)
+  },[])
+
   const handleChange = event => {
+    if(event.target.name === 'user_id' && event.target.value === '-') {
+      return 0;
+    }
     setAccountInfo({
       ...accountInfo,
       [event.target.name]: event.target.value
@@ -80,8 +88,12 @@ const AddAccount = props => {
     else if (accountInfo.user_pw !== accountInfo.pw_chk)
       alert('비밀번호가 다릅니다');
     else {
+      // 'manager-' + accountInfo.user_id
+      // props.authority + '-user-' + accountInfo.user_id
       let result = await axios.post(base_url + '/account', {
         ...accountInfo,
+        authority: accountInfo.authority === 'admin' ? 'admin' : 
+        accountInfo.authority === 'manager' ? 'manager-' + accountInfo.user_id : props.authority + '-user-' + accountInfo.user_id,
         account: props.user_id
       });
       if (result.data.success) {
@@ -189,12 +201,12 @@ const AddAccount = props => {
                 ) : null}
                 {props.authority.split('-')[0] === 'manager' ||
                 props.authority === 'admin' ? (
-                  <MenuItem value={'manager-' + accountInfo.user_id}>
+                  <MenuItem value={'manager'}>
                     매니저
                   </MenuItem>
                 ) : null}
                 <MenuItem
-                  value={props.authority + '-user-' + accountInfo.user_id}>
+                  value={'user'}>
                   사용자
                 </MenuItem>
               </Select>

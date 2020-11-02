@@ -31,6 +31,11 @@ router.get('/',async function(req, res) {
     try {
         let get_data
         let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$");
+
+        if(req.query.auth.split('-').length === 2){
+            auth = new RegExp("^"+req.query.auth+"-")
+        }
+
         if(req.query.group_obid) {
             get_data = await api_v1_person_user.find({type:req.query.type})
             .regex('authority',auth)
@@ -224,7 +229,6 @@ router.delete('/:id',async function(req, res) {
             await api_v1_group_group.updateMany({type:req.body.type},{ $pull: { user_obids : req.body._id} }, {new: true }).exec();
             const id = req.params === undefined ? req.id : req.params.id
             const delete_data = await api_v1_person_user.findByIdAndDelete(id)
-            console.log(id);
             fs.unlink('/var/www/backend/image/'+id+"profile.jpg",() => {})
             fs.unlink('/var/www/backend/image/'+id+"profile_updated.jpg",() => {})
             let type = '';

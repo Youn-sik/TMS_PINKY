@@ -234,7 +234,9 @@ const EditEmployee = props => {
             <PersonIcon color="inherit" className={classes.labelIcon} />
           )}
           <Typography variant="body2" className={classes.labelText}>
-            {node.name === 'undefined' ? '미분류' : node.name}
+          {node.name} ({node.authority === 'admin' ? node.authority :
+            node.authority.split('-').length === 2 ? node.authority.split('-')[1] : 
+            node.authority.split('-').length === 3 ? node.authority.split('-')[2] : node.authority.split('-')[3]})
           </Typography>
         </div>
       }

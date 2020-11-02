@@ -14,8 +14,14 @@ router.get('/',async function(req, res) {
         if(req.query.authority === 'admin') {
             users = await User.find().select('user_id user_lang user_name authority')
         } else {
-            let auth = req.query.authority+"-user";
-            let regex = new RegExp(auth);
+            let auth = req.query.authority;
+            let regex = new RegExp("^"+auth+"$");
+            if(req.query.authority.split('-').length === 2){
+                regex = new RegExp("^"+auth)
+            } else if (req.query.authority.split('-').length > 2) {
+                new RegExp("^"+auth+"$");
+            }
+
             users = await User.find().select('user_id user_lang user_name authority').regex('authority', regex);
         }
         res.send(users)

@@ -61,13 +61,12 @@ const EditAccount = props => {
     user_id: '',
     user_lang: '',
     user_name: '',
-    authority: '',
     authority:
       props.authority === 'admin'
         ? 'admin'
-        : props.authority === 'user'
-        ? 'user'
-        : 'manager'
+        : props.authority.split('-').length === 2
+        ? 'manager'
+        : 'user'
   });
 
   const handleChange = event => {
@@ -91,6 +90,9 @@ const EditAccount = props => {
     await axios.put(base_url + '/account/' + selectedAccounts[0]._id, {
       ...selectedAccounts[0],
       ...accountInfo,
+      authority: accountInfo.authority === 'admin' ? 'admin' : 
+      accountInfo.authority === 'manager' ? 'manager-' + accountInfo.user_id : 
+      props.authority.length > 2 ? props.authority : props.authority + '-user-' + accountInfo.user_id,
       account: props.user_id,
     });
     alert('수정 되었습니다.');
@@ -193,12 +195,12 @@ const EditAccount = props => {
                 ) : null}
                 {props.authority.split('-')[0] === 'manager' ||
                 props.authority === 'admin' ? (
-                  <MenuItem value={'manager-' + accountInfo.user_id}>
+                  <MenuItem value={'manager'}>
                     매니저
                   </MenuItem>
                 ) : null}
                 <MenuItem
-                  value={props.authority + '-user-' + accountInfo.user_id}>
+                  value='user'>
                   사용자
                 </MenuItem>
               </Select>

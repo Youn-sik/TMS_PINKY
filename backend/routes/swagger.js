@@ -53,23 +53,14 @@ module.exports = {
       'Camera': {
         type: 'object',
         properties: {
-          gateway_obid : {type:'string'},
           serial_number : { type: 'string'},
           name : { type: 'string'},
-          protocol : { type: 'integer'},
           location : { type: 'string'},
           status : { type: 'string' },
-          download_current : { type: 'integer' },
-          app_version : { type: 'string' },
-          url : { type: 'string' },
           ip : { type: 'string' },
           port : { type: 'integer' },
           description : { type: 'string' },
           groups_obids : {type:'string'},
-          group_count : { type: 'integer' },
-          employee_group : {type:'string'},
-          visitor_group : {type:'string'},
-          blacklist_group : {type:'string'},
           info_update_time : { type: 'string' },
           create_at : { type: 'string'},
           create_ut : { type: 'string'},
@@ -188,9 +179,6 @@ module.exports = {
       'User': {
         type: 'object',
         properties: {
-          avatar_file : { type: 'string' },
-          avatar_contraction_data : { type: 'string'},
-          avatar_file_checksum : { type: 'string' },
           avatar_file_url : { type: 'string' },
           groups_obids : {type:'string'},
           user_id : { type: 'string' },

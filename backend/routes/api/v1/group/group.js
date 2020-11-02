@@ -9,6 +9,10 @@ router.get('/',async function(req, res) {
     try {
         const type = req.query.type;
         let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$")
+        if(req.query.auth.split('-').length === 2){
+            auth = new RegExp("^"+req.query.auth+'-')
+        }
+
         if(type === undefined) {
             const get_data = await api_v1_group_group.find()
             .where('parent',null)
