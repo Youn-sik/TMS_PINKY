@@ -21,19 +21,36 @@ const Employee = props => {
   const [filteredGroups, setFilteredGroups] = useState([]);
   const [search, setSearch] = useState('');
   const [users, setUsers] = useState([]);
+  const [oriUsers, setOriUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [clickedNode, setClickedNode] = useState({});
-  const [count, setCount] = useState(true);
+  const [searchType, setSearchType] = useState('name');
   const [selectedNode, setSelectedNode] = useState([]);
   const [activeType, setActiveType] = useState('create_at');
   const classes = useStyles();
+  const [date, setDate] = useState([]); 
+
+  const handleDate = val => {
+    setDate(val);
+  };
+
+  const _setSearchType = (e) => {
+    setSearchType(e.target.value)
+  }
+
+  const resetSearch = () => {
+    setUsers(oriUsers);
+    setDate([]);
+    setSearchType('name')
+    setUserSearch('')
+  }
 
   const exportExcel = async () => {
     const wb = new ExcelJS.Workbook()
 
     const ws = wb.addWorksheet("Info", {properties:{ defaultRowHeight: 50 }})
     
-    ws.addRow(['사진', '이름', '성별','근무지','부서','직급','이메일','생성일'])
+    ws.addRow(['이름','사번', '성별','근무지','부서','직급','휴대폰 번호','이메일','생성일'])
 
     if(search === '' && users.length > 0) {
       users.slice(0,7).map((user,index) => {
@@ -43,13 +60,14 @@ const Employee = props => {
           extension: 'png'
         })
   
-        temp.push('');
         temp.push(user['name']);
+        temp.push(user['user_id']);
         temp.push(user['gender'] === 1 ? '남자' : '여자')
         temp.push(user['location']);
         temp.push(user['department_id']);
         temp.push(user['position']);
         temp.push(user['mail']);
+        temp.push(user['entered']);
         temp.push(user['create_at']);
   
         ws.addRow(temp)
@@ -259,6 +277,24 @@ const Employee = props => {
             })
           );
         }
+      } else if (headerType === 'entered') {
+        if (type === 'asc') {
+          setUsers(
+            users.sort((a, b) => {
+              if (a.entered < b.entered) return -1;
+              else if (b.entered < a.entered) return 1;
+              else return 0;
+            })
+          );
+        } else {
+          setUsers(
+            users.sort((a, b) => {
+              if (a.entered > b.entered) return -1;
+              else if (b.entered > a.entered) return 1;
+              else return 0;
+            })
+          );
+        }
       }
     } else {
       if (headerType === 'name') {
@@ -405,28 +441,74 @@ const Employee = props => {
             })
           );
         }
+      } else if (headerType === 'entered') {
+        if (type === 'asc') {
+          setFilteredUsers(
+            filteredUsers.sort((a, b) => {
+              if (a.entered < b.entered) return -1;
+              else if (b.entered < a.entered) return 1;
+              else return 0;
+            })
+          );
+        } else {
+          setFilteredUsers(
+            filteredUsers.sort((a, b) => {
+              if (a.entered > b.entered) return -1;
+              else if (b.entered > a.entered) return 1;
+              else return 0;
+            })
+          );
+        }
       }
     }
   };
 
-  const filterUsers = useCallback(
-    users => {
-      let temp = [];
-      users.map(user => {
-        if (
-          user.name.indexOf(userSearch) > -1 ||
-          user.location.indexOf(userSearch) !== -1 ||
-          user.department_id.indexOf(userSearch) !== -1 ||
-          user.position.indexOf(userSearch) !== -1
-        ) {
-          temp.push(user);
-        }
-        return false;
-      });
-      return temp;
-    },
-    [userSearch]
-  );
+  // const filterUsers = useCallback(
+  //   users => {
+  //     let temp = [];
+  //     users.map(user => {
+  //       if (
+  //         user.name.indexOf(userSearch) > -1 ||
+  //         user.location.indexOf(userSearch) !== -1 ||
+  //         user.department_id.indexOf(userSearch) !== -1 ||
+  //         user.position.indexOf(userSearch) !== -1
+  //       ) {
+  //         temp.push(user);
+  //       }
+  //       return false;
+  //     });
+  //     return temp;
+  //   },
+  //   [userSearch]
+  // );
+
+  const clickSearch = () => {
+    let filteredUsers = []
+    let _users = date.length > 0 ? oriUsers.filter(user => user.entered === date[0]) : oriUsers
+    
+    //검색 알고리즘
+    if( userSearch === '' ) {
+      filteredUsers = _users;
+    } else if(searchType === 'name') {
+      filteredUsers = _users.filter(user => user.name.indexOf(userSearch) > -1)
+    } else if(searchType === 'user_id') {
+      filteredUsers = _users.filter(user => user.user_id.indexOf(userSearch) > -1)
+    } else if(searchType === 'position') {
+      filteredUsers = _users.filter(user => user.position.indexOf(userSearch) > -1)
+    } else if(searchType === 'mobile') {
+      filteredUsers = _users.filter(user => user.mobile.indexOf(userSearch) > -1)
+    } else if(searchType === 'mail') {
+      filteredUsers = _users.filter(user => user.mail.indexOf(userSearch) > -1)
+    }
+
+    setUsers(filteredUsers)
+  }
+
+  useEffect(() => {
+    if(Object.keys(clickedNode).length > 0) {
+      clickSearch()
+    }
+  },[date])
 
   useEffect(() => {
     if (search !== '') {
@@ -436,13 +518,13 @@ const Employee = props => {
     }
   }, [search, groups, filterGroup]);
 
-  useEffect(() => {
-    if (userSearch !== '') {
-      let copyUsers = users;
-      let tempFilteredUsers = filterUsers(copyUsers);
-      setFilteredUsers(tempFilteredUsers);
-    }
-  }, [userSearch, users, filterUsers]);
+  // useEffect(() => {
+  //   if (userSearch !== '') {
+  //     let copyUsers = users;
+  //     let tempFilteredUsers = filterUsers(copyUsers);
+  //     setFilteredUsers(tempFilteredUsers);
+  //   }
+  // }, [userSearch, users]);
 
   const _setClickedNode = node => {
     setClickedNode(node);
@@ -495,7 +577,6 @@ const Employee = props => {
   };
 
   const getGroups = useCallback(async () => {
-    console.log(props.authority);
     let tempGroups = await axios.get(base_url + '/group?type=1&auth='+props.authority);
     tempGroups.data.map(i => {
       countChildren(i);
@@ -517,7 +598,8 @@ const Employee = props => {
     ) {
       await axios.delete(base_url + '/group/' + node._id,{
         data: {
-          type : 1
+          type : 1,
+          clickedNode
         }
       });
       getGroups()
@@ -532,17 +614,18 @@ const Employee = props => {
   const editGroupNode = async (node,name) => {
     if (
       window.confirm(
-        '정말로 수정 하시겠습니까?'
+        '수정한 내용은 되돌릴수 없습니다\n정말로 수정 하시겠습니까?'
       )
     ) {
       node.name = name;
       await axios.put(base_url + '/group/' + node._id,node);
       alert('수정 되었습니다.');
+
     }
   };
 
   const deleteUsers = async selectedUsers => {
-    if (window.confirm('정말 삭제 하시겠습니까?')) {
+    if (window.confirm('삭제한 내용은 되돌릴수 없습니다\n정말 삭제 하시겠습니까?')) {
       await axios.delete(base_url + '/user/' + users[0]._id, {
         data: {
           type: 1,
@@ -550,35 +633,9 @@ const Employee = props => {
           account: props.user_id
         }
       });
-
+      
+      alert('삭제 되었습니다.')
       getUsers();
-      // selectedUsers.sort((a, b) => {
-      //   if (a.index > b.index) {
-      //     return 1;
-      //   } else {
-      //     return -1;
-      //   }
-      // });
-
-      // let temp = JSON.parse(JSON.stringify(users)); //테이블에서 제거
-      // if (temp.length === selectedUsers) {
-      //   temp = [];
-      // } else {
-      //   selectedUsers.map((user, index) => {
-      //     temp.splice(user.index - index, 1);
-      //     return false;
-      //   });
-      // }
-      // await setUsers(temp);
-
-      // let groups_list = clickedNode.children.filter(child =>
-      //   Array.isArray(child.children)
-      // );
-      // let groups_length = groups_list.length;
-      // clickedNode.children.splice(groups_length);
-      // temp.map(i => clickedNode.children.push(i));
-
-      // setCount(!count);
     }
   };
 
@@ -588,7 +645,9 @@ const Employee = props => {
       setFilteredUsers([]);
       setSearch('')
       setActiveType('create_at');
-      setUsers(result.data);
+      setUserSearch('')
+      setUsers(result.data.reverse());
+      setOriUsers(result.data);
     }
   }
 
@@ -599,6 +658,21 @@ const Employee = props => {
   useEffect(() => {
     getGroups();
   }, [getGroups]);
+
+  const deleteAllUsers = async () => {
+    if (window.confirm('삭제한 내용은 되돌릴수 없습니다\n정말 삭제 하시겠습니까?')) {
+      await axios.delete(base_url + '/user/' + users[0]._id, {
+        data: {
+          type: 1,
+          selectedData: users,
+          account: props.user_id
+        }
+      });
+      
+      alert('삭제 되었습니다.')
+      getUsers();
+    }
+  }
 
   return (
     <div className={classes.root}>
@@ -621,6 +695,13 @@ const Employee = props => {
         <Grid item lg={8} md={8} xl={9} xs={12}>
           {/* <AccountDetails users={users}/> */}
           <UsersTable
+            resetSearch={resetSearch}
+            date={date}
+            dateChange={handleDate}
+            deleteAllUsers={deleteAllUsers}
+            clickSearch={clickSearch}
+            searchType={searchType}
+            setSearchType={_setSearchType}
             authority={props.authority}
             exportExcel={exportExcel}
             activeType={activeType}
@@ -631,7 +712,7 @@ const Employee = props => {
             selectedNode={selectedNode}
             groups={groups}
             deleteUsers={deleteUsers}
-            users={userSearch === '' ? users : filteredUsers}
+            users={users}
             userSearch={userSearch}
             setUserSearch={setUserSearch}
           />

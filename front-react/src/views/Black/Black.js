@@ -21,19 +21,30 @@ const Black = props => {
   const [filteredGroups, setFilteredGroups] = useState([]);
   const [search, setSearch] = useState('');
   const [users, setUsers] = useState([]);
+  const [oriUsers, setOriUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [clickedNode, setClickedNode] = useState({});
-  const [count, setCount] = useState(true);
   const [selectedNode, setSelectedNode] = useState([]);
+  const [searchType, setSearchType] = useState('name');
   const [activeType, setActiveType] = useState('create_at');
   const classes = useStyles();
+
+  const _setSearchType = (e) => {
+    setSearchType(e.target.value)
+  }
+
+  const resetSearch = () => {
+    setUsers(oriUsers);
+    setSearchType('name')
+    setUserSearch('')
+  }
 
   const exportExcel = async () => {
     const wb = new ExcelJS.Workbook()
 
     const ws = wb.addWorksheet("Info", {properties:{ defaultRowHeight: 50 }})
     
-    ws.addRow(['사진', '이름', '성별','근무지','부서','직급','이메일','생성일'])
+    ws.addRow(['사진', '이름', '성별','장소','사유','휴대폰 번호','생성일'])
 
     if(search === '' && users.length > 0) {
       users.slice(0,7).map((user,index) => {
@@ -47,9 +58,8 @@ const Black = props => {
         temp.push(user['name']);
         temp.push(user['gender'] === 1 ? '남자' : '여자')
         temp.push(user['location']);
-        temp.push(user['department_id']);
         temp.push(user['position']);
-        temp.push(user['mail']);
+        temp.push(user['mobile']);
         temp.push(user['create_at']);
   
         ws.addRow(temp)
@@ -112,23 +122,41 @@ const Black = props => {
     [search]
   );
 
-  const filterUsers = useCallback(
-    users => {
-      let temp = [];
-      users.map(user => {
-        if (
-          user.name.indexOf(userSearch) > -1 ||
-          user.position.indexOf(userSearch) > -1 ||
-          user.location.indexOf(userSearch) > -1
-        ) {
-          temp.push(user);
-        }
-        return false;
-      });
-      return temp;
-    },
-    [userSearch]
-  );
+  // const filterUsers = useCallback(
+  //   users => {
+  //     let temp = [];
+  //     users.map(user => {
+  //       if (
+  //         user.name.indexOf(userSearch) > -1 ||
+  //         user.position.indexOf(userSearch) > -1 ||
+  //         user.location.indexOf(userSearch) > -1
+  //       ) {
+  //         temp.push(user);
+  //       }
+  //       return false;
+  //     });
+  //     return temp;
+  //   },
+  //   [userSearch]
+  // );
+
+  const clickSearch = () => {
+    let filteredUsers = []
+    //검색 알고리즘
+    if(searchType === 'name') {
+      filteredUsers = oriUsers.filter(user => user.name.indexOf(userSearch) > -1)
+    } else if(searchType === 'user_id') {
+      filteredUsers = oriUsers.filter(user => user.user_id.indexOf(userSearch) > -1)
+    } else if(searchType === 'position') {
+      filteredUsers = oriUsers.filter(user => user.position.indexOf(userSearch) > -1)
+    } else if(searchType === 'mobile') {
+      filteredUsers = oriUsers.filter(user => user.mobile.indexOf(userSearch) > -1)
+    } else if(searchType === 'mail') {
+      filteredUsers = oriUsers.filter(user => user.mail.indexOf(userSearch) > -1)
+    }
+
+    setUsers(filteredUsers)
+  }
 
   const sortAccesses = (type, headerType) => {
     setActiveType(headerType);
@@ -435,13 +463,13 @@ const Black = props => {
     }
   }, [search, groups, filterGroup]);
 
-  useEffect(() => {
-    if (userSearch !== '') {
-      let copyUsers = users;
-      let tempFilteredUsers = filterUsers(copyUsers);
-      setFilteredUsers(tempFilteredUsers);
-    }
-  }, [userSearch, users, filterUsers]);
+  // useEffect(() => {
+  //   if (userSearch !== '') {
+  //     let copyUsers = users;
+  //     let tempFilteredUsers = filterUsers(copyUsers);
+  //     setFilteredUsers(tempFilteredUsers);
+  //   }
+  // }, [userSearch, users, filterUsers]);
 
   const _setClickedNode = node => {
     setClickedNode(node);
@@ -510,7 +538,7 @@ const Black = props => {
   const editGroupNode = async (node,name) => {
     if (
       window.confirm(
-        '정말로 수정 하시겠습니까?'
+        '수정한 내용은 되돌릴수 없습니다\n정말로 수정 하시겠습니까?'
       )
     ) {
       node.name = name;
@@ -522,7 +550,7 @@ const Black = props => {
   const deleteGroupNode = async node => {
     if (
       window.confirm(
-        '삭제시 되돌릴수 없습니다.\n정말 삭제 하시겠습니까?'
+        '삭제한 내용은 되돌릴수 없습니다\n정말 삭제 하시겠습니까?'
       )
     ) {
       await axios.delete(base_url + '/group/' + node._id,{
@@ -540,7 +568,7 @@ const Black = props => {
   };
 
   const deleteUsers = async selectedUsers => {
-    if (window.confirm('정말 삭제 하시겠습니까?')) {
+    if (window.confirm('삭제한 내용은 되돌릴수 없습니다\n정말 삭제 하시겠습니까?')) {
       await axios.delete(base_url + '/user/' + users[0]._id, {
         data: {
           type: 5,
@@ -548,7 +576,7 @@ const Black = props => {
           account: props.user_id
         }
       });
-
+      alert('삭제 되었습니다.')
       getUsers();
     }
   };
@@ -559,7 +587,9 @@ const Black = props => {
       setFilteredUsers([]);
       setSearch('')
       setActiveType('create_at');
-      setUsers(result.data);
+      setUserSearch('')
+      setUsers(result.data.reverse());
+      setOriUsers(result.data);
     }
   }
 
@@ -571,6 +601,20 @@ const Black = props => {
     getGroups();
   }, []);
 
+  const deleteAllUsers = async () => {
+    if (window.confirm('삭제한 내용은 되돌릴수 없습니다\n정말 삭제 하시겠습니까?')) {
+      await axios.delete(base_url + '/user/' + users[0]._id, {
+        data: {
+          type: 1,
+          selectedData: users,
+          account: props.user_id
+        }
+      });
+      
+      alert('삭제 되었습니다.')
+      getUsers();
+    }
+  }
 
   return (
     <div className={classes.root}>
@@ -593,15 +637,20 @@ const Black = props => {
         <Grid item lg={8} md={8} xl={9} xs={12}>
           {/* <AccountDetails users={users}/> */}
           <UsersTable
+            resetSearch={resetSearch}
             authority={props.authority}
             exportExcel={exportExcel}
+            clickSearch={clickSearch}
+            deleteAllUsers={deleteAllUsers}
+            searchType={searchType}
+            setSearchType={_setSearchType}
             setClickedNode={_setClickedNode}
             clickedNode={clickedNode}
             setUsers={_setUsers}
             selectedNode={selectedNode}
             groups={groups}
             deleteUsers={deleteUsers}
-            users={userSearch === '' ? users : filteredUsers}
+            users={users}
             userSearch={userSearch}
             setUserSearch={setUserSearch}
           />

@@ -83,12 +83,37 @@ router.put('/:id',async function(req, res) {
     }
 });
 
+let user_obids = []
+let group_obids = [];
+let returnUserIds = (node) => {
+    if(Array.isArray(node.children) && node.children.length > 0) {
+        node.children.forEach(child => {
+            returnUserIds(child)
+        })
+    }
+
+    node.children.forEach(child => {
+        group_obids.push(child)
+    })
+
+    node.user_obids.forEach(node => {
+        user_obids.push(node);
+    })
+    
+}
+
 router.delete('/:id',async function(req, res) {
     try {
         const id = req.params === undefined ? req.id : req.params.id
         const delete_data = await api_v1_group_group.findByIdAndRemove(id)
+        user_obids = []
+        group_obids = []
+        
+        returnUserIds(req.body.clickedNode)
 
-        delete_data.user_obids.map(user_obid => {
+        group_obids.map(group => api_v1_group_group.findByIdAndRemove(group._id))
+
+        user_obids.map(user_obid => {
             fs.unlink('/var/www/backend/image/'+user_obid+"profile.jpg",() => {})
             fs.unlink('/var/www/backend/image/'+user_obid+"profile_updated.jpg",() => {})
         })

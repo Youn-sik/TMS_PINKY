@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 import Select from '@material-ui/core/Select';
 import Grid from '@material-ui/core/Grid';
-import { DateRangePicker, IntlProvider,InputGroup,DatePicker} from 'rsuite';
+import { IntlProvider,InputGroup,DatePicker} from 'rsuite';
 import kor from 'rsuite/lib/IntlProvider/locales/ko_KR';
 import 'rsuite/dist/styles/rsuite-default.css';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -130,7 +130,7 @@ const AccessesToolbar = props => {
 
   return (
     <div {...rest} className={clsx(classes.root, className)}>
-      <div className={classes.row}>
+      <div style={{display: 'flex'}} className={classes.row}>
         {/* <IntlProvider locale={kor}>
           <DateRangePicker
             loading={loading}
@@ -230,15 +230,15 @@ const AccessesToolbar = props => {
             삭제
           </Button>
           <Button 
-          // disabled={accesses.length === 0}
+          disabled={accesses.length === 0}
           style={{marginLeft:'10px' }} 
           variant="contained" color="secondary" onClick={deleteAllAccesses}>
             전체 삭제
           </Button>
           <br/>
-        <div style={{ float:'right',width: '50%' }}>
+        <div style={{ float:'right', flex:1}}>
           <Button 
-          style={{float: 'right' ,marginLeft: '10px'}} 
+          style={{float: 'right' ,marginLeft: '10px',marginRight: '10px'}} 
           variant="contained" color="primary" onClick={clickExport}>
             엑셀로 다운로드
           </Button>

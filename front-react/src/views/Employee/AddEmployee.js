@@ -7,7 +7,6 @@ import {
   CardContent,
   TextField,
   Button,
-  CircularProgress,
   Typography
 } from '@material-ui/core';
 import axios from 'axios';
@@ -27,7 +26,21 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import {DatePicker} from 'rsuite';
 import {base_url} from 'server.json';
+import moment from 'moment';
+import 'moment/locale/ko';
+
+Date.prototype.yyyymmdd = function() {
+  var yyyy = this.getFullYear().toString();
+  var mm = (this.getMonth() + 1).toString();
+  var dd = this.getDate().toString();
+  var hh = (this.getHours() + 12).toString();
+  return (
+    yyyy + '-' + (mm[1] ? mm : '0' + mm[0]) + '-' + (dd[1] ? dd : '0' + dd[0])
+  );
+};
+
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(4)
@@ -182,6 +195,8 @@ const AddEmployee = props => {
     position: '',
     mobile: '',
     mail: '',
+    user_id : '',
+    entered : moment().format('YYYY-MM-DD'),
     gender: 1
   });
 
@@ -248,7 +263,6 @@ const AddEmployee = props => {
     else if (userInfo.name === '') alert('이름을 입력해주세요');
     else if (userInfo.location === '') alert('근무지를 입력해주세요');
     else if (userInfo.position === '') alert('직급을 입력해주세요');
-    else if (userInfo.department_id === '') alert('부서를 입력해주세요');
     else if(node._id) {
       setLoading(true);
       let base64 = await toBase64(pictures[0][0]);
@@ -276,6 +290,24 @@ const AddEmployee = props => {
       alert('그룹을 선택해주세요.')
     }
   };
+
+  const locale = {
+    sunday: '일',
+    monday: '월',
+    tuesday: '화',
+    wednesday: '수',
+    thursday: '목',
+    friday: '금',
+    saturday: '토',
+    ok: '적용',
+    today: '오늘',
+    yesterday: '어제',
+    hours: '시간',
+    minutes: '분',
+    seconds: '초',
+    last7Days: '일주일전'
+  }
+
   return (
     <div className={classes.root}>
       <Grid container justify="center" alignItems="center" spacing={4}>
@@ -316,6 +348,17 @@ const AddEmployee = props => {
               </div>
               <div style={{ width: '100%' }}>
                 <TextField
+                  name="user_id"
+                  value={userInfo.user_id}
+                  style={{ width: '100%' }}
+                  required
+                  id="standard-required"
+                  label="사번"
+                  onChange={handleChange}
+                />
+              </div>
+              <div style={{ width: '100%' }}>
+                <TextField
                   name="location"
                   value={userInfo.location}
                   style={{ width: '100%' }}
@@ -323,17 +366,6 @@ const AddEmployee = props => {
                   id="standard-required"
                   label="근무지"
                   onChange={handleChange}
-                />
-              </div>
-              <div style={{ width: '100%' }}>
-                <TextField
-                  name="department_id"
-                  value={userInfo.department_id}
-                  style={{ width: '100%' }}
-                  required
-                  onChange={handleChange}
-                  id="standard-required"
-                  label="부서"
                 />
               </div>
               <div style={{ width: '100%' }}>
@@ -370,6 +402,22 @@ const AddEmployee = props => {
                     inputComponent: emailMaskCustom
                   }}
                 />
+              </div>
+              <div style={{ width: '100%' }}>
+                <p style={{ marginTop:'15px' }}>입사일</p>
+                <DatePicker
+                  style={{ width: '100%', marginTop:'4px' }}
+                  onChange={val => {
+                    setUserInfo({
+                      ...userInfo,
+                      'entered' : val.yyyymmdd()
+                    });
+                  }}
+                  cleanable={false}
+                  locale={locale}
+                  value={new Date(userInfo.entered)}
+                  defaultValue={new Date(`${moment().format('YYYY-MM-DD')}`)}
+                ></DatePicker>
               </div>
               <div
                 style={{

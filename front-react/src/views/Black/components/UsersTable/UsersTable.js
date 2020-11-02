@@ -6,6 +6,8 @@ import TextField from '@material-ui/core/TextField';
 import Search from '@material-ui/icons/Search';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import { NavLink as RouterLink } from 'react-router-dom';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
@@ -66,10 +68,15 @@ const UsersTable = props => {
     activeType,
     userSearch,
     selectedNode,
+    resetSearch,
     setUserSearch,
     exportExcel,
     setClickedNode,
     clickedNode,
+    clickSearch,
+    searchType,
+    setSearchType,
+    deleteAllUsers,
     setUsers,
     deleteUsers,
     className,
@@ -160,26 +167,46 @@ const UsersTable = props => {
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       {/* <CardHeader subheader={ */}
-      <CardActions className={classes.action}>
-        <TextField
-          className={classes.search}
-          id="input-with-icon-textfield"
-          // label="검색"
-          value={userSearch}
-          onChange={handleSearch}
-          placeholder="검색"
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <Search></Search>
-              </InputAdornment>
-            )
-          }}
-        />
-        <Button style={{width: '164px' }} variant="contained" color="primary" onClick={exportExcel}>
-          엑셀로 다운로드
-        </Button>
-        <Grid container justify="flex-end" className={classes.buttonActions}>
+      <CardActions style={{display:'flex'}} className={classes.action}>
+          <RouterLink
+            style={{ textDecoration: 'none' }}
+            to={{
+              pathname: '/users/black/add',
+              groups: props.groups,
+              setClickedNode: props.setClickedNode,
+              clickedNode: props.clickedNode,
+              setUsers: props.setUsers
+            }}>
+            <Button variant="contained" color="primary">
+              추가
+            </Button>
+          </RouterLink>
+          {selected.length === 1 ? (
+            <RouterLink
+              style={{ textDecoration: 'none' }}
+              to={{
+                pathname: '/users/black/edit',
+                groups: props.groups,
+                setClickedNode: props.setClickedNode,
+                clickedNode: props.clickedNode,
+                setUsers: props.setUsers,
+                userObject: selectedObject,
+                selectedNode: selectedNode
+              }}>
+              <Button
+                variant="contained"
+                color="primary">
+                수정
+              </Button>
+            </RouterLink>
+          ) : (
+            <Button
+              variant="contained"
+              color="primary"
+              disabled>
+              수정
+            </Button>
+          )}
           {selected.length ? (
             <Button
               variant="contained"
@@ -195,49 +222,65 @@ const UsersTable = props => {
               삭제
             </Button>
           )}
-          {selected.length === 1 ? (
-            <RouterLink
-              style={{ textDecoration: 'none' }}
-              to={{
-                pathname: '/users/black/edit',
-                groups: props.groups,
-                setClickedNode: props.setClickedNode,
-                clickedNode: props.clickedNode,
-                setUsers: props.setUsers,
-                userObject: selectedObject,
-                selectedNode: selectedNode
-              }}>
-              <Button
-                variant="contained"
-                color="primary"
-                className={classes.buttonStyle}>
-                수정
-              </Button>
-            </RouterLink>
-          ) : (
-            <Button
-              variant="contained"
-              color="primary"
-              className={classes.buttonStyle}
-              disabled>
-              수정
-            </Button>
-          )}
-
-          <RouterLink
-            style={{ textDecoration: 'none' }}
-            to={{
-              pathname: '/users/black/add',
-              groups: props.groups,
-              setClickedNode: props.setClickedNode,
-              clickedNode: props.clickedNode,
-              setUsers: props.setUsers
+          {users.length ? (
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => {
+              deleteAllUsers();
+              setSelectedObject([]);
+              setSelected([]);
             }}>
-            <Button variant="contained" color="primary">
-              추가
-            </Button>
-          </RouterLink>
-        </Grid>
+            전체 삭제
+          </Button>
+        ) : (
+          <Button variant="contained" color="secondary" disabled>
+            전체 삭제
+          </Button>
+        )}
+        <div style={{ flex:1 ,float: 'right'}}>
+        <Button style={{float: 'right' }} variant="contained" color="primary" onClick={exportExcel}>
+          엑셀로 다운로드
+        </Button>
+        <Button
+            variant="contained"
+            color="secondary"
+            style={{float: 'right', marginRight: '10px'}}
+            onClick={() => {
+              resetSearch();
+            }}>
+            검색 초기화
+          </Button>
+        <TextField
+            style={{ float: 'right', marginRight: '10px' }}
+            className={classes.search}
+            id="input-with-icon-textfield"
+            // label="검색"
+            value={userSearch}
+            onChange={handleSearch}
+            onKeyUp={()=>{if(window.event.keyCode === 13) clickSearch();}}
+            placeholder="검색"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment style={{cursor:'pointer'}} onClick={clickSearch} position="end">
+                  <Search></Search>
+                </InputAdornment>
+              )
+            }}
+          />
+        <Select
+            style={{ float: 'right',marginRight: '10px',width:"100px" }}
+            labelId="demo-simple-select-outlined-label"
+            id="demo-simple-select-outlined"
+            value={searchType}
+            onChange={setSearchType}
+          >
+            <MenuItem value={'name'}>이름</MenuItem>
+            <MenuItem value={'location'}>장소</MenuItem>
+            <MenuItem value={'position'}>사유</MenuItem>
+            <MenuItem value={'mobile'}>휴대폰 번호</MenuItem>
+          </Select>
+        </div>
       </CardActions>
       {/* }/> */}
 
@@ -416,7 +459,9 @@ UsersTable.propTypes = {
   setClickedNode: PropTypes.func,
   clickedNode: PropTypes.object,
   setUsers: PropTypes.func,
-  selectedNode: PropTypes.array
+  selectedNode: PropTypes.array,
+  setSearchType: PropTypes.func,
+  selectedNode: PropTypes.array,
 };
 
 export default UsersTable;

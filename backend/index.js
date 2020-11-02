@@ -13,6 +13,7 @@ const moment = require('moment');
 const fs = require('fs');
 require('moment-timezone'); 
 moment.tz.setDefault("Asia/Seoul"); 
+const exec = require('child_process').exec;
 
 //model
 const User = require('./models/User')
@@ -145,22 +146,15 @@ app.get('/auth', async function(req, res) {
     
 });
 
-app.get('/schedule',(req,res) => {
-    res.send({term})
-})
-
-app.put('/schedule',(req,res) => {
-    term = req.body.term;
-    res.send({term})
-})
-
 //const mongoose = require('mongoose')
 const routes = require('./routes')
 const swagger = require('./config/swagger')
 
 
 app.get('/schedule',(req,res) => {
-    res.send({term})
+    let dateTime = moment().subtract(term-1,'days').format('YYYY-MM-DD') + " 00:00:00"
+    console.log(dateTime)
+    res.send({dateTime})
 })
 
 app.put('/schedule',(req,res) => {
@@ -169,50 +163,20 @@ app.put('/schedule',(req,res) => {
 })
 
 //사진보관 기간 설정
-let term = 7; //기본 보관 날짜 7일
+let term = 28; //기본 보관 날짜 28일 4주
 let s = schedule.scheduleJob('0 0 0 * * *', async function(){//스케쥴 설정
     let dateTime = moment().subtract(term-1,'days').format('YYYY-MM-DD') + " 00:00:00"//moment 보관 기간 만큼을 뺀 날짜
+    let date = moment().subtract(term,'days').format('YYYYMMDD')
+
     let accesses = []
-    let count = await Access.aggregate([
-        {
-            $match: {
-                access_time : {$lt:dateTime}
-            }
-        },
-        {
-            $count: 'count'
-        },
-    ]).allowDiskUse(true);
 
+    //DB삭제
+    Access.deleteMany({
+        access_time : {$lt:dateTime}
+    })
 
-    let pages = parseInt(count[0].count/5000);
-
-    if(count[0].count%5000)
-        pages++;
-
-    for(let i = 0; i < pages; i++) {
-        let result = await Access.find()
-        .lt('access_time',dateTime)
-        .skip (i*5000)
-        .limit(5000)
-
-        accesses = accesses.concat(result);
-    }
-
-
-    if(accesses.length > 0){
-        let images = accesses.map(access => access.avatar_file_url);
-        let ip = images[0].split(":3000")[0]
-        images.map(image => {
-            fs.unlink(image.replace(ip+':3000/','/var/www/backend/'),() => {})
-        })
-        let result = await Access.updateMany(
-            {access_time: {$lt:dateTime}},
-            {$set:{'avatar_file_url' : ip+":3000"+"/noImage/noImage.png"}
-        })
-
-        console.log(result)
-    }
+    //사진 삭제
+    exec(`find /var/www/backend/uploads/accesss/temp/ -name ${date} -type d | xargs -0 rm`)
 });
 
 

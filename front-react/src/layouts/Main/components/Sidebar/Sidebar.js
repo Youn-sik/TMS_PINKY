@@ -75,7 +75,6 @@ const Sidebar = props => {
     {
       title: '단말 관리',
       href: '/device/list',
-      href: '/device/list',
       // children: [
       //   {
       //     title: '단말 목록',

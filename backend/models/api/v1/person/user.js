@@ -5,7 +5,6 @@ moment.tz.setDefault("Asia/Seoul");
 const ObjectId = mongoose.Schema.Types.ObjectId
 
 const api_v1_person_user_Schema = new mongoose.Schema({
-    avatar_file : { type: String },
     avatar_contraction_data : { type: String},
     avatar_file_checksum : { type: String, required: true },
     avatar_file_url : { type: String, required: true },
@@ -29,7 +28,8 @@ const api_v1_person_user_Schema = new mongoose.Schema({
     authority : { type: String },
     prompt : { type: String },
     type : { type : Number },
-    create_at : { type: String, default: moment().format('YYYY-MM-DD HH:mm:ss') },
+    entered : { type : String },
+    create_at : { type: String },
     create_ut : { type: String, default: Date.now()},
     update_at : { type: String },
     update_ut : { type: String },

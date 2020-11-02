@@ -34,6 +34,7 @@ router.get('/',async function(req, res) {
         if(req.query.group_obid) {
             get_data = await api_v1_person_user.find({type:req.query.type})
             .regex('authority',auth)
+            .select('-face_detection -avatar_file')
             .where("groups_obids")
             .in([req.query.group_obid])
         } else if(req.query.type === '1') {
@@ -64,6 +65,7 @@ router.get('/:id',async function(req, res) {
 router.post('/',async function(req, res) {
     try {
         let group = null
+        req.body.create_at = moment().format('YYYY-MM-DD HH:mm:ss')
         let add = new api_v1_person_user(req.body)
         let overlap_check = await api_v1_person_user.findOne({avatar_file_checksum : add.avatar_file_checksum})
         if(overlap_check) {
@@ -146,7 +148,7 @@ router.post('/',async function(req, res) {
 router.put('/:id',async function(req, res) {
     try {
         let group = null
-        req.body.avatar_file_checksum = crypto.createHash('sha256').update(req.body.avatar_file).digest('base64');
+        // req.body.avatar_file_checksum = crypto.createHash('sha256').update(req.body.avatar_file).digest('base64');
         fs.unlink('/var/www/backend/image/'+req.body._id+"profile_updated.jpg",() => {})
         fs.unlink('/var/www/backend/image/'+req.body._id+"profile.jpg",() => {})
         fs.writeFileSync('/var/www/backend/image/'+req.body._id+'profile_updated.jpg',req.body.avatar_file,'base64');
@@ -174,7 +176,7 @@ router.put('/:id',async function(req, res) {
         const id = req.params === undefined ? req.id : req.params.id
         const update_data = req.body === undefined ? req : req.body
 
-        const imageDir = await canvas.loadImage('/var/www/backend/image/'+req.body._id+'profile_updated.jpg')
+        const imageDir = await canvas.loadImage('/image/'+req.body._id+'profile_updated.jpg')
         const detections = await faceapi.detectSingleFace(imageDir)
         .withFaceLandmarks()
         .withFaceDescriptor();

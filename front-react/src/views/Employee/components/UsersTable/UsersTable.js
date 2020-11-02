@@ -7,6 +7,11 @@ import Search from '@material-ui/icons/Search';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import { NavLink as RouterLink } from 'react-router-dom';
+import {DatePicker} from 'rsuite';
+import moment from 'moment';
+import 'moment/locale/ko';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 import {
@@ -23,6 +28,16 @@ import {
   Paper,
   TableContainer
 } from '@material-ui/core';
+
+Date.prototype.yyyymmdd = function() {
+  var yyyy = this.getFullYear().toString();
+  var mm = (this.getMonth() + 1).toString();
+  var dd = this.getDate().toString();
+  var hh = (this.getHours() + 12).toString();
+  return (
+    yyyy + '-' + (mm[1] ? mm : '0' + mm[0]) + '-' + (dd[1] ? dd : '0' + dd[0])
+  );
+};
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -64,6 +79,7 @@ const UsersTable = props => {
   const {
     sortAccesses,
     activeType,
+    resetSearch,
     userSearch,
     selectedNode,
     setUserSearch,
@@ -72,6 +88,12 @@ const UsersTable = props => {
     clickedNode,
     setUsers,
     deleteUsers,
+    date,
+    clickSearch,
+    dateChange,
+    searchType,
+    setSearchType,
+    deleteAllUsers,
     className,
     users,
     ...rest
@@ -111,6 +133,23 @@ const UsersTable = props => {
   const handlePageChange = (event, page) => {
     setPage(page);
   };
+
+  const locale = {
+    sunday: '일',
+    monday: '월',
+    tuesday: '화',
+    wednesday: '수',
+    thursday: '목',
+    friday: '금',
+    saturday: '토',
+    ok: '적용',
+    today: '오늘',
+    yesterday: '어제',
+    hours: '시간',
+    minutes: '분',
+    seconds: '초',
+    last7Days: '일주일전'
+  }
 
   const handleClick = (event, node, index) => {
     if (selected.length === 0) {
@@ -163,85 +202,137 @@ const UsersTable = props => {
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       {/* <CardHeader subheader={ */}
-      <CardActions className={classes.action}>
-        <TextField
-          className={classes.search}
-          id="input-with-icon-textfield"
-          // label="검색"
-          value={userSearch}
-          onChange={handleSearch}
-          placeholder="검색"
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <Search></Search>
-              </InputAdornment>
-            )
-          }}
-        />
-        <Button style={{width: '164px' }} variant="contained" color="primary" onClick={exportExcel}>
-          엑셀로 다운로드
-        </Button>
-        <Grid container justify="flex-end" className={classes.buttonActions}>
-          {selected.length ? (
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => {
-                deleteUsers(selectedObject);
-                setSelectedObject([]);
-                setSelected([]);
-              }}>
-              삭제
-            </Button>
-          ) : (
-            <Button variant="contained" color="secondary" disabled>
-              삭제
-            </Button>
-          )}
-          {selected.length === 1 ? (
-            <RouterLink
-              style={{ textDecoration: 'none' }}
-              to={{
-                pathname: '/users/employee/edit',
-                groups: props.groups,
-                setClickedNode: props.setClickedNode,
-                clickedNode: props.clickedNode,
-                setUsers: props.setUsers,
-                userObject: selectedObject,
-                selectedNode: selectedNode
-              }}>
-              <Button
-                variant="contained"
-                color="primary"
-                className={classes.buttonStyle}>
-                수정
-              </Button>
-            </RouterLink>
-          ) : (
-            <Button
-              variant="contained"
-              color="primary"
-              className={classes.buttonStyle}
-              disabled>
-              수정
-            </Button>
-          )}
+      <CardActions style={{display:'flex'}} className={classes.action}>
 
-          <RouterLink
-            style={{ textDecoration: 'none' }}
-            to={{
-              pathname: '/users/employee/add',
-              groups: props.groups,
-              setClickedNode: props.setClickedNode,
-              clickedNode: props.clickedNode,
-              setUsers: props.setUsers
+      <RouterLink
+        style={{ textDecoration: 'none' }}
+        to={{
+          pathname: '/users/employee/add',
+          groups: props.groups,
+          setClickedNode: props.setClickedNode,
+          clickedNode: props.clickedNode,
+          setUsers: props.setUsers
+        }}>
+        <Button variant="contained" color="primary">
+          추가
+        </Button>
+      </RouterLink>
+
+      {selected.length === 1 ? (
+        <RouterLink
+          style={{ textDecoration: 'none' }}
+          to={{
+            pathname: '/users/employee/edit',
+            groups: props.groups,
+            setClickedNode: props.setClickedNode,
+            clickedNode: props.clickedNode,
+            setUsers: props.setUsers,
+            userObject: selectedObject,
+            selectedNode: selectedNode
+          }}>
+          <Button
+            variant="contained"
+            color="primary"
+            >
+            수정
+          </Button>
+        </RouterLink>
+      ) : (
+        <Button
+          variant="contained"
+          color="primary"
+          
+          disabled>
+          수정
+        </Button>
+      )}
+      {selected.length ? (
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => {
+              deleteUsers(selectedObject);
+              setSelectedObject([]);
+              setSelected([]);
             }}>
-            <Button variant="contained" color="primary">
-              추가
-            </Button>
-          </RouterLink>
-        </Grid>
+            삭제
+          </Button>
+        ) : (
+          <Button variant="contained" color="secondary" disabled>
+            삭제
+          </Button>
+        )}
+        {users.length ? (
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => {
+              deleteAllUsers();
+              setSelectedObject([]);
+              setSelected([]);
+            }}>
+            전체 삭제
+          </Button>
+        ) : (
+          <Button variant="contained" color="secondary" disabled>
+            전체 삭제
+          </Button>
+        )}
+        <DatePicker 
+            format="YYYY-MM-DD" 
+            block 
+            disabled={Object.keys(clickedNode).length === 0}
+            cleanable={false}
+            placeholder="입사일"
+            onChange={val => {
+                dateChange([val.yyyymmdd()]);
+            }}
+            vlaue={date[0]}
+            locale={locale}/>
+        <div style={{flex:1, float: 'right'}}>
+          <Button style={{float: 'right' }} variant="contained" color="primary" onClick={exportExcel}>
+            엑셀로 다운로드
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            style={{float: 'right', marginRight: '10px'}}
+            onClick={() => {
+              resetSearch();
+            }}>
+            검색 초기화
+          </Button>
+          <TextField
+            style={{ float: 'right', marginRight: '10px' }}
+            className={classes.search}
+            id="input-with-icon-textfield"
+            // label="검색"
+            value={userSearch}
+            onChange={handleSearch}
+            onKeyUp={()=>{if(window.event.keyCode === 13) clickSearch();}}
+            placeholder="검색"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment style={{cursor:'pointer'}} onClick={clickSearch} position="end">
+                  <Search></Search>
+                </InputAdornment>
+              )
+            }}
+          />
+          <Select
+            style={{ float: 'right',marginRight: '10px',width:"100px" }}
+            labelId="demo-simple-select-outlined-label"
+            id="demo-simple-select-outlined"
+            value={searchType}
+            onChange={setSearchType}
+          >
+            <MenuItem value={'name'}>이름</MenuItem>
+            <MenuItem value={'user_id'}>사번</MenuItem>
+            <MenuItem value={'position'}>직급</MenuItem>
+            <MenuItem value={'mobile'}>휴대폰 번호</MenuItem>
+            <MenuItem value={'mail'}>이메일</MenuItem>
+          </Select>
+        </div>
       </CardActions>
       {/* }/> */}
 
@@ -282,6 +373,20 @@ const UsersTable = props => {
                 <TableCell>
                   {props.users.length > 0 ? (
                     <TableSortLabel
+                      active={activeType === 'user_id'}
+                      direction={sort}
+                      onClick={() => {
+                        createSortHandler('user_id');
+                      }}>
+                      사번
+                    </TableSortLabel>
+                  ) : (
+                    '사번'
+                  )}
+                </TableCell>
+                <TableCell>
+                  {props.users.length > 0 ? (
+                    <TableSortLabel
                       active={activeType === 'gender'}
                       direction={sort}
                       onClick={() => {
@@ -291,34 +396,6 @@ const UsersTable = props => {
                     </TableSortLabel>
                   ) : (
                     '성별'
-                  )}
-                </TableCell>
-                <TableCell>
-                  {props.users.length > 0 ? (
-                    <TableSortLabel
-                      active={activeType === 'location'}
-                      direction={sort}
-                      onClick={() => {
-                        createSortHandler('location');
-                      }}>
-                      근무지
-                    </TableSortLabel>
-                  ) : (
-                    '근무지'
-                  )}
-                </TableCell>
-                <TableCell>
-                  {props.users.length > 0 ? (
-                    <TableSortLabel
-                      active={activeType === 'depart'}
-                      direction={sort}
-                      onClick={() => {
-                        createSortHandler('depart');
-                      }}>
-                      부서
-                    </TableSortLabel>
-                  ) : (
-                    '부서'
                   )}
                 </TableCell>
                 <TableCell>
@@ -366,15 +443,15 @@ const UsersTable = props => {
                 <TableCell>
                   {props.users.length > 0 ? (
                     <TableSortLabel
-                      active={activeType === 'create_at'}
+                      active={activeType === 'entered'}
                       direction={sort}
                       onClick={() => {
-                        createSortHandler('create_at');
+                        createSortHandler('entered');
                       }}>
-                      생성일
+                      입사일
                     </TableSortLabel>
                   ) : (
-                    '생성일'
+                    '입사일'
                   )}
                 </TableCell>
               </TableRow>
@@ -405,15 +482,14 @@ const UsersTable = props => {
                         </div>
                       </TableCell>
                       <TableCell>{user.name}</TableCell>
+                      <TableCell>{user.user_id}</TableCell>
                       <TableCell>
                         {user.gender === 1 ? '남자' : '여자'}
                       </TableCell>
-                      <TableCell>{user.location}</TableCell>
-                      <TableCell>{user.department_id}</TableCell>
                       <TableCell>{user.position}</TableCell>
                       <TableCell>{user.mobile}</TableCell>
                       <TableCell>{user.mail}</TableCell>
-                      <TableCell>{user.create_at}</TableCell>
+                      <TableCell>{user.entered}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -450,7 +526,8 @@ UsersTable.propTypes = {
   setClickedNode: PropTypes.func,
   clickedNode: PropTypes.object,
   setUsers: PropTypes.func,
-  selectedNode: PropTypes.array
+  setSearchType: PropTypes.func,
+  selectedNode: PropTypes.array,
 };
 
 export default UsersTable;

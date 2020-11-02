@@ -117,6 +117,7 @@ const Groups = props => {
   const classes = useStyles();
 
   const handleClickOpen = (type) => {
+    setGroupName('')
     if(type === 'edit') {
       setEditOpen(true);
       setGroupName(clickedNode.name)
