@@ -94,9 +94,9 @@ app.post('/login', async function(req, res) {
                 )
                 res.send({
                     "token":token,
-                    authority : user.authority,
-                    tempLimit : user.tempLimit,
-                    tempType : user.tempType,
+                    // authority : user.authority,
+                    // tempLimit : user.tempLimit,
+                    // tempType : user.tempType,
                 })
             } else {
                 res.status(400)

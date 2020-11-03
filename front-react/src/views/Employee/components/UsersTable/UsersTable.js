@@ -82,11 +82,13 @@ const UsersTable = props => {
     resetSearch,
     userSearch,
     selectedNode,
+    handlePageChange,
+    pages,
+    page,
     setUserSearch,
     setClickedNode,
     exportExcel,
     clickedNode,
-    setUsers,
     deleteUsers,
     date,
     clickSearch,
@@ -102,7 +104,6 @@ const UsersTable = props => {
   const classes = useStyles();
 
   const rowsPerPage = 7;
-  const [page, setPage] = useState(1);
   const [selected, setSelected] = useState([]);
   const [selectedObject, setSelectedObject] = useState([]);
   const [sort, setSort] = useState('desc');
@@ -128,10 +129,6 @@ const UsersTable = props => {
       return;
     }
     setSelected([]);
-  };
-
-  const handlePageChange = (event, page) => {
-    setPage(page);
   };
 
   const locale = {
@@ -187,12 +184,6 @@ const UsersTable = props => {
   };
 
   useEffect(() => {
-    if(users.length > 0) {
-      setPage(1);
-    }
-  },[users])
-
-  useEffect(() => {
     setSelectedObject([])
     setSelected([])
   },[page])
@@ -211,7 +202,6 @@ const UsersTable = props => {
           groups: props.groups,
           setClickedNode: props.setClickedNode,
           clickedNode: props.clickedNode,
-          setUsers: props.setUsers
         }}>
         <Button variant="contained" color="primary">
           추가
@@ -226,7 +216,6 @@ const UsersTable = props => {
             groups: props.groups,
             setClickedNode: props.setClickedNode,
             clickedNode: props.clickedNode,
-            setUsers: props.setUsers,
             userObject: selectedObject,
             selectedNode: selectedNode
           }}>
@@ -281,7 +270,6 @@ const UsersTable = props => {
         <DatePicker 
             format="YYYY-MM-DD" 
             block 
-            disabled={Object.keys(clickedNode).length === 0}
             cleanable={false}
             placeholder="입사일"
             onChange={val => {
@@ -458,10 +446,6 @@ const UsersTable = props => {
             </TableHead>
             <TableBody>
               {props.users
-                .slice(
-                  (page - 1) * rowsPerPage,
-                  (page - 1) * rowsPerPage + rowsPerPage
-                )
                 .map((user, index) => {
                   const isItemSelected = isSelected(user._id);
                   return (
@@ -500,15 +484,7 @@ const UsersTable = props => {
       <CardActions className={classes.actions}>
         <Grid container alignItems="center" justify="center">
           <Pagination
-            count={
-              props.users.length % rowsPerPage === 0
-                ? parseInt(props.users.length / rowsPerPage)
-                : parseInt(
-                    props.users.length / rowsPerPage +
-                      parseInt(props.users.length % rowsPerPage) /
-                        parseInt(props.users.length % rowsPerPage)
-                  )
-            }
+            count={pages}
             onChange={handlePageChange}
             page={page}
             variant="outlined"
@@ -525,7 +501,6 @@ UsersTable.propTypes = {
   deleteUsers: PropTypes.func,
   setClickedNode: PropTypes.func,
   clickedNode: PropTypes.object,
-  setUsers: PropTypes.func,
   setSearchType: PropTypes.func,
   selectedNode: PropTypes.array,
 };

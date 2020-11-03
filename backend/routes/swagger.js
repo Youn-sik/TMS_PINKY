@@ -157,10 +157,10 @@ module.exports = {
       'Operation': {
         type: 'object',
         properties: {
-          id : { type: 'string'},
-          action : { type: 'string',},
-          date : { type: 'string' },
-          description : { type: 'string'},
+          id : { type: 'string',description:"해당 작업을 한 계정의 obid"},
+          action : { type: 'string',description:"작업 요약"},
+          date : { type: 'string' ,description:"생성 날짜"},
+          description : { type: 'string',description:"작업 상세"},
         }
       },
       'Statistics': {

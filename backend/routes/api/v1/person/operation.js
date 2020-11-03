@@ -7,16 +7,26 @@ router.get('/',async function(req, res) {
     try {
         let search = req.query.search
         let date = req.query.date.split('/');
-        let get_data
-
-        // if(search) {
-
-        // }
-        get_data = await operation.find()
+        let get_data = {}
+        let headerType = req.query.headerType;
+        let rowPerPage = 7
+        let page = parseInt(req.query.page)-1;
+        
+        get_data.count = await operation.find()
         .gte("date",date[0]+" 00:00:00")
         .lte("date",date[1]+" 23:59:59")
         .where("id").ne(null)
-        .populate("id",'user_id');
+        .count()
+
+        get_data.data = await operation.find()
+        .gte("date",date[0]+" 00:00:00")
+        .lte("date",date[1]+" 23:59:59")
+        .where("id").ne(null)
+        .populate("id",'user_id')
+        .sort(headerType)
+        .skip(page*rowPerPage)
+        .limit(rowPerPage)
+
         res.send(get_data)
     } catch (err) {
         throw boom.boomify(err)

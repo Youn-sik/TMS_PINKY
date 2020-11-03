@@ -43,16 +43,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const OperTable = props => {
-  const { sortAccesses, activeType, loading, className, oper, ...rest } = props;
+  const {pages, sortAccesses,page, activeType,handlePageChange, loading, className, oper, ...rest } = props;
 
   const classes = useStyles();
   const rowsPerPage = 7;
-  const [page, setPage] = useState(1);
 
   const [sort, setSort] = useState('desc');
-  const handlePageChange = (event, page) => {
-    setPage(page);
-  };
+  
 
   const createSortHandler = headerType => {
     if (sort === 'desc') {
@@ -131,12 +128,7 @@ const OperTable = props => {
             </TableHead>
             <TableBody>
               {/*TO DO : oper에서 중요한 개인정보 나오지 않도록 하기*/}
-              {oper
-                .slice(
-                  (page - 1) * rowsPerPage,
-                  (page - 1) * rowsPerPage + rowsPerPage
-                )
-                .map(oper => {
+              {oper.map(oper => {
                   return (
                     <TableRow key={oper._id}>
                       <TableCell>
@@ -155,15 +147,7 @@ const OperTable = props => {
       <CardActions className={classes.actions}>
         <Grid container alignItems="center" justify="center">
           <Pagination
-            count={
-              oper.length % rowsPerPage === 0
-                ? parseInt(oper.length / rowsPerPage)
-                : parseInt(
-                    oper.length / rowsPerPage +
-                      parseInt(oper.length % rowsPerPage) /
-                        parseInt(oper.length % rowsPerPage)
-                  )
-            }
+            count={pages}
             onChange={handlePageChange}
             page={page}
             variant="outlined"

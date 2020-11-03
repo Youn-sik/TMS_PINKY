@@ -124,7 +124,7 @@ router.delete('/:id',async function(req, res) {
 
         res.send(delete_data);
     } catch (err) {
-        throw boom.boomify(err)
+        return res.send(err.message);
     }
 });
 

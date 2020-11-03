@@ -414,7 +414,8 @@ const SignIn = props => {
           alert('존재하지 않는 계정입니다.');
           return false;
         });
-      // props.getAuth(result.data.authority);
+      let temp =  await axios.get(base_url + '/auth?token=' + result.data.token)
+      result.data = {...result.data, ...temp.data}
       if (result.data && result.data.token) {
         document.cookie = 'token=' + result.data.token+";path=/;";
         props.getAuth(result.data.authority);

@@ -101,7 +101,6 @@ const Groups = props => {
     setSelectedNode,
     setClickedNode,
     deleteGroupNode,
-    setUsers,
     search,
     editGroupNode,
     searchNode,
@@ -182,11 +181,9 @@ const Groups = props => {
     <TreeItem
       nodeId={node._id + '/' + depth}
       onIconClick={() => {
-        if (Array.isArray(node.children)) setUsers(node);
         setClickedNode(node);
       }}
       onLabelClick={() => {
-        if (Array.isArray(node.children)) setUsers(node);
         setClickedNode(node);
       }}
       className={classes.treeItem}
@@ -378,7 +375,6 @@ Groups.propTypes = {
   setClickedNode: PropTypes.func,
   search: PropTypes.string,
   searchNode: PropTypes.func,
-  setUsers: PropTypes.func,
   deleteGroupNode: PropTypes.func,
   setSelectedNode: PropTypes.func
 };

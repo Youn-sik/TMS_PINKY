@@ -18,7 +18,7 @@ router.get('/',async function(req, res) {
         let get_data;
         let date = new RegExp(moment().format('YYYY-MM-DD'));
         let today = new RegExp(moment().format('YYYY-MM-DD'));
-        let week = [moment().subtract(6, 'days').format('YYYY-MM-DD')+" 00:00:00",moment().format('YYYY-MM-DD')+" 23:59:59"]
+        let week = [moment().day(1).format('YYYY-MM-DD')+" 00:00:00",moment().day(7).format('YYYY-MM-DD')+" 23:59:59"]
         let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$")
         if(req.query.auth.split('-').length === 2){
             auth = new RegExp("^"+req.query.auth+"-")

@@ -77,7 +77,9 @@ router.put('/:id',async function(req, res) {
                 action: '계정 수정',
                 date: moment().format('YYYY-MM-DD HH:mm:ss'),
             })
-            operation.save();    
+            operation.save();
+            update.user_pw = ''
+            update.salt = ''    
             res.send(update);
             return false;
         } else {
@@ -92,7 +94,9 @@ router.put('/:id',async function(req, res) {
                         action: '계정 수정',
                         date: moment().format('YYYY-MM-DD HH:mm:ss'),
                     })
-                    operation.save(); 
+                    operation.save();
+                    update.user_pw = ''
+                    update.salt = '' 
                     res.send(update);
                 })
             })
@@ -113,6 +117,8 @@ router.delete('/:id',async function(req, res) {
             date: moment().format('YYYY-MM-DD HH:mm:ss'),
         })
         operation.save(); 
+        delete_data.user_pw = ''
+        delete_data.salt = ''
         res.send(delete_data);
     } catch (err) {
         throw boom.boomify(err)

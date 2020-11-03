@@ -42,21 +42,24 @@ const Operation = props => {
   const [activeType, setActiveType] = useState('');
   const [search, setSearch] = useState('');
   const [searchType, setSearchType] = useState('');
+  const [page, setPage] = useState(1);
+  const [pages, setPages] = useState(0);
 
-  const getOper = useCallback(async () => {
-    let result = await axios.get(base_url + `/operation?date=${date[0]}/${date[1]}`);
-    result.data.reverse();
-    // setOriginUsers(result.data)
-    setAllOper(result.data);
-    setOper(
-      result.data.filter(
-        user =>
-          user.date.split(' ')[0] >= date[0] &&
-          user.date.split(' ')[0] <= date[1]
-      )
-    );
+  const handlePageChange = (event, page) => {
+    setPage(page);
+  };
+
+  const getOper = useCallback(async (headerType = "-_id") => {
+    let result = await axios.get(base_url + `/operation?date=${date[0]}/${date[1]}&headerType=${headerType}&page=${page}`);
+    let temp = parseInt(result.data.count/7)
+
+    if(parseInt(result.data.count%7))
+      temp++;
+    
+    setPages(temp);
+    setOper(result.data.data);
     setLoading(false);
-  }, [date]);
+  }, [page,date]);
 
   const searchOper = async () => {
     let result = await axios.get(base_url + `/operation?date=${date[0]}/${date[1]}&search=${search}&searchType=${searchType}`);
@@ -75,61 +78,10 @@ const Operation = props => {
 
   const sortAccesses = (type, headerType) => {
     setActiveType(headerType);
-    if (headerType === 'user_id') {
-      if (type === 'asc') {
-        setOper(
-          oper.sort((a, b) => {
-            if (a.id.user_id < b.id.user_id) return -1;
-            else if (b.id.user_id < a.id.user_id) return 1;
-            else return 0;
-          })
-        );
-      } else {
-        setOper(
-          oper.sort((a, b) => {
-            if (a.id.user_id > b.id.user_id) return -1;
-            else if (b.id.user_id > a.id.user_id) return 1;
-            else return 0;
-          })
-        );
-      }
-    } else if (headerType === 'date') {
-      if (type === 'asc') {
-        setOper(
-          oper.sort((a, b) => {
-            if (a.date < b.date) return -1;
-            else if (b.date < a.date) return 1;
-            else return 0;
-          })
-        );
-      } else {
-        setOper(
-          oper.sort((a, b) => {
-            if (a.date > b.date) return -1;
-            else if (b.date > a.date) return 1;
-            else return 0;
-          })
-        );
-      }
-    } else if (headerType === 'action') {
-      if (type === 'asc') {
-        setOper(
-          oper.sort((a, b) => {
-            if (a.action < b.action) return -1;
-            else if (b.action < a.action) return 1;
-            else return 0;
-          })
-        );
-      } else {
-        setOper(
-          oper.sort((a, b) => {
-            if (a.action > b.action) return -1;
-            else if (b.action > a.action) return 1;
-            else return 0;
-          })
-        );
-      }
-    }
+    if(type === 'desc')
+      headerType = '-'+headerType;
+    
+    getOper(headerType)
   };
 
   useEffect(() => {
@@ -144,7 +96,7 @@ const Operation = props => {
 
   useEffect(() => {
     getOper();
-  }, [date]);
+  }, [date,page]);
 
   const handleDate = val => {
     setDate(val);
@@ -164,7 +116,7 @@ const Operation = props => {
           search_event={searchEvent}
         />
         <div className={classes.content}>
-          <OperTable loading={loading} oper={oper} />
+          <OperTable pages={pages} page={page} handlePageChange={handlePageChange} loading={loading} oper={oper} />
         </div>
       </Card>
     </div>

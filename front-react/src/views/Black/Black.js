@@ -21,25 +21,73 @@ const Black = props => {
   const [filteredGroups, setFilteredGroups] = useState([]);
   const [search, setSearch] = useState('');
   const [users, setUsers] = useState([]);
-  const [oriUsers, setOriUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [clickedNode, setClickedNode] = useState({});
   const [selectedNode, setSelectedNode] = useState([]);
   const [searchType, setSearchType] = useState('name');
   const [activeType, setActiveType] = useState('create_at');
+  const [page , setPage] = useState(1);
+  const [pages,setPages] = useState(0);
+  const [usersCount,setUsersCount] = useState(0);
+  const [sortHeaderType,setSortHeaderType] = useState('-_id');
+  const rowsPerPage = 7;
   const classes = useStyles();
+
+  const getUsers = async (headerType = '-_id') => {
+    let result
+
+    if(clickedNode._id) {
+      result = await axios.get(base_url + `/user?rowsPerPage=${rowsPerPage}&type=5&group_obid=`+clickedNode._id+`&page=${page}&searchType=${searchType}&headerType=${headerType}&search=${userSearch}&auth=`+props.authority)
+    } else {
+      result = await axios.get(base_url + `/user?rowsPerPage=${rowsPerPage}&page=${page}&searchType=${searchType}&headerType=${headerType}&search=${userSearch}&type=5&auth=`+props.authority)
+    }
+
+    if(result.data) {
+      setUsersCount(result.data.count);
+      let temp = parseInt(result.data.count/rowsPerPage)
+      if(parseInt(result.data.count%rowsPerPage))
+        temp++;
+      setPages(temp)
+      setUsers(result.data.data)
+    }
+
+  }
+
+  useEffect(() => {
+    getUsers()
+  },[page,clickedNode])
 
   const _setSearchType = (e) => {
     setSearchType(e.target.value)
   }
 
   const resetSearch = () => {
-    setUsers(oriUsers);
     setSearchType('name')
     setUserSearch('')
+    setActiveType('create_at')
+    setPage(1)
+    getUsers();
   }
 
   const exportExcel = async () => {
+    let rowsPerPage = 5000;
+    let temp = parseInt(usersCount/rowsPerPage)
+      if(parseInt(usersCount%rowsPerPage))
+        temp++;
+    let users = []
+
+    for(let i=0; i<temp; i++){
+      let result
+      if(clickedNode._id) {
+        result = await axios.get(base_url + `/user?rowsPerPage=${rowsPerPage}&type=5&group_obid=`+clickedNode._id+`&page=${page}&searchType=${searchType}&headerType=${sortHeaderType}&search=${userSearch}&auth=`+props.authority)
+      } else {
+        result = await axios.get(base_url + `/user?rowsPerPage=${rowsPerPage}&page=${page}&searchType=${searchType}&headerType=${sortHeaderType}&search=${userSearch}&type=5&auth=`+props.authority)
+      }
+
+      users=users.concat(result.data.data);
+
+    }
+
     const wb = new ExcelJS.Workbook()
 
     const ws = wb.addWorksheet("Info", {properties:{ defaultRowHeight: 50 }})
@@ -47,12 +95,8 @@ const Black = props => {
     ws.addRow(['사진', '이름', '성별','장소','사유','휴대폰 번호','생성일'])
 
     if(search === '' && users.length > 0) {
-      users.slice(0,7).map((user,index) => {
+      users.map((user,index) => {
         let temp = []
-        let image = wb.addImage({
-          base64: user.avatar_file,
-          extension: 'png'
-        })
   
         temp.push('');
         temp.push(user['name']);
@@ -63,33 +107,6 @@ const Black = props => {
         temp.push(user['create_at']);
   
         ws.addRow(temp)
-        ws.addImage(image,{
-          tl: { col: 0, row: 1+index },
-          br: { col: 0.7, row: 2+index }
-        })
-      })
-    } else if(filteredUsers.length > 0){
-      filteredUsers.slice(0,7).map((user,index) => {
-        let temp = []
-        let image = wb.addImage({
-          base64: user.avatar_file,
-          extension: 'png'
-        })
-  
-        temp.push('');
-        temp.push(user['name']);
-        temp.push(user['gender'] === 1 ? '남자' : '여자')
-        temp.push(user['location']);
-        temp.push(user['department_id']);
-        temp.push(user['position']);
-        temp.push(user['mail']);
-        temp.push(user['create_at']);
-  
-        ws.addRow(temp)
-        ws.addImage(image,{
-          tl: { col: 0, row: 1+index },
-          br: { col: 0.7, row: 2+index }
-        })
       })
     } else {
       alert('Error: 사용자가 없습니다.')
@@ -141,318 +158,15 @@ const Black = props => {
   // );
 
   const clickSearch = () => {
-    let filteredUsers = []
-    //검색 알고리즘
-    if(searchType === 'name') {
-      filteredUsers = oriUsers.filter(user => user.name.indexOf(userSearch) > -1)
-    } else if(searchType === 'user_id') {
-      filteredUsers = oriUsers.filter(user => user.user_id.indexOf(userSearch) > -1)
-    } else if(searchType === 'position') {
-      filteredUsers = oriUsers.filter(user => user.position.indexOf(userSearch) > -1)
-    } else if(searchType === 'mobile') {
-      filteredUsers = oriUsers.filter(user => user.mobile.indexOf(userSearch) > -1)
-    } else if(searchType === 'mail') {
-      filteredUsers = oriUsers.filter(user => user.mail.indexOf(userSearch) > -1)
-    }
-
-    setUsers(filteredUsers)
+    getUsers()
   }
 
   const sortAccesses = (type, headerType) => {
     setActiveType(headerType);
-    if (search === '') {
-      if (headerType === 'name') {
-        if (type === 'asc') {
-          setUsers(
-            users.sort((a, b) => {
-              if (a.name < b.name) return -1;
-              else if (b.name < a.name) return 1;
-              else return 0;
-            })
-          );
-        } else {
-          setUsers(
-            users.sort((a, b) => {
-              if (a.name > b.name) return -1;
-              else if (b.name > a.name) return 1;
-              else return 0;
-            })
-          );
-        }
-      } else if (headerType === 'gender') {
-        if (type === 'asc') {
-          setUsers(
-            users.sort((a, b) => {
-              if (a.gender < b.gender) return -1;
-              else if (b.gender < a.gender) return 1;
-              else return 0;
-            })
-          );
-        } else {
-          setUsers(
-            users.sort((a, b) => {
-              if (a.gender > b.gender) return -1;
-              else if (b.gender > a.gender) return 1;
-              else return 0;
-            })
-          );
-        }
-      } else if (headerType === 'location') {
-        if (type === 'asc') {
-          setUsers(
-            users.sort((a, b) => {
-              if (a.location < b.location) return -1;
-              else if (b.location < a.location) return 1;
-              else return 0;
-            })
-          );
-        } else {
-          setUsers(
-            users.sort((a, b) => {
-              if (a.location > b.location) return -1;
-              else if (b.location > a.location) return 1;
-              else return 0;
-            })
-          );
-        }
-      } else if (headerType === 'depart') {
-        if (type === 'asc') {
-          setUsers(
-            users.sort((a, b) => {
-              if (a.department_id < b.department_id) return -1;
-              else if (b.department_id < a.department_id) return 1;
-              else return 0;
-            })
-          );
-        } else {
-          setUsers(
-            users.sort((a, b) => {
-              if (a.department_id > b.department_id) return -1;
-              else if (b.department_id > a.department_id) return 1;
-              else return 0;
-            })
-          );
-        }
-      } else if (headerType === 'position') {
-        if (type === 'asc') {
-          setUsers(
-            users.sort((a, b) => {
-              if (a.position < b.position) return -1;
-              else if (b.position < a.position) return 1;
-              else return 0;
-            })
-          );
-        } else {
-          setUsers(
-            users.sort((a, b) => {
-              if (a.position > b.position) return -1;
-              else if (b.position > a.position) return 1;
-              else return 0;
-            })
-          );
-        }
-      } else if (headerType === 'mobile') {
-        if (type === 'asc') {
-          setUsers(
-            users.sort((a, b) => {
-              if (a.mobile < b.mobile) return -1;
-              else if (b.mobile < a.mobile) return 1;
-              else return 0;
-            })
-          );
-        } else {
-          setUsers(
-            users.sort((a, b) => {
-              if (a.mobile > b.mobile) return -1;
-              else if (b.mobile > a.mobile) return 1;
-              else return 0;
-            })
-          );
-        }
-      } else if (headerType === 'mail') {
-        if (type === 'asc') {
-          setUsers(
-            users.sort((a, b) => {
-              if (a.mail < b.mail) return -1;
-              else if (b.mail < a.mail) return 1;
-              else return 0;
-            })
-          );
-        } else {
-          setUsers(
-            users.sort((a, b) => {
-              if (a.mail > b.mail) return -1;
-              else if (b.mail > a.mail) return 1;
-              else return 0;
-            })
-          );
-        }
-      } else if (headerType === 'create_at') {
-        if (type === 'asc') {
-          setUsers(
-            users.sort((a, b) => {
-              if (a.create_at < b.create_at) return -1;
-              else if (b.create_at < a.create_at) return 1;
-              else return 0;
-            })
-          );
-        } else {
-          setUsers(
-            users.sort((a, b) => {
-              if (a.create_at > b.create_at) return -1;
-              else if (b.create_at > a.create_at) return 1;
-              else return 0;
-            })
-          );
-        }
-      }
-    } else {
-      if (headerType === 'name') {
-        if (type === 'asc') {
-          setFilteredUsers(
-            filteredUsers.sort((a, b) => {
-              if (a.name < b.name) return -1;
-              else if (b.name < a.name) return 1;
-              else return 0;
-            })
-          );
-        } else {
-          setFilteredUsers(
-            filteredUsers.sort((a, b) => {
-              if (a.name > b.name) return -1;
-              else if (b.name > a.name) return 1;
-              else return 0;
-            })
-          );
-        }
-      } else if (headerType === 'gender') {
-        if (type === 'asc') {
-          setFilteredUsers(
-            filteredUsers.sort((a, b) => {
-              if (a.gender < b.gender) return -1;
-              else if (b.gender < a.gender) return 1;
-              else return 0;
-            })
-          );
-        } else {
-          setFilteredUsers(
-            filteredUsers.sort((a, b) => {
-              if (a.gender > b.gender) return -1;
-              else if (b.gender > a.gender) return 1;
-              else return 0;
-            })
-          );
-        }
-      } else if (headerType === 'location') {
-        if (type === 'asc') {
-          setFilteredUsers(
-            filteredUsers.sort((a, b) => {
-              if (a.location < b.location) return -1;
-              else if (b.location < a.location) return 1;
-              else return 0;
-            })
-          );
-        } else {
-          setFilteredUsers(
-            filteredUsers.sort((a, b) => {
-              if (a.location > b.location) return -1;
-              else if (b.location > a.location) return 1;
-              else return 0;
-            })
-          );
-        }
-      } else if (headerType === 'depart') {
-        if (type === 'asc') {
-          setFilteredUsers(
-            filteredUsers.sort((a, b) => {
-              if (a.department_id < b.department_id) return -1;
-              else if (b.department_id < a.department_id) return 1;
-              else return 0;
-            })
-          );
-        } else {
-          setFilteredUsers(
-            filteredUsers.sort((a, b) => {
-              if (a.department_id > b.department_id) return -1;
-              else if (b.department_id > a.department_id) return 1;
-              else return 0;
-            })
-          );
-        }
-      } else if (headerType === 'position') {
-        if (type === 'asc') {
-          setFilteredUsers(
-            filteredUsers.sort((a, b) => {
-              if (a.position < b.position) return -1;
-              else if (b.position < a.position) return 1;
-              else return 0;
-            })
-          );
-        } else {
-          setFilteredUsers(
-            filteredUsers.sort((a, b) => {
-              if (a.position > b.position) return -1;
-              else if (b.position > a.position) return 1;
-              else return 0;
-            })
-          );
-        }
-      } else if (headerType === 'mobile') {
-        if (type === 'asc') {
-          setFilteredUsers(
-            filteredUsers.sort((a, b) => {
-              if (a.mobile < b.mobile) return -1;
-              else if (b.mobile < a.mobile) return 1;
-              else return 0;
-            })
-          );
-        } else {
-          setFilteredUsers(
-            filteredUsers.sort((a, b) => {
-              if (a.mobile > b.mobile) return -1;
-              else if (b.mobile > a.mobile) return 1;
-              else return 0;
-            })
-          );
-        }
-      } else if (headerType === 'mail') {
-        if (type === 'asc') {
-          setFilteredUsers(
-            filteredUsers.sort((a, b) => {
-              if (a.mail < b.mail) return -1;
-              else if (b.mail < a.mail) return 1;
-              else return 0;
-            })
-          );
-        } else {
-          setFilteredUsers(
-            filteredUsers.sort((a, b) => {
-              if (a.mail > b.mail) return -1;
-              else if (b.mail > a.mail) return 1;
-              else return 0;
-            })
-          );
-        }
-      } else if (headerType === 'create_at') {
-        if (type === 'asc') {
-          setFilteredUsers(
-            filteredUsers.sort((a, b) => {
-              if (a.create_at < b.create_at) return -1;
-              else if (b.create_at < a.create_at) return 1;
-              else return 0;
-            })
-          );
-        } else {
-          setFilteredUsers(
-            filteredUsers.sort((a, b) => {
-              if (a.create_at > b.create_at) return -1;
-              else if (b.create_at > a.create_at) return 1;
-              else return 0;
-            })
-          );
-        }
-      }
-    }
+    if(type === 'desc')
+      headerType = "-"+headerType
+    setSortHeaderType(headerType);
+    getUsers(headerType)
   };
 
   useEffect(() => {
@@ -462,14 +176,6 @@ const Black = props => {
       setFilteredGroups(tempFilteredGroups);
     }
   }, [search, groups, filterGroup]);
-
-  // useEffect(() => {
-  //   if (userSearch !== '') {
-  //     let copyUsers = users;
-  //     let tempFilteredUsers = filterUsers(copyUsers);
-  //     setFilteredUsers(tempFilteredUsers);
-  //   }
-  // }, [userSearch, users, filterUsers]);
 
   const _setClickedNode = node => {
     setClickedNode(node);
@@ -581,33 +287,20 @@ const Black = props => {
     }
   };
 
-  const getUsers = async () => {
-    if(clickedNode._id) {
-      let result = await axios.get(base_url + '/user?type=5&group_obid='+clickedNode._id+'&auth='+props.authority)
-      setFilteredUsers([]);
-      setSearch('')
-      setActiveType('create_at');
-      setUserSearch('')
-      setUsers(result.data.reverse());
-      setOriUsers(result.data);
-    }
-  }
-
-  useEffect(() => {
-    getUsers()
-  },[clickedNode])
-
   useEffect(() => {
     getGroups();
   }, []);
 
   const deleteAllUsers = async () => {
     if (window.confirm('삭제한 내용은 되돌릴수 없습니다\n정말 삭제 하시겠습니까?')) {
-      await axios.delete(base_url + '/user/' + users[0]._id, {
+      let temp = clickedNode._id ? clickedNode._id : ''
+      await axios.delete(base_url + '/user/'+users[0]._id+'?type=5&group_obid='+temp+`&searchType=${searchType}&search=${userSearch}&auth=`+props.authority, {
         data: {
           type: 1,
           selectedData: users,
-          account: props.user_id
+          deleteAll:true,
+          account: props.user_id,
+          count : usersCount
         }
       });
       
@@ -615,6 +308,10 @@ const Black = props => {
       getUsers();
     }
   }
+
+  const handlePageChange = (event, page) => {
+    setPage(page);
+  };
 
   return (
     <div className={classes.root}>
@@ -637,6 +334,9 @@ const Black = props => {
         <Grid item lg={8} md={8} xl={9} xs={12}>
           {/* <AccountDetails users={users}/> */}
           <UsersTable
+            pages={pages}
+            page={page}
+            handlePageChange={handlePageChange}
             resetSearch={resetSearch}
             authority={props.authority}
             exportExcel={exportExcel}
@@ -647,6 +347,7 @@ const Black = props => {
             setClickedNode={_setClickedNode}
             clickedNode={clickedNode}
             setUsers={_setUsers}
+            sortAccesses={sortAccesses}
             selectedNode={selectedNode}
             groups={groups}
             deleteUsers={deleteUsers}

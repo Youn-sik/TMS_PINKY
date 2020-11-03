@@ -68,6 +68,9 @@ const UsersTable = props => {
     activeType,
     userSearch,
     selectedNode,
+    handlePageChange,
+    pages,
+    page,
     resetSearch,
     setUserSearch,
     exportExcel,
@@ -87,7 +90,6 @@ const UsersTable = props => {
   const classes = useStyles();
 
   const rowsPerPage = 7;
-  const [page, setPage] = useState(1);
   const [selected, setSelected] = useState([]);
   const [selectedObject, setSelectedObject] = useState([]);
   const [sort, setSort] = useState('desc');
@@ -110,10 +112,6 @@ const UsersTable = props => {
       return;
     }
     setSelected([]);
-  };
-
-  const handlePageChange = (event, page) => {
-    setPage(page);
   };
 
   const handleClick = (event, node, index) => {
@@ -150,12 +148,6 @@ const UsersTable = props => {
   const handleSearch = e => {
     setUserSearch(e.target.value);
   };
-
-  useEffect(() => {
-    if(users.length > 0) {
-      setPage(1);
-    }
-  },[users])
 
   useEffect(() => {
     setSelectedObject([])
@@ -392,10 +384,6 @@ const UsersTable = props => {
             </TableHead>
             <TableBody>
               {props.users
-                .slice(
-                  (page - 1) * rowsPerPage,
-                  (page - 1) * rowsPerPage + rowsPerPage
-                )
                 .map((user, index) => {
                   const isItemSelected = isSelected(user._id);
                   return (
@@ -433,15 +421,7 @@ const UsersTable = props => {
       <CardActions className={classes.actions}>
         <Grid container alignItems="center" justify="center">
           <Pagination
-            count={
-              props.users.length % rowsPerPage === 0
-                ? parseInt(props.users.length / rowsPerPage)
-                : parseInt(
-                    props.users.length / rowsPerPage +
-                      parseInt(props.users.length % rowsPerPage) /
-                        parseInt(props.users.length % rowsPerPage)
-                  )
-            }
+            count={pages}
             onChange={handlePageChange}
             page={page}
             variant="outlined"

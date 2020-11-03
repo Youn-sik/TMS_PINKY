@@ -29,27 +29,59 @@ Promise.all([
 
 router.get('/',async function(req, res) {
     try {
-        let get_data
+        let get_data = {}
         let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$");
+        let searchType = req.query.searchType;
+        let search = req.query.search ? new RegExp(req.query.search) : new RegExp("")
+        let entered = req.query.entered ? new RegExp("^"+req.query.entered+"$") : new RegExp("")
+        let rowPerPage = parseInt(req.query.rowPerPage);
+        let page = parseInt(req.query.page) - 1;
+        let headerType = req.query.headerType;
+        let enteredName = 'entered'
 
         if(req.query.auth.split('-').length === 2){
             auth = new RegExp("^"+req.query.auth+"-")
         }
 
+        if(req.query.type === '5')
+            enteredName = 'create_at'
+
         if(req.query.group_obid) {
-            get_data = await api_v1_person_user.find({type:req.query.type})
+            get_data.count = await api_v1_person_user.find({type:req.query.type})
             .regex('authority',auth)
             .select('-face_detection -avatar_file')
             .where("groups_obids")
             .in([req.query.group_obid])
-        } else if(req.query.type === '1') {
-            get_data = await api_v1_person_user.find({type:'1'}).regex('authority',auth)
-        } else if(req.query.type === '2') {
-            get_data = await api_v1_person_user.find({type:'2'}).regex('authority',auth)
-        } else if(req.query.type === '5') {
-            get_data = await api_v1_person_user.find({type:'5'}).regex('authority',auth)
+            .regex(searchType,search)
+            .regex(enteredName,entered)
+            .count()
+
+            get_data.data = await api_v1_person_user.find({type:req.query.type})
+            .regex('authority',auth)
+            .select('-face_detection -avatar_file')
+            .where("groups_obids")
+            .in([req.query.group_obid])
+            .regex(searchType,search)
+            .regex(enteredName,entered)
+            .sort(headerType)
+            .skip(page*rowPerPage)
+            .limit(rowPerPage)
         } else {
-            get_data = await api_v1_person_user.find()
+            get_data.count = await api_v1_person_user.find({type:req.query.type})
+            .regex('authority',auth)
+            .select('-face_detection -avatar_file')
+            .regex(searchType,search)
+            .regex(enteredName,entered)
+            .count()
+            
+            get_data.data = await api_v1_person_user.find({type:req.query.type})
+            .regex('authority',auth)
+            .select('-face_detection -avatar_file')
+            .regex(searchType,search)
+            .regex(enteredName,entered)
+            .sort(headerType)
+            .skip(page*rowPerPage)
+            .limit(rowPerPage)
         }
         res.send(get_data);
     } catch (err) {
@@ -81,8 +113,6 @@ router.post('/',async function(req, res) {
         } else {
             let detections
             if(req.body.avatar_file === undefined) {
-                // console.log('test');
-                // "/var/www/backend/image/5f991742124ed642e2180c3eprofile.jpg"
                 let dir = req.body.avatar_file_url.split(":3000")[1];
                 let oriDir = "/var/www/backend"+dir;
                 let cpDir = "/var/www/backend/image/"+dir.split('/')[6]
@@ -224,7 +254,7 @@ router.put('/:id',async function(req, res) {
 });
 
 router.delete('/:id',async function(req, res) {
-    if(!req.body.selectedData){
+    if(!req.body.deleteAll){
         try {
             await api_v1_group_group.updateMany({type:req.body.type},{ $pull: { user_obids : req.body._id} }, {new: true }).exec();
             const id = req.params === undefined ? req.id : req.params.id
@@ -235,17 +265,6 @@ router.delete('/:id',async function(req, res) {
             if(delete_data.type === 1) type = '사원';
             else if(delete_data.type === 2) type = '방문자'
             else if(delete_data.type === 5) type = '블랙리스트'
-            // const history = new History({
-            //     avatar_file : delete_data.avatar_file,
-            //     avatar_contraction_data : delete_data.avatar_contraction_data,
-            //     avatar_file_checksum : delete_data.avatar_file_checksum,
-            //     avatar_file_url : delete_data.avatar_file_url,
-            //     name : delete_data.name,
-            //     type : delete_data.type,
-            //     create_at : moment().format('YYYY-MM-DD HH:mm:ss'),
-            //     create_ut : Date.now(),
-            //     action : '삭제',
-            // });
             const operation = new Operation({
                 id:req.body.account,
                 action: '유저 삭제',
@@ -261,28 +280,74 @@ router.delete('/:id',async function(req, res) {
     } else {
         try {
             let deletedList = [];
-            req.body.selectedData.map(async (i,index) => {
+            let users = [];
+            let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$");
+            let searchType = req.query.searchType;
+            let search = req.query.search ? new RegExp(req.query.search) : new RegExp("")
+            let entered = req.query.entered ? new RegExp("^"+req.query.entered+"$") : new RegExp("")
+            let rowPerPage = 5000;
+            let pages = 0
+            let headerType = req.query.headerType;
+            let enteredName = 'entered'
+            if(req.query.type === '5')
+                enteredName = 'create_at'
+
+            if(req.body.count > 5000) {
+                let temp = parseInt(result.body.count/rowsPerPage)
+                if(parseInt(result.body.count%rowsPerPage))
+                    temp++;
+                
+                for(let i = 0; i<temp; i++) {
+                    if(req.query.group_obid) {
+                        users = await api_v1_person_user.find({type:req.query.type})
+                        .regex('authority',auth)
+                        .select('-face_detection -avatar_file')
+                        .where("groups_obids")
+                        .in([req.query.group_obid])
+                        .regex(searchType,search)
+                        .regex(enteredName,entered)
+                        .skip(i*rowPerPage)
+                        .limit(rowPerPage)
+                    } else {
+                        users = await api_v1_person_user.find({type:req.query.type})
+                        .regex('authority',auth)
+                        .select('-face_detection -avatar_file')
+                        .regex(searchType,search)
+                        .regex(enteredName,entered)
+                        .skip(i*rowPerPage)
+                        .limit(rowPerPage)
+                    }
+                }
+            } else {
+                if(req.query.group_obid) {
+                    users = await api_v1_person_user.find({type:req.query.type})
+                    .regex('authority',auth)
+                    .select('-face_detection -avatar_file')
+                    .where("groups_obids")
+                    .in([req.query.group_obid])
+                    .regex(searchType,search)
+                    .regex(enteredName,entered)
+                } else {
+                    users = await api_v1_person_user.find({type:req.query.type})
+                    .regex('authority',auth)
+                    .select('-face_detection -avatar_file')
+                    .regex(searchType,search)
+                    .regex(enteredName,entered)
+                }
+                
+            }
+            
+            users.map(async (i,index) => {
                 await api_v1_group_group.updateMany({type:i.type},{ $pull: { user_obids : i._id} }, {new: true }).exec();
                 deletedList.push(await api_v1_person_user.findByIdAndDelete(i._id));
                 fs.unlink('/var/www/backend/image/'+i._id+"profile.jpg",() => {})
                 fs.unlink('/var/www/backend/image/'+i._id+"profile_updated.jpg",() => {})
-                if(req.body.selectedData.length-1 === index) {
+                if(users.length-1 === index) {
                     deletedList.map((i,index) => {
                         let type = '';
                         if(i.type === 1) type = '사원';
                         else if(i.type === 2) type = '방문자'
                         else if(i.type === 5) type = '블랙리스트'
-                        // const history = new History({
-                        //     avatar_file : i.avatar_file,
-                        //     avatar_contraction_data : i.avatar_contraction_data,
-                        //     avatar_file_checksum : i.avatar_file_checksum,
-                        //     avatar_file_url : i.avatar_file_url,
-                        //     name : i.name,
-                        //     type : i.type,
-                        //     create_at : moment().format('YYYY-MM-DD HH:mm:ss'),
-                        //     create_ut : Date.now(),
-                        //     action : '삭제',
-                        // });
                         const operation = new Operation({
                             id:req.body.account,
                             action: '유저 삭제',
