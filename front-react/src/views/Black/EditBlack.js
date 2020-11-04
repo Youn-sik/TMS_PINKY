@@ -244,7 +244,8 @@ const EditBlack = props => {
       base64 = base64.replace('data:image/jpeg;base64,', '');
       base64 = base64.replace('data:image/png;base64,', '');
     }
-    await axios.put(base_url + '/user/' + userObject[0]._id, {
+    
+    let result = await axios.put(base_url + '/user/' + userObject[0]._id, {
       ...userObject[0],
       ...userInfo,
       type: 5,
@@ -253,6 +254,12 @@ const EditBlack = props => {
         node._id !== undefined ? [node._id] : userObject[0].groups_obids,
       avatar_file: base64 ? base64 : userObject[0].avatar_file
     });
+
+    if(result.data.result && result.data.result === '인식할수 없는 사진.') {
+      alert("인식할수 없는 사진 입니다.")
+      return 0;
+    }
+
     alert('수정 되었습니다.');
     history.push('/users/black');
   };

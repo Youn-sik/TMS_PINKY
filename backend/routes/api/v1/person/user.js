@@ -215,6 +215,14 @@ router.put('/:id',async function(req, res) {
         const detections = await faceapi.detectSingleFace(imageDir)
         .withFaceLandmarks()
         .withFaceDescriptor();
+
+        if(detections.length === 0) {
+            res.send({
+                result:"인식할수 없는 사진."
+            })
+            return false;
+        }
+        
         asyncJSON.stringify(detections.descriptor,function(err, jsonValue) {
             update_data.face_detection = jsonValue;
         })
@@ -222,7 +230,7 @@ router.put('/:id',async function(req, res) {
         update_data.groups_obids = req.body.clicked_groups;
         update_data.update_at = moment().format('YYYY-MM-DD HH:mm:ss');
         update_data.update_ut = Date.now();
-        update_data.avatar_file_url = 'http://'+req.headers.host+'/var/www/backend/image/'+req.body._id+'profile_updated.jpg'
+        update_data.avatar_file_url = 'http://'+req.headers.host+'/image/'+req.body._id+'profile_updated.jpg'
         const update = await api_v1_person_user.findOneAndUpdate({_id:id}, {$set:update_data}, {new: true })
         let type = '';
         if(update.type === 1) type = '사원';
