@@ -597,50 +597,6 @@ const DeviceTable = props => {
               </Button>
               <br />
               <br />
-              <Button
-                variant="contained"
-                onClick={() => {
-                  !check ? mqttPubl('reset') : devicesMqttPubl('reset');
-                }}
-                style={{ width: '181.58px' }}
-                color="primary">
-                시스템 초기화
-              </Button>
-              <br />
-              <br />
-              <Button
-                variant="contained"
-                onClick={() => {
-                  !check ? mqttPubl('log') : devicesMqttPubl('log');
-                }}
-                style={{ width: '181.58px' }}
-                color="primary">
-                단말 로그 요청
-              </Button>
-              <br />
-              <br />
-              <Button
-                variant="contained"
-                onClick={() => {
-                  !check ? mqttPubl('contents') : devicesMqttPubl('contents');
-                }}
-                style={{ width: '181.58px' }}
-                color="primary">
-                단말 컨텐츠 목록 요청
-              </Button>
-              <br />
-              <br />
-              <Button
-                variant="contained"
-                onClick={() => {
-                  !check ? mqttPubl('sd_unused') : devicesMqttPubl('sd_unused');
-                }}
-                style={{ width: '181.58px' }}
-                color="primary">
-                SD카드 미사용 파일 삭제
-              </Button>
-              <br />
-              <br />
             </div>
           ) : (
             <div>
