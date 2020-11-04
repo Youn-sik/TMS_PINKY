@@ -211,7 +211,7 @@ router.put('/:id',async function(req, res) {
         const id = req.params === undefined ? req.id : req.params.id
         const update_data = req.body === undefined ? req : req.body
 
-        const imageDir = await canvas.loadImage('/image/'+req.body._id+'profile_updated.jpg')
+        const imageDir = await canvas.loadImage('/var/www/backend/image/'+req.body._id+'profile_updated.jpg')
         const detections = await faceapi.detectSingleFace(imageDir)
         .withFaceLandmarks()
         .withFaceDescriptor();
@@ -222,7 +222,7 @@ router.put('/:id',async function(req, res) {
         update_data.groups_obids = req.body.clicked_groups;
         update_data.update_at = moment().format('YYYY-MM-DD HH:mm:ss');
         update_data.update_ut = Date.now();
-        update_data.avatar_file_url = 'http://'+req.headers.host+'/image/'+req.body._id+'profile_updated.jpg'
+        update_data.avatar_file_url = 'http://'+req.headers.host+'/var/www/backend/image/'+req.body._id+'profile_updated.jpg'
         const update = await api_v1_person_user.findOneAndUpdate({_id:id}, {$set:update_data}, {new: true })
         let type = '';
         if(update.type === 1) type = '사원';
@@ -249,6 +249,7 @@ router.put('/:id',async function(req, res) {
         // history.save();
         res.send(update);
     } catch (err) {
+        console.log(err);
         res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });
@@ -257,7 +258,7 @@ router.delete('/:id',async function(req, res) {
     if(!req.body.deleteAll){
         let deleted_data = []
         try {
-            selectedData.map((i) => {
+            req.body.selectedData.map(async (i) => {
                 await api_v1_group_group.updateMany({type:req.body.type},{ $pull: { user_obids : i._id} }, {new: true }).exec();
                 let delete_data = await api_v1_person_user.findByIdAndDelete(i)
                 fs.unlink('/var/www/backend/image/'+id+"profile.jpg",() => {})
