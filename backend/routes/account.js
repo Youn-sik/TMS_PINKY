@@ -26,7 +26,7 @@ router.get('/',async function(req, res) {
         }
         res.send(users)
     } catch (err) {
-        throw boom.boomify(err)
+        res.status(400).send({err:"잘못된 형식 입니다"})
     }
 });
 
@@ -36,20 +36,20 @@ router.get('/:id',async function(req, res) {
         const user = await User.findById(id).select('user_id user_lang user_name authority')
         res.send(user)
     } catch (err) {
-        throw boom.boomify(err)
+        res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });
 
 router.post('/',async function(req, res) {
     try {
         const add = new User(req.body)
-        
+        if(!req.body.account) return res.status(400).send({"err":"잘못된 형식 입니다"})
         crypto.randomBytes(64,(err,buf) => {
             crypto.pbkdf2(req.body.user_pw, buf.toString('base64'), 105614, 64, 'sha512', (err,key) => {
                 add.user_pw = key.toString('base64');
                 add.salt = buf.toString('base64');
                 add.save(function(err,re) {
-                    if(err) return res.send({})
+                    if(err) return res.status(400).send({"err":"잘못된 형식 입니다"})
                     const operation = new Operation({
                         id:req.body.account,
                         description: add.user_id+' 계정 생성',
@@ -62,7 +62,7 @@ router.post('/',async function(req, res) {
             })
         })
     } catch (err) {
-        throw boom.boomify(err)
+        res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });
 
@@ -102,7 +102,7 @@ router.put('/:id',async function(req, res) {
             })
         }
     } catch (err) {
-        throw boom.boomify(err)
+        res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });
 
@@ -121,7 +121,7 @@ router.delete('/:id',async function(req, res) {
         delete_data.salt = ''
         res.send(delete_data);
     } catch (err) {
-        throw boom.boomify(err)
+        res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });
 

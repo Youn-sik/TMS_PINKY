@@ -8,7 +8,7 @@ router.get('/',async function(req, res) {
         const get_data = await api_v3_device_camera_filelist.find()
         res.send(get_data)
     } catch (err) {
-        throw boom.boomify(err)
+        res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });
 
@@ -18,7 +18,7 @@ router.get('/:id',async function(req, res) {
         const get_single_data = await api_v3_device_camera_filelist.findById(id)
         res.send(get_single_data)
     } catch (err) {
-        throw boom.boomify(err)
+        res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });
 
@@ -29,7 +29,7 @@ router.post('/',function(req, res) {
         add.save()
         res.send(add)
     } catch (err) {
-        throw boom.boomify(err)
+        res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });
 
@@ -40,7 +40,7 @@ router.put('/:id',async function(req, res) {
         const update = await api_v3_device_camera_filelist.findByIdAndUpdate(id, update_data, {new: true })
         res.send(update)
     } catch (err) {
-        throw boom.boomify(err)
+        res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });
 
@@ -50,7 +50,7 @@ router.delete('/:id',async function(req, res) {
         const delete_data = await api_v3_device_camera_filelist.findByIdAndRemove(id)
         res.send(delete_data)
     } catch (err) {
-        throw boom.boomify(err)
+        res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });
 

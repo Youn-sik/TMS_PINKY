@@ -129,7 +129,7 @@ fastify.ready().then(
         - ${All_Accesss.length} All_Accesss added.
       `)
 		} catch (err) {
-			throw boom.boomify(err)
+			res.status(400).send({err:"잘못된 형식 입니다."})
 		}
 		process.exit()
 	},

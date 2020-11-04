@@ -33,6 +33,14 @@
  *                          type: string
  *                          example: "JWT"
  *                          description: 토큰
+ *             "400":
+ *               description: "인증 실패"
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: "존재 하지 않는 계정입니다."
  *    /auth:
  *       get:
  *         tags:
@@ -71,7 +79,16 @@
  *                      tempLimit:
  *                          type: number
  *                          description: 계정에서 설정된 온도경고 기준 온도
- *                          example: 37.5             
+ *                          example: 37.5         
+ *             "400":
+ *               description: "인증 실패"
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      auth:
+ *                          type: boolean
+ *                          description: 인증 성공 여부
+ *                          example: false     
  *    /account:
  *       post:
  *          tags:
@@ -109,7 +126,7 @@
  *                 authority:
  *                      type: string
  *                      description: 계정의 권한
- *                      example: 'admin ,manager-abcd, manager-abcd-user-user1234, admin-user-user1234' 
+ *                      example: 'admin' 
  *          responses:
  *             "200":
  *               schema:
@@ -141,6 +158,13 @@
  *                              type: number
  *                              description: 계정에서 설정된 온도경고 기준 온도
  *                              example: 37.5 
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다  
  *       get:
  *         tags:
  *         - "account"
@@ -179,7 +203,14 @@
  *                          tempLimit:
  *                              type: number
  *                              description: 계정에서 설정된 온도경고 기준 온도
- *                              example: 37.5     
+ *                              example: 37.5
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다  
  *    /account/{obid}:
  *       put:
  *         tags:
@@ -263,6 +294,13 @@
  *                              type: number
  *                              description: 출입관리 온도 표현방식 결정  1:숫자 ex)37.5   2:문자  ex)비정상 온도
  *                              example: 1 
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *       delete:
  *         tags:
  *         - "account"
@@ -309,6 +347,13 @@
  *                              type: number
  *                              description: 출입관리 온도 표현방식 결정  1:숫자 ex)37.5   2:문자  ex)비정상 온도
  *                              example: 1 
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  * 
  *    /access:
  *       post:
@@ -444,6 +489,13 @@
  *                       type: string
  *                       description: 사진 찍힌 사람의 이름
  *                       example: 'string'
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *       get:
  *         tags:
  *         - "access"
@@ -569,6 +621,13 @@
  *                              type: string
  *                              description: 사진 찍힌 사람의 이름
  *                              example: 'string'
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *                          
  *       delete:
  *         tags:
@@ -645,6 +704,13 @@
  *                       type:number
  *                       description:삭제된 갯수
  *                       example:470
+ *            "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *    /access?type=dateCount:
  *       get:
  *         tags:
@@ -713,6 +779,13 @@
  *                              type: number
  *                              description: 검색 조건에 일치하는 촐입자 총합
  *                              example: 47253
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *    /access?type=todayStatistics:
  *       get:
  *         tags:
@@ -749,6 +822,13 @@
  *                      - {_id: {type: 1}, count: 51}
  *                      - {_id: {type: 3}, count: 0}
  *                      - {_id: {type: 4}, count: 64}
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *    /access?type=deviceGroupAccesses:
  *       get:
  *         tags:
@@ -915,6 +995,13 @@
  *                                      type: string
  *                                      description: 해당 통계의 obid
  *                                      example: "5f8e81f4c3c4095ae08614bf"
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *    /access?type=weekStatistics:
  *       get:
  *         tags:
@@ -951,6 +1038,13 @@
  *                      - {_id: {type: 1}, count: 51}
  *                      - {_id: {type: 3}, count: 0}
  *                      - {_id: {type: 4}, count: 64}
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *    /access?type=deviceStats:
  *       get:
  *         tags:
@@ -1114,6 +1208,13 @@
  *                                      type: string
  *                                      description: 해당 통계의 obid
  *                                      example: "5f8e81f4c3c4095ae08614bf"
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *    /access?type=temperature:
  *       get:
  *         tags:
@@ -1191,6 +1292,13 @@
  *                                      type: string
  *                                      description: 출입자 이름
  *                                      example: "unknown"
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *    /access/{obid}:
  *       get:
  *         tags:
@@ -1269,6 +1377,13 @@
  *                                      type: string
  *                                      description: 출입자 이름
  *                                      example: "unknown"
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *       put:
  *         tags:
  *         - "access"
@@ -1408,6 +1523,13 @@
  *                                      type: string
  *                                      description: 출입자 이름
  *                                      example: "unknown"
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  * 
  *    /camera:
  *       post:
@@ -1472,6 +1594,13 @@
  *                               description: "비고"
  *                               type: string
  *                               example: 'string'
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *       get:
  *         tags:
  *         - "camera"
@@ -1519,6 +1648,13 @@
  *                               description: "단말 생성 날짜 utc"
  *                               type: string
  *                               example: 'Y'
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *    /camera/{obid}:
  *       get:
  *         tags:
@@ -1570,6 +1706,13 @@
  *                               description: "단말 생성 날짜 utc"
  *                               type: string
  *                               example: 'Y'
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *       put:
  *         tags:
  *         - "camera"
@@ -1640,6 +1783,13 @@
  *                               description: "비고"
  *                               type: string
  *                               example: 'string'
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *  
  *       delete:
  *         tags:
@@ -1687,6 +1837,13 @@
  *                               description: "단말 ON/OFF"
  *                               type: string
  *                               example: 'Y'
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *  
  *    /group:
  *       post:
@@ -1739,6 +1896,13 @@
  *                              description: "상위 그룹의 obid 없을시 최상위 그룹으로 판단"
  *                              type: string
  *                              example: 'string'
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *       get:
  *          tags:
  *           - "group"
@@ -1817,6 +1981,13 @@
  *                                          example: 'string'
  *                                      children:
  *                                          description: "상위 그룹의 obid 없을시 최상위 그룹으로 판단"
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *                                          
  *                                  
  *    /group/{obid}:
@@ -1894,6 +2065,13 @@
  *                                          example: 'string'
  *                                      children:
  *                                          description: "상위 그룹의 obid 없을시 최상위 그룹으로 판단"
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *       put:
  *         tags:
  *         - "group"
@@ -1948,6 +2126,13 @@
  *                              items:
  *                                  type: string
  *                                  example: "5ee982ef90799e56affe7d6a"
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *       delete:
  *         tags:
  *         - "group"
@@ -1996,6 +2181,13 @@
  *                              items:
  *                                  type: string
  *                                  example: "5ee982ef90799e56affe7d6a"
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *    /operation:
  *       post:
  *          tags:
@@ -2012,6 +2204,13 @@
  *             "200":
  *               schema:
  *                   $ref: "#/definitions/Operation"
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *       get:
  *         tags:
  *         - "operation"
@@ -2020,6 +2219,13 @@
  *             "200":
  *               schema:
  *                   $ref: "#/definitions/Operation"
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *    /operation/{obid}:
  *       get:
  *         tags:
@@ -2038,6 +2244,13 @@
  *             "200":
  *               schema:
  *                   $ref: "#/definitions/Operation"
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *       put:
  *         tags:
  *         - "operation"
@@ -2055,6 +2268,13 @@
  *             "200":
  *               schema:
  *                   $ref: "#/definitions/Operation"
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *       delete:
  *         tags:
  *         - "operation"
@@ -2072,6 +2292,13 @@
  *             "200":
  *               schema:
  *                   $ref: "#/definitions/Operation"
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *  
  *    /user:
  *       post:
@@ -2164,6 +2391,13 @@
  *                         format: "array"
  *                         required: true
  *                         example: ["5f992a7499d09d11aeac37a6"]
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *       get:
  *         tags:
  *          - "user"
@@ -2261,6 +2495,13 @@
  *                                    format: "array"
  *                                    required: true
  *                                    example: ["5f992a7499d09d11aeac37a6"]
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *    /user/{obid}:
  *       get:
  *         tags:
@@ -2370,6 +2611,13 @@
  *                         format: "array"
  *                         required: true
  *                         example: ["5f992a7499d09d11aeac37a6"]
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *       delete:
  *         tags:
  *         - "user"
@@ -2380,7 +2628,6 @@
  *            description: "사용자의 mongodb_obids"
  *            required: true
  *            example: '5ee9db4360497f4ee3dd0f4f'
-
  *         responses:
  *             "200":
  *               schema:
@@ -2422,5 +2669,12 @@
  *                         format: "array"
  *                         required: true
  *                         example: ["5f992a7499d09d11aeac37a6"]
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
  *  
  */

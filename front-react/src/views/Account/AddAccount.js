@@ -67,7 +67,10 @@ const AddAccount = props => {
   });
 
   useEffect(() => {
-    console.log(accountInfo)
+    if(props.authority.split('-').length > 2){
+      alert("권한이 없습니다.")
+      history.go(-1)
+    }
   },[])
 
   const handleChange = event => {

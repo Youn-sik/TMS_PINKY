@@ -44,7 +44,7 @@ router.get('/',async function(req, res) {
             res.send(get_data);
         }
     } catch (err) {
-        throw boom.boomify(err)
+        res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });
 
@@ -54,7 +54,7 @@ router.get('/:id',async function(req, res) {
         const get_single_data = await api_v1_group_group.findById(id)
         res.send(get_single_data)
     } catch (err) {
-        throw boom.boomify(err)
+        res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });
 
@@ -72,7 +72,7 @@ router.post('/',async function(req, res) {
         add.save()
         res.send(add);
     } catch (err) {
-        throw boom.boomify(err)
+        res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });
 
@@ -83,7 +83,7 @@ router.put('/:id',async function(req, res) {
         let update = await api_v1_group_group.findByIdAndUpdate(id, update_data, {new: true })
         res.send(update);
     } catch (err) {
-        throw boom.boomify(err)
+        res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });
 

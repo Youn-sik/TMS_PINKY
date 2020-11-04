@@ -8,7 +8,7 @@ router.get('/',async function(req, res) {
         const get_data = await api_v2_device_alarm.find()
         return get_data
     } catch (err) {
-        throw boom.boomify(err)
+        res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });
 
@@ -18,7 +18,7 @@ router.get('/:id',async function(req, res) {
         const get_single_data = await api_v2_device_alarm.findById(id)
         return get_single_data
     } catch (err) {
-        throw boom.boomify(err)
+        res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });
 
@@ -27,7 +27,7 @@ router.post('/',function(req, res) {
         const add = new api_v2_device_alarm(req)
         return add.save()
     } catch (err) {
-        throw boom.boomify(err)
+        res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });
 
@@ -38,7 +38,7 @@ router.put('/:id',async function(req, res) {
         const update = await api_v2_device_alarm.findByIdAndUpdate(id, update_data, {new: true })
         return update
     } catch (err) {
-        throw boom.boomify(err)
+        res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });
 
@@ -48,7 +48,7 @@ router.delete('/:id',async function(req, res) {
         const delete_data = await api_v2_device_alarm.findByIdAndRemove(id)
         return delete_data
     } catch (err) {
-        throw boom.boomify(err)
+        res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });
 
@@ -61,7 +61,7 @@ module.exports = router;
 //         const depend_on_data = await api_v2_device_alarm.find({ user_id : id })
 //         return depend_on_data
 //     }catch (err) {
-//         throw boom.boomify(err)
+//         res.status(400).send({err:"잘못된 형식 입니다."})
 //     }
 // }
 
@@ -71,7 +71,7 @@ module.exports = router;
 //         const depend_on_data = await api_v2_device_alarm.find({ device_id : id })
 //         return depend_on_data
 //     }catch (err) {
-//         throw boom.boomify(err)
+//         res.status(400).send({err:"잘못된 형식 입니다."})
 //     }
 // }
 
@@ -81,6 +81,6 @@ module.exports = router;
 //         const depend_on_data = await api_v2_device_alarm.find({ trace_id : id })
 //         return depend_on_data
 //     }catch (err) {
-//         throw boom.boomify(err)
+//         res.status(400).send({err:"잘못된 형식 입니다."})
 //     }
 // }

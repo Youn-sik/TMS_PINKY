@@ -500,7 +500,7 @@ router.get('/',async function(req, res) {
         }
         res.send(get_data)
     } catch (err) {
-        throw boom.boomify(err)
+        res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });
 
@@ -510,7 +510,7 @@ router.get('/:id',async function(req, res) {
         const get_single_data = await api_v1_person_access.findById(id)
         res.send(get_single_data)
     } catch (err) {
-        throw boom.boomify(err)
+        res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });
 
@@ -519,7 +519,7 @@ router.post('/',function(req, res) {
         const add = new api_v1_person_access(req.body)
         res.send(add.save())
     } catch (err) {
-        throw boom.boomify(err)
+        res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });
 
@@ -530,7 +530,7 @@ router.put('/:id',async function(req, res) {
         const update = await api_v1_person_access.findByIdAndUpdate(id, update_data, {new: true })
         return update
     } catch (err) {
-        throw boom.boomify(err)
+        res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });
 
@@ -728,7 +728,7 @@ router.delete('/',async function(req, res) {
         }
         res.send(delete_data)
     } catch (err) {
-        throw boom.boomify(err)
+        res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });
 
@@ -739,7 +739,7 @@ router.delete('/',async function(req, res) {
 //         const depend_on_data = await api_v1_person_access.find({ reception_user_id : id })
 //         return depend_on_data
 //     }catch (err) {
-//         throw boom.boomify(err)
+//         res.status(400).send({err:"잘못된 형식 입니다."})
 //     }
 // }
 

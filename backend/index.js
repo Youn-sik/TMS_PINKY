@@ -94,7 +94,7 @@ app.post('/login', async function(req, res) {
         const user_pw = req.body === undefined ? req.user_pw : req.body.user_pw
         const user = await User.findOne({ user_id: user_id })
         if(!user) {
-            res.send({err:"존재하지 않는 계정입니다"})
+            res.status(400).send({err:"존재하지 않는 계정입니다"})
             return 0;
         }
         crypto.pbkdf2(user_pw, user.salt, 105614, 64, 'sha512', (err, key) => {
@@ -119,12 +119,11 @@ app.post('/login', async function(req, res) {
                     // tempType : user.tempType,
                 })
             } else {
-                res.status(400)
-                res.send({err:"존재하지 않는 계정입니다"})
+                res.status(400).send({err:"존재하지 않는 계정입니다"})
             }
         })
     } catch (err) {
-        throw boom.boomify(err)
+        res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });
 
@@ -159,7 +158,7 @@ app.get('/auth', async function(req, res) {
             tempType : user.tempType,
         });
     } else {
-        res.send({
+        res.status(400).send({
             auth
         });
     }
