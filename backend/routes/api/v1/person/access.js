@@ -21,7 +21,7 @@ router.get('/',async function(req, res) {
         let week = [moment().day(1).format('YYYY-MM-DD')+" 00:00:00",moment().day(7).format('YYYY-MM-DD')+" 23:59:59"]
         let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$")
         if(req.query.auth.split('-').length === 2){
-            auth = new RegExp("^"+req.query.auth+"-")
+            auth = new RegExp("^"+req.query.auth)
         }
         
         if(req.query.type === 'todayStatistics') {
@@ -150,7 +150,7 @@ router.get('/',async function(req, res) {
             let device = req.query.device
             let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$");
             if(req.query.auth.split('-').length === 2){
-                auth = new RegExp("^"+req.query.auth+"-")
+                auth = new RegExp("^"+req.query.auth)
             }
 
             if(device === '')
@@ -168,7 +168,7 @@ router.get('/',async function(req, res) {
             let device = req.query.device
             let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$");
             if(req.query.auth.split('-').length === 2){
-                auth = new RegExp("^"+req.query.auth+"-")
+                auth = new RegExp("^"+req.query.auth)
             }
 
             if(device === 'all') {
@@ -210,7 +210,7 @@ router.get('/',async function(req, res) {
         } else if(req.query.type === 'temperature') {
             let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$");
             if(req.query.auth.split('-').length === 2){
-                auth = new RegExp("^"+req.query.auth+"-")
+                auth = new RegExp("^"+req.query.auth)
             }
             get_data = await api_v1_person_access.find()
                 .where('avatar_temperature')
@@ -242,7 +242,7 @@ router.get('/',async function(req, res) {
             let name = ''
             let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$");
             if(req.query.auth.split('-').length === 2){
-                auth = new RegExp("^"+req.query.auth+"-")
+                auth = new RegExp("^"+req.query.auth)
             }
 
             if(search === '') {
@@ -383,7 +383,7 @@ router.get('/',async function(req, res) {
             let stb_location = '';
             let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$");
             if(req.query.auth.split('-').length === 2){
-                auth = new RegExp("^"+req.query.auth+"-")
+                auth = new RegExp("^"+req.query.auth)
             }
 
             if(req.query.search) 
@@ -586,7 +586,7 @@ router.delete('/',async function(req, res) {
             let mathchingType = req.query.avatar_type
             let auth = req.query.auth === 'admin' ? new RegExp('') : new RegExp("^"+req.query.auth+"$")
             if(req.query.auth.split('-').length === 2){
-                auth = new RegExp("^"+req.query.auth+"-")
+                auth = new RegExp("^"+req.query.auth)
             }
             let temperature = req.query.tempType === '0' ? {$gte : '0'} :
                             req.query.tempType === '1' ? {$lt : req.query.avatar_temperature} :  {$gte : req.query.avatar_temperature}

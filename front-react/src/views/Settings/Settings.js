@@ -61,11 +61,15 @@ const Settings = props => {
     } else {
       await axios.put(base_url + '/account/' + props.user_id, {
         tempLimit,
-        tempType
+        tempType,
+        account: props.user_id,
       });
-      await axios.put(base_url + '/schedule', {
-        term
-      });
+      if(props.authority === 'admin') {
+        await axios.put(base_url + '/schedule', {
+          term
+        });
+      }
+
       alert('수정 되었습니다.');
     }
     
@@ -141,22 +145,27 @@ const Settings = props => {
           </FormControl>
           <br />
           <br />
-          출입자 사진 보관 기간
-          <br />
-          <FormControl>
-            <Input
-              id="standard-adornment-weight"
-              value={term}
-              onChange={handleTerm}
-              endAdornment={<InputAdornment position="end">일</InputAdornment>}
-              aria-describedby="standard-weight-helper-text"
-              InputProps={{
-                inputComponent: NumberFormatCustom
-              }}
-            />
-          </FormControl>
-          <br />
-          <br />
+          { 
+            props.authority === 'admin' ?
+            <div>
+              출입자 사진 보관 기간
+              <br />
+              <FormControl>
+                <Input
+                  id="standard-adornment-weight"
+                  value={term}
+                  onChange={handleTerm}
+                  endAdornment={<InputAdornment position="end">일</InputAdornment>}
+                  aria-describedby="standard-weight-helper-text"
+                  InputProps={{
+                    inputComponent: NumberFormatCustom
+                  }}
+                />
+              </FormControl>
+              <br />
+              <br />
+            </div> : null
+          }
           <div style={{ textAlign: 'center' }}>
             <Button variant="contained" onClick={clickEdit} color="primary">
               수정

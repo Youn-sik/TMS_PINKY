@@ -12,7 +12,7 @@ router.get('/',async function(req, res) {
         let get_data;
         let auth = req.query.authority === 'admin' ? new RegExp('') : new RegExp("^"+req.query.authority+"$")
         if(req.query.authority.split('-').length === 2){
-            auth = new RegExp("^"+req.query.authority+"-")
+            auth = new RegExp("^"+req.query.authority)
         }
 
         if(req.query.authority === 'admin') {

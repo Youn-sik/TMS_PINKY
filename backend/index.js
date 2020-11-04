@@ -68,6 +68,26 @@ const swaggerSpec = swaggerJSDoc(swaggerOption);
 const swaggerUi = require('swagger-ui-express');
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+
+//auth middle-ware
+// app.use(function (req, res, next) {
+//     if(req.path === '/login'){
+//         next()
+//     } else if (req.headers.authorization) {
+//         const token = req.headers.authorization.split('Bearer ')[1];
+//         jwt.verify(token, jwtObj.secret, (err) => {
+//             if (err) {
+//                 res.status(401).json({ error: 'Auth Error from authChecker' });
+//             } else {
+//                 next();
+//             }
+//         });
+//     } else {
+//         res.status(401).json({ error: 'Auth Error from authChecker' });
+//     }
+// });
+
+
 app.post('/login', async function(req, res) {
     try {   
         const user_id = req.body === undefined ? req.user_id : req.body.user_id
@@ -152,9 +172,7 @@ const swagger = require('./config/swagger')
 
 
 app.get('/schedule',(req,res) => {
-    let dateTime = moment().subtract(term-1,'days').format('YYYY-MM-DD') + " 00:00:00"
-    console.log(dateTime)
-    res.send({dateTime})
+    res.send({term})
 })
 
 app.put('/schedule',(req,res) => {

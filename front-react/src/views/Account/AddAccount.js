@@ -93,7 +93,7 @@ const AddAccount = props => {
       let result = await axios.post(base_url + '/account', {
         ...accountInfo,
         authority: accountInfo.authority === 'admin' ? 'admin' : 
-        accountInfo.authority === 'manager' ? 'manager-' + accountInfo.user_id : props.authority + '-user-' + accountInfo.user_id,
+        accountInfo.authority === 'manager' ? 'manager-' + accountInfo.user_id+"e" : props.authority + '-user-' + accountInfo.user_id,
         account: props.user_id
       });
       if (result.data.success) {

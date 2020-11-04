@@ -40,7 +40,7 @@ router.get('/',async function(req, res) {
         let enteredName = 'entered'
 
         if(req.query.auth.split('-').length === 2){
-            auth = new RegExp("^"+req.query.auth+"-")
+            auth = new RegExp("^"+req.query.auth)
         }
 
         if(req.query.type === '5')

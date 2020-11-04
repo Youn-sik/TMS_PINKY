@@ -4,7 +4,7 @@
  *    /login:
  *       post:
  *         tags:
- *         - "account"
+ *         - "login"
  *         summary: "로그인"
  *         description: ""
  *         operationId: "login"
@@ -36,7 +36,7 @@
  *    /auth:
  *       get:
  *         tags:
- *         - "account"
+ *         - "authorization"
  *         summary: "유효 토큰 인증"
  *         description: "사용자의 토큰이 인증된 토큰인지 검사합니다"
  *         operationId: "auth"
@@ -110,6 +110,37 @@
  *                      type: string
  *                      description: 계정의 권한
  *                      example: 'admin ,manager-abcd, manager-abcd-user-user1234, admin-user-user1234' 
+ *          responses:
+ *             "200":
+ *               schema:
+ *                  type: array
+ *                  items:
+ *                      type: object
+ *                      properties:
+ *                          auth:
+ *                              type: boolean
+ *                              description: 인증 성공 여부
+ *                              example: true
+ *                          user_id:
+ *                              type: string
+ *                              description: 해당 계정의 mongodb obid
+ *                              example: '5f5f1b5e146373e6fee1afcc'
+ *                          user_name:
+ *                              type: string
+ *                              description: "이름"
+ *                              example: 'string'
+ *                          user_lang:
+ *                              type: string
+ *                              description: "언어"
+ *                              example: 'string' 
+ *                          authority:
+ *                              type: string
+ *                              example: 'admin'
+ *                              description: 계정의 권한
+ *                          tempLimit:
+ *                              type: number
+ *                              description: 계정에서 설정된 온도경고 기준 온도
+ *                              example: 37.5 
  *       get:
  *         tags:
  *         - "account"
