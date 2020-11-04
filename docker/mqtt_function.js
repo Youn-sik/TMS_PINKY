@@ -459,9 +459,11 @@ module.exports = {
                 const img = new Image();
                 img.src = "data:image/png;base64,"+element.avatar_file
 
-                let detections = await faceapi.detectAllFaces(img)
+                let detections = await faceapi.detectSingleFace(img)
                 .withFaceLandmarks()
-                .withFaceDescriptors();
+                .withFaceDescriptor();
+
+                console.log(detections.descriptor)
 
                 // const overlayValues = getOverlayValues(detection.landmarks)
 
@@ -479,9 +481,10 @@ module.exports = {
 
                 let userName = "unknown";
                 let user_obid = '';
-                if(detections.length > 0 && Users.length > 0) {
+                if(detections && Users.length > 0) {
                     const labeledDescriptors = await Promise.all(
                         Users.map(async user => {
+                            console.log(new Float32Array(Object.values(JSON.parse(user.face_detection))))
                             return (
                                 new faceapi.LabeledFaceDescriptors(
                                     user.name+"|"
@@ -500,11 +503,16 @@ module.exports = {
                             )
                         })
                     );
+                    Object.values(JSON.parse(user.face_detection))
                     const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.5)
-                    const bestMatch = detections.map(d => faceMatcher.findBestMatch(d.descriptor))
+                    const bestMatch = faceMatcher.findBestMatch(detections.descriptor)
                     const filteredMatch = bestMatch.filter(match => match._distance < 0.5)
-                    if(filteredMatch.length > 0 && filteredMatch[0]._label !== 'unknown') {
-                        let userData = filteredMatch[0]._label.split('|')
+                    var lowest = Number.POSITIVE_INFINITY;
+                    for (var i=filteredMatch.length-1; i>=0; i--) {
+                        if (filteredMatch[i]._distance < lowest) lowest = filteredMatch[i]._distance;
+                    }
+                    if(filteredMatch.length > 0 && lowest._label !== 'unknown') {
+                        let userData = lowest._label.split('|')
                         userName = userData[0]
                         element.avatar_type = parseInt(userData[7])
                         user_obid = userData[10]
