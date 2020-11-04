@@ -500,7 +500,7 @@ module.exports = {
                             )
                         })
                     );
-                    const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.6)
+                    const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.8)
                     const bestMatch = detections.map(d => faceMatcher.findBestMatch(d.descriptor))
                     const filteredMatch = bestMatch.filter(match => match._distance < 0.5)
                     if(filteredMatch.length > 0 && filteredMatch[0]._label !== 'unknown') {

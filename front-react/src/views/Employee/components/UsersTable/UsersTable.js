@@ -120,12 +120,9 @@ const UsersTable = props => {
 
   const handleSelectAllClick = event => {
     if (event.target.checked) {
-      let seleted = props.users.slice(
-        (page - 1) * rowsPerPage,
-        (page - 1) * rowsPerPage + rowsPerPage)
-      const newSelecteds = seleted.map(n => n._id)
+      const newSelecteds = users.map(n => n._id)
       setSelected(newSelecteds);
-      setSelectedObject(seleted);
+      setSelectedObject(users);
       return;
     }
     setSelected([]);

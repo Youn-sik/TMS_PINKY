@@ -269,7 +269,7 @@ const AccessesTable = props => {
                                 src={access.avatar_file_url}></img>
                             </div>
                           </TableCell>
-                          <TableCell>
+                          <TableCell className={classes.redFont}>
                             {access.name!=='unknown' ? access.name : ''}
                           </TableCell>
                           <TableCell className={classes.redFont}>

@@ -41,54 +41,6 @@
  *                      err:
  *                          type: string
  *                          example: "존재 하지 않는 계정입니다."
- *    /auth:
- *       get:
- *         tags:
- *         - "authorization"
- *         summary: "유효 토큰 인증"
- *         description: "사용자의 토큰이 인증된 토큰인지 검사합니다"
- *         operationId: "auth"
- *         produces:
- *         - "application/json"
- *         parameters:
- *          - name: "auth"
- *            in: "query"
- *            description: "JWT 값"
- *            required: true
- *            type: "string"
- *            format: "string"
- *            example: 'string'
- *         responses:
- *             "200":
- *               description: "인증 성공"
- *               schema:
- *                  type: object
- *                  properties:
- *                      auth:
- *                          type: boolean
- *                          description: 인증 성공 여부
- *                          example: true
- *                      user_id:
- *                          type: string
- *                          description: 해당 계정의 mongodb obid
- *                          example: '5f5f1b5e146373e6fee1afcc'
- *                      authority:
- *                          type: string
- *                          example: 'admin'
- *                          description: 계정의 권한
- *                      tempLimit:
- *                          type: number
- *                          description: 계정에서 설정된 온도경고 기준 온도
- *                          example: 37.5         
- *             "400":
- *               description: "인증 실패"
- *               schema:
- *                  type: object
- *                  properties:
- *                      auth:
- *                          type: boolean
- *                          description: 인증 성공 여부
- *                          example: false     
  *    /account:
  *       post:
  *          tags:
@@ -99,6 +51,13 @@
  *          produces:
  *          - "application/json"
  *          parameters:
+ *          - in: header
+ *            name: Bearer Authentication
+ *            schema:
+ *              type: string
+ *              format: jwt
+ *              example: jwt
+ *            required: true
  *          - name: "body"
  *            in: "body"
  *            description: "토큰"
@@ -165,6 +124,13 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다  
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *       get:
  *         tags:
  *         - "account"
@@ -174,6 +140,13 @@
  *         produces:
  *         - "application/json"
  *         parameters:
+ *          - in: header
+ *            name: Bearer Authentication
+ *            schema:
+ *              type: string
+ *              format: jwt
+ *              example: jwt
+ *            required: true
  *          - name: "authority"
  *            in: "query"
  *            description: "로그인 계정의 권한"
@@ -211,6 +184,13 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다  
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *    /account/{obid}:
  *       put:
  *         tags:
@@ -221,6 +201,13 @@
  *         produces:
  *         - "application/json"
  *         parameters:
+ *          - in: header
+ *            name: Bearer Authentication
+ *            schema:
+ *              type: string
+ *              format: jwt
+ *              example: jwt
+ *            required: true
  *          - name: "account obid"
  *            in: "path"
  *            description: "계정의 mongodb obid"
@@ -301,6 +288,13 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *       delete:
  *         tags:
  *         - "account"
@@ -310,6 +304,13 @@
  *         produces:
  *         - "application/json"
  *         parameters:
+ *          - in: header
+ *            name: Bearer Authentication
+ *            schema:
+ *              type: string
+ *              format: jwt
+ *              example: jwt
+ *            required: true
  *          - name: "account obid"
  *            in: "path"
  *            description: "계정의 mongodb obid"
@@ -354,6 +355,13 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  * 
  *    /access:
  *       post:
@@ -364,6 +372,13 @@
  *          produces:
  *          - "application/json"
  *          parameters:
+ *          - in: header
+ *            name: Bearer Authentication
+ *            schema:
+ *              type: string
+ *              format: jwt
+ *              example: jwt
+ *            required: true
  *          - name: "body"
  *            in: "body"
  *            description: "토큰"
@@ -496,12 +511,26 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *       get:
  *         tags:
  *         - "access"
  *         summary: "출입자 목록"
  *         operationId: "access"
  *         parameters:
+ *         - in: header
+ *           name: Bearer Authentication
+ *           schema:
+ *             type: string
+ *             format: jwt
+ *             example: jwt
+ *           required: true
  *         - name: "auth"
  *           in: "query"
  *           description: "로그인한 계정의 권한"
@@ -628,6 +657,13 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *                          
  *       delete:
  *         tags:
@@ -638,6 +674,13 @@
  *         produces:
  *         - "application/json"
  *         parameters:
+ *         - in: header
+ *           name: Bearer Authentication
+ *           schema:
+ *             type: string
+ *             format: jwt
+ *             example: jwt
+ *           required: true
  *         - name: "auth"
  *           in: "query"
  *           description: "로그인한 계정의 권한"
@@ -711,6 +754,13 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *            "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *    /access?type=dateCount:
  *       get:
  *         tags:
@@ -718,6 +768,13 @@
  *         summary: "?type=dateCount 페이징을 위한 출입자 카운트"
  *         operationId: "dateCount"
  *         parameters:
+ *         - in: header
+ *           name: Bearer Authentication
+ *           schema:
+ *             type: string
+ *             format: jwt
+ *             example: jwt
+ *           required: true
  *         - name: "auth"
  *           in: "query"
  *           description: "로그인한 계정의 권한"
@@ -786,6 +843,13 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *    /access?type=todayStatistics:
  *       get:
  *         tags:
@@ -793,6 +857,13 @@
  *         summary: "?type=todayStatistics 금일 출입 카운트"
  *         operationId: "todayStatistics"
  *         parameters:
+ *         - in: header
+ *           name: Bearer Authentication
+ *           schema:
+ *             type: string
+ *             format: jwt
+ *             example: jwt
+ *           required: true
  *         - name: "auth"
  *           in: "query"
  *           description: "로그인한 계정의 권한"
@@ -829,6 +900,13 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *    /access?type=deviceGroupAccesses:
  *       get:
  *         tags:
@@ -836,6 +914,13 @@
  *         summary: "?type=deviceGroupAccesses 시간별 카운트"
  *         operationId: "deviceGroupAccesses"
  *         parameters:
+ *         - in: header
+ *           name: Bearer Authentication
+ *           schema:
+ *             type: string
+ *             format: jwt
+ *             example: jwt
+ *           required: true
  *         - name: "auth"
  *           in: "query"
  *           description: "로그인한 계정의 권한"
@@ -1002,6 +1087,13 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *    /access?type=weekStatistics:
  *       get:
  *         tags:
@@ -1009,6 +1101,13 @@
  *         summary: "?type=weekStatistics 주간 출입 카운트"
  *         operationId: "weekStatistics"
  *         parameters:
+ *         - in: header
+ *           name: Bearer Authentication
+ *           schema:
+ *             type: string
+ *             format: jwt
+ *             example: jwt
+ *           required: true
  *         - name: "auth"
  *           in: "query"
  *           description: "로그인한 계정의 권한"
@@ -1045,6 +1144,13 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *    /access?type=deviceStats:
  *       get:
  *         tags:
@@ -1052,6 +1158,13 @@
  *         summary: "?type=deviceStats 단말 통계"
  *         operationId: "deviceStats"
  *         parameters:
+ *         - in: header
+ *           name: Bearer Authentication
+ *           schema:
+ *             type: string
+ *             format: jwt
+ *             example: jwt
+ *           required: true
  *         - name: "auth"
  *           in: "query"
  *           description: "로그인한 계정의 권한"
@@ -1215,6 +1328,13 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *    /access?type=temperature:
  *       get:
  *         tags:
@@ -1222,6 +1342,13 @@
  *         summary: "?type=temperature 마지막 5명 출입 목록"
  *         operationId: "temperature"
  *         parameters:
+ *         - in: header
+ *           name: Bearer Authentication
+ *           schema:
+ *             type: string
+ *             format: jwt
+ *             example: jwt
+ *           required: true
  *         - name: "auth"
  *           in: "query"
  *           description: "로그인한 계정의 권한"
@@ -1299,6 +1426,13 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *    /access/{obid}:
  *       get:
  *         tags:
@@ -1308,6 +1442,13 @@
  *         produces:
  *         - "application/json"
  *         parameters:
+ *          - in: header
+ *            name: Bearer Authentication
+ *            schema:
+ *              type: string
+ *              format: jwt
+ *              example: jwt
+ *            required: true
  *          - name: "access obid"
  *            in: "path"
  *            description: "출입 기록의 mongodb obid"
@@ -1384,6 +1525,13 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *       put:
  *         tags:
  *         - "access"
@@ -1393,6 +1541,13 @@
  *         produces:
  *         - "application/json"
  *         parameters:
+ *          - in: header
+ *            name: Bearer Authentication
+ *            schema:
+ *              type: string
+ *              format: jwt
+ *              example: jwt
+ *            required: true
  *          - name: "access obid"
  *            in: "path"
  *            description: "출입기록의 mongodb obid"
@@ -1530,6 +1685,13 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  * 
  *    /camera:
  *       post:
@@ -1537,6 +1699,13 @@
  *          - "camera"
  *          summary: "단말기 등록"
  *          parameters:
+ *          - in: header
+ *            name: Bearer Authentication
+ *            schema:
+ *              type: string
+ *              format: jwt
+ *              example: jwt
+ *            required: true
  *          - name: "body"
  *            in: "body"
  *            description: "단말기"
@@ -1601,11 +1770,25 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *       get:
  *         tags:
  *         - "camera"
  *         summary: "단말기 목록 조회" 
  *         parameters:
+ *          - in: header
+ *            name: Bearer Authentication
+ *            schema:
+ *              type: string
+ *              format: jwt
+ *              example: jwt
+ *            required: true
  *          - in: "query"
  *            name: "authority"
  *            description: "로그인 계정의 권한"
@@ -1655,12 +1838,26 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *    /camera/{obid}:
  *       get:
  *         tags:
  *         - "camera"
  *         summary: "단말기 조회"
  *         parameters:
+ *          - in: header
+ *            name: Bearer Authentication
+ *            schema:
+ *              type: string
+ *              format: jwt
+ *              example: jwt
+ *            required: true
  *          - name: "camera obid"
  *            in: "path"
  *            description: "단말기의 mongodb obid"
@@ -1713,11 +1910,25 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *       put:
  *         tags:
  *         - "camera"
  *         summary: "카메라 업데이트"
  *         parameters:
+ *          - in: header
+ *            name: Bearer Authentication
+ *            schema:
+ *              type: string
+ *              format: jwt
+ *              example: jwt
+ *            required: true
  *          - name: "camera obid"
  *            in: "path"
  *            description: "단말기의 mongodb obid"
@@ -1790,12 +2001,26 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *  
  *       delete:
  *         tags:
  *         - "camera"
  *         summary: "카메라 삭제"
  *         parameters:
+ *          - in: header
+ *            name: Bearer Authentication
+ *            schema:
+ *              type: string
+ *              format: jwt
+ *              example: jwt
+ *            required: true
  *          - name: "camera obid"
  *            in: "path"
  *            description: "단말기의 mongodb obid"
@@ -1844,6 +2069,13 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *  
  *    /group:
  *       post:
@@ -1851,6 +2083,13 @@
  *          - "group"
  *          summary: "그룹 등록"
  *          parameters:
+ *          - in: header
+ *            name: Bearer Authentication
+ *            schema:
+ *              type: string
+ *              format: jwt
+ *              example: jwt
+ *            required: true
  *          - name: "body"
  *            in: "body"
  *            description: "그룹"
@@ -1903,11 +2142,25 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *       get:
  *          tags:
  *           - "group"
  *          summary: "그룹 목록 조회" 
  *          parameters:
+ *           - in: header
+ *             name: Bearer Authentication
+ *             schema:
+ *               type: string
+ *               format: jwt
+ *               example: jwt
+ *             required: true
  *           - name: "auth"
  *             in: "query"
  *             description: "로그인 계정의 권한"
@@ -1988,6 +2241,13 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *                                          
  *                                  
  *    /group/{obid}:
@@ -1996,6 +2256,13 @@
  *         - "group"
  *         summary: "그룹 조회"
  *         parameters:
+ *          - in: header
+ *            name: Bearer Authentication
+ *            schema:
+ *              type: string
+ *              format: jwt
+ *              example: jwt
+ *            required: true
  *          - name: "group obid"
  *            in: "path"
  *            description: "그룹의 mongodb obid"
@@ -2072,11 +2339,25 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *       put:
  *         tags:
  *         - "group"
  *         summary: "그룹 업데이트"
  *         parameters:
+ *          - in: header
+ *            name: Bearer Authentication
+ *            schema:
+ *              type: string
+ *              format: jwt
+ *              example: jwt
+ *            required: true
  *          - name: "group obid"
  *            in: "path"
  *            description: "그룹의 mongodb obid"
@@ -2133,11 +2414,25 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *       delete:
  *         tags:
  *         - "group"
  *         summary: "그룹 삭제 하위그룹, 소속된 사용자도 모두 제거"
  *         parameters:
+ *          - in: header
+ *            name: Bearer Authentication
+ *            schema:
+ *              type: string
+ *              format: jwt
+ *              example: jwt
+ *            required: true
  *          - name: "group obid"
  *            in: "path"
  *            description: "그룹의 mongodb obid"
@@ -2188,12 +2483,26 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *    /operation:
  *       post:
  *          tags:
  *          - "operation"
  *          summary: "계정의 작업 기록 등록"
  *          parameters:
+ *          - in: header
+ *            name: Bearer Authentication
+ *            schema:
+ *              type: string
+ *              format: jwt
+ *              example: jwt
+ *            required: true
  *          - in: "body"
  *            name: "body"
  *            description: "계정의 작업 기록 등록"
@@ -2226,12 +2535,26 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *    /operation/{obid}:
  *       get:
  *         tags:
  *         - "operation"
  *         summary: "계정의 작업 기록 조회"
  *         parameters:
+ *          - in: header
+ *            name: Bearer Authentication
+ *            schema:
+ *              type: string
+ *              format: jwt
+ *              example: jwt
+ *            required: true
  *          - name: "operation obid"
  *            in: "path"
  *            description: "계정의 작업 기록 의 mongodb obid"
@@ -2251,11 +2574,25 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *       put:
  *         tags:
  *         - "operation"
  *         summary: "계정의 작업 기록 업데이트"
  *         parameters:
+ *          - in: header
+ *            name: Bearer Authentication
+ *            schema:
+ *              type: string
+ *              format: jwt
+ *              example: jwt
+ *            required: true
  *          - name: "operation obid"
  *            in: "path"
  *            description: "계정의 작업 기록의 mongodb obid"
@@ -2275,11 +2612,25 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *       delete:
  *         tags:
  *         - "operation"
  *         summary: "계정의 작업 기록 삭제"
  *         parameters:
+ *          - in: header
+ *            name: Bearer Authentication
+ *            schema:
+ *              type: string
+ *              format: jwt
+ *              example: jwt
+ *            required: true
  *          - name: "operation obid"
  *            in: "path"
  *            description: "계정의 작업 기록의 mongodb obid"
@@ -2299,6 +2650,13 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *  
  *    /user:
  *       post:
@@ -2306,6 +2664,13 @@
  *          - "user"
  *          summary: "사용자 등록"
  *          parameters:
+ *          - in: header
+ *            name: Bearer Authentication
+ *            schema:
+ *              type: string
+ *              format: jwt
+ *              example: jwt
+ *            required: true
  *          - in: "body"
  *            name: "authority"
  *            description: "로그인 계정의 권한"
@@ -2398,11 +2763,25 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *       get:
  *         tags:
  *          - "user"
  *         summary: "사용자 목록 조회" 
  *         parameters:
+ *           - in: header
+ *             name: Bearer Authentication
+ *             schema:
+ *               type: string
+ *               format: jwt
+ *               example: jwt
+ *             required: true
  *           - in: "query"
  *             name: "auth"
  *             description: "로그인 계정의 권한"
@@ -2502,66 +2881,26 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *    /user/{obid}:
  *       get:
  *         tags:
  *         - "user"
  *         summary: "사용자 조회"
  *         parameters:
- *          - name: "user obid"
- *            in: "path"
- *            description: "사용자의 mongodb obid"
+ *          - in: header
+ *            name: Bearer Authentication
+ *            schema:
+ *              type: string
+ *              format: jwt
+ *              example: jwt
  *            required: true
- *            type: "string"
- *            format: "string"
- *            example: '5ee9db4360497f4ee3dd0f4f'
- *            value: '5ee9db4360497f4ee3dd0f4f'
- *         responses:
- *             "200":
- *               schema:
- *                   type: object
- *                   properties:
- *                       name:
- *                         description: "이름"
- *                         required: false
- *                         example: 'string'
- *                       
- *                       location:
- *                         description: "근무지"
- *                         required: false
- *                         example: 'string'
- *                       
- *                       department_id:
- *                         description: "부서"
- *                         required: false
- *                         example: 'string'
- *                       
- *                       position:
- *                         description: "직급"
- *                         required: false
- *                         example: 'string'
- *                       
- *                       type:
- *                         description: "타입 1:사원, 5:블랙리스트"
- *                         required: true
- *                         example: 1
- *                       
- *                       gender:
- *                         description: "성별 1:남자 2:여자"
- *                         required: true
- *                         example: 1
- *                       
- *                       groups_obids:
- *                         description: "소속된 그룹의 obid"
- *                         type: "array"
- *                         format: "array"
- *                         required: true
- *                         example: ["5f992a7499d09d11aeac37a6"]
- *       put:
- *         tags:
- *         - "user"
- *         summary: "사용자 업데이트"
- *         parameters:
  *          - name: "user obid"
  *            in: "path"
  *            description: "사용자의 mongodb obid"
@@ -2618,11 +2957,100 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
+ *       put:
+ *         tags:
+ *         - "user"
+ *         summary: "사용자 업데이트"
+ *         parameters:
+ *          - in: header
+ *            name: Bearer Authentication
+ *            schema:
+ *              type: string
+ *              format: jwt
+ *              example: jwt
+ *            required: true
+ *          - name: "user obid"
+ *            in: "path"
+ *            description: "사용자의 mongodb obid"
+ *            required: true
+ *            type: "string"
+ *            format: "string"
+ *            example: '5ee9db4360497f4ee3dd0f4f'
+ *            value: '5ee9db4360497f4ee3dd0f4f'
+ *         responses:
+ *             "200":
+ *               schema:
+ *                   type: object
+ *                   properties:
+ *                       name:
+ *                         description: "이름"
+ *                         required: false
+ *                         example: 'string'
+ *                       
+ *                       location:
+ *                         description: "근무지"
+ *                         required: false
+ *                         example: 'string'
+ *                       
+ *                       department_id:
+ *                         description: "부서"
+ *                         required: false
+ *                         example: 'string'
+ *                       
+ *                       position:
+ *                         description: "직급"
+ *                         required: false
+ *                         example: 'string'
+ *                       
+ *                       type:
+ *                         description: "타입 1:사원, 5:블랙리스트"
+ *                         required: true
+ *                         example: 1
+ *                       
+ *                       gender:
+ *                         description: "성별 1:남자 2:여자"
+ *                         required: true
+ *                         example: 1
+ *                       
+ *                       groups_obids:
+ *                         description: "소속된 그룹의 obid"
+ *                         type: "array"
+ *                         format: "array"
+ *                         required: true
+ *                         example: ["5f992a7499d09d11aeac37a6"]
+ *             "400":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *       delete:
  *         tags:
  *         - "user"
  *         summary: "사용자 삭제"
  *         parameters:
+ *          - in: header
+ *            name: Bearer Authentication
+ *            schema:
+ *              type: string
+ *              format: jwt
+ *              example: jwt
+ *            required: true
  *          - name: "selectedData"
  *            in: "path"
  *            description: "사용자의 mongodb_obids"
@@ -2676,5 +3104,12 @@
  *                      err:
  *                          type: string
  *                          example: 잘못된 형식 입니다 
+ *             "401":
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                      err:
+ *                          type: string
+ *                          example: 유효하지 않는 토큰입니다.
  *  
  */

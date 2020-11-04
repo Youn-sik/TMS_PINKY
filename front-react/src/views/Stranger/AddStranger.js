@@ -27,7 +27,36 @@ import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
+import {DatePicker} from 'rsuite';
 import {base_url} from 'server.json';
+import moment from 'moment';
+import 'moment/locale/ko';
+const locale = {
+  sunday: '일',
+  monday: '월',
+  tuesday: '화',
+  wednesday: '수',
+  thursday: '목',
+  friday: '금',
+  saturday: '토',
+  ok: '적용',
+  today: '오늘',
+  yesterday: '어제',
+  hours: '시간',
+  minutes: '분',
+  seconds: '초',
+  last7Days: '일주일전'
+}
+Date.prototype.yyyymmdd = function() {
+  var yyyy = this.getFullYear().toString();
+  var mm = (this.getMonth() + 1).toString();
+  var dd = this.getDate().toString();
+  var hh = (this.getHours() + 12).toString();
+  return (
+    yyyy + '-' + (mm[1] ? mm : '0' + mm[0]) + '-' + (dd[1] ? dd : '0' + dd[0])
+  );
+};
+
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(4)
@@ -143,9 +172,21 @@ const AddStranger = props => {
   const [selectedGroup, setSelectedGroup] = useState({});
   const [pictures, setPictures] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [date, setDate] = useState(['']); 
+
+  useEffect(() => {
+    if(!userObject) {
+      alert("잘못된 접근 방법 입니다.")
+      props.history.go(-1)
+    }
+  },[])
 
   const handleClickOpen = () => {
     setOpen(true);
+  };
+
+  const handleDate = val => {
+    setDate(val);
   };
 
   const handleClose = () => {
@@ -159,9 +200,9 @@ const AddStranger = props => {
     position: '',
     mobile: '',
     mail: '',
-    gender: 1,
-    guest_company: '',
-    guest_purpose: ''
+    user_id : '',
+    entered : moment().format('YYYY-MM-DD'),
+    gender: 1
   });
 
   const handleChange = event => {
@@ -249,7 +290,6 @@ const AddStranger = props => {
       if (userInfo.name === '') alert('이름을 입력해주세요');
       else if (userInfo.location === '') alert('근무지를 입력해주세요');
       else if (userInfo.position === '') alert('직급을 입력해주세요');
-      else if (userInfo.department_id === '') alert('부서를 입력해주세요');
       else if(!selectedGroup._id) {
         alert('그룹을 선택해주세요')
       } else {
@@ -266,6 +306,7 @@ const AddStranger = props => {
           position: userInfo.position,
           mobile: userInfo.mobile,
           mail: userInfo.mail,
+          entered: userInfo.entered,
           authority : props.authority,
           type: type,
           groups_obids: [
@@ -357,17 +398,6 @@ const AddStranger = props => {
         </div>
         <div style={{ width: '100%' }}>
           <TextField
-            name="department_id"
-            value={userInfo.department_id}
-            style={{ width: '100%' }}
-            required
-            onChange={handleChange}
-            id="standard-required"
-            label="부서"
-          />
-        </div>
-        <div style={{ width: '100%' }}>
-          <TextField
             name="position"
             value={userInfo.position}
             style={{ width: '100%' }}
@@ -401,6 +431,21 @@ const AddStranger = props => {
             }}
           />
         </div>
+        <div style={{ width: '100%' }}>
+                <p style={{ marginTop:'15px' }}>입사일</p>
+                <DatePicker
+                  style={{ width: '100%', marginTop:'4px' }}
+                  onChange={val => {
+                    setUserInfo({
+                      ...userInfo,
+                      'entered' : val.yyyymmdd()
+                    });
+                  }}
+                  cleanable={false}
+                  locale={locale}
+                  defaultValue={new Date(`${moment().format('YYYY-MM-DD')}`)}
+                ></DatePicker>
+              </div>
       </div>
     );
   };
@@ -569,7 +614,7 @@ const AddStranger = props => {
                 }}>
                 <img
                   style={{ width: '100%', verticalAlign: 'middle' }}
-                  src={userObject.avatar_file_url}></img>
+                  src={userObject ? userObject.avatar_file_url : null}></img>
               </div>
             ) : null}
             <CardContent style={{ width: '50%', margin: '0 auto' }}>

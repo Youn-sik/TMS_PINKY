@@ -43,6 +43,8 @@ router.get('/:id',async function(req, res) {
 router.post('/',async function(req, res) {
     try {
         const add = new User(req.body)
+        add.authority === 'manger' ? 'manager-'+add.user_id : 
+        add.authority === 'user' ? req.body.parent_auth + '-user-'+add.user_id : 'admin'
         if(!req.body.account) return res.status(400).send({"err":"잘못된 형식 입니다"})
         crypto.randomBytes(64,(err,buf) => {
             crypto.pbkdf2(req.body.user_pw, buf.toString('base64'), 105614, 64, 'sha512', (err,key) => {

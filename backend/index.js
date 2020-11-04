@@ -39,6 +39,24 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(cors())
 
+//auth middle-ware
+// app.use(function (req, res, next) {
+//     if(req.path === '/login'){
+//         next()
+//     } else if (req.headers.authorization) {
+//         const token = req.headers.authorization.split('Bearer ')[1];
+//         jwt.verify(token, 'jjh', (err) => {
+//             if (err) {
+//                 res.status(401).json({ err: '유효하지 않는 토큰입니다.' });
+//             } else {
+//                 next();
+//             }
+//         });
+//     } else {
+//         res.status(401).json({ err: '유효하지 않는 토큰입니다.' });
+//     }
+// });
+
 //router
 app.use('/user',usersRouter);
 app.use('/account',accountRouter);
@@ -67,25 +85,6 @@ const swaggerOption = require('./routes/swagger');
 const swaggerSpec = swaggerJSDoc(swaggerOption);
 const swaggerUi = require('swagger-ui-express');
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-
-//auth middle-ware
-// app.use(function (req, res, next) {
-//     if(req.path === '/login'){
-//         next()
-//     } else if (req.headers.authorization) {
-//         const token = req.headers.authorization.split('Bearer ')[1];
-//         jwt.verify(token, jwtObj.secret, (err) => {
-//             if (err) {
-//                 res.status(401).json({ error: 'Auth Error from authChecker' });
-//             } else {
-//                 next();
-//             }
-//         });
-//     } else {
-//         res.status(401).json({ error: 'Auth Error from authChecker' });
-//     }
-// });
 
 
 app.post('/login', async function(req, res) {

@@ -34,7 +34,7 @@ router.get('/',async function(req, res) {
         let searchType = req.query.searchType;
         let search = req.query.search ? new RegExp(req.query.search) : new RegExp("")
         let entered = req.query.entered ? new RegExp("^"+req.query.entered+"$") : new RegExp("")
-        let rowPerPage = parseInt(req.query.rowPerPage);
+        let rowPerPage = parseInt(req.query.rowsPerPage);
         let page = parseInt(req.query.page) - 1;
         let headerType = req.query.headerType;
         let enteredName = 'entered'
@@ -255,25 +255,29 @@ router.put('/:id',async function(req, res) {
 
 router.delete('/:id',async function(req, res) {
     if(!req.body.deleteAll){
+        let deleted_data = []
         try {
-            await api_v1_group_group.updateMany({type:req.body.type},{ $pull: { user_obids : req.body._id} }, {new: true }).exec();
-            const id = req.params === undefined ? req.id : req.params.id
-            const delete_data = await api_v1_person_user.findByIdAndDelete(id)
-            fs.unlink('/var/www/backend/image/'+id+"profile.jpg",() => {})
-            fs.unlink('/var/www/backend/image/'+id+"profile_updated.jpg",() => {})
-            let type = '';
-            if(delete_data.type === 1) type = '사원';
-            else if(delete_data.type === 2) type = '방문자'
-            else if(delete_data.type === 5) type = '블랙리스트'
-            const operation = new Operation({
-                id:req.body.account,
-                action: '유저 삭제',
-                date : moment().format('YYYY-MM-DD HH:mm:ss'),
-                description : delete_data.name +' 삭제'
+            selectedData.map((i) => {
+                await api_v1_group_group.updateMany({type:req.body.type},{ $pull: { user_obids : i._id} }, {new: true }).exec();
+                let delete_data = await api_v1_person_user.findByIdAndDelete(i)
+                fs.unlink('/var/www/backend/image/'+id+"profile.jpg",() => {})
+                fs.unlink('/var/www/backend/image/'+id+"profile_updated.jpg",() => {})
+                let type = '';
+                if(delete_data.type === 1) type = '사원';
+                else if(delete_data.type === 2) type = '방문자'
+                else if(delete_data.type === 5) type = '블랙리스트'
+                const operation = new Operation({
+                    id:req.body.account,
+                    action: '유저 삭제',
+                    date : moment().format('YYYY-MM-DD HH:mm:ss'),
+                    description : delete_data.name +' 삭제'
+                })
+                operation.save();
+                deleted_data.push(delete_data)
             })
-            operation.save();
+            
             // history.save();
-            res.send(delete_data);
+            res.send(deleted_data);
         } catch (err) {
             res.status(400).send({err:"잘못된 형식 입니다."})
         }
