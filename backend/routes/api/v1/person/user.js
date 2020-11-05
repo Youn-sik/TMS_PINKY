@@ -226,6 +226,13 @@ router.put('/:id',async function(req, res) {
             fs.unlink('/var/www/backend/image/'+req.body._id+"profile.jpg",() => {})
             fs.writeFileSync('/var/www/backend/image/'+req.body._id+'profile_updated.jpg',req.body.avatar_file,'base64');
             update_data.avatar_file_url = 'http://'+req.headers.host+'/image/'+req.body._id+'profile_updated.jpg'
+
+            const image = await resizeImg(fs.readFileSync('/var/www/backend/image/'+req.body._id+'profile_updated.jpg'), {
+                width: 140,
+                height: 200
+            });
+            
+            fs.writeFileSync('/var/www/backend/image/'+req.body._id+'profile_updated.jpg', image);
             
             const imageDir = await canvas.loadImage('/var/www/backend/image/'+req.body._id+'profile_updated.jpg')
             const detections = await faceapi.detectSingleFace(imageDir)
