@@ -868,6 +868,20 @@ const DeviceTable = props => {
                 <TableCell>
                   {props.device.length > 0 ? (
                     <TableSortLabel
+                      active={activeType === 'authority'}
+                      direction={sort}
+                      onClick={() => {
+                        createSortHandler('authority');
+                      }}>
+                      생성자
+                    </TableSortLabel>
+                  ) : (
+                    '생성자'
+                  )}
+                </TableCell>
+                <TableCell>
+                  {props.device.length > 0 ? (
+                    <TableSortLabel
                       active={activeType === 'stb_sn'}
                       direction={sort}
                       onClick={() => {
@@ -942,6 +956,10 @@ const DeviceTable = props => {
                         />
                       </TableCell>
                       <TableCell>{device.name}</TableCell>
+                      <TableCell>{device.authority === 'admin' ? device.authority :
+                        device.authority.split('-').length === 2 ? device.authority.split('-')[1] : 
+                        device.authority.split('-').length === 3 ? device.authority.split('-')[2] : device.authority.split('-')[3]}
+                      </TableCell>
                       <TableCell>{device.serial_number}</TableCell>
                       <TableCell>{device.ip}</TableCell>
                       <TableCell>{device.location}</TableCell>

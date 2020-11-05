@@ -73,6 +73,24 @@ const Employee = props => {
             })
           );
         }
+      } else if (headerType === 'authority') {
+        if (type === 'asc') {
+          setDevice(
+            device.sort((a, b) => {
+              if (a.authority < b.authority) return -1;
+              else if (b.authority < a.authority) return 1;
+              else return 0;
+            })
+          );
+        } else {
+          setDevice(
+            device.sort((a, b) => {
+              if (a.authority > b.authority) return -1;
+              else if (b.authority > a.authority) return 1;
+              else return 0;
+            })
+          );
+        }
       } else if (headerType === 'stb_sn') {
         if (type === 'asc') {
           setDevice(
@@ -179,6 +197,24 @@ const Employee = props => {
             filteredDevice.sort((a, b) => {
               if (a.name > b.name) return -1;
               else if (b.name > a.name) return 1;
+              else return 0;
+            })
+          );
+        }
+      } else if (headerType === 'authority') {
+        if (type === 'asc') {
+          setDevice(
+            filteredDevice.sort((a, b) => {
+              if (a.authority < b.authority) return -1;
+              else if (b.authority < a.authority) return 1;
+              else return 0;
+            })
+          );
+        } else {
+          setDevice(
+            filteredDevice.sort((a, b) => {
+              if (a.authority > b.authority) return -1;
+              else if (b.authority > a.authority) return 1;
               else return 0;
             })
           );
