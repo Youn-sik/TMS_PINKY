@@ -6,6 +6,7 @@ const api_v1_group_group = require('../../../../models/api/v1/group/group')
 const Access = require('../../../../models/api/v1/person/access')
 const History = require('../../../../models/api/v1/person/history')
 const Operation = require('../../../../models/api/v1/person/operation')
+const resizeImg = require('resize-img');
 const crypto = require('crypto');
 
 const canvas = require("canvas");
@@ -117,9 +118,14 @@ router.post('/',async function(req, res) {
                 let dir = req.body.avatar_file_url.split(":3000")[1];
                 let oriDir = "/var/www/backend"+dir;
                 let cpDir = "/var/www/backend/image/"+dir.split('/')[6]
-                console.log(oriDir,cpDir)
                 fs.copyFileSync(oriDir, cpDir);
                 add.avatar_file_url = 'http://'+req.headers.host+'/image/'+dir.split('/')[6]
+                const image = await resizeImg(fs.readFileSync("/var/www/backend/image/"+dir.split('/')[6]), {
+                    width: 140,
+                    height: 200
+                });
+            
+                fs.writeFileSync("/var/www/backend/image/"+dir.split('/')[6], image);
                 let imageDir = await canvas.loadImage(req.body.avatar_file_url)
                 detections = await faceapi.detectSingleFace(imageDir)
                 .withFaceLandmarks()
@@ -127,6 +133,11 @@ router.post('/',async function(req, res) {
             } else {
                 add.avatar_file_url = 'http://'+req.headers.host+'/image/'+add._id+'profile.jpg';
                 fs.writeFileSync('/var/www/backend/image/'+add._id+'profile.jpg',req.body.avatar_file,'base64')
+                const image = await resizeImg(fs.readFileSync('/var/www/backend/image/'+add._id+'profile.jpg'), {
+                    width: 140,
+                    height: 200
+                });
+                fs.writeFileSync('/var/www/backend/image/'+add._id+'profile.jpg', image);
                 let imageDir = await canvas.loadImage('/var/www/backend/image/'+add._id+'profile.jpg')
                 detections = await faceapi.detectSingleFace(imageDir)
                 .withFaceLandmarks()
@@ -139,6 +150,7 @@ router.post('/',async function(req, res) {
                 })
                 return false;
             }
+
             asyncJSON.stringify(detections.descriptor,function(err, jsonValue) {
                 add.face_detection = jsonValue;
             })
