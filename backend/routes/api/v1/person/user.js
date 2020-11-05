@@ -102,6 +102,7 @@ router.get('/:id',async function(req, res) {
 router.post('/',async function(req, res) {
     try {
         let group = null
+        let Users = await api_v1_person_user.find()
         req.body.create_at = moment().format('YYYY-MM-DD HH:mm:ss')
         let add = new api_v1_person_user(req.body)
         let overlap_check = await api_v1_person_user.findOne({avatar_file_checksum : add.avatar_file_checksum})
@@ -120,25 +121,25 @@ router.post('/',async function(req, res) {
                 fs.copyFileSync(oriDir, cpDir);
                 add.avatar_file_url = 'http://'+req.headers.host+'/image/'+dir.split('/')[6]
                 let imageDir = await canvas.loadImage(req.body.avatar_file_url)
-                detections = await faceapi.detectAllFaces(imageDir)
+                detections = await faceapi.detectSingleFace(imageDir)
                 .withFaceLandmarks()
-                .withFaceDescriptors();
+                .withFaceDescriptor();
             } else {
                 add.avatar_file_url = 'http://'+req.headers.host+'/image/'+add._id+'profile.jpg';
                 fs.writeFileSync('/var/www/backend/image/'+add._id+'profile.jpg',req.body.avatar_file,'base64')
                 let imageDir = await canvas.loadImage('/var/www/backend/image/'+add._id+'profile.jpg')
-                detections = await faceapi.detectAllFaces(imageDir)
+                detections = await faceapi.detectSingleFace(imageDir)
                 .withFaceLandmarks()
-                .withFaceDescriptors();
+                .withFaceDescriptor();
             }
 
-            if(detections.length === 0) {
+            if(!detections) {
                 res.send({
                     result:"인식할수 없는 사진."
                 })
                 return false;
             }
-            asyncJSON.stringify(detections[0].descriptor,function(err, jsonValue) {
+            asyncJSON.stringify(detections.descriptor,function(err, jsonValue) {
                 add.face_detection = jsonValue;
             })
 
@@ -176,6 +177,7 @@ router.post('/',async function(req, res) {
         add.save();
         res.send(add);
     } catch (err) {
+        console.log(err);
         res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });
@@ -184,9 +186,8 @@ router.put('/:id',async function(req, res) {
     try {
         let group = null
         // req.body.avatar_file_checksum = crypto.createHash('sha256').update(req.body.avatar_file).digest('base64');
-        fs.unlink('/var/www/backend/image/'+req.body._id+"profile_updated.jpg",() => {})
-        fs.unlink('/var/www/backend/image/'+req.body._id+"profile.jpg",() => {})
-        fs.writeFileSync('/var/www/backend/image/'+req.body._id+'profile_updated.jpg',req.body.avatar_file,'base64');
+        const id = req.params === undefined ? req.id : req.params.id
+        const update_data = req.body === undefined ? req : req.body
         if(String(req.body.groups_obids) !== String(req.body.clicked_groups)) {
             req.body.groups_obids.map(async (i) => {
                 await api_v1_group_group.findOneAndUpdate({_id:i},{ $pull: { user_obids : req.body._id} }, {new: true }).exec()
@@ -208,29 +209,32 @@ router.put('/:id',async function(req, res) {
             }            
         }
 
-        const id = req.params === undefined ? req.id : req.params.id
-        const update_data = req.body === undefined ? req : req.body
-
-        const imageDir = await canvas.loadImage('/var/www/backend/image/'+req.body._id+'profile_updated.jpg')
-        const detections = await faceapi.detectSingleFace(imageDir)
-        .withFaceLandmarks()
-        .withFaceDescriptor();
-
-        if(detections.length === 0) {
-            res.send({
-                result:"인식할수 없는 사진."
+        if(req.body.avatar_file){
+            fs.unlink('/var/www/backend/image/'+req.body._id+"profile_updated.jpg",() => {})
+            fs.unlink('/var/www/backend/image/'+req.body._id+"profile.jpg",() => {})
+            fs.writeFileSync('/var/www/backend/image/'+req.body._id+'profile_updated.jpg',req.body.avatar_file,'base64');
+            update_data.avatar_file_url = 'http://'+req.headers.host+'/image/'+req.body._id+'profile_updated.jpg'
+            
+            const imageDir = await canvas.loadImage('/var/www/backend/image/'+req.body._id+'profile_updated.jpg')
+            const detections = await faceapi.detectSingleFace(imageDir)
+            .withFaceLandmarks()
+            .withFaceDescriptor();
+            
+            if(!detections) {
+                res.send({
+                    result:"인식할수 없는 사진."
+                })
+                return false;
+            }
+            
+            asyncJSON.stringify(detections.descriptor,function(err, jsonValue) {
+                update_data.face_detection = jsonValue;
             })
-            return false;
         }
-        
-        asyncJSON.stringify(detections.descriptor,function(err, jsonValue) {
-            update_data.face_detection = jsonValue;
-        })
         
         update_data.groups_obids = req.body.clicked_groups;
         update_data.update_at = moment().format('YYYY-MM-DD HH:mm:ss');
         update_data.update_ut = Date.now();
-        update_data.avatar_file_url = 'http://'+req.headers.host+'/image/'+req.body._id+'profile_updated.jpg'
         const update = await api_v1_person_user.findOneAndUpdate({_id:id}, {$set:update_data}, {new: true })
         let type = '';
         if(update.type === 1) type = '사원';
