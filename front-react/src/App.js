@@ -35,7 +35,7 @@ axios.interceptors.response.use(function (response) {
 
 export default class App extends React.Component {
   state = {
-    auth: true,
+    auth: false,
     user_id: '',
     authority: '',
     tempLimit: 0,
@@ -48,20 +48,21 @@ export default class App extends React.Component {
 
     if(!Array.isArray(value) || !Array.isArray(user_info))
       value = [undefined,undefined]
+    else {
+      user_info[2] = user_info[2].fromBase64();
+
+      let splited = user_info[2].split("|")
+  
+      this.setState({
+        auth: true,
+        user_id: splited[0],
+        authority: splited[1],
+        tempLimit: parseInt(splited[3]),
+        tempType: parseFloat(splited[2])
+      });
+    }
 
     axios.defaults.headers.common['Authorization'] = value[2];
-
-    user_info[2] = user_info[2].fromBase64();
-
-    let splited = user_info[2].split("|")
-
-    this.setState({
-      auth: true,
-      user_id: splited[0],
-      authority: splited[1],
-      tempLimit: parseInt(splited[3]),
-      tempType: parseFloat(splited[2])
-    });
 
     this.unlisten = browserHistory.listen((location, action) => {
       let value = document.cookie.match('(^|;) ?token=([^;]*)(;|$)');
