@@ -44,6 +44,12 @@ router.post('/',async function(req, res) {
     try {
         const add = new User(req.body)
         if(!req.body.account) return res.status(400).send({"err":"잘못된 형식 입니다"})
+        if(req.body.authority === 'admin')
+            add.authority = 'admin'
+        else if(req.body.authority === 'manager')
+            add.authority = 'manager-' + add.user_id + 'e'
+        else if(req.body.authority === 'user')
+            add.authority = req.body.parentAuth + '-user-' + add.user_id
         crypto.randomBytes(64,(err,buf) => {
             crypto.pbkdf2(req.body.user_pw, buf.toString('base64'), 105614, 64, 'sha512', (err,key) => {
                 add.user_pw = key.toString('base64');
@@ -62,6 +68,7 @@ router.post('/',async function(req, res) {
             })
         })
     } catch (err) {
+        console.log(err);
         res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });

@@ -9,8 +9,11 @@ import { TweenLite, Circ } from 'gsap';
 import './SignIn.css';
 import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css';
-import { LazyLoadImage } from 'react-lazy-load-image-component';
 import {base_url} from 'server.json';
+import jwt from "jwt-decode";
+import { Base64 } from 'js-base64';
+Base64.extendString();
+
 const schema = {
   id: {
     length: {
@@ -414,11 +417,15 @@ const SignIn = props => {
           alert('존재하지 않는 계정입니다.');
           return false;
         });
-      let temp =  await axios.get(base_url + '/auth?token=' + result.data.token)
-      result.data = {...result.data, ...temp.data}
+      // let temp =  await axios.get(base_url + '/auth?token=' + result.data.token)
+      // result.data = {...result.data, ...temp.data}
       if (result.data && result.data.token) {
         document.cookie = 'token=' + result.data.token+";path=/;";
-        props.getAuth(result.data.authority);
+        let decoded = jwt(result.data.token);
+        let info = decoded.user_id+"|"+decoded.authority+"|"+decoded.tempType+"|"+decoded.tempLimit
+        info = info.toBase64();
+        document.cookie = 'ACTKINFO='+info+";path=/;";
+        // props.getAuth(result.data.authority);
         history.push('/');
       } else if (result.data) {
         alert('존재하지 않는 계정 입니다');

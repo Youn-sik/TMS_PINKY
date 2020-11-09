@@ -1,9 +1,9 @@
 FROM node:12.18.4
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
-COPY package*.json /usr/src/app/
+RUN mkdir -p /var/www/backend
+WORKDIR /var/www/backend
+COPY package*.json /var/www/backend/
 RUN npm install
 RUN npm install express-graphql
-COPY . /usr/src/app
+COPY . /var/www/backend
 CMD [ "node", "index.js" ]
 EXPOSE 3000

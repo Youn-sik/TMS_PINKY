@@ -40,22 +40,22 @@ app.use(bodyParser.json({limit: '50mb'}));
 app.use(cors())
 
 //auth middle-ware
-// app.use(function (req, res, next) {
-//     if(req.path === '/login'){
-//         next()
-//     } else if (req.headers.authorization) {
-//         const token = req.headers.authorization.split('Bearer ')[1];
-//         jwt.verify(token, 'jjh', (err) => {
-//             if (err) {
-//                 res.status(401).json({ err: '유효하지 않는 토큰입니다.' });
-//             } else {
-//                 next();
-//             }
-//         });
-//     } else {
-//         res.status(401).json({ err: '유효하지 않는 토큰입니다.' });
-//     }
-// });
+app.use(function (req, res, next) {
+    if (req.headers.authorization && req.headers.authorization !== 'undefined') {
+        const token = req.headers.authorization;
+        jwt.verify(token, 'jjh', (err) => {
+            if (err) {
+                res.status(401).json({ err: '유효하지 않는 토큰입니다.' });
+            } else {
+                next();
+            }
+        });
+    } else if(req.path === '/login' || req.path.indexOf('.jpg') > -1 || req.path.indexOf('.png') > -1){
+        next()
+    }  else {
+        res.status(401).json({ err: '유효하지 않는 토큰입니다.' });
+    }
+});
 
 //router
 app.use('/user',usersRouter);

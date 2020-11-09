@@ -85,7 +85,11 @@
  *                 authority:
  *                      type: string
  *                      description: 계정의 권한
- *                      example: 'admin' 
+ *                      example: 'admin, manager, user' 
+ *                 parentAuth:
+ *                      type: string
+ *                      description: "생성한 계정의 권한 user권한의 계정 생성할때만 필요"
+ *                      example: 'admin'
  *          responses:
  *             "200":
  *               schema:

@@ -62,9 +62,9 @@ const EditAccount = props => {
     user_lang: '',
     user_name: '',
     authority:
-      props.authority === 'admin'
+      selectedAccounts[0].authority === 'admin'
         ? 'admin'
-        : props.authority.split('-').length === 2
+        : selectedAccounts[0].authority.split('-').length === 2
         ? 'manager'
         : 'user'
   });
@@ -79,7 +79,8 @@ const EditAccount = props => {
   useEffect(() => {
     if (selectedAccounts && selectedAccounts.length > 0) {
       setAccountInfo({
-        ...selectedAccounts[0]
+        ...selectedAccounts[0],
+        authority:accountInfo.authority
       });
     } else {
       history.go(-1);
@@ -191,11 +192,11 @@ const EditAccount = props => {
                 style={{ width: '100%', marginTop: 15 }}
                 onChange={handleChange}>
                 {props.authority === 'admin' ? (
-                  <MenuItem value={'admin'}>관리자</MenuItem>
+                  <MenuItem value="admin">관리자</MenuItem>
                 ) : null}
                 {props.authority.split('-')[0] === 'manager' ||
                 props.authority === 'admin' ? (
-                  <MenuItem value={'manager'}>
+                  <MenuItem value="manager">
                     매니저
                   </MenuItem>
                 ) : null}

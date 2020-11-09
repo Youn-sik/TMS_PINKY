@@ -444,7 +444,7 @@ module.exports = {
         try {
             let insert_array = [];
             let camera = await Camera.findOne( { serial_number : json.stb_sn });
-            let auth = camera.authority === 'admin' ? new RegExp('') : new RegExp("^"+camera.authority+"$")
+            let auth = camera.authority === 'admin' ? new RegExp('') : new RegExp("^"+camera.authority)
             let Users = await User.find().regex('authority',auth)
             if(camera) {
                 json.values.forEach(async function(element){

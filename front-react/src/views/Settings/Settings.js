@@ -1,6 +1,7 @@
 import React,{useState, useEffect} from 'react';
 import { makeStyles } from '@material-ui/styles';
 import axios from 'axios';
+import {Base64} from 'js-base64';
 import {
   Card,
   CardContent,
@@ -14,6 +15,7 @@ import {
 } from '@material-ui/core/';
 import NumberFormat from 'react-number-format';
 import {base_url} from 'server.json';
+Base64.extendString();
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3)
@@ -69,6 +71,10 @@ const Settings = props => {
           term
         });
       }
+
+      let info = props.user_id + "|" + props.authority + "|" + tempType + "|" + tempLimit
+      info = info.toBase64();
+      document.cookie = 'ACTKINFO='+info+";path=/;";
 
       alert('수정 되었습니다.');
     }
