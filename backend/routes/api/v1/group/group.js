@@ -122,6 +122,10 @@ router.delete('/:id',async function(req, res) {
             fs.unlink('/var/www/backend/image/'+user_obid+"profile_updated.jpg",() => {})
         })
 
+        await api_v1_person_user.deleteMany({'_id':{"$in":user_obids}}, function(err, obj) {
+            if (err) throw err;
+        })
+
         res.send(delete_data);
     } catch (err) {
         return res.send(err.message);

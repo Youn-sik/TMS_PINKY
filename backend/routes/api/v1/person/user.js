@@ -139,7 +139,7 @@ router.post('/',async function(req, res) {
                 // });
                 // fs.writeFileSync('/var/www/backend/image/'+add._id+'profile.jpg', image);
                 let result = execSync(`python /var/www/face_cut/face_cut.py -f /var/www/backend/image/${add._id}profile.jpg -o /var/www/backend/image/face_cut_${add._id}profile.jpg`)
-                console.log(result)
+                
                 if(result === 'detecting failed'){
                     fs.unlinkSync('/var/www/backend/image/face_cut_'+add._id+'profile.jpg')
                     fs.unlinkSync('/var/www/backend/image/'+add._id+'profile.jpg')
@@ -302,10 +302,10 @@ router.delete('/:id',async function(req, res) {
         let deleted_data = []
         try {
             req.body.selectedData.map(async (i) => {
-                await api_v1_group_group.updateMany({type:req.body.type},{ $pull: { user_obids : i._id} }, {new: true }).exec();
+                await api_v1_group_group.updateMany({_id:i.groups_obids[0]},{ $pull: { user_obids : i._id} }, {new: true }).exec();
                 let delete_data = await api_v1_person_user.findByIdAndDelete(i)
-                fs.unlink('/var/www/backend/image/'+id+"profile.jpg",() => {})
-                fs.unlink('/var/www/backend/image/'+id+"profile_updated.jpg",() => {})
+                fs.unlink('/var/www/backend/image/'+i._id+"profile.jpg",() => {})
+                fs.unlink('/var/www/backend/image/'+i._id+"profile_updated.jpg",() => {})
                 let type = '';
                 if(delete_data.type === 1) type = '사원';
                 else if(delete_data.type === 2) type = '방문자'

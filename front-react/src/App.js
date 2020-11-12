@@ -48,6 +48,7 @@ axios.interceptors.response.use(null, function (error) {
 
 let message = false;
 let imgSrc = null;
+let auth = null;
 function Popup() {
   const { enqueueSnackbar } = useSnackbar();
   if(!message){
@@ -55,8 +56,12 @@ function Popup() {
     client.on('message', function(topic, message) {
       if (topic.indexOf('/access/high_temp_realtime/result/') > -1) {
         let result = JSON.parse(message.toString()).values
-        imgSrc = result[0].avatar_file_url
-        enqueueSnackbar(`${result[0].stb_location}에서 고발열자(${String(result[0].avatar_temperature).substring(0,4)}℃)가 탐지 되었습니다.|${imgSrc}`,{ variant: 'error',autoHideDuration:null});
+        let accessAuth = result[0].authority;
+        let matchRe = accessAuth.match(auth)
+        if(matchRe && window.location.pathname !== '/sign-in'){
+          imgSrc = result[0].avatar_file_url
+          enqueueSnackbar(`${result[0].stb_location}에서 고발열자(${String(result[0].avatar_temperature).substring(0,4)}℃)가 탐지 되었습니다.|${imgSrc}`,{ variant: 'error',autoHideDuration:null});
+        }
       } 
     });
   }
@@ -85,7 +90,11 @@ export default class App extends React.Component {
       user_info[2] = user_info[2].fromBase64();
 
       let splited = user_info[2].split("|")
-  
+      if(splited[1] !== 'admin')
+        auth = new RegExp("^"+splited[1])
+      else
+        auth = new RegExp("")
+      
       this.setState({
         auth: true,
         user_id: splited[0],
@@ -108,7 +117,8 @@ export default class App extends React.Component {
         user_info[2] = user_info[2].fromBase64();
 
         let splited = user_info[2].split("|")
-    
+
+        auth = splited[1]
         this.setState({
           auth: true,
           user_id: splited[0],

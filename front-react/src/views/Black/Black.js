@@ -42,7 +42,7 @@ const Black = props => {
       result = await axios.get(base_url + `/user?rowsPerPage=${rowsPerPage}&page=${page}&searchType=${searchType}&headerType=${headerType}&search=${userSearch}&type=5&auth=`+props.authority)
     }
 
-    if(result && result.data.length > 0) {
+    if(result && result.data.count >= 0) {
       setUsersCount(result.data.count);
       let temp = parseInt(result.data.count/rowsPerPage)
       if(parseInt(result.data.count%rowsPerPage))

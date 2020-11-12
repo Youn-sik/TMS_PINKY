@@ -9,6 +9,7 @@ const operrion = new mongoose.Schema({
     action : { type: String,},
     date : { type: String },
     description : { type: String},
+    authority : {type:String}
 });
 mongoose.set('useCreateIndex', true)
 module.exports = mongoose.model('operation', operrion)
