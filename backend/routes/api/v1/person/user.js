@@ -138,7 +138,7 @@ router.post('/',async function(req, res) {
                 //     height: 200
                 // });
                 // fs.writeFileSync('/var/www/backend/image/'+add._id+'profile.jpg', image);
-                let result = execSync(`python /var/www/face_cut/face_cut.py -f /var/www/backend/image/${add._id}profile.jpg -o /var/www/backend/image/face_cut_${add._id}profile.jpg`)
+                let result = execSync(`python /var/www/backend/face_cut/face_cut.py -f /var/www/backend/image/${add._id}profile.jpg -o /var/www/backend/image/face_cut_${add._id}profile.jpg`)
                 
                 if(result === 'detecting failed'){
                     fs.unlinkSync('/var/www/backend/image/face_cut_'+add._id+'profile.jpg')
