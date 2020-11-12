@@ -53,6 +53,7 @@ const CustomRouterLink = forwardRef((props, ref) => (
 
 const SidebarNav = props => {
   const { pages, className, ...rest } = props;
+
   const [open, setOpen] = React.useState(
     props.path.split('/')[1] === 'device'
       ? '단말 관리'
@@ -75,6 +76,11 @@ const SidebarNav = props => {
       setOpen(title);
     }
   };
+
+  // useEffect(() => {
+  //   console.log(open)
+  // },[open])
+  
   return (
     <List {...rest} className={clsx(classes.root, className)}>
       {pages.map(page => {

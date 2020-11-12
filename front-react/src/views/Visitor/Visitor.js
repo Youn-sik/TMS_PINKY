@@ -427,27 +427,7 @@ const Visitor = props => {
 
   async function getGroups() {
     let tempGroups = await axios.get(base_url + '/group?type=2');
-    tempGroups.data.map(i => {
-      //user_obids에 있는 데이터 children으로 옮기기
-      moveUserIds(i);
-      return false;
-    });
-    let index = tempGroups.data.findIndex(i => i.name === 'undefined');
-    if (index !== -1) {
-      let undefinedGroup = tempGroups.data.splice(index, 1);
-      tempGroups.data.push(undefinedGroup[0]);
-    }
-    setGroups(tempGroups.data);
-  }
-
-  const deleteGroupNode = async node => {
-    if (
-      window.confirm(
-        '삭제시 해당 그룹의 사용자는 undefined 그룹으로 \n변경됩니다 삭제 하시겠습니까?'
-      )
-    ) {
-      await axios.delete(base_url + '/group/' + node._id);
-      let tempGroups = await axios.get(base_url + '/group?type=2');
+    if(tempGroups && tempGroups.data.length > 0){
       tempGroups.data.map(i => {
         //user_obids에 있는 데이터 children으로 옮기기
         moveUserIds(i);
@@ -459,11 +439,35 @@ const Visitor = props => {
         tempGroups.data.push(undefinedGroup[0]);
       }
       setGroups(tempGroups.data);
-      setSelectedNode([]);
-      setClickedNode({});
-      setUsers([]);
-      setFilteredUsers([]);
-      alert('삭제 되었습니다');
+    }
+  }
+
+  const deleteGroupNode = async node => {
+    if (
+      window.confirm(
+        '삭제시 해당 그룹의 사용자는 undefined 그룹으로 \n변경됩니다 삭제 하시겠습니까?'
+      )
+    ) {
+      await axios.delete(base_url + '/group/' + node._id);
+      let tempGroups = await axios.get(base_url + '/group?type=2');
+      if(tempGroups && tempGroups.data.length > 0){
+        tempGroups.data.map(i => {
+          //user_obids에 있는 데이터 children으로 옮기기
+          moveUserIds(i);
+          return false;
+        });
+        let index = tempGroups.data.findIndex(i => i.name === 'undefined');
+        if (index !== -1) {
+          let undefinedGroup = tempGroups.data.splice(index, 1);
+          tempGroups.data.push(undefinedGroup[0]);
+        }
+        setGroups(tempGroups.data);
+        setSelectedNode([]);
+        setClickedNode({});
+        setUsers([]);
+        setFilteredUsers([]);
+        alert('삭제 되었습니다');
+      }
     }
   };
 

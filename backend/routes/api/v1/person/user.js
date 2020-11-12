@@ -8,7 +8,7 @@ const History = require('../../../../models/api/v1/person/history')
 const Operation = require('../../../../models/api/v1/person/operation')
 const resizeImg = require('resize-img');
 const crypto = require('crypto');
-
+const execSync = require('child_process').execSync;
 const canvas = require("canvas");
 const { loadImage, Canvas, Image, ImageData } = canvas;
 const tf = require('@tensorflow/tfjs-node');
@@ -114,8 +114,9 @@ router.post('/',async function(req, res) {
             add.face_detection = overlap_check.face_detection;
         } else {
             let detections
+            let dir = null
             if(req.body.avatar_file === undefined) {
-                let dir = req.body.avatar_file_url.split(":3000")[1];
+                dir = req.body.avatar_file_url.split(":3000")[1];
                 let oriDir = "/var/www/backend"+dir;
                 let cpDir = "/var/www/backend/image/"+dir.split('/')[6]
                 fs.copyFileSync(oriDir, cpDir);
@@ -124,27 +125,38 @@ router.post('/',async function(req, res) {
                     width: 140,
                     height: 200
                 });
-            
                 fs.writeFileSync("/var/www/backend/image/"+dir.split('/')[6], image);
-                let imageDir = await canvas.loadImage(req.body.avatar_file_url)
-                detections = await faceapi.detectSingleFace(imageDir)
+                let imageDir = await canvas.loadImage('http://'+req.headers.host+'/image/'+dir.split('/')[6])
+                detections = await faceapi.detectSingleFace(imageDir,new faceapi.SsdMobilenetv1Options({ minConfidence: 0.3 }))
                 .withFaceLandmarks()
                 .withFaceDescriptor();
             } else {
                 add.avatar_file_url = 'http://'+req.headers.host+'/image/'+add._id+'profile.jpg';
                 fs.writeFileSync('/var/www/backend/image/'+add._id+'profile.jpg',req.body.avatar_file,'base64')
-                const image = await resizeImg(fs.readFileSync('/var/www/backend/image/'+add._id+'profile.jpg'), {
-                    width: 140,
-                    height: 200
-                });
-                fs.writeFileSync('/var/www/backend/image/'+add._id+'profile.jpg', image);
-                let imageDir = await canvas.loadImage('/var/www/backend/image/'+add._id+'profile.jpg')
-                detections = await faceapi.detectSingleFace(imageDir)
+                // const image = await resizeImg(fs.readFileSync('/var/www/backend/image/'+add._id+'profile.jpg'), {
+                //     width: 140,
+                //     height: 200
+                // });
+                // fs.writeFileSync('/var/www/backend/image/'+add._id+'profile.jpg', image);
+                let result = execSync(`python /var/www/face_cut/face_cut.py -f /var/www/backend/image/${add._id}profile.jpg -o /var/www/backend/image/face_cut_${add._id}profile.jpg`)
+                console.log(result)
+                if(result === 'detecting failed'){
+                    fs.unlinkSync('/var/www/backend/image/face_cut_'+add._id+'profile.jpg')
+                    fs.unlinkSync('/var/www/backend/image/'+add._id+'profile.jpg')
+                    res.send({result:"인식할수 없는 사진."})
+                    return false;
+                }
+                let imageDir = await canvas.loadImage('/var/www/backend/image/face_cut_'+add._id+'profile.jpg')
+                detections = await faceapi.detectSingleFace(imageDir,new faceapi.SsdMobilenetv1Options({ minConfidence: 0.1}))
                 .withFaceLandmarks()
                 .withFaceDescriptor();
+                fs.unlinkSync('/var/www/backend/image/face_cut_'+add._id+'profile.jpg')
             }
 
             if(!detections) {
+                fs.unlinkSync('/var/www/backend/image/'+add._id+'profile.jpg')
+                if(dir)
+                    fs.unlinkSync("/var/www/backend/image/"+dir.split('/')[6])
                 res.send({
                     result:"인식할수 없는 사진."
                 })

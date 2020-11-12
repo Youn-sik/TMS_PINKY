@@ -49,9 +49,11 @@ const DeviceScreen = () => {
 
   async function getScreens() {
     let result = await axios.get(base_url + '/camera_monitor?id=one_device');
-    setScreens(result.data);
-    setLoading(false);
-    setSearch('');
+    if(result && result.data.length > 0){
+      setScreens(result.data);
+      setLoading(false);
+      setSearch('');
+    }
   }
 
   return (

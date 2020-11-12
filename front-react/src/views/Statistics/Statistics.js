@@ -206,8 +206,7 @@ const Statistics = props => {
         }
       })
     })
-
-    console.log(black)
+    
     setPeopleData({
       employee: employee,
       visitor: stranger,
@@ -248,7 +247,9 @@ const Statistics = props => {
   async function getAccesses() {
     let local_device = device === ' ' ? '' : device
     let result = await axios.get(base_url + `/access?date=${date[0].yyyymmdd()}/${date[1].yyyymmdd()}&device=${local_device}&type=deviceStats&auth=${props.authority}`);
-    filterAccesses(result.data);
+    if(result && result.data.length > 0) {
+      filterAccesses(result.data);
+    }
     
     setLoading(false);
   }
@@ -257,14 +258,16 @@ const Statistics = props => {
     let result = await axios.get(
       base_url + '/camera?authority=' + props.authority
     )
-    if (result.data.length > 0) {
+    if (result && result.data.length > 0) {
       setDevices(result.data);
     }
   }
 
   async function getErrors() {
     let result = await axios.get(base_url + `/glogs?type=error&date=${date[0].yyyymmdd()}/${date[1].yyyymmdd()}`);
-    filterErrors(result.data);
+    if(result && result.data.length > 0){
+      filterErrors(result.data);
+    }
   }
 
   const dateChange = (date, value) => {

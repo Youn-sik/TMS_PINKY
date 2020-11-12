@@ -72,10 +72,6 @@ const AddDevice = props => {
     port: 0
   });
 
-  useEffect(() => {
-    getGateway();
-  }, []);
-
   const getGateway = async () => {
     let result = await axios.get(base_url + '/gateway');
     setGateway(result.data);

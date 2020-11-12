@@ -175,22 +175,26 @@ const UsersStat = props => {
 
   async function getGroups() {
     let tempGroups = await axios.get(base_url + '/group');
-    tempGroups.data.map(i => {
-      //user_obids에 있는 데이터 children으로 옮기기
-      moveUserIds(i);
-      return false;
-    });
-    let index = tempGroups.data.findIndex(i => i.name === 'undefined');
-    if (index !== -1) {
-      let undefinedGroup = tempGroups.data.splice(index, 1);
-      tempGroups.data.push(undefinedGroup[0]);
+    if(tempGroups && tempGroups.data.length > 0){
+      tempGroups.data.map(i => {
+        //user_obids에 있는 데이터 children으로 옮기기
+        moveUserIds(i);
+        return false;
+      });
+      let index = tempGroups.data.findIndex(i => i.name === 'undefined');
+      if (index !== -1) {
+        let undefinedGroup = tempGroups.data.splice(index, 1);
+        tempGroups.data.push(undefinedGroup[0]);
+      }
+      setGroups(tempGroups.data);
     }
-    setGroups(tempGroups.data);
   }
 
   async function getAccesses() {
     let result = await axios.get(base_url + '/access');
-    setAllPeopleData(result.data.reverse());
+    if(result && result.data.length > 0){
+      setAllPeopleData(result.data.reverse());
+    }
   }
 
   const handleDate = val => {

@@ -338,7 +338,7 @@ const Employee = props => {
     let result = await axios.get(
       base_url + '/camera?authority=' + props.authority
     );
-    if (result.data.length > 0) {
+    if (result && result.data.length > 0) {
       setStream(result.data[0].ip);
       setDevice(result.data);
     }

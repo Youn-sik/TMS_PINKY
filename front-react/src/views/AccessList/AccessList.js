@@ -176,7 +176,7 @@ const AccessList = props => {
 
     setLoading(false);
 
-    if(_pages.data.length !== 0){
+    if(_pages && _pages.data.length !== 0){
       setPage(1);
 
       let count = _pages.data[0].count;
@@ -293,7 +293,7 @@ const AccessList = props => {
     });
 
     setLoading(false);
-    if(_pages.data.length !== 0) {
+    if(_pages && _pages.data.length !== 0) {
       let result = await axios.get(base_url + 
         `/access?auth=${props.authority}&headerType=${currentHeaderType}&avatar_type=${type}&searchType=${searchType}&search=${search}&date=${firstDate}/${lastDate}&&rowsPerPage=${rowsPerPage}page=${page}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
         cancelToken: source.token

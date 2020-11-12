@@ -13,9 +13,23 @@ import validators from './common/validators';
 import Routes from './Routes';
 import axios from 'axios';
 import { Base64 } from 'js-base64';
+import { SnackbarProvider } from 'notistack';
+import {mqtt_url} from 'server.json'
+import mqtt from 'mqtt';
+import { useSnackbar } from 'notistack';
+import CustomSnack from 'CustomSnack.js'
+
 Base64.extendString();
 
+const client = mqtt.connect('ws://'+mqtt_url+':8083/mqtt');
+
+client.on('connect', () => {
+  client.subscribe('/access/realtime/result/+');
+  client.subscribe('/access/high_temp_realtime/result/+');
+});
+
 const browserHistory = createBrowserHistory();
+
 
 Chart.helpers.extend(Chart.elements.Rectangle.prototype, {
   draw: chartjs.draw
@@ -26,29 +40,48 @@ validate.validators = {
   ...validators
 };
 
-axios.interceptors.response.use(function (response) {
-  // Do something with response data
-  return response;
-}, function (error) {
+axios.interceptors.response.use(null, function (error) {
+  document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
+  document.cookie = 'ACTKINFO=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
   browserHistory.push('/sign-in');
 });
 
+let message = false;
+let imgSrc = null;
+function Popup() {
+  const { enqueueSnackbar } = useSnackbar();
+  if(!message){
+    message = true;
+    client.on('message', function(topic, message) {
+      if (topic.indexOf('/access/high_temp_realtime/result/') > -1) {
+        let result = JSON.parse(message.toString()).values
+        imgSrc = result[0].avatar_file_url
+        enqueueSnackbar(`${result[0].stb_location}에서 고발열자(${String(result[0].avatar_temperature).substring(0,4)}℃)가 탐지 되었습니다.|${imgSrc}`,{ variant: 'error',autoHideDuration:null});
+      } 
+    });
+  }
+  return (null);
+}
+
 export default class App extends React.Component {
   state = {
-    auth: false,
+    auth: true,
     user_id: '',
     authority: '',
     tempLimit: 0,
-    tempType: 0
+    tempType: 0,
+    open: true
   };
 
   async componentWillMount () {
-    let value = document.cookie.match('(^|;) ?token=([^;]*)(;|$)');
-    let user_info = document.cookie.match('(^|;) ?ACTKINFO=([^;]*)(;|$)');
-
-    if(!Array.isArray(value) || !Array.isArray(user_info))
-      value = [undefined,undefined]
-    else {
+    let value = document.cookie.match('(^|;) ?token=([^;]*)(;|$)') ? document.cookie.match('(^|;) ?token=([^;]*)(;|$)') : [undefined,undefined,undefined];
+    let user_info = document.cookie.match('(^|;) ?ACTKINFO=([^;]*)(;|$)') ? document.cookie.match('(^|;) ?ACTKINFO=([^;]*)(;|$)') : [undefined,undefined,undefined];
+    axios.defaults.headers.common['Authorization'] = value[2];
+    
+    if(!value[2] || !user_info[2]){
+      if(browserHistory.location.pathname !== '/sign-in')
+        browserHistory.push('/sign-in');
+    } else {
       user_info[2] = user_info[2].fromBase64();
 
       let splited = user_info[2].split("|")
@@ -62,108 +95,30 @@ export default class App extends React.Component {
       });
     }
 
-    axios.defaults.headers.common['Authorization'] = value[2];
 
     this.unlisten = browserHistory.listen((location, action) => {
-      let value = document.cookie.match('(^|;) ?token=([^;]*)(;|$)');
-      let user_info = document.cookie.match('(^|;) ?ACTKINFO=([^;]*)(;|$)');
-
-      if(!Array.isArray(value) || !Array.isArray(user_info))
-        value = [undefined,undefined]
-
+      let value = document.cookie.match('(^|;) ?token=([^;]*)(;|$)') ? document.cookie.match('(^|;) ?token=([^;]*)(;|$)') : [undefined,undefined,undefined];
+      let user_info = document.cookie.match('(^|;) ?ACTKINFO=([^;]*)(;|$)') ? document.cookie.match('(^|;) ?ACTKINFO=([^;]*)(;|$)') : [undefined,undefined,undefined];
       axios.defaults.headers.common['Authorization'] = value[2];
+      
+      if(!value[2] || !user_info[2]){
+        if(browserHistory.location.pathname !== '/sign-in')
+          browserHistory.push('/sign-in');
+      } else {
+        user_info[2] = user_info[2].fromBase64();
 
-      user_info[2] = user_info[2].fromBase64();
-
-      let splited = user_info[2].split("|")
-
-      this.setState({
-        auth: true,
-        user_id: splited[0],
-        authority: splited[1],
-        tempLimit: parseInt(splited[3]),
-        tempType: parseFloat(splited[2])
-      });
-    })
+        let splited = user_info[2].split("|")
     
-    // if (browserHistory.location.pathname !== '/sign-in') {
-    //   //URL 직접 변경 감지
-    //   var value = document.cookie.match('(^|;) ?token=([^;]*)(;|$)');
-    //   // console.log(value[2]);
-    //   if (Array.isArray(value)) {
-    //     await axios.get(base_url + '/auth?token=' + value[2]).then(res => {
-    //       if (res.data.auth === false) {
-    //         browserHistory.push('/sign-in');
-    //         this.setState({
-    //           auth: false,
-    //           authority: '',
-    //           user_id: '',
-    //           tempLimit: 0,
-    //           tempType: 0
-    //         });
-    //         document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
-    //       } else if (res.data.auth === true) {
-    //         this.setState({
-    //           auth: true,
-    //           user_id: res.data.user_id,
-    //           authority: res.data.authority,
-    //           tempLimit: res.data.tempLimit,
-    //           tempType: res.data.tempType
-    //         });
-    //       }
-    //     });
-    //   } else {
-    //     browserHistory.push('/sign-in');
-    //   }
-    // }
+        this.setState({
+          auth: true,
+          user_id: splited[0],
+          authority: splited[1],
+          tempLimit: parseInt(splited[3]),
+          tempType: parseFloat(splited[2])
+        });
+      }
+    })
   }
-
-  // componentDidMount() {
-  //   this.unlisten = browserHistory.listen((location, action) => {
-  //     //클릭을 통한 페이지 이동 감지
-  //     if (location.pathname !== '/sign-in') {
-  //       var value = document.cookie.match('(^|;) ?token=([^;]*)(;|$)');
-  //       // console.log(value[2]);
-  //       if (Array.isArray(value)) {
-  //         axios.get(base_url + '/auth?token=' + value[2]).then(res => {
-  //           if (res.data.auth === false) {
-  //             browserHistory.push('/sign-in');
-  //             document.cookie =
-  //               'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
-  //             this.setState({
-  //               auth: false,
-  //               authority: '',
-  //               user_id: '',
-  //               tempLimit: 0,
-  //               tempType: 0
-  //             });
-  //             return false;
-  //           } else {
-  //             this.setState({
-  //               auth: true,
-  //               user_id: res.data.user_id,
-  //               authority: res.data.authority,
-  //               tempLimit: res.data.tempLimit,
-  //               tempType: res.data.tempType
-  //             });
-  //             return false;
-  //           }
-  //         });
-  //       } else {
-  //         browserHistory.push('/sign-in');
-  //         document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
-  //         this.setState({
-  //           auth: false,
-  //           authority: '',
-  //           user_id: '',
-  //           tempLimit: 0,
-  //           tempType: 0
-  //         });
-  //         return false;
-  //       }
-  //     }
-  //   });
-  // }
 
   render() {
     const getAuth = _auth => {
@@ -172,11 +127,28 @@ export default class App extends React.Component {
       });
     };
 
+    const notistackRef = React.createRef();
+
     if(browserHistory.location.pathname === '/sign-in' || this.state.authority !== '') { 
         return ( 
           <ThemeProvider theme={theme}>
+            <SnackbarProvider 
+              ref={notistackRef}
+              id="mySnackBar"
+              maxSnack={1} 
+              anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+              }}
+              content={(key, message) => (
+                <CustomSnack path={browserHistory.location.pathname} history={browserHistory} id={key} message={message} />
+              )}
+              >
+              <Popup></Popup>
+            </SnackbarProvider>
             <Router history={browserHistory}>
               <Routes
+                client={client}
                 tempLimit={this.state.tempLimit}
                 tempType={this.state.tempType}
                 path={browserHistory.location.pathname}

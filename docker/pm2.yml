@@ -16,6 +16,7 @@ services:
             - /var/www/docker/mqtt_logs.js:/var/www/docker/mqtt_logs.js
             - /var/www/docker/schema:/var/www/docker/schema
             - /var/www/backend/uploads:/var/www/docker/uploads
+            - /var/www/backend/node_modules:/var/www/docker/node_modules
         command: >
           bash -c  "pm2 start /var/www/docker/mqtt.js && tail -f /dev/null"
           bash -c  "pm2 start /var/www/docker/mqtt_interval.js && tail -f /dev/null"

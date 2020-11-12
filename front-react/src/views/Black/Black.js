@@ -42,7 +42,7 @@ const Black = props => {
       result = await axios.get(base_url + `/user?rowsPerPage=${rowsPerPage}&page=${page}&searchType=${searchType}&headerType=${headerType}&search=${userSearch}&type=5&auth=`+props.authority)
     }
 
-    if(result.data) {
+    if(result && result.data.length > 0) {
       setUsersCount(result.data.count);
       let temp = parseInt(result.data.count/rowsPerPage)
       if(parseInt(result.data.count%rowsPerPage))
@@ -83,9 +83,9 @@ const Black = props => {
       } else {
         result = await axios.get(base_url + `/user?rowsPerPage=${rowsPerPage}&page=${page}&searchType=${searchType}&headerType=${sortHeaderType}&search=${userSearch}&type=5&auth=`+props.authority)
       }
-
-      users=users.concat(result.data.data);
-
+      if(result && result.data.data.length > 0) {
+        users=users.concat(result.data.data);
+      }
     }
 
     const wb = new ExcelJS.Workbook()
@@ -229,16 +229,18 @@ const Black = props => {
 
   async function getGroups() {
     let tempGroups = await axios.get(base_url + '/group?type=5&auth='+props.authority);
-    tempGroups.data.map(i => {
-      countChildren(i);
-      return false;
-    });
-    let index = tempGroups.data.findIndex(i => i.name === 'undefined');
-    if (index !== -1) {
-      let undefinedGroup = tempGroups.data.splice(index, 1);
-      tempGroups.data.push(undefinedGroup[0]);
+    if(tempGroups && tempGroups.data.length>0){
+      tempGroups.data.map(i => {
+        countChildren(i);
+        return false;
+      });
+      let index = tempGroups.data.findIndex(i => i.name === 'undefined');
+      if (index !== -1) {
+        let undefinedGroup = tempGroups.data.splice(index, 1);
+        tempGroups.data.push(undefinedGroup[0]);
+      }
+      setGroups(tempGroups.data);
     }
-    setGroups(tempGroups.data);
   }
 
   const editGroupNode = async (node,name) => {

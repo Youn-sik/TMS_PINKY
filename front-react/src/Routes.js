@@ -45,6 +45,7 @@ const Routes = props => {
       <RouteWithLayout
         component={DashboardView}
         exact
+        client={props.client}
         user_id={props.user_id}
         authority={props.authority}
         tempLimit={props.tempLimit}

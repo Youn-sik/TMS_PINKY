@@ -56,22 +56,24 @@ const Stranger = props => {
     let result = await axios.get(base_url + '/access?type=3', {
       cancelToken: source.token
     });
-    result.data.reverse();
-    setOriginAcc(result.data);
-    setAccesses(
-      result.data.filter(i => i.access_time.split(' ')[0] === date[0])
-    );
-    setAllAcc(result.data.filter(i => i.access_time.split(' ')[0] === date[0]));
-    setLoading(false);
-    setDate([
-      moment()
-        .locale('ko')
-        .format('YYYY-MM-DD'),
-      moment()
-        .locale('ko')
-        .format('YYYY-MM-DD')
-    ]);
-    setTemp('0');
+    if(result && result.data.length > 0) {
+      result.data.reverse();
+      setOriginAcc(result.data);
+      setAccesses(
+        result.data.filter(i => i.access_time.split(' ')[0] === date[0])
+      );
+      setAllAcc(result.data.filter(i => i.access_time.split(' ')[0] === date[0]));
+      setLoading(false);
+      setDate([
+        moment()
+          .locale('ko')
+          .format('YYYY-MM-DD'),
+        moment()
+          .locale('ko')
+          .format('YYYY-MM-DD')
+      ]);
+      setTemp('0');
+    }
   }
 
   const handleAllAccTemp = (i, _temp) => {

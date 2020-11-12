@@ -42,7 +42,7 @@ const Employee = props => {
       result = await axios.get(base_url + `/user?rowsPerPage=${rowsPerPage}&page=${page}&searchType=${searchType}&entered=${date[0]}&headerType=${headerType}&search=${userSearch}&type=1&auth=`+props.authority)
     }
 
-    if(result.data) {
+    if(result && result.data.data.length > 0) {
       setUsersCount(result.data.count);
       let temp = parseInt(result.data.count/rowsPerPage)
       if(parseInt(result.data.count%rowsPerPage))
@@ -90,7 +90,9 @@ const Employee = props => {
         result = await axios.get(base_url + `/user?rowsPerPage=5000&page=${page}&searchType=${searchType}&entered=${date[0]}&headerType=${sortHeaderType}&search=${userSearch}&type=1&auth=`+props.authority)
       }
 
-      users=users.concat(result.data.data);
+      if(result && result.data.data.length > 0){
+        users=users.concat(result.data.data);
+      }
 
     }
 
@@ -215,16 +217,18 @@ const Employee = props => {
 
   const getGroups = useCallback(async () => {
     let tempGroups = await axios.get(base_url + '/group?type=1&auth='+props.authority);
-    tempGroups.data.map(i => {
-      countChildren(i);
-      return false;
-    });
-    let index = tempGroups.data.findIndex(i => i.name === 'undefined');
-    if (index !== -1) {
-      let undefinedGroup = tempGroups.data.splice(index, 1);
-      tempGroups.data.push(undefinedGroup[0]);
+    if(tempGroups && tempGroups.data.length){
+      tempGroups.data.map(i => {
+        countChildren(i);
+        return false;
+      });
+      let index = tempGroups.data.findIndex(i => i.name === 'undefined');
+      if (index !== -1) {
+        let undefinedGroup = tempGroups.data.splice(index, 1);
+        tempGroups.data.push(undefinedGroup[0]);
+      }
+      setGroups(tempGroups.data);
     }
-    setGroups(tempGroups.data);
   }, []);
 
   const deleteGroupNode = async node => {

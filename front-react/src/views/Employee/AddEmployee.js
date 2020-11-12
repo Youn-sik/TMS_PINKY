@@ -181,7 +181,9 @@ const AddEmployee = props => {
 
   const getGroups = async () => {
     let result = await axios.get(base_url+'/group?type=1&auth='+props.authority)
-    setGroups(result.data);
+    if(result && result.data.length > 0) {
+      setGroups(result.data);
+    }
   }
 
   useEffect(() => {
@@ -229,7 +231,7 @@ const AddEmployee = props => {
           )}
           <Typography variant="body2" className={classes.labelText}>
           {node.name} ({node.authority === 'admin' ? node.authority :
-            node.authority.split('-').length === 2 ? node.authority.split('-')[1] : 
+            node.authority.split('-').length === 2 ? node.authority.split('-')[1].substring(0,node.authority.split('-')[1].length - 1) : 
             node.authority.split('-').length === 3 ? node.authority.split('-')[2] : node.authority.split('-')[3]})
           </Typography>
         </div>
@@ -278,7 +280,7 @@ const AddEmployee = props => {
         authority : props.authority,
         avatar_file: base64
       });
-
+      
       if(result.data.result && result.data.result === '인식할수 없는 사진.') {
         alert("인식할수 없는 사진 입니다.")
         setLoading(false);

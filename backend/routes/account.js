@@ -55,7 +55,7 @@ router.post('/',async function(req, res) {
                 add.user_pw = key.toString('base64');
                 add.salt = buf.toString('base64');
                 add.save(function(err,re) {
-                    if(err) return res.status(400).send({"err":"잘못된 형식 입니다"})
+                    if(err) return res.status(200).send({"err":"중복된 ID 입니다."})
                     const operation = new Operation({
                         id:req.body.account,
                         description: add.user_id+' 계정 생성',
@@ -68,7 +68,6 @@ router.post('/',async function(req, res) {
             })
         })
     } catch (err) {
-        console.log(err);
         res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });

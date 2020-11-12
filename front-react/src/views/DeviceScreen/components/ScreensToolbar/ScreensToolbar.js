@@ -43,7 +43,9 @@ const ScreensToolbar = props => {
 
   const getPictures = async () => {
     let result = await axios.get(base_url + '/camera_monitor');
-    setData(result.data);
+    if(result && result.data.length > 0) {
+      setData(result.data);
+    }
   };
 
   const deleteOldPic = async () => {

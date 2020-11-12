@@ -83,7 +83,9 @@ const Settings = props => {
 
   const getTerm = async () => {
     let result = await axios.get(base_url + '/schedule')
-    setTerm(result.data.term)
+    if(result) {
+      setTerm(result.data.term)
+    }
   }
 
   const handleTerm = (e) => {

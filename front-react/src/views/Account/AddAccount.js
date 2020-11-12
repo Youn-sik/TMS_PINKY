@@ -74,6 +74,7 @@ const AddAccount = props => {
   },[])
 
   const handleChange = event => {
+    console.log(event.target.name,event.target.value)
     if(event.target.name === 'user_id' && event.target.value === '-') {
       return 0;
     }

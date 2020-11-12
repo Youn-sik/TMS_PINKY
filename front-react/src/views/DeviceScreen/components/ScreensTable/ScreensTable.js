@@ -87,9 +87,11 @@ const ScreensTable = props => {
     let result = await axios.get(
       base_url + '/camera_monitor?id=' + device._id.camera_obids
     );
-    setModalScreens(result.data);
     setDialogLoding(false);
-    setNowDevice(device._id.camera_obids);
+    if(result && result.data.length > 0){
+      setModalScreens(result.data);
+      setNowDevice(device._id.camera_obids);
+    }
   };
 
   const deleteOldPic = async () => {

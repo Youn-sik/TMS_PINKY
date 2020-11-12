@@ -1,11 +1,11 @@
 version: "3.7"
 services:
     backend:
-        image: idealistchanu/access:backend
+        image: ac_backend:lastest
         deploy:
             replicas: 1
         ports:
             - '3000:3000'
         volumes:
-            - /var/www/backend:/usr/src/app
+            - /var/www/backend:/var/www/backend
         command: >

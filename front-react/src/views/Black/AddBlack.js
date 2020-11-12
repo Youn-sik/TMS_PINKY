@@ -146,7 +146,9 @@ const AddBlack = props => {
 
   const getGroups = async () => {
     let result = await axios.get(base_url+'/group?type=5&auth='+props.authority)
-    setGroups(result.data);
+    if(result && result.data.length > 0){
+      setGroups(result.data);
+    }
   }
 
   useEffect(() => {
@@ -196,7 +198,7 @@ const AddBlack = props => {
           )}
           <Typography variant="body2" className={classes.labelText}>
           {node.name} ({node.authority === 'admin' ? node.authority :
-            node.authority.split('-').length === 2 ? node.authority.split('-')[1] : 
+            node.authority.split('-').length === 2 ? node.authority.split('-')[1].substring(0,node.authority.split('-')[1].length - 1) : 
             node.authority.split('-').length === 3 ? node.authority.split('-')[2] : node.authority.split('-')[3]})
           </Typography>
         </div>

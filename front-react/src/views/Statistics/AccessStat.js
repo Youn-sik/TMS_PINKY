@@ -66,7 +66,9 @@ const AccessStat = props => {
   async function getAccesses() {
     setLoading(true);
     let result = await axios.get(base_url + `/access?type=deviceGroupAccesses&device=${device}&date=${date[0]}/${date[1]}&auth=${props.authority}`);
-    setPeopleData(result.data);
+    // if(result && result.data.length > 0){
+      setPeopleData(result.data);
+    // }
     setLoading(false);
   }
 
@@ -118,7 +120,6 @@ const AccessStat = props => {
       } else {
         ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
         .forEach(function(time,index) {
-          let maxData = temp[0][time].split('|')
           labels.push(time.length === 1 ? '0'+time : time)
           data[index] = access[0][time]
           // maxTemp[index] = maxData[1]
@@ -190,7 +191,7 @@ const AccessStat = props => {
     let result = await axios.get(
       base_url + '/camera?authority=' + props.authority
     );
-    if (result.data.length > 0) {
+    if (result && result.data.length > 0) {
       setDevices(result.data);
     }
   }

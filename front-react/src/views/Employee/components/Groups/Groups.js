@@ -200,7 +200,7 @@ const Groups = props => {
             variant="body2"
             className={classes.labelText}>
             {node.name} ({node.authority === 'admin' ? node.authority :
-            node.authority.split('-').length === 2 ? node.authority.split('-')[1] : 
+            node.authority.split('-').length === 2 ? node.authority.split('-')[1].substring(0,node.authority.split('-')[1].length - 1) : 
             node.authority.split('-').length === 3 ? node.authority.split('-')[2] : node.authority.split('-')[3]})
           </Typography>
         </div>

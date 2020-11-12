@@ -12,6 +12,7 @@ const RouteWithLayout = props => {
         Layout !== null ? (
           <Layout path={props.path}>
             <Component
+              client={props.client}
               authority={props.authority}
               getAuth={props.getAuth}
               user_id={props.user_id}

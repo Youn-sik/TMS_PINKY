@@ -43,11 +43,13 @@ const DeviceError = () => {
   const getErrors = async () => {
     setLoading(true);
     let result = await axios.get(base_url + `/glogs?type=error&date=${date[0]}/${date[1]}`);
-    result.data.reverse();
-    setOriginAcc(result.data);
-    setErrors(result.data);
     setLoading(false);
-    setSearch('');
+    if(result && result.data.length > 0) {
+      result.data.reverse();
+      setOriginAcc(result.data);
+      setErrors(result.data);
+      setSearch('');
+    }
   }
 
   const _setSearch = value => {

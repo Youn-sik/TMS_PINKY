@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   emq-master1:
-    image: idealistchanu/access:emqx3.1
+    image: emqx:latest
     environment:
       #- "EMQ_NAME=emq1"
       #- "EMQ_HOST=master1.mq.tt"
@@ -18,7 +18,7 @@ services:
       replicas: 1
 
   emq-worker1:
-    image: idealistchanu/access:emqx3.1
+    image: emqx:latest
     environment:
       #- "EMQ_JOIN_CLUSTER=emq@master1.mq.tt"
       #- "EMQ_NODE__COOKIE=ef16498f66804df1cc6172f6996d5492"

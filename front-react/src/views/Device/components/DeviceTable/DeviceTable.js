@@ -957,7 +957,7 @@ const DeviceTable = props => {
                       </TableCell>
                       <TableCell>{device.name}</TableCell>
                       <TableCell>{device.authority === 'admin' ? device.authority :
-                        device.authority.split('-').length === 2 ? device.authority.split('-')[1] : 
+                        device.authority.split('-').length === 2 ? device.authority.split('-')[1].substring(0,device.authority.split('-')[1].length - 1) : 
                         device.authority.split('-').length === 3 ? device.authority.split('-')[2] : device.authority.split('-')[3]}
                       </TableCell>
                       <TableCell>{device.serial_number}</TableCell>

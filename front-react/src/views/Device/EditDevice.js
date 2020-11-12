@@ -63,12 +63,6 @@ const EditDevice = props => {
     status: 'N',
     protocol: '1'
   });
-  const [gate, setGate] = useState([]);
-
-  const getGate = async () => {
-    let result = await axios.get(base_url + '/gateway');
-    setGate(result.data);
-  };
 
   const handleDeviceChange = event => {
     setDevice({
@@ -105,7 +99,6 @@ const EditDevice = props => {
       status: 'N'
     };
     setDevice(editedUser);
-    getGate();
   }, [deviceObject]);
 
   return (

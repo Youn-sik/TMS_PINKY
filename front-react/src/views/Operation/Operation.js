@@ -51,13 +51,15 @@ const Operation = props => {
 
   const getOper = useCallback(async (headerType = "-_id") => {
     let result = await axios.get(base_url + `/operation?date=${date[0]}/${date[1]}&headerType=${headerType}&page=${page}`);
-    let temp = parseInt(result.data.count/7)
+    if(result && result.data.data.length > 0){
+      let temp = parseInt(result.data.count/7)
 
-    if(parseInt(result.data.count%7))
-      temp++;
-    
-    setPages(temp);
-    setOper(result.data.data);
+      if(parseInt(result.data.count%7))
+        temp++;
+      
+      setPages(temp);
+      setOper(result.data.data);
+    }
     setLoading(false);
   }, [page,date]);
 

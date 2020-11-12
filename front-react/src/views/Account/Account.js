@@ -268,9 +268,11 @@ const Account = props => {
     let result = await axios.get(
       base_url + '/account?authority=' + props.authority
     );
-    setAccounts(result.data);
+    if(result && result.data.length > 0) {
+      setAccounts(result.data);
+      setAccountsSearch('');
+    }
     setLoading(false);
-    setAccountsSearch('');
   }
 
   const deleteAccounts = async selectedAccounts => {

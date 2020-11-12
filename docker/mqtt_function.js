@@ -21,6 +21,7 @@ Promise.all([
     faceapi.nets.ssdMobilenetv1.loadFromDisk(`${__dirname}/schema/face-models/`),
     faceapi.nets.faceRecognitionNet.loadFromDisk(`${__dirname}/schema/face-models/`),
     faceapi.nets.faceLandmark68Net.loadFromDisk(`${__dirname}/schema/face-models/`),
+    faceapi.nets.tinyFaceDetector.loadFromDisk(`${__dirname}/schema/face-models/`),
     faceapi.env.monkeyPatch({ Canvas, Image, ImageData,fetch: fetch }),
 ])
 const mqtt_option = {
@@ -446,11 +447,15 @@ module.exports = {
             let camera = await Camera.findOne( { serial_number : json.stb_sn });
             let auth = camera.authority === 'admin' ? new RegExp('') : new RegExp("^"+camera.authority)
             let Users = await User.find().regex('authority',auth)
+            let isHighTemp = false
             if(camera) {
                 json.values.forEach(async function(element){
                     if(element.avatar_distance === undefined) {
                         element.avatar_distance = 0
                     }
+
+                    if(element.avatar_temperature >= "37.5")
+                        isHighTemp = true;
                     
 
                     // const img = new Image();
@@ -459,9 +464,15 @@ module.exports = {
                 const img = new Image();
                 img.src = "data:image/png;base64,"+element.avatar_file
 
-                let detections = await faceapi.detectSingleFace(img)
+                let detections = await faceapi.detectSingleFace(img,new faceapi.SsdMobilenetv1Options({ minConfidence: 0.3 }))
                 .withFaceLandmarks()
                 .withFaceDescriptor();
+                
+                if(img.width*img.height < 13000) {
+                    detections = await faceapi.detectSingleFace(img,new faceapi.TinyFaceDetectorOptions({ inputSize: 608 }))
+                    .withFaceLandmarks()
+                    .withFaceDescriptor();
+                }
 
                 let userName = "unknown";
                 let user_obid = '';
@@ -497,6 +508,7 @@ module.exports = {
                             user_obid = userData[10]
                         }
                     }
+                }  
                     
                     let avatar_type = element.avatar_type === 5 ? 4 : element.avatar_type
                     let folder_date_path = "/uploads/accesss/temp/" + moment().format('YYYYMMDD');
@@ -600,7 +612,6 @@ module.exports = {
                             
                         })
                     }
-                }  
             })
             
                 await Access.insertMany(insert_array)
@@ -609,8 +620,10 @@ module.exports = {
                     stb_sn: json.stb_sn,
                     values: insert_array
                 };
-
-                // avatar_temperature name avatar_file_url access_time avatar_type
+                
+                if(isHighTemp)
+                    client.publish('/access/high_temp_realtime/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);    
+                
                 client.publish('/access/realtime/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
             }
 

@@ -181,6 +181,7 @@ const UsersTable = props => {
   };
 
   useEffect(() => {
+    console.log(users);
     setSelectedObject([])
     setSelected([])
   },[page])

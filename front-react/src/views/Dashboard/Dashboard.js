@@ -18,12 +18,17 @@ import {
 } from './components';
 import './Dashboard.css';
 import {base_url,mqtt_url} from 'server.json'
+import { useSnackbar } from 'notistack';
 
-const client = mqtt.connect('ws://'+mqtt_url+':8083/mqtt');
+let message = false;
 
-client.on('connect', () => {
-  client.subscribe('/access/realtime/result/+');
-});
+// const client = mqtt.connect('ws://'+mqtt_url+':8083/mqtt');
+
+// client.on('connect', () => {
+//   console.log('test');
+//   client.subscribe('/access/realtime/result/+');
+//   client.subscribe('/access/high_temp_realtime/result/+');
+// });
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -70,52 +75,60 @@ const Dashboard = props => {
   async function countWeekAccess() {
     let result = await axios.get(base_url + '/access?type=weekStatistics&auth='+props.authority);
     setLoading(false);
-    result.data.map(i => {
-      if (i._id.type === 1) setEmployeeWeek(i.count);
-      else if (i._id.type === 2) setVisitorWeek(i.count);
-      else if (i._id.type === 3) setStrangerWeek(i.count);
-      else if (i._id.type === 4) setBlackWeek(i.count);
-      return false;
-    });
+    if(result && result.data.length > 0) {
+      result.data.map(i => {
+        if (i._id.type === 1) setEmployeeWeek(i.count);
+        else if (i._id.type === 2) setVisitorWeek(i.count);
+        else if (i._id.type === 3) setStrangerWeek(i.count);
+        else if (i._id.type === 4) setBlackWeek(i.count);
+        return false;
+      });
+    }
   }
 
   async function countAccess() {
     let result = await axios.get(base_url + '/access?type=todayStatistics&auth='+props.authority);
     setLoading(false);
-    result.data.map(i => {
-      if (i._id.type === 1) setEmployee(i.count);
-      else if (i._id.type === 2) setVisitor(i.count);
-      else if (i._id.type === 3) setStranger(i.count);
-      else if (i._id.type === 4) setBlack(i.count);
-      return false;
-    });
+    if(result && result.data.length > 0) {
+      result.data.map(i => {
+        if (i._id.type === 1) setEmployee(i.count);
+        else if (i._id.type === 2) setVisitor(i.count);
+        else if (i._id.type === 3) setStranger(i.count);
+        else if (i._id.type === 4) setBlack(i.count);
+        return false;
+      });
+    }
   }
 
   async function deviceState() {
     let result = await axios.get(base_url + '/camera', {
       params: { authority: props.authority }
     });
-    result.data.map(i => {
-      if (i.status === 'Y') {
-        setOn(on => on + 1);
-      } else {
-        setOff(off => off + 1);
-      }
-      return false;
-    });
+    if(result && result.data.length > 0) {
+      result.data.map(i => {
+        if (i.status === 'Y') {
+          setOn(on => on + 1);
+        } else {
+          setOff(off => off + 1);
+        }
+        return false;
+      });
+    }
   }
 
   async function attendanceChart() {
     let result = await axios.get(base_url + '/access?type=todayAttendance&auth='+props.authority);
     setAttendanceData(result.data);
-    result.data.map(i => {
-      if (i.access_time.split(' ')[1] <= '09:00:00') {
-        setAttendance(attendance => attendance + 1);
-      } else {
-        setLate(late => late + 1);
-      }
-      return false;
-    });
+    if(result && result.data.length > 0) {
+      result.data.map(i => {
+        if (i.access_time.split(' ')[1] <= '09:00:00') {
+          setAttendance(attendance => attendance + 1);
+        } else {
+          setLate(late => late + 1);
+        }
+        return false;
+      });
+    }
   }
   async function device_errors() {
     let result = await axios.get(base_url + '/glogs?type=limit5errors&auth='+props.authority);
@@ -124,7 +137,9 @@ const Dashboard = props => {
 
   async function temp_alerts() {
     let result = await axios.get(base_url + '/access?type=temperature&auth='+props.authority);
-    setTemp(result.data);
+    if(result && result.data.length > 0) {
+      setTemp(result.data);
+    }
   }
 
   useEffect(() => {
@@ -188,24 +203,35 @@ const Dashboard = props => {
     countAccess();
     deviceState();
     attendanceChart();
-    device_errors();
+    // device_errors();
     temp_alerts();
   }, []);
 
   useEffect(() => {
-    client.on('message', function(topic, message) {
-      if (topic.indexOf('/access/realtime/result/') > -1) {
-        let result = JSON.parse(message.toString()).values
-        let auth = result[0].authority.split('-')
-        if(props.authority === 'admin') {
-          _setRealtime(result);
-        } else if(result[0].authority === props.authority) {
-          _setRealtime(result);
-        } else if (props.authority === auth[0]+"-"+auth[1]) {
-          _setRealtime(result);
+    // if(!message){
+    //   message = true
+      props.client.on('message', function(topic, message) {
+        // if (topic.indexOf('/access/high_temp_realtime/result/') > -1) {
+        //   let result = JSON.parse(message.toString()).values
+        //   enqueueSnackbar(`${result[0].stb_location}에서 고발열자(${String(result[0].avatar_temperature).substring(0,4)}℃)가 탐지 되었습니다.`,{ variant: 'error'});
+        // } else 
+        if (topic.indexOf('/access/realtime/result/') > -1) {
+          // console.log('realtime');
+          let result = JSON.parse(message.toString()).values
+          let auth = result[0].authority.split('-')
+          if(props.authority === 'admin') {
+            _setRealtime(result);
+          } else if(result[0].authority === props.authority) {
+            _setRealtime(result);
+          } else if (props.authority === auth[0]+"-"+auth[1]) {
+            _setRealtime(result);
+          }
         }
-      }
-    });
+      });
+    // }
+    // props.client.on('message', function(topic, message) {
+      
+    // });
   }, []);
 
   return (
