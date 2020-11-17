@@ -15,6 +15,7 @@ const tf = require('@tensorflow/tfjs-node');
 const faceapi = require('face-api.js');
 const fetch = require('node-fetch')
 var asyncJSON = require('async-json');
+const Jimp = require('jimp');
 
 var fs = require('fs')
 var moment = require('moment');
@@ -121,10 +122,10 @@ router.post('/',async function(req, res) {
                 let cpDir = "/var/www/backend/image/"+dir.split('/')[6]
                 fs.copyFileSync(oriDir, cpDir);
                 add.avatar_file_url = 'http://'+req.headers.host+'/image/'+dir.split('/')[6]
-                const image = await resizeImg(fs.readFileSync("/var/www/backend/image/"+dir.split('/')[6]), {
-                    width: 140,
-                    height: 200
-                });
+                // const image = await resizeImg(fs.readFileSync("/var/www/backend/image/"+dir.split('/')[6]), {
+                //     width: 140,
+                //     height: 200
+                // });
                 fs.writeFileSync("/var/www/backend/image/"+dir.split('/')[6], image);
                 let imageDir = await canvas.loadImage('http://'+req.headers.host+'/image/'+dir.split('/')[6])
                 detections = await faceapi.detectSingleFace(imageDir,new faceapi.SsdMobilenetv1Options({ minConfidence: 0.3 }))
@@ -133,30 +134,42 @@ router.post('/',async function(req, res) {
             } else {
                 add.avatar_file_url = 'http://'+req.headers.host+'/image/'+add._id+'profile.jpg';
                 fs.writeFileSync('/var/www/backend/image/'+add._id+'profile.jpg',req.body.avatar_file,'base64')
-                // const image = await resizeImg(fs.readFileSync('/var/www/backend/image/'+add._id+'profile.jpg'), {
-                //     width: 140,
-                //     height: 200
-                // });
-                // fs.writeFileSync('/var/www/backend/image/'+add._id+'profile.jpg', image);
-                let result = execSync(`python /var/www/backend/face_cut/face_cut.py -f /var/www/backend/image/${add._id}profile.jpg -o /var/www/backend/image/face_cut_${add._id}profile.jpg`)
-                
-                if(result === 'detecting failed'){
-                    fs.unlinkSync('/var/www/backend/image/face_cut_'+add._id+'profile.jpg')
-                    fs.unlinkSync('/var/www/backend/image/'+add._id+'profile.jpg')
+                execSync(`python /var/www/backend/face_cut/align_face.py -f /var/www/backend/image/${add._id}profile.jpg -o /var/www/backend/image/face_cut_${add._id}profile.jpg`)
+                let brightness = execSync(`python /var/www/backend/face_cut/get_brightness.py -f /var/www/backend/image/face_cut_${add._id}profile.jpg`)
+                brightness = brightness.toString()
+
+                if(brightness === "파일이 존재 하지 않습니다.\n") {
+                    fs.unlink('/var/www/backend/image/'+add._id+'profile.jpg',()=>{})
                     res.send({result:"인식할수 없는 사진."})
                     return false;
                 }
-                let imageDir = await canvas.loadImage('/var/www/backend/image/face_cut_'+add._id+'profile.jpg')
-                detections = await faceapi.detectSingleFace(imageDir,new faceapi.SsdMobilenetv1Options({ minConfidence: 0.1}))
+
+                let temp = 0.0
+                if(brightness < '100')
+                    temp = 0.3
+                else if(brightness < '120')
+                    temp = 0.2
+                else if(brightness < '130')
+                    temp = 0.1
+
+                let image = await Jimp.read(`/var/www/backend/image/face_cut_${add._id}profile.jpg`)//Jimp불러오기
+                image.brightness(temp)//명도조절
+                let result = await image.getBase64Async('image/png');
+                result = result.replace('data:image/png;base64,','')
+
+                const img = new Image();
+                img.src = "data:image/png;base64,"+ result
+
+                detections = await faceapi.detectSingleFace(img,new faceapi.SsdMobilenetv1Options({ minConfidence: 0.1}))
                 .withFaceLandmarks()
                 .withFaceDescriptor();
-                fs.unlinkSync('/var/www/backend/image/face_cut_'+add._id+'profile.jpg')
+                fs.unlink('/var/www/backend/image/face_cut_'+add._id+'profile.jpg',()=>{})
             }
 
             if(!detections) {
-                fs.unlinkSync('/var/www/backend/image/'+add._id+'profile.jpg')
+                fs.unlink('/var/www/backend/image/'+add._id+'profile.jpg',()=>{})
                 if(dir)
-                    fs.unlinkSync("/var/www/backend/image/"+dir.split('/')[6])
+                    fs.unlink("/var/www/backend/image/"+dir.split('/')[6],()=>{})
                 res.send({
                     result:"인식할수 없는 사진."
                 })

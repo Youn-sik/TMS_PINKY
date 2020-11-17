@@ -41,7 +41,9 @@ app.use(cors())
 
 //auth middle-ware
 app.use(function (req, res, next) {
-    if (req.path !== '/login' && req.headers.authorization && req.headers.authorization !== 'undefined') {
+    if(req.path.indexOf('/api-docs') > -1 ){
+        next()
+    } else if (req.path !== '/login' && req.headers.authorization && req.headers.authorization !== 'undefined') {
         req.headers.authorization = req.headers.authorization.replace('Bearer ','');
         const token = req.headers.authorization;
         jwt.verify(token, 'jjh', (err) => {

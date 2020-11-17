@@ -208,15 +208,8 @@ const Dashboard = props => {
   }, []);
 
   useEffect(() => {
-    // if(!message){
-    //   message = true
       props.client.on('message', function(topic, message) {
-        // if (topic.indexOf('/access/high_temp_realtime/result/') > -1) {
-        //   let result = JSON.parse(message.toString()).values
-        //   enqueueSnackbar(`${result[0].stb_location}에서 고발열자(${String(result[0].avatar_temperature).substring(0,4)}℃)가 탐지 되었습니다.`,{ variant: 'error'});
-        // } else 
         if (topic.indexOf('/access/realtime/result/') > -1) {
-          // console.log('realtime');
           let result = JSON.parse(message.toString()).values
           let auth = result[0].authority.split('-')
           if(props.authority === 'admin') {
@@ -228,10 +221,6 @@ const Dashboard = props => {
           }
         }
       });
-    // }
-    // props.client.on('message', function(topic, message) {
-      
-    // });
   }, []);
 
   return (

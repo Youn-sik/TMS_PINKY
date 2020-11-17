@@ -7,6 +7,7 @@ var moment = require('moment');
 require('moment-timezone'); 
 moment.tz.setDefault("Asia/Seoul"); 
 const mkdirp = require('mkdirp');
+const execSync = require('child_process').execSync;
 const client = require('./mqtt_load');
 const canvas = require("canvas");
 const { loadImage, Canvas, Image, ImageData } = canvas;
@@ -15,6 +16,7 @@ var asyncJSON = require('async-json');
 const tf = require('@tensorflow/tfjs-node');
 //require('@tensorflow/tfjs-backend-webgl');
 const faceapi = require('@vladmandic/face-api');
+const Jimp = require('jimp');
 
 Promise.all([
     // tf.setBackend('webgl'),
@@ -450,32 +452,55 @@ module.exports = {
             let isHighTemp = false
             if(camera) {
                 json.values.forEach(async function(element){
+
                     if(element.avatar_distance === undefined) {
                         element.avatar_distance = 0
                     }
 
                     if(element.avatar_temperature >= "37.5")
                         isHighTemp = true;
-                    
 
-                    // const img = new Image();
-                    // img.src = "data:image/png;base64,"+element.avatar_file
+                let buff = Buffer.from(element.avatar_file, 'base64');
+                let folder_date_path = "/uploads/accesss/temp/" + moment().format('YYYYMMDD');
+                let file_path = site.base_server_document + folder_date_path + "/" + json.stb_sn + "/";
+                mkdirp.sync(file_path);    
+                let temp_file = site.base_server_document + folder_date_path + "/" + json.stb_sn + "/" +"temp_file_"+ moment().format('YYYYMMDDHHmmss') + ".png"
+                let output = temp_file.replace("temp_file_","face_cut_")
+                fs.writeFileSync(temp_file, buff, 'utf-8')
 
-                const img = new Image();
-                img.src = "data:image/png;base64,"+element.avatar_file
+                execSync(`python /var/www/backend/face_cut/align_face.py -f ${temp_file} -o ${output}`)
+                let brightness = execSync(`python /var/www/backend/face_cut/get_brightness.py -f ${output}`)
+                brightness = brightness.toString()
 
-                let detections = await faceapi.detectSingleFace(img,new faceapi.SsdMobilenetv1Options({ minConfidence: 0.3 }))
-                .withFaceLandmarks()
-                .withFaceDescriptor();
+                let temp = 0.0
+                if(brightness < '100')
+                    temp = 0.3
+                else if(brightness < '120')
+                    temp = 0.2
+                else if(brightness < '130')
+                    temp = 0.1
                 
-                if(img.width*img.height < 13000) {
-                    detections = await faceapi.detectSingleFace(img,new faceapi.TinyFaceDetectorOptions({ inputSize: 608 }))
+                let detections = undefined
+                if(brightness !== "파일이 존재 하지 않습니다.\n"){
+                    let image = await Jimp.read(output)//Jimp불러오기
+                    image.brightness(temp)//명도조절
+                    let result = await image.getBase64Async('image/png');
+                    result = result.replace('data:image/png;base64,','')
+                    
+                    fs.unlink(temp_file,()=>{})
+                    fs.unlink(output,()=>{})
+
+                    const img = new Image();
+                    img.src = "data:image/png;base64,"+ result
+
+                    detections = await faceapi.detectSingleFace(img,new faceapi.SsdMobilenetv1Options({ minConfidence: 0.1 }))
                     .withFaceLandmarks()
                     .withFaceDescriptor();
                 }
 
                 let userName = "unknown";
                 let user_obid = '';
+
                 if(detections) {
                     if(Users.length > 0) {
                         const labeledDescriptors = await Promise.all(
@@ -500,24 +525,46 @@ module.exports = {
                         );
 
                         const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.5)
+                
                         const bestMatch = faceMatcher.findBestMatch(detections.descriptor)
-                        if(bestMatch._distance < 0.4 && bestMatch._label !== 'unknown') {
+
+                        console.log("1",bestMatch._distance)
+                        if(bestMatch._distance < 0.43 && bestMatch._label !== 'unknown') {
                             let userData = bestMatch._label.split('|')
                             userName = userData[0]
                             element.avatar_type = parseInt(userData[7])
                             user_obid = userData[10]
+                        } else {
+                            let image = await Jimp.read(buff)//Jimp불러오기
+                            image.brightness(0.3)//명도조절
+                            let result = await image.getBase64Async('image/png');
+                            result = result.replace('data:image/png;base64,','')
+
+                            const img2 = new Image();
+                            img2.src = "data:image/png;base64,"+ element.avatar_file
+
+                            let detections2 = await faceapi.detectSingleFace(img2,new faceapi.SsdMobilenetv1Options({ minConfidence: 0.3 }))
+                            .withFaceLandmarks()
+                            .withFaceDescriptor();
+
+                            if(detections2) {
+                                const bestMatch2 = faceMatcher.findBestMatch(detections2.descriptor)
+                                console.log("2",bestMatch2._distance)
+                                if(bestMatch2._distance < 0.43 && bestMatch2._label !== 'unknown') {
+                                    let userData = bestMatch2._label.split('|')
+                                    userName = userData[0]
+                                    element.avatar_type = parseInt(userData[7])
+                                    user_obid = userData[10]
+                                }
+                            }
                         }
                     }
                 }  
-                    
-                    let avatar_type = element.avatar_type === 5 ? 4 : element.avatar_type
-                    let folder_date_path = "/uploads/accesss/temp/" + moment().format('YYYYMMDD');
-                    let file_name = json.stb_sn +"_"+userName+"_"+avatar_type+ "_"+element.avatar_temperature+"_"+ + moment().format('YYYYMMDDHHmmss') + ".png";
-                    let file_path = site.base_server_document + folder_date_path + "/" + json.stb_sn + "/";
-                    let upload_url = "http://"+server_ip+ ':3000' + folder_date_path + "/" + json.stb_sn + "/" + file_name;
-                    let buff = Buffer.from(element.avatar_file, 'base64');
-                    mkdirp.sync(file_path);
-                    fs.writeFileSync(file_path + file_name, buff, 'utf-8')
+                let avatar_type = element.avatar_type === 5 ? 4 : element.avatar_type
+                let file_name = json.stb_sn +"_"+userName+"_"+avatar_type+ "_"+element.avatar_temperature+"_"+ + moment().format('YYYYMMDDHHmmss') + ".png";
+                let upload_url = "http://"+server_ip+ ':3000' + folder_date_path + "/" + json.stb_sn + "/" + file_name;
+                
+                fs.writeFileSync(file_path + file_name, buff, 'utf-8')
 
                     insert_data = {
                         avatar_file : 'avatar_file',
@@ -541,10 +588,6 @@ module.exports = {
                     let todayStatistics = await Statistics.findOne()
                     .where('camera_obid').equals(camera._id)
                     .where('access_date').equals(moment().format('YYYY-MM-DD'));
-
-                    // let todayStatisticsTemp = await Statistics_temp.findOne()
-                    // .where('camera_obid').equals(camera._id)
-                    // .where('access_date').equals(moment().format('YYYY-MM-DD'));
                     
                     let hours = moment().format('HH:mm:ss').split(':')[0];
                     if(hours[0] === '0') hours = hours.replace('0','');
@@ -553,8 +596,6 @@ module.exports = {
                     if(element.avatar_type === 1) type = 'employee';
                     else if(element.avatar_type === 5) type = 'black';
                     
-                    
-
                     if(todayStatistics === null) {
                         todayStatistics = new Statistics({
                             camera_obid : camera._id,
@@ -570,36 +611,6 @@ module.exports = {
                             [type] : 1
                         })
                         todayStatistics.save()
-
-                        // todayStatisticsTemp = new Statistics_temp({
-                        //     camera_obid : camera._id,
-                        //     authority : camera.authority,
-                        //     serial_number : json.stb_sn,
-                        //     access_date: moment().format('YYYY-MM-DD'),
-                        //     [hours] : `${userName}|${element.avatar_temperature}|${element.avatar_type === 5 ? 4 : element.avatar_type}|${upload_url}`,
-                        // })
-
-                        // todayStatisticsTemp.save();
-                    // } else if(element.avatar_temperature > todayStatisticsTemp[hours].split('|')[1]){
-                    //     await Statistics.findByIdAndUpdate(todayStatistics._id,{ 
-                    //         $inc: { 
-                    //             all_count: 1,
-                    //             [hours] : 1,
-                    //             [type] : 1
-                    //         }
-                    //     },
-                    //     {
-                            
-                    //     })
-
-                    //     await Statistics_temp.findByIdAndUpdate(todayStatisticsTemp._id,{ 
-                    //         $set: {
-                    //             [hours] : `${userName}|${element.avatar_temperature}|${element.avatar_type === 5 ? 4 : element.avatar_type}|${upload_url}`
-                    //         }
-                    //     },
-                    //     {
-                            
-                    //     })
                     } else {
                         await Statistics.findByIdAndUpdate(todayStatistics._id,{ 
                             $inc: { 
@@ -612,27 +623,19 @@ module.exports = {
                             
                         })
                     }
-            })
-            
-                await Access.insertMany(insert_array)
+                    await Access.insertMany(insert_array)
 
-                send_data = {
-                    stb_sn: json.stb_sn,
-                    values: insert_array
-                };
-                
-                if(isHighTemp)
-                    client.publish('/access/high_temp_realtime/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);    
-                
-                client.publish('/access/realtime/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
+                    send_data = {
+                        stb_sn: json.stb_sn,
+                        values: insert_array
+                    };
+                    
+                    if(isHighTemp)
+                        client.publish('/access/high_temp_realtime/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);    
+                    
+                    client.publish('/access/realtime/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
+                })
             }
-
-            // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 7, log_message: 'realtime_access', create_dt: json.create_time });
-            // newGlogs.save(function (error, data) {
-            //     if (error) {
-            //         console.log(error);
-            //     }
-            // });
         } catch (error) {
             console.log(error);
         }

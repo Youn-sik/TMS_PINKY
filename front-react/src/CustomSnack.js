@@ -72,7 +72,6 @@ const SnackMessage = React.forwardRef((props, ref) => {
     };
 
     const moveAccessRecords = () => {
-        console.log(props.path)
         if(props.path === '/access/records')
             props.history.go(0)
         else
@@ -84,7 +83,7 @@ const SnackMessage = React.forwardRef((props, ref) => {
             <Card className={classes.card}>
                 <CardActions classes={{ root: classes.actionRoot }}>
                     <Typography variant="subtitle2" className={classes.typography}>{props.message.split("|")[0]}</Typography>
-                    <div className={classes.icons}>
+                    <div className={classes.icons} style={{float:"right"}}>
                         <IconButton
                             aria-label="Show more"
                             className={classnames(classes.expand, { [classes.expandOpen]: expanded })}
@@ -100,8 +99,8 @@ const SnackMessage = React.forwardRef((props, ref) => {
                 <Collapse in={expanded} timeout="auto" unmountOnExit>
                     <Paper className={classes.collapse} style={{textAlign: 'center'}}>
                         <Typography gutterBottom style={{fontWeight: 'bold',float: 'left',}}>인식된 사진</Typography>
-                        <Typography gutterBottom style={{fontWeight: 'bold',float: 'right',cursor: 'pointer'}} onClick={moveAccessRecords}>자세히 보기</Typography>
-                        <img style={{ width: '100%',maxHeight: '70vh'}} src={props.message.split('|')[1]}></img>
+                        <Typography gutterBottom style={{fontWeight: 'bold',float: 'right',cursor: 'pointer'}} onClick={moveAccessRecords}>자세히 보기</Typography><br/>
+                        <img style={{maxWidth: '50vw', width: '100%',maxHeight: '70vh'}} src={props.message.split('|')[1]}></img>
                     </Paper>
                 </Collapse>
             </Card>
