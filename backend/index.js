@@ -184,18 +184,19 @@ app.put('/schedule',(req,res) => {
 //사진보관 기간 설정
 let term = 28; //기본 보관 날짜 28일 4주
 let s = schedule.scheduleJob('0 0 0 * * *', async function(){//스케쥴 설정
+    // console.log('test')
     let dateTime = moment().subtract(term-1,'days').format('YYYY-MM-DD') + " 00:00:00"//moment 보관 기간 만큼을 뺀 날짜
     let date = moment().subtract(term,'days').format('YYYYMMDD')
 
     let accesses = []
 
     //DB삭제
-    Access.deleteMany({
+    await Access.deleteMany({
         access_time : {$lt:dateTime}
     })
 
     //사진 삭제
-    exec(`find /var/www/backend/uploads/accesss/temp/ -name ${date} -type d | xargs -0 rm`)
+    exec(`find /var/www/backend/uploads/accesss/temp/ -mindepth 1 -maxdepth 1 -mtime +${term - 1} -type d -exec rm -rf {} \\;`)
 });
 
 

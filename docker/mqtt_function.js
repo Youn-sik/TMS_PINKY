@@ -15,7 +15,7 @@ const fetch = require('node-fetch')
 var asyncJSON = require('async-json');
 const tf = require('@tensorflow/tfjs-node');
 //require('@tensorflow/tfjs-backend-webgl');
-const faceapi = require('@vladmandic/face-api');
+const faceapi = require('face-api.js');
 const Jimp = require('jimp');
 
 Promise.all([
@@ -24,6 +24,7 @@ Promise.all([
     faceapi.nets.faceRecognitionNet.loadFromDisk(`${__dirname}/schema/face-models/`),
     faceapi.nets.faceLandmark68Net.loadFromDisk(`${__dirname}/schema/face-models/`),
     faceapi.nets.tinyFaceDetector.loadFromDisk(`${__dirname}/schema/face-models/`),
+    faceapi.nets.mtcnn.loadFromDisk(`${__dirname}/schema/face-models/`),
     faceapi.env.monkeyPatch({ Canvas, Image, ImageData,fetch: fetch }),
 ])
 const mqtt_option = {
@@ -467,41 +468,46 @@ module.exports = {
                 let temp_file = site.base_server_document + folder_date_path + "/" + json.stb_sn + "/" +"temp_file_"+ moment().format('YYYYMMDDHHmmss') + ".png"
                 let output = temp_file.replace("temp_file_","face_cut_")
                 fs.writeFileSync(temp_file, buff, 'utf-8')
-
-                execSync(`python /var/www/backend/face_cut/align_face.py -f ${temp_file} -o ${output}`)
+                try{
+                    execSync(`python /var/www/backend/face_cut/align_face.py -f ${temp_file} -o ${output}`)
+                } finally {
+                    fs.unlink(temp_file,()=>{})
+                }
                 let brightness = execSync(`python /var/www/backend/face_cut/get_brightness.py -f ${output}`)
                 brightness = brightness.toString()
 
                 let temp = 0.0
                 if(brightness < '100')
-                    temp = 0.3
-                else if(brightness < '120')
                     temp = 0.2
-                else if(brightness < '130')
+                else if(brightness < '125')
                     temp = 0.1
                 
-                let detections = undefined
+                // let detections = undefined
+                let descriptor;
                 if(brightness !== "파일이 존재 하지 않습니다.\n"){
                     let image = await Jimp.read(output)//Jimp불러오기
                     image.brightness(temp)//명도조절
                     let result = await image.getBase64Async('image/png');
                     result = result.replace('data:image/png;base64,','')
                     
-                    fs.unlink(temp_file,()=>{})
                     fs.unlink(output,()=>{})
 
                     const img = new Image();
                     img.src = "data:image/png;base64,"+ result
 
-                    detections = await faceapi.detectSingleFace(img,new faceapi.SsdMobilenetv1Options({ minConfidence: 0.1 }))
-                    .withFaceLandmarks()
-                    .withFaceDescriptor();
+                    buff = Buffer.from(result, 'base64');
+
+                    // detections = await faceapi.detectSingleFace(img,new faceapi.SsdMobilenetv1Options({ minConfidence: 0.1 }))
+                    // .withFaceLandmarks()
+                    // .withFaceDescriptor();
+
+                    descriptor = await faceapi.computeFaceDescriptor(img)
                 }
 
                 let userName = "unknown";
                 let user_obid = '';
 
-                if(detections) {
+                if(descriptor) {
                     if(Users.length > 0) {
                         const labeledDescriptors = await Promise.all(
                             Users.map(async user => {
@@ -526,31 +532,32 @@ module.exports = {
 
                         const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.5)
                 
-                        const bestMatch = faceMatcher.findBestMatch(detections.descriptor)
+                        const bestMatch = faceMatcher.findBestMatch(descriptor)
+                        console.log("1",bestMatch._distance,bestMatch._label)
 
-                        console.log("1",bestMatch._distance)
-                        if(bestMatch._distance < 0.43 && bestMatch._label !== 'unknown') {
+                        if(bestMatch._distance <= 0.425 && bestMatch._label !== 'unknown') {
                             let userData = bestMatch._label.split('|')
                             userName = userData[0]
                             element.avatar_type = parseInt(userData[7])
                             user_obid = userData[10]
                         } else {
-                            let image = await Jimp.read(buff)//Jimp불러오기
-                            image.brightness(0.3)//명도조절
-                            let result = await image.getBase64Async('image/png');
-                            result = result.replace('data:image/png;base64,','')
+                            // let image = await Jimp.read(buff)//Jimp불러오기
+                            // image.brightness(temp)//명도조절
+                            // let result = await image.getBase64Async('image/png');
+                            // result = result.replace('data:image/png;base64,','')
 
                             const img2 = new Image();
                             img2.src = "data:image/png;base64,"+ element.avatar_file
 
-                            let detections2 = await faceapi.detectSingleFace(img2,new faceapi.SsdMobilenetv1Options({ minConfidence: 0.3 }))
-                            .withFaceLandmarks()
-                            .withFaceDescriptor();
+                            // let detections2 = await faceapi.detectSingleFace(img2,new faceapi.SsdMobilenetv1Options({ minConfidence: 0.3 }))
+                            // .withFaceLandmarks()
+                            // .withFaceDescriptor();
+                            let descriptor = await faceapi.computeFaceDescriptor(img2)
 
-                            if(detections2) {
-                                const bestMatch2 = faceMatcher.findBestMatch(detections2.descriptor)
-                                console.log("2",bestMatch2._distance)
-                                if(bestMatch2._distance < 0.43 && bestMatch2._label !== 'unknown') {
+                            if(descriptor) {
+                                const bestMatch2 = faceMatcher.findBestMatch(descriptor)
+                                console.log("2",bestMatch2._distance,bestMatch2._label)
+                                if(bestMatch2._distance <= 0.425 && bestMatch2._label !== 'unknown') {
                                     let userData = bestMatch2._label.split('|')
                                     userName = userData[0]
                                     element.avatar_type = parseInt(userData[7])
@@ -559,10 +566,12 @@ module.exports = {
                             }
                         }
                     }
-                }  
+                } 
+                fs.unlink(temp_file,()=>{})
+                fs.unlink(output,()=>{})
                 let avatar_type = element.avatar_type === 5 ? 4 : element.avatar_type
                 let file_name = json.stb_sn +"_"+userName+"_"+avatar_type+ "_"+element.avatar_temperature+"_"+ + moment().format('YYYYMMDDHHmmss') + ".png";
-                let upload_url = "http://"+server_ip+ ':3000' + folder_date_path + "/" + json.stb_sn + "/" + file_name;
+                let upload_url = "http://"+server_ip+ ':3000' + folder_date_path + "/" + json.stb_sn + "/" +file_name;
                 
                 fs.writeFileSync(file_path + file_name, buff, 'utf-8')
 

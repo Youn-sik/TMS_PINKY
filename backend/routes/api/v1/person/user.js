@@ -146,10 +146,8 @@ router.post('/',async function(req, res) {
 
                 let temp = 0.0
                 if(brightness < '100')
-                    temp = 0.3
-                else if(brightness < '120')
                     temp = 0.2
-                else if(brightness < '130')
+                else if(brightness < '120')
                     temp = 0.1
 
                 let image = await Jimp.read(`/var/www/backend/image/face_cut_${add._id}profile.jpg`)//Jimp불러오기

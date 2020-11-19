@@ -600,7 +600,7 @@ const DeviceTable = props => {
             </div>
           ) : (
             <div>
-              <Button
+              {/* <Button
                 variant="contained"
                 onClick={() => {
                   devicesMqttPubl('capture_start');
@@ -642,7 +642,7 @@ const DeviceTable = props => {
                 온도 조절
               </Button>
               <br />
-              <br />
+              <br /> */}
               <Button
                 variant="contained"
                 onClick={() => {
@@ -663,7 +663,7 @@ const DeviceTable = props => {
                 color="primary">
                 SD카드 삭제
               </Button>
-              <br />
+              {/* <br />
               <br />
               <Button
                 variant="contained"
@@ -708,7 +708,7 @@ const DeviceTable = props => {
                 SD카드 미사용 파일 삭제
               </Button>
               <br />
-              <br />
+              <br /> */}
             </div>
           )}
           {/* </DialogContentText> */}
