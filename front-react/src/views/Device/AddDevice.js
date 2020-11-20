@@ -106,7 +106,8 @@ const AddDevice = props => {
       let result = await axios.post(base_url + '/camera', {
         ...device,
         account: props.user_id,
-        authority: props.authority
+        authority: props.authority,
+        operation_auth: props.authority
       });
 
       if(result.data.error) {

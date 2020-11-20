@@ -252,7 +252,8 @@ const EditBlack = props => {
       account: props.user_id,
       clicked_groups:
         node._id !== undefined ? [node._id] : userObject[0].groups_obids,
-      avatar_file: base64 ? base64 : userObject[0].avatar_file
+      avatar_file: base64 ? base64 : userObject[0].avatar_file,
+      operation_auth: props.authority
     });
 
     if(result.data.result && result.data.result === '인식할수 없는 사진.') {

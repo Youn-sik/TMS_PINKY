@@ -351,7 +351,8 @@ const Employee = props => {
       if (selectedDevice.length === 1) {
         await axios.delete(base_url + '/camera/' + selectedDevice[0]._id, {
           data: {
-            account: props.user_id
+            account: props.user_id,
+            operation_auth: props.authority
           }
         });
         let temp = device.filter(i => i._id !== selectedDevice[0]._id);
@@ -361,6 +362,7 @@ const Employee = props => {
           data: {
             account: props.user_id,
             devices: selectedDevice,
+            operation_auth: props.authority,
             list: selectedDevice.map(i => i._id)
           }
         });

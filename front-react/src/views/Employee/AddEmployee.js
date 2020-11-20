@@ -278,7 +278,8 @@ const AddEmployee = props => {
         groups_obids: [node._id ? node._id : undefined],
         account: props.user_id,
         authority : props.authority,
-        avatar_file: base64
+        avatar_file: base64,
+        operation_auth: props.authority
       });
       
       if(result.data.result && result.data.result === '인식할수 없는 사진.') {

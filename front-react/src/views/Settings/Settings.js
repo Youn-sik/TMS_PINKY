@@ -75,6 +75,7 @@ const Settings = props => {
       let info = props.user_id + "|" + props.authority + "|" + tempType + "|" + tempLimit
       info = info.toBase64();
       document.cookie = 'ACTKINFO='+info+";path=/;";
+      localStorage.setItem('temperature',String(tempLimit));
 
       alert('수정 되었습니다.');
     }

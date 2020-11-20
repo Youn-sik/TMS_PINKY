@@ -271,7 +271,8 @@ const Employee = props => {
         data: {
           type: 1,
           selectedData: selectedUsers,
-          account: props.user_id
+          account: props.user_id,
+          operation_auth: props.authority
         }
       });
       
@@ -293,7 +294,8 @@ const Employee = props => {
           selectedData: users,
           deleteAll:true,
           account: props.user_id,
-          count : usersCount
+          count : usersCount,
+          operation_auth: props.authority
         }
       });
       

@@ -45,12 +45,14 @@ router.post('/',async function (req, res) {
             id:req.body.account,
             action: '단말기 추가',
             date : moment().format('YYYY-MM-DD HH:mm:ss'),
-            description : add.serial_number +' 단말기 추가'
+            description : add.serial_number +' 단말기 추가',
+            authority : req.body.operation_auth
         })
         operation.save();
         await add.save()
         res.send(add)
     } catch (err) {
+        console.log(err);
         // res.status(400).send({err:"잘못된 형식 입니다."})
         res.send({'error':'중복되는 시리얼 넘버'})
     }
@@ -65,7 +67,8 @@ router.put('/:id',async function(req, res) {
             id:req.body.account,
             action: '단말기 수정',
             date : moment().format('YYYY-MM-DD HH:mm:ss'),
-            description : update.serial_number +' 단말기 수정'
+            description : update.serial_number +' 단말기 수정',
+            authority : req.body.operation_auth
         })
         operation.save();
         res.send(update)
@@ -83,7 +86,8 @@ router.delete('/:id',async function(req, res) {
                 id:req.body.account,
                 action: '단말기 삭제',
                 date : moment().format('YYYY-MM-DD HH:mm:ss'),
-                description : delete_data.serial_number +' 단말기 삭제'
+                description : delete_data.serial_number +' 단말기 삭제',
+                authority : req.body.operation_auth
             })
             operation.save();
             res.send(delete_data) 
@@ -96,7 +100,8 @@ router.delete('/:id',async function(req, res) {
                         id:req.body.account,
                         action: '단말기 삭제',
                         date : moment().format('YYYY-MM-DD HH:mm:ss'),
-                        description : i.serial_number +' 단말기 삭제'
+                        description : i.serial_number +' 단말기 삭제',
+                        authority : req.body.operation_auth
                     })
                 )
             })

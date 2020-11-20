@@ -95,6 +95,7 @@ const EditAccount = props => {
       accountInfo.authority === 'manager' ? 'manager-' + accountInfo.user_id : 
       props.authority.length > 2 ? props.authority : props.authority + '-user-' + accountInfo.user_id,
       account: props.user_id,
+      operation_auth : props.authority
     });
     alert('수정 되었습니다.');
     history.push('/system/account');

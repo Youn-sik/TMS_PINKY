@@ -82,7 +82,8 @@ const EditDevice = props => {
       await axios.put(base_url + '/camera/' + deviceObject._id, {
         ...device,
         account: props.user_id,
-        authority: props.authority
+        authority: props.authority,
+        operation_auth: props.authority
       });
       window.alert('단말 수정 완료.');
       history.push('/device/list');

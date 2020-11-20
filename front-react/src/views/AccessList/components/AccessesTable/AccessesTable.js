@@ -305,7 +305,7 @@ const AccessesTable = props => {
                               : '비정상 체온'}
                           </TableCell>
                           <TableCell className={classes.redFont}>
-                            {access.access_time}
+                            {access.access_time.split(' ')[0]}
                           </TableCell>
                           <TableCell>
                             {
@@ -383,7 +383,7 @@ const AccessesTable = props => {
                                 )
                               : '정상 체온'}
                           </TableCell>
-                          <TableCell>{access.access_time}</TableCell>
+                          <TableCell>{access.access_time.split(' ')[0]}</TableCell>
                           <TableCell>
                             {
                               access.avatar_type === 3 ? 

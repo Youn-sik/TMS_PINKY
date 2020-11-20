@@ -11,16 +11,25 @@ router.get('/',async function(req, res) {
         let headerType = req.query.headerType;
         let rowPerPage = 7
         let page = parseInt(req.query.page)-1;
-        
+        let auth = req.query.authority;
+        let regex = new RegExp("^"+auth+"$");
+        if(req.query.authority.split('-').length === 2){
+            regex = new RegExp("^"+auth)
+        } else if (req.query.authority.split('-').length > 2) {
+            new RegExp("^"+auth+"$");
+        }
+
         get_data.count = await operation.find()
         .gte("date",date[0]+" 00:00:00")
         .lte("date",date[1]+" 23:59:59")
+        .regex('authority', regex)
         .where("id").ne(null)
         .count()
 
         get_data.data = await operation.find()
         .gte("date",date[0]+" 00:00:00")
         .lte("date",date[1]+" 23:59:59")
+        .regex('authority', regex)
         .where("id").ne(null)
         .populate("id",'user_id')
         .sort(headerType)

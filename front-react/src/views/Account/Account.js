@@ -279,7 +279,8 @@ const Account = props => {
     if (window.confirm('정말 삭제 하시겠습니까?')) {
       await axios.delete(base_url + '/account/' + selectedAccounts[0]._id, {
         data: {
-          account: props.user_id
+          account: props.user_id,
+          operation_auth: props.authority
         }
       });
 

@@ -61,6 +61,7 @@ router.post('/',async function(req, res) {
                         description: add.user_id+' 계정 생성',
                         action: '계정 생성',
                         date: moment().format('YYYY-MM-DD HH:mm:ss'),
+                        authority : req.body.parentAuth
                     })
                     operation.save();
                     res.send({"success":"계정 생성 완료"})
@@ -99,6 +100,7 @@ router.put('/:id',async function(req, res) {
                         description: update.user_id+' 계정 수정',
                         action: '계정 수정',
                         date: moment().format('YYYY-MM-DD HH:mm:ss'),
+                        authority: req.body.operation_auth
                     })
                     operation.save();
                     update.user_pw = ''
@@ -121,6 +123,7 @@ router.delete('/:id',async function(req, res) {
             description: delete_data.user_id+' 계정 삭제',
             action: '계정 삭제',
             date: moment().format('YYYY-MM-DD HH:mm:ss'),
+            authority:req.body.operation_auth
         })
         operation.save(); 
         delete_data.user_pw = ''

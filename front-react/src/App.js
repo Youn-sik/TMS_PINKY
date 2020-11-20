@@ -25,7 +25,6 @@ const client = mqtt.connect('ws://'+mqtt_url+':8083/mqtt');
 
 client.on('connect', () => {
   client.subscribe('/access/realtime/result/+');
-  client.subscribe('/access/high_temp_realtime/result/+');
 });
 
 const browserHistory = createBrowserHistory();
@@ -54,11 +53,12 @@ function Popup() {
   if(!message){
     message = true;
     client.on('message', function(topic, message) {
-      if (topic.indexOf('/access/high_temp_realtime/result/') > -1) {
+      if (topic.indexOf('/access/realtime/result/') > -1) {
         let result = JSON.parse(message.toString()).values
         let accessAuth = result[0].authority;
         let matchRe = accessAuth.match(auth)
-        if(matchRe && window.location.pathname !== '/sign-in'){
+        let templimit = localStorage.getItem('temperature');
+        if(matchRe && window.location.pathname !== '/sign-in' && result[0].avatar_temperature >= templimit){
           imgSrc = result[0].avatar_file_url
           enqueueSnackbar(`${result[0].stb_location}에서 고발열자(${String(result[0].avatar_temperature).substring(0,4)}℃)가 탐지 되었습니다.|${imgSrc}`,{ variant: 'error',autoHideDuration:null});
         }

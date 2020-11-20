@@ -245,7 +245,8 @@ const AddBlack = props => {
         groups_obids: [node._id ? node._id : undefined],
         account: props.user_id,
         authority : props.authority,
-        avatar_file: base64
+        avatar_file: base64,
+        operation_auth: props.authority
       });
       alert('등록 되었습니다.');
       history.push('/users/black');

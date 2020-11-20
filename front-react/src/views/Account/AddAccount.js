@@ -99,7 +99,7 @@ const AddAccount = props => {
         authority: accountInfo.authority === 'admin' ? 'admin' : 
         accountInfo.authority === 'manager' ? 'manager' : 'user',
         account: props.user_id,
-        parentAuth: props.authority
+        parentAuth: props.authority,
       });
       if (result.data.success) {
         alert('등록 되었습니다.');

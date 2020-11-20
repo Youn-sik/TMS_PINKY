@@ -50,7 +50,7 @@ const Operation = props => {
   };
 
   const getOper = useCallback(async (headerType = "-_id") => {
-    let result = await axios.get(base_url + `/operation?date=${date[0]}/${date[1]}&headerType=${headerType}&page=${page}`);
+    let result = await axios.get(base_url + `/operation?date=${date[0]}/${date[1]}&authority=${props.authority}&headerType=${headerType}&page=${page}`);
     if(result && result.data.data.length > 0){
       let temp = parseInt(result.data.count/7)
 
@@ -64,7 +64,7 @@ const Operation = props => {
   }, [page,date]);
 
   const searchOper = async () => {
-    let result = await axios.get(base_url + `/operation?date=${date[0]}/${date[1]}&search=${search}&searchType=${searchType}`);
+    let result = await axios.get(base_url + `/operation?date=${date[0]}/${date[1]}&authority=${props.authority}&search=${search}&searchType=${searchType}`);
     result.data.reverse();
     // setOriginUsers(result.data)
     setAllOper(result.data);

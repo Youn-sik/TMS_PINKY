@@ -425,6 +425,7 @@ const SignIn = props => {
         let info = decoded.user_id+"|"+decoded.authority+"|"+decoded.tempType+"|"+decoded.tempLimit
         info = info.toBase64();
         document.cookie = 'ACTKINFO='+info+";path=/;";
+        localStorage.setItem('temperature',String(decoded.tempLimit));
         // props.getAuth(result.data.authority);
         history.push('/');
       } else if (result.data) {

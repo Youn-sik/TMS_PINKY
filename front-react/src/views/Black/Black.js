@@ -281,7 +281,8 @@ const Black = props => {
         data: {
           type: 5,
           selectedData: selectedUsers,
-          account: props.user_id
+          account: props.user_id,
+          operation_auth: props.authority
         }
       });
       alert('삭제 되었습니다.')
@@ -302,7 +303,8 @@ const Black = props => {
           selectedData: users,
           deleteAll:true,
           account: props.user_id,
-          count : usersCount
+          count : usersCount,
+          operation_auth: props.authority
         }
       });
       
