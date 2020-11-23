@@ -170,23 +170,21 @@ app.get('/auth', async function(req, res) {
 //const mongoose = require('mongoose')
 const routes = require('./routes')
 const swagger = require('./config/swagger')
-
+let {term} = require('./deleteDate.json')
 
 app.get('/schedule',(req,res) => {
-    let {term} = require('./deleteDate.json')
     res.send({term})
 })
 
 app.put('/schedule',(req,res) => {
     fs.writeFileSync('/var/www/backend/deleteDate.json',`{"term":${req.body.term}}`)
-    res.send({term:req.body.term})
+    term = parseInt(req.body.term)
+    res.send({term:term})
 })
 
 //사진보관 기간 설정
 // let term = 28; //기본 보관 날짜 28일 4주
 let s = schedule.scheduleJob('0 0 0 * * *', async function(){//스케쥴 설정
-    let {term} = require('./deleteDate.json')
-
     let dateTime = moment().subtract(term-1,'days').format('YYYY-MM-DD') + " 00:00:00"//moment 보관 기간 만큼을 뺀 날짜
     let date = moment().subtract(term,'days').format('YYYYMMDD')
 
