@@ -110,7 +110,7 @@ const TempAlert = props => {
                         : '비정상 체온'}
                     </TableCell>
                     <TableCell className={classes.redFont}>
-                      {access.access_time}
+                      {access.access_time.split(" ")[0]}
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -154,7 +154,7 @@ const TempAlert = props => {
                         ? '미등록자'
                         : '블랙리스트'}
                     </TableCell> */}
-                    <TableCell>{access.access_time}</TableCell>
+                    <TableCell>{access.access_time.split(" ")[0]}</TableCell>
                   </TableRow>
                 )
               )}
