@@ -51,6 +51,9 @@ const useStyles = makeStyles(theme => ({
   },
   redFont: {
     color: 'red'
+  },
+  orangeFont: {
+    color: 'orange'
   }
 }));
 
@@ -224,6 +227,18 @@ const AccessesTable = props => {
                     '온도'
                   )}
                 </TableCell>
+                <TableCell>{accesses.length > 0 ? (
+                    <TableSortLabel
+                      active={activeType === 'distnace'}
+                      direction={sort}
+                      onClick={() => {
+                        createSortHandler('distnace');
+                      }}>
+                      확률
+                    </TableSortLabel>
+                  ) : (
+                    '확률'
+                  )}</TableCell>
                 <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel
@@ -305,6 +320,9 @@ const AccessesTable = props => {
                               : '비정상 체온'}
                           </TableCell>
                           <TableCell className={classes.redFont}>
+                            {access.distance}
+                          </TableCell>
+                          <TableCell className={classes.redFont}>
                             {access.access_time.split(' ')[0]}
                           </TableCell>
                           <TableCell>
@@ -382,6 +400,9 @@ const AccessesTable = props => {
                                   4
                                 )
                               : '정상 체온'}
+                          </TableCell>
+                          <TableCell>
+                            {access.distance}
                           </TableCell>
                           <TableCell>{access.access_time.split(' ')[0]}</TableCell>
                           <TableCell>

@@ -541,7 +541,7 @@ module.exports = {
                             userName = userData[0]
                             element.avatar_type = parseInt(userData[7])
                             user_obid = userData[10]
-                            distance = bestMatch._distance === 1 ? 100 : 1 - bestMatch._distance
+                            distance = bestMatch._distance === 1 ? 100 : (1 - bestMatch._distance) * 100
                         } 
 
                         // if(bestMatch._distance <= 0.425 && bestMatch._label !== 'unknown') {
@@ -600,6 +600,7 @@ module.exports = {
                         stb_location : camera.location,
                         authority: camera.authority,
                         name : userName,
+                        distance : distance
                     }
 
                     insert_array.push(insert_data);

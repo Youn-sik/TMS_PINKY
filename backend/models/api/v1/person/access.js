@@ -24,7 +24,8 @@ const api_v1_person_access_Schema = new mongoose.Schema({
     create_at : { type: String, default: moment().format('YYYY-MM-DD HH:mm:ss') },
     create_ut : { type: String, default: Date.now() },
     update_at : { type: String },
-    update_ut : { type: String }
+    update_ut : { type: String },
+    distance : {type : Number}
 })
 api_v1_person_access_Schema.index({access_time: 1});
 api_v1_person_access_Schema.index({avatar_distance: 1});
