@@ -25,7 +25,8 @@ const accessSchema = new mongoose.Schema({
     create_ut : { type: String, default: Date.now },
     update_at : { type: String },
     update_ut : { type: String },
-    face_detection : { type:String}
+    face_detection : { type:String},
+    distance : {type : Number}
 });
 accessSchema.index({ user_obid: 1, statistics_status: 1, avatar_file_checksum: 1 });
 

@@ -128,36 +128,40 @@ router.post('/',async function(req, res) {
                 // });
                 fs.writeFileSync("/var/www/backend/image/"+dir.split('/')[6], image);
                 let imageDir = await canvas.loadImage('http://'+req.headers.host+'/image/'+dir.split('/')[6])
-                detections = await faceapi.computeFaceDescriptor(imageDir)
+                detections = await faceapi.detectSingleFace(imageDir,new faceapi.SsdMobilenetv1Options({ minConfidence: 0.3 }))
+                .withFaceLandmarks()
+                .withFaceDescriptor();
             } else {
                 add.avatar_file_url = 'http://'+req.headers.host+'/image/'+add._id+'profile.jpg';
                 fs.writeFileSync('/var/www/backend/image/'+add._id+'profile.jpg',req.body.avatar_file,'base64')
-                // execSync(`python /var/www/backend/face_cut/align_face.py -f /var/www/backend/image/${add._id}profile.jpg -o /var/www/backend/image/face_cut_${add._id}profile.jpg`)
-                // let brightness = execSync(`python /var/www/backend/face_cut/get_brightness.py -f /var/www/backend/image/face_cut_${add._id}profile.jpg`)
-                // brightness = brightness.toString()
+                execSync(`python /var/www/backend/face_cut/align_face.py -f /var/www/backend/image/${add._id}profile.jpg -o /var/www/backend/image/face_cut_${add._id}profile.jpg`)
+                let brightness = execSync(`python /var/www/backend/face_cut/get_brightness.py -f /var/www/backend/image/face_cut_${add._id}profile.jpg`)
+                brightness = brightness.toString()
 
-                // if(brightness === "파일이 존재 하지 않습니다.\n") {
-                //     fs.unlink('/var/www/backend/image/'+add._id+'profile.jpg',()=>{})
-                //     res.send({result:"인식할수 없는 사진."})
-                //     return false;
-                // }
+                if(brightness === "파일이 존재 하지 않습니다.\n") {
+                    fs.unlink('/var/www/backend/image/'+add._id+'profile.jpg',()=>{})
+                    res.send({result:"인식할수 없는 사진."})
+                    return false;
+                }
 
-                // let temp = 0.0
-                // if(brightness < '100')
-                //     temp = 0.2
-                // else if(brightness < '120')
-                //     temp = 0.1
+                let temp = 0.0
+                if(brightness < '100')
+                    temp = 0.2
+                else if(brightness < '120')
+                    temp = 0.1
 
-                // let image = await Jimp.read(`/var/www/backend/image/face_cut_${add._id}profile.jpg`)//Jimp불러오기
-                // image.brightness(temp)//명도조절
-                // let result = await image.getBase64Async('image/png');
-                // result = result.replace('data:image/png;base64,','')
+                let image = await Jimp.read(`/var/www/backend/image/face_cut_${add._id}profile.jpg`)//Jimp불러오기
+                image.brightness(temp)//명도조절
+                let result = await image.getBase64Async('image/png');
+                result = result.replace('data:image/png;base64,','')
 
                 const img = new Image();
-                img.src = "data:image/png;base64,"+ req.body.avatar_file
+                img.src = "data:image/png;base64,"+ result
 
-                detections = await faceapi.computeFaceDescriptor(img)
-                // fs.unlink('/var/www/backend/image/face_cut_'+add._id+'profile.jpg',()=>{})
+                detections = await faceapi.detectSingleFace(img,new faceapi.SsdMobilenetv1Options({ minConfidence: 0.1}))
+                .withFaceLandmarks()
+                .withFaceDescriptor();
+                fs.unlink('/var/www/backend/image/face_cut_'+add._id+'profile.jpg',()=>{})
             }
 
             if(!detections) {
@@ -170,7 +174,7 @@ router.post('/',async function(req, res) {
                 return false;
             }
 
-            asyncJSON.stringify(detections,function(err, jsonValue) {
+            asyncJSON.stringify(detections.descriptor,function(err, jsonValue) {
                 add.face_detection = jsonValue;
             })
 
@@ -202,8 +206,7 @@ router.post('/',async function(req, res) {
             id:req.body.account,
             action: '유저 생성',
             date : moment().format('YYYY-MM-DD HH:mm:ss'),
-            description : add.name + ' ' + type +'에 추가',
-            authority : req.body.operation_auth
+            description : add.name + ' ' + type +'에 추가'
         })
         operation.save();
         add.save();
@@ -255,7 +258,9 @@ router.put('/:id',async function(req, res) {
             fs.writeFileSync('/var/www/backend/image/'+req.body._id+'profile_updated.jpg', image);
             
             const imageDir = await canvas.loadImage('/var/www/backend/image/'+req.body._id+'profile_updated.jpg')
-            const detections = await faceapi.computeFaceDescriptor(imageDir);
+            const detections = await faceapi.detectSingleFace(imageDir)
+            .withFaceLandmarks()
+            .withFaceDescriptor();
             
             if(!detections) {
                 res.send({
@@ -264,7 +269,7 @@ router.put('/:id',async function(req, res) {
                 return false;
             }
             
-            asyncJSON.stringify(detections,function(err, jsonValue) {
+            asyncJSON.stringify(detections.descriptor,function(err, jsonValue) {
                 update_data.face_detection = jsonValue;
             })
         }
@@ -292,8 +297,7 @@ router.put('/:id',async function(req, res) {
             id:req.body.account,
             action: '유저 업데이트',
             date : moment().format('YYYY-MM-DD HH:mm:ss'),
-            description : update.name+' '+type+' 수정',
-            authority : req.body.operation_auth
+            description : update.name+' '+type+' 수정'
         })
         operation.save();
         // history.save();
@@ -321,8 +325,7 @@ router.delete('/:id',async function(req, res) {
                     id:req.body.account,
                     action: '유저 삭제',
                     date : moment().format('YYYY-MM-DD HH:mm:ss'),
-                    description : delete_data.name +' 삭제',
-                    authority : req.body.operation_auth
+                    description : delete_data.name +' 삭제'
                 })
                 operation.save();
                 deleted_data.push(delete_data)
@@ -408,8 +411,7 @@ router.delete('/:id',async function(req, res) {
                             id:req.body.account,
                             action: '유저 삭제',
                             date : moment().format('YYYY-MM-DD HH:mm:ss'),
-                            description : i.name+' '+type+' 삭제',
-                            authority : req.body.operation_auth
+                            description : i.name+' '+type+' 삭제'
                         })
                         operation.save();
                         // history.save();

@@ -99,7 +99,7 @@ export default class App extends React.Component {
         auth: true,
         user_id: splited[0],
         authority: splited[1],
-        tempLimit: parseInt(splited[3]),
+        tempLimit: parseFloat(splited[3]),
         tempType: parseFloat(splited[2])
       });
     }
@@ -123,7 +123,7 @@ export default class App extends React.Component {
           auth: true,
           user_id: splited[0],
           authority: splited[1],
-          tempLimit: parseInt(splited[3]),
+          tempLimit: parseFloat(splited[3]),
           tempType: parseFloat(splited[2])
         });
       }
