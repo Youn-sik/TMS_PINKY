@@ -8,8 +8,6 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import { NavLink as RouterLink } from 'react-router-dom';
 import {DatePicker} from 'rsuite';
-import moment from 'moment';
-import 'moment/locale/ko';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/styles';

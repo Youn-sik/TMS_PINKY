@@ -499,6 +499,7 @@ const AccessList = props => {
             handleClick={handleClick}
             selected={selected}
             tempLimit={tempLimit}
+            authority={props.authority}
             tempType={tempType}
             activeType={activeType}
             page={page}
