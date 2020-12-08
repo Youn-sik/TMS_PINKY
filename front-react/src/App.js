@@ -133,7 +133,11 @@ export default class App extends React.Component {
   render() {
     const getAuth = _auth => {
       this.setState({
-        authority: _auth
+          auth: true,
+          user_id: _auth.user_id,
+          authority: _auth.authority,
+          tempLimit: parseFloat(_auth.tempLimit),
+          tempType: parseFloat(_auth.tempType)
       });
     };
 

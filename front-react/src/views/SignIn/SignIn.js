@@ -426,7 +426,7 @@ const SignIn = props => {
         info = info.toBase64();
         document.cookie = 'ACTKINFO='+info+";path=/;";
         localStorage.setItem('temperature',String(decoded.tempLimit));
-        // props.getAuth(result.data.authority);
+        props.getAuth(decoded);
         history.push('/');
       } else if (result.data) {
         alert('존재하지 않는 계정 입니다');
