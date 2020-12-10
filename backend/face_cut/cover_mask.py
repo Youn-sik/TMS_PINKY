@@ -78,7 +78,7 @@ def blend_transparent(face_img, overlay_t_img):
     return np.uint8(cv2.addWeighted(face_part, 255.0, overlay_part, 255.0, 0.0))
 
 
-with open("./mask.csv") as csv_file:
+with open("/var/www/backend/face_cut/mask.csv") as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=",")
     src_pts = []
     for i, row in enumerate(csv_reader):
@@ -89,7 +89,7 @@ with open("./mask.csv") as csv_file:
             continue
 src_pts = np.array(src_pts, dtype="float32")
 
-mask_img = cv2.imread("./mask.png", -1)
+mask_img = cv2.imread("/var/www/backend/face_cut/mask.png", -1)
 
 input_img = cv2.imread(IMAGE_PATH)
 #input_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2RGB)

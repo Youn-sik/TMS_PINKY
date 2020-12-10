@@ -250,11 +250,40 @@ router.put('/:id',async function(req, res) {
             fs.writeFileSync('/var/www/backend/image/'+req.body._id+'profile_updated.jpg',req.body.avatar_file,'base64');
             update_data.avatar_file_url = 'http://'+req.headers.host+'/image/'+req.body._id+'profile_updated.jpg'
 
-            const image = await resizeImg(fs.readFileSync('/var/www/backend/image/'+req.body._id+'profile_updated.jpg'), {
-                width: 140,
-                height: 200
-            });
-            
+            // const image = await resizeImg(fs.readFileSync('/var/www/backend/image/'+req.body._id+'profile_updated.jpg'), {
+            //     width: 140,
+            //     height: 200
+            // });
+
+            execSync(`python /var/www/backend/face_cut/align_face.py -f /var/www/backend/image/${add._id}profile_updated.jpg -o /var/www/backend/image/face_cut_${add._id}profile_updated.jpg`)
+            let brightness = execSync(`python /var/www/backend/face_cut/get_brightness.py -f /var/www/backend/image/face_cut_${add._id}profile_updated.jpg`)
+            brightness = brightness.toString()
+
+            if(brightness === "파일이 존재 하지 않습니다.\n") {
+                fs.unlink('/var/www/backend/image/'+add._id+'profile_updated.jpg',()=>{})
+                res.send({result:"인식할수 없는 사진."})
+                return false;
+            }
+
+            let temp = 0.0
+            if(brightness < '100')
+                temp = 0.2
+            else if(brightness < '120')
+                temp = 0.1
+
+            let image = await Jimp.read(`/var/www/backend/image/face_cut_${add._id}profile_updated.jpg`)//Jimp불러오기
+            image.brightness(temp)//명도조절
+            let result = await image.getBase64Async('image/png');
+            result = result.replace('data:image/png;base64,','')
+
+            const img = new Image();
+            img.src = "data:image/png;base64,"+ result
+
+            detections = await faceapi.detectSingleFace(img,new faceapi.SsdMobilenetv1Options({ minConfidence: 0.1}))
+            .withFaceLandmarks()
+            .withFaceDescriptor();
+            fs.unlink('/var/www/backend/image/face_cut_'+add._id+'profile_updated.jpg',()=>{})
+
             fs.writeFileSync('/var/www/backend/image/'+req.body._id+'profile_updated.jpg', image);
             
             const imageDir = await canvas.loadImage('/var/www/backend/image/'+req.body._id+'profile_updated.jpg')
