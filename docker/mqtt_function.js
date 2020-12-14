@@ -14,7 +14,7 @@ const { loadImage, Canvas, Image, ImageData } = canvas;
 const fetch = require('node-fetch')
 var asyncJSON = require('async-json');
 const tf = require('@tensorflow/tfjs-node');
-//require('@tensorflow/tfjs-backend-webgl');
+// require('@tensorflow/tfjs-backend-webgl');
 const faceapi = require('face-api.js');
 const Jimp = require('jimp');
 
@@ -508,75 +508,75 @@ module.exports = {
                 let user_obid = '';
                 let distance = 0;
 
-                if(descriptor) {
-                    if(Users.length > 0) {
-                        const labeledDescriptors = await Promise.all(
-                            Users.map(async user => {
-                                return (
-                                    new faceapi.LabeledFaceDescriptors(
-                                        user.name+"|"
-                                        +user.location+"|"
-                                        +user.department_id+"|"
-                                        +user.position+"|"
-                                        +user.mobile+"|"
-                                        +user.mail+"|"
-                                        +user.gender+"|"
-                                        +user.type+"|"
-                                        +user.avatar_file_url+"|"
-                                        +user.create_at+"|"
-                                        +user._id,
-                                        [new Float32Array(Object.values(JSON.parse(user.face_detection)))]
-                                    )
-                                )
-                            })
-                        );
+                // if(descriptor) {
+                //     if(Users.length > 0) {
+                //         const labeledDescriptors = await Promise.all(
+                //             Users.map(async user => {
+                //                 return (
+                //                     new faceapi.LabeledFaceDescriptors(
+                //                         user.name+"|"
+                //                         +user.location+"|"
+                //                         +user.department_id+"|"
+                //                         +user.position+"|"
+                //                         +user.mobile+"|"
+                //                         +user.mail+"|"
+                //                         +user.gender+"|"
+                //                         +user.type+"|"
+                //                         +user.avatar_file_url+"|"
+                //                         +user.create_at+"|"
+                //                         +user._id,
+                //                         [new Float32Array(Object.values(JSON.parse(user.face_detection)))]
+                //                     )
+                //                 )
+                //             })
+                //         );
 
-                        const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.5)
+                //         const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.5)
                 
-                        const bestMatch = faceMatcher.findBestMatch(descriptor)
-                        console.log("1",bestMatch._distance,bestMatch._label)
+                //         const bestMatch = faceMatcher.findBestMatch(descriptor)
+                //         console.log("1",bestMatch._distance,bestMatch._label)
 
-                        if(bestMatch._label !== 'unknown') {
-                            let userData = bestMatch._label.split('|')
-                            userName = userData[0]
-                            element.avatar_type = parseInt(userData[7])
-                            user_obid = userData[10]
-                            distance = bestMatch._distance === 1 ? 100 : (1 - bestMatch._distance) * 100
-                        } 
+                //         if(bestMatch._label !== 'unknown') {
+                //             let userData = bestMatch._label.split('|')
+                //             userName = userData[0]
+                //             element.avatar_type = parseInt(userData[7])
+                //             user_obid = userData[10]
+                //             distance = bestMatch._distance === 1 ? 100 : (1 - bestMatch._distance) * 100
+                //         } 
 
-                        // if(bestMatch._distance <= 0.425 && bestMatch._label !== 'unknown') {
-                        //     let userData = bestMatch._label.split('|')
-                        //     userName = userData[0]
-                        //     element.avatar_type = parseInt(userData[7])
-                        //     user_obid = userData[10]
-                        // } 
-                        // else {
-                        //     // let image = await Jimp.read(buff)//Jimp불러오기
-                        //     // image.brightness(temp)//명도조절
-                        //     // let result = await image.getBase64Async('image/png');
-                        //     // result = result.replace('data:image/png;base64,','')
+                //         // if(bestMatch._distance <= 0.425 && bestMatch._label !== 'unknown') {
+                //         //     let userData = bestMatch._label.split('|')
+                //         //     userName = userData[0]
+                //         //     element.avatar_type = parseInt(userData[7])
+                //         //     user_obid = userData[10]
+                //         // } 
+                //         // else {
+                //         //     // let image = await Jimp.read(buff)//Jimp불러오기
+                //         //     // image.brightness(temp)//명도조절
+                //         //     // let result = await image.getBase64Async('image/png');
+                //         //     // result = result.replace('data:image/png;base64,','')
 
-                        //     const img2 = new Image();
-                        //     img2.src = "data:image/png;base64,"+ element.avatar_file
+                //         //     const img2 = new Image();
+                //         //     img2.src = "data:image/png;base64,"+ element.avatar_file
 
-                        //     // let detections2 = await faceapi.detectSingleFace(img2,new faceapi.SsdMobilenetv1Options({ minConfidence: 0.3 }))
-                        //     // .withFaceLandmarks()
-                        //     // .withFaceDescriptor();
-                        //     let descriptor = await faceapi.computeFaceDescriptor(img2)
+                //         //     // let detections2 = await faceapi.detectSingleFace(img2,new faceapi.SsdMobilenetv1Options({ minConfidence: 0.3 }))
+                //         //     // .withFaceLandmarks()
+                //         //     // .withFaceDescriptor();
+                //         //     let descriptor = await faceapi.computeFaceDescriptor(img2)
 
-                        //     if(descriptor) {
-                        //         const bestMatch2 = faceMatcher.findBestMatch(descriptor)
-                        //         console.log("2",bestMatch2._distance,bestMatch2._label)
-                        //         if(bestMatch2._distance <= 0.425 && bestMatch2._label !== 'unknown') {
-                        //             let userData = bestMatch2._label.split('|')
-                        //             userName = userData[0]
-                        //             element.avatar_type = parseInt(userData[7])
-                        //             user_obid = userData[10]
-                        //         }
-                        //     }
-                        // }
-                    }
-                } 
+                //         //     if(descriptor) {
+                //         //         const bestMatch2 = faceMatcher.findBestMatch(descriptor)
+                //         //         console.log("2",bestMatch2._distance,bestMatch2._label)
+                //         //         if(bestMatch2._distance <= 0.425 && bestMatch2._label !== 'unknown') {
+                //         //             let userData = bestMatch2._label.split('|')
+                //         //             userName = userData[0]
+                //         //             element.avatar_type = parseInt(userData[7])
+                //         //             user_obid = userData[10]
+                //         //         }
+                //         //     }
+                //         // }
+                //     }
+                // } 
                 fs.unlink(temp_file,()=>{})
                 fs.unlink(output,()=>{})
                 let avatar_type = element.avatar_type === 5 ? 4 : element.avatar_type

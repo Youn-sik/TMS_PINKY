@@ -1,0 +1,23 @@
+{
+    "base_url": "http://127.0.0.1/",
+    "base_server_document": "/var/www/backend",
+    "base_document": "/var/www/docker/",
+    "base_local_url": "http://172.16.135.55",
+    "local_url": "127.0.0.1",
+
+    "mongodb_host": "127.0.0.1",
+    "mongodb_user": "kool",
+    "mongodb_passwd": "master",
+    "mongodb_database": "cloud40",
+
+    "mqtt_host": "127.0.0.1",
+    "mqtt_user": "cloud40_core_web",
+    "mqtt_passwd" : "masterQ!W@E#R$",
+    "mqtt_port": 1883,
+    "mqtt_websocket_port": 8083,
+    "mqtt_dashboard_port": 18083,
+    "mqtt_dashboard_user": "admin",
+    "mqtt_dashboard_password": "public",
+
+    "influxdb": "127.0.0.1"
+}
