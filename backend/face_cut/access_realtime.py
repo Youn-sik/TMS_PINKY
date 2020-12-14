@@ -53,10 +53,12 @@ def on_message(client, userdata, msg):
             with open(file_path+file_name, 'wb') as f:
                 f.write(imgdata)
 
+
+            emb_list = []
+            emb_label_list = []
+
             result = detect_face(file_path+file_name)
-            emb_list = [result]
-            emb_label_list = [file_path+file_name]
-            recog_result,max_sim,max_name,max_type = recog_face(value)
+            recog_result,max_sim,max_name,max_type = recog_face(users)
             print(recog_result,max_sim,max_name,max_type)
             # collection.update({"_id":result["_id"]},{"$set":{"detected":True,"name":max_name,"type":max_type}})
 
@@ -175,10 +177,14 @@ def detect_face(path) :
         emb_label_list.append(face_label)
         return emb
 
+def str2ndarray(a):
+    print(type(b'123'))
+    a = np.frombuffer(a, dtype=np.float32)
+    return np.array(a)
+
 def getClosestFace(emb):
     closest_sim = 0
     closest_label = ''
-
     for i, origin_emb in enumerate(emb_list):
         sim = np.dot(emb, origin_emb) / (norm(emb) * norm(origin_emb))
 
@@ -195,16 +201,16 @@ def recog_face(users) :
     max_name = 'uknown'
     max_type = 3
     for emb in users:
-        print(emb)
-    #     face = np.array(emb["face_detection"])
-    #     sim, label = getClosestFace(face)
-    #     result.append({"sim":sim,"name":emb['name'],"type":emb['type']})
-    #     if(max_sim < sim):
-    #         max_sim = sim
-    #         # max_label = emb["label"]
-    #         max_name = emb['name']
-    #         max_type = emb['type']
-    # return result,max_sim,max_name,max_type
+        face = str2ndarray(emb["face_detection"])
+        # print(face)
+        sim, label = getClosestFace(face)
+        result.append({"sim":sim,"name":emb['name'],"type":emb['type']})
+        if(max_sim < sim):
+            max_sim = sim
+            # max_label = emb["label"]
+            max_name = emb['name']
+            max_type = emb['type']
+    return result,max_sim,max_name,max_type
 
 # def interval_db() :
 #     results=collection.find({"detected":{"$exists":False}})

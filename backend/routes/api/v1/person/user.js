@@ -135,6 +135,7 @@ router.post('/',async function(req, res) {
                 add.avatar_file_url = 'http://'+req.headers.host+'/image/'+add._id+'profile.jpg';
                 fs.writeFileSync('/var/www/backend/image/'+add._id+'profile.jpg',req.body.avatar_file,'base64')
                 let result = execSync(`python /var/www/backend/face_cut/face_detect.py -f /var/www/backend/image/${add._id}profile.jpg -n ${add.name} -t ${add.type}`).toString()
+                console.log(result)
                 add.face_detection = result.split('use_landmarks True\n')[1]
                 // let brightness = execSync(`python /var/www/backend/face_cut/get_brightness.py -f /var/www/backend/image/face_cut_${add._id}profile.jpg`)
                 // brightness = brightness.toString()
