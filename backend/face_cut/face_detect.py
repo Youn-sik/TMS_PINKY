@@ -124,4 +124,4 @@ b_new.append({
 with open("/var/www/backend/face_cut/users_file.json", 'w') as outfile:
     json.dump(b_new, outfile)
 
-print(emb.tostring())
+print(emb.tolist())

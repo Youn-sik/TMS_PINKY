@@ -12,6 +12,7 @@ import re
 import base64
 from pymongo import MongoClient 
 import pathlib
+from ast import literal_eval
 import paho.mqtt.client as mqtt
 my_client = MongoClient("mongodb://localhost:27017/")
 db = my_client.get_database("cloud40")
@@ -40,7 +41,10 @@ def on_message(client, userdata, msg):
         users = []
         for user in users_cursor :
             users.append(user)
-        
+
+        # origin_emb = np.array(literal_eval(users[0]['face_detection']))
+        # origin_emb = origin_emb.flatten()
+
         folder_date_path = "/uploads/accesss/temp/" + time.strftime('%Y%m%d', time.localtime(time.time()))
         file_path = json_data['base_server_document'] + folder_date_path + "/" + access_json['stb_sn'] + "/"
 
@@ -111,7 +115,7 @@ det_model.prepare(-1, 0.4)
 rec_name = insightface.model_zoo.get_model('arcface_r100_v1')
 rec_name.prepare(-1)
 
-known_face_files = os.listdir('./known_face')
+known_face_files = [1]
 target_face_files = os.listdir('./target_face')
 
 emb_list = []
@@ -123,7 +127,7 @@ def detect_face(path) :
     for known_face_file in known_face_files:
         # print(f'Start to known process {known_face_file}')
         face_img = cv2.imread(path)
-        face_label = os.path.splitext(os.path.basename(known_face_file))[0]
+        face_label = path
 
         # Mask
         h, w = face_img.shape[:2]
@@ -178,7 +182,7 @@ def detect_face(path) :
         return emb
 
 def str2ndarray(a):
-    print(type(b'123'))
+    print(a)
     a = np.frombuffer(a, dtype=np.float32)
     return np.array(a)
 
@@ -201,8 +205,8 @@ def recog_face(users) :
     max_name = 'uknown'
     max_type = 3
     for emb in users:
-        face = str2ndarray(emb["face_detection"])
-        # print(face)
+        face = np.array(literal_eval(emb["face_detection"]))
+        face = face.flatten()
         sim, label = getClosestFace(face)
         result.append({"sim":sim,"name":emb['name'],"type":emb['type']})
         if(max_sim < sim):
