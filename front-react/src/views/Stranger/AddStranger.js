@@ -28,9 +28,14 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import {DatePicker} from 'rsuite';
-import {base_url} from 'server.json';
+import {base_url,mqtt_url} from 'server.json';
+import mqtt from 'mqtt';
 import moment from 'moment';
 import 'moment/locale/ko';
+
+let client
+let id = '';
+
 const locale = {
   sunday: '일',
   monday: '월',
@@ -181,6 +186,49 @@ const AddStranger = props => {
     }
   },[])
 
+  useEffect(() => {
+    client = mqtt.connect('ws://'+mqtt_url+':8083/mqtt');
+
+    client.on('connect', () => {
+      console.log('isConnected')
+      client.subscribe('/stranger/add/result/+');
+      client.subscribe('/user/add/result/+');
+    });
+
+    client.on('message', function(topic, message) {
+      if (topic.indexOf('/stranger/add/result/'+id) > -1) {
+        let result = JSON.parse(message.toString())
+        setLoading(false);
+        if(result.result) {
+          alert('등록 되었습니다.');
+          if(type === 1)
+            history.push('/users/employee');
+          else 
+            history.push('/users/black');
+        } else {
+          alert('인식 할수 없는 사진 입니다.')
+        }
+      } else if(topic.indexOf('/user/add/result/'+id) > -1) {
+        let result = JSON.parse(message.toString())
+        setLoading(false);
+        if(result.result) {
+          alert('등록 되었습니다.');
+          if(type === 1)
+            history.push('/users/employee');
+          else 
+            history.push('/users/black');
+        } else {
+          alert('인식 할수 없는 사진 입니다.')
+        }
+      }
+    })
+    
+
+    return () => {
+      client.end(true)
+    };
+  },[type])
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -281,6 +329,7 @@ const AddStranger = props => {
 
   const addUser = async () => {
     let base64;
+    id = Math.random().toString(36).substr(2,11)
     if (pictures.length !== 0) {
       base64 = await toBase64(pictures[0][0]);
       base64 = base64.replace('data:image/jpeg;base64,', '');
@@ -294,31 +343,58 @@ const AddStranger = props => {
         alert('그룹을 선택해주세요')
       } else {
         setLoading(true);
-        let result = await axios.post(base_url + '/user?type=stranger', {
-          name: userInfo.name,
-          avatar_file: base64,
-          avatar_file_url:
-            base64 === undefined ? userObject.avatar_file_url : undefined,
-          stranger_id: userObject._id,
-          gender: userInfo.gender,
-          location: userInfo.location,
-          department_id: userInfo.department_id,
-          position: userInfo.position,
-          mobile: userInfo.mobile,
-          mail: userInfo.mail,
-          entered: userInfo.entered,
-          authority : props.authority,
-          type: type,
-          groups_obids: [
-            selectedGroup._id ? selectedGroup._id : undefined
-          ],
-          account: props.user_id
-        });
-        if (result.data.result === '인식할수 없는 사진.') {
-          alert('인식 할 수 없는 사진입니다 다른 사진으로 시도해 주세요.');
+        if(base64 === undefined) {
+          client.publish(
+            '/stranger/add/' + id,
+            JSON.stringify({
+              name: userInfo.name,
+              avatar_file: base64,
+              avatar_file_url:
+                base64 === undefined ? userObject.avatar_file_url : undefined,
+              id,
+              stranger_id: userObject._id,
+              gender: userInfo.gender,
+              location: userInfo.location,
+              department_id: userInfo.department_id,
+              position: userInfo.position,
+              mobile: userInfo.mobile,
+              mail: userInfo.mail,
+              entered: userInfo.entered,
+              authority : props.authority,
+              type: type,
+              user_id : userInfo.user_id,
+              groups_obids: [
+                selectedGroup._id ? selectedGroup._id : undefined
+              ],
+              account: props.user_id
+            })
+          )
         } else {
-          alert('등록 되었습니다.');
-          history.push('/users/employee');
+          client.publish(
+            '/user/add/' + id,
+            JSON.stringify({
+              name: userInfo.name,
+              avatar_file: base64,
+              avatar_file_url:
+                base64 === undefined ? userObject.avatar_file_url : undefined,
+              id,
+              stranger_id: userObject._id,
+              gender: userInfo.gender,
+              location: userInfo.location,
+              department_id: userInfo.department_id,
+              position: userInfo.position,
+              mobile: userInfo.mobile,
+              mail: userInfo.mail,
+              entered: userInfo.entered,
+              authority : props.authority,
+              type: type,
+              user_id : userInfo.user_id,
+              groups_obids: [
+                selectedGroup._id ? selectedGroup._id : undefined
+              ],
+              account: props.user_id
+            })
+          )
         }
       }
     } else if (type === 2) {
@@ -329,27 +405,29 @@ const AddStranger = props => {
       else if(!selectedGroup._id) {
         alert('그룹을 선택해주세요')
       } else {
-        await axios.post(base_url + '/user?type=stranger', {
-          name: userInfo.name,
-          gender: userInfo.gender,
-          guest_company: userInfo.guest_company,
-          guest_purpose: userInfo.guest_purpose,
-          position: userInfo.position,
-          avatar_file: base64,
-          avatar_file_url:
-            base64 === undefined ? userObject.avatar_file_url : undefined,
-          stranger_id: userObject._id,
-          mobile: userInfo.mobile,
-          authority : props.authority,
-          mail: userInfo.mail,
-          type: type,
-          groups_obids: [
-            selectedGroup._id ? selectedGroup._id : groups[groups.length - 1]
-          ],
-          account: props.user_id
-        });
-        alert('등록 되었습니다.');
-        history.push('/users/visitor');
+        client.publish(
+          '/stranger/add/' + id,
+          JSON.stringify({
+            name: userInfo.name,
+            gender: userInfo.gender,
+            guest_company: userInfo.guest_company,
+            guest_purpose: userInfo.guest_purpose,
+            id,
+            position: userInfo.position,
+            avatar_file: base64,
+            avatar_file_url:
+              base64 === undefined ? userObject.avatar_file_url : undefined,
+            stranger_id: userObject._id,
+            mobile: userInfo.mobile,
+            authority : props.authority,
+            mail: userInfo.mail,
+            type: type,
+            groups_obids: [
+              selectedGroup._id ? selectedGroup._id : groups[groups.length - 1]
+            ],
+            account: props.user_id
+          })
+        )
       }
     } else {
       if (userInfo.name === '') alert('이름을 입력해주세요');
@@ -358,26 +436,55 @@ const AddStranger = props => {
       else if(!selectedGroup._id) {
         alert('그룹을 선택해주세요')
       } else {
-        await axios.post(base_url + '/user?type=stranger', {
-          name: userInfo.name,
-          gender: userInfo.gender,
-          location: userInfo.location,
-          position: userInfo.position,
-          avatar_file: base64,
-          avatar_file_url:
-            base64 === undefined ? userObject.avatar_file_url : undefined,
-          stranger_id: userObject._id,
-          mobile: userInfo.mobile,
-          mail: userInfo.mail,
-          authority : props.authority,
-          type: type,
-          groups_obids: [
-            selectedGroup._id ? selectedGroup._id : groups[groups.length - 1]
-          ],
-          account: props.user_id
-        });
-        alert('등록 되었습니다.');
-        history.push('/users/black');
+        if(base64 === undefined){
+          client.publish(
+            '/stranger/add/' + id,
+            JSON.stringify({
+              name: userInfo.name,
+              gender: userInfo.gender,
+              location: userInfo.location,
+              id,
+              position: userInfo.position,
+              avatar_file: base64,
+              avatar_file_url:
+                base64 === undefined ? userObject.avatar_file_url : undefined,
+              stranger_id: userObject._id,
+              mobile: userInfo.mobile,
+              mail: userInfo.mail,
+              authority : props.authority,
+              create_at : moment().format('YYYY-MM-DD HH:MM:SS'),
+              type: type,
+              groups_obids: [
+                selectedGroup._id ? selectedGroup._id : groups[groups.length - 1]
+              ],
+              account: props.user_id
+            })
+          )
+        } else {
+          client.publish(
+            '/user/add/' + id,
+            JSON.stringify({
+              name: userInfo.name,
+              gender: userInfo.gender,
+              location: userInfo.location,
+              id,
+              position: userInfo.position,
+              avatar_file: base64,
+              avatar_file_url:
+                base64 === undefined ? userObject.avatar_file_url : undefined,
+              stranger_id: userObject._id,
+              mobile: userInfo.mobile,
+              mail: userInfo.mail,
+              authority : props.authority,
+              create_at : moment().format('YYYY-MM-DD HH:MM:SS'),
+              type: type,
+              groups_obids: [
+                selectedGroup._id ? selectedGroup._id : groups[groups.length - 1]
+              ],
+              account: props.user_id
+            })
+          )
+        }
       }
     }
   };
@@ -385,6 +492,17 @@ const AddStranger = props => {
   const renderEmployee = () => {
     return (
       <div>
+        <div style={{ width: '100%' }}>
+          <TextField
+            name="user_id"
+            value={userInfo.user_id}
+            style={{ width: '100%' }}
+            required
+            id="standard-required"
+            label="사번"
+            onChange={handleChange}
+          />
+        </div>
         <div style={{ width: '100%' }}>
           <TextField
             name="location"

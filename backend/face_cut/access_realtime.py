@@ -8,9 +8,12 @@ from numpy.linalg import norm
 from centerface import CenterFace
 import time
 import codecs, json
+import shutil
 import re
+import socket
 import base64
 from pymongo import MongoClient 
+from bson.objectid import ObjectId
 import pathlib
 from ast import literal_eval
 import paho.mqtt.client as mqtt
@@ -19,6 +22,7 @@ db = my_client.get_database("cloud40")
 acc_collection = db.get_collection('accesses')
 camera_collection = db.get_collection('cameras')
 user_collection = db.get_collection('users')
+stat_collection = db.get_collection('statistics')
 
 with open('./cloud40.json') as json_file:
     json_data = json.load(json_file)
@@ -29,8 +33,13 @@ def on_connect(client, userdata, flags, rc):
     else:
         print("Bad connection Returned code=", rc)
 
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+s.connect(("8.8.8.8", 80))
+server_ip = s.getsockname()[0]
+
 def on_message(client, userdata, msg):
-    if(msg.topic.find("/access/realtime") != -1):
+    
+    if(msg.topic.find("/access/realtime/") != -1):
         access_json = json.loads(msg.payload)
         camera = camera_collection.find_one({"serial_number":access_json['stb_sn']})
         auth = "^"+camera["authority"]
@@ -50,25 +59,256 @@ def on_message(client, userdata, msg):
 
         pathlib.Path(file_path).mkdir(parents=True, exist_ok=True)
         
+        time_cnt = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+
+        insert_array = []
+
+        employee = 0
+        black = 0
+        stranger = 0
+
         for value in access_json['values'] :
+            current_time = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
+            current_time_db = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+            current_date = time.strftime('%Y%m%d', time.localtime(time.time()))
+            current_hour = time.strftime('%H', time.localtime(time.time()))
             imgdata = base64.b64decode(value['avatar_file'])
-            file_name = access_json['stb_sn']+"_temp_file_"+time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))+".png"
+            time_cnt[int(current_hour)] += 1
+            file_name = access_json['stb_sn']+"_temp_file_"+current_time+".png"
+            name = 'unknown'
+            avatar_type = 3
+            max_sim = 0
+            max_name = 'unknown'
+            max_type = 3
             
             with open(file_path+file_name, 'wb') as f:
                 f.write(imgdata)
-
 
             emb_list = []
             emb_label_list = []
 
             result = detect_face(file_path+file_name)
-            recog_result,max_sim,max_name,max_type = recog_face(users)
-            print(recog_result,max_sim,max_name,max_type)
-            # collection.update({"_id":result["_id"]},{"$set":{"detected":True,"name":max_name,"type":max_type}})
+            if result is None :
+                name = 'unknown'
+                avatar_type = 3
+            else :
+                recog_result,max_sim,max_name,max_type = recog_face(users)
+                print(recog_result)
+
+            if(max_sim >= 0.625) :
+                name = max_name
+                avatar_type = max_type
+                if(avatar_type == 5):
+                    avatar_type = 4
+                    black += 1
+                elif(avatar_type == 1):
+                    employee += 1
+            else :
+                stranger += 1
+                    
+
+            os.remove(file_path+file_name)
+            file_name = access_json['stb_sn']+"_"+name+"_"+str(avatar_type)+"_"+value['avatar_temperature']+"_"+time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))+".png"
+            
+            with open(file_path+file_name, 'wb') as f:
+                f.write(imgdata)
+            
+            upload_url = "http://" + server_ip + ":3000" + "/uploads/accesss/temp/" + time.strftime('%Y%m%d', time.localtime(time.time())) + "/" + access_json['stb_sn'] + "/" + file_name
+ 
+            insert_data = {
+                "avatar_file" : 'avatar_file',
+                "avatar_file_checksum" : "element.avatar_file_checksum",
+                "avatar_type" : avatar_type,
+                'avatar_distance' : value['avatar_distance'],
+                'avatar_contraction_data' : 'element.avatar_contraction_data',
+                'avatar_file_url' : upload_url,
+                'avatar_temperature' : value['avatar_temperature'],
+                'access_time' : current_time_db,
+                'stb_sn' : access_json['stb_sn'],
+                'stb_obid' : str(camera['_id']),
+                'stb_name' : camera['name'],
+                'stb_location' : camera['location'],
+                'authority': camera['authority'],
+                'name' : name,
+            }
+
+            insert_array.append(insert_data)
+
+            todayStatistics = stat_collection.find_one(
+                {
+                    "$and":[
+                        {
+                            "serial_number":access_json['stb_sn']
+                        },
+                        {
+                            "access_date":current_date
+                        }
+                    ]
+                }
+            )
+
+            if(todayStatistics) :
+                stat_collection.update_one({"serial_number":access_json['stb_sn']},{
+                    "$inc":{
+                        "all_count":1,
+                        'employee':employee,
+                        'black' : black,
+                        'stranger' : stranger,
+                        str(current_hour) : 1
+                    }
+                })
+            else :
+                stat_collection.insert({
+                    'camera_obid' : camera['_id'],
+                    'authority' : camera['authority'],
+                    'serial_number' : access_json['stb_sn'],
+                    'access_date': current_date,
+                    'all_count' : 1,
+                    '0' : time_cnt[0],
+                    '1' : time_cnt[1],
+                    '2' : time_cnt[2],
+                    '3' : time_cnt[3],
+                    '4' : time_cnt[4],
+                    '5' : time_cnt[5],
+                    '6' : time_cnt[6],
+                    '7' : time_cnt[7],
+                    '8' : time_cnt[8],
+                    '9' : time_cnt[9],
+                    '10' : time_cnt[10],
+                    '11' : time_cnt[11],
+                    '12' : time_cnt[12],
+                    '13' : time_cnt[13],
+                    '14' : time_cnt[14],
+                    '15' : time_cnt[15],
+                    '16' : time_cnt[16],
+                    '17' : time_cnt[17],
+                    '18' : time_cnt[18],
+                    '19' : time_cnt[19],
+                    '20' : time_cnt[20],
+                    '21' : time_cnt[21],
+                    '22' : time_cnt[22],
+                    '23' : time_cnt[23],
+                    'employee' : employee,
+                    'black' : black,
+                    'stranger' : stranger
+                })
+
+                
+        acc_collection.insert_many(insert_array)
+        del insert_array[0]['_id']
+        send_data = {
+            'stb_sn': access_json['stb_sn'],
+            'values': insert_array
+        }
+
+        client.publish('/access/realtime/result/'+access_json['stb_sn'], json.dumps(send_data), 1)
+
+            
+    elif(msg.topic.find("/user/add/") != -1) :
+        user_json = json.loads(msg.payload)
+        user_json['groups_obids'][0] = ObjectId(user_json['groups_obids'][0])
+        file_path = '/var/www/backend/image/'
+        file_name = 'temp_'+user_json['id']+".jpg"
+        imgdata = base64.b64decode(user_json['avatar_file'])
+
+        with open(file_path+file_name, 'wb') as f:
+            f.write(imgdata)
+        
+        result = []
+        result = detect_face(file_path+file_name)
+        if result is None :
+            os.remove(file_path+file_name)
+            client.publish('/user/add/result/'+user_json['id'], json.dumps({"result":False}), 1)
+        else :
+            os.remove(file_path+file_name)
+
+            face_detection = str(result.tolist())
+            user_json['face_detection'] = face_detection
+            user_json['avatar_file_url'] = ''
+
+            user_collection.insert_one(user_json)
+            user_objectid = str(user_json['_id'])
+
+            file_name = user_objectid+"profile.jpg"
+
+            avatar_file_url = upload_url = "http://" + server_ip + ":3000" + "/image/" + file_name
+
+            user_collection.update_one({"_id":ObjectId(user_objectid)},{"$set":{"avatar_file_url":avatar_file_url}})
+
+            with open(file_path+file_name, 'wb') as f:
+                f.write(imgdata)
+
+            client.publish('/user/add/result/'+user_json['id'], json.dumps({"result":True}), 1)
+
+    elif(msg.topic.find("/stranger/add/") != -1) :
+        user_json = json.loads(msg.payload)
+        url_split = user_json['avatar_file_url'].split(":3000")
+        file_path = "/var/www/backend"+url_split[1]
+
+        detect_result = detect_face(file_path)
+
+        if detect_result is None :
+            client.publish('/stranger/add/result/'+user_json['id'], json.dumps({"result":False}), 1)
+        else :
+            user_json['face_detection'] = str(detect_result.tolist())
+            user_json['groups_obids'][0] = ObjectId(user_json['groups_obids'][0])
+            user_collection.insert_one(user_json)
+            user_objectid = str(user_json['_id'])
+
+            file_name = user_objectid+"profile.jpg"
+            _file_path = "/var/www/backend/image/"
+
+            shutil.copyfile(file_path,_file_path+file_name)
+
+            avatar_file_url = "http://" + server_ip + ":3000/image/"+file_name 
+
+            user_collection.update_one({"_id":user_json['_id']},{
+                "$set":{
+                    'avatar_file_url' : avatar_file_url
+                }
+            })
+
+            client.publish('/stranger/add/result/'+user_json['id'], json.dumps({"result":True}), 1)
+    elif(msg.topic.find("/user/edit/") != -1) :
+        user_json = json.loads(msg.payload)
+        user_json['groups_obids'][0] = ObjectId(user_json['clicked_groups'][0])
+        file_path = '/var/www/backend/image/'
+        file_name = user_json['id']+"profile_updated_temp.jpg"
+        user_objectid = ObjectId(user_json['_id'])
+        del user_json['_id']
+        if not user_json.get("avatar_file") :
+            user_collection.update_one({"_id":ObjectId(user_objectid)},{"$set":user_json})
+            client.publish('/user/edit/result/'+user_json['id'], json.dumps({"result":True}), 1)
+        else :
+            imgdata = base64.b64decode(user_json['avatar_file'])
+            with open(file_path+file_name, 'wb') as f:
+                f.write(imgdata)
+            
+            detect_result = detect_face(file_path+file_name)
+
+            if detect_result is None :
+                os.remove(file_path+file_name)
+                client.publish('/user/edit/result/'+user_json['id'], json.dumps({"result":False}), 1)
+            else :
+                updated_file_name = file_path+file_name.split('_temp')[0]+".jpg"
+                os.rename(file_path+file_name , updated_file_name)
+
+                avatar_file_url = "http://" + server_ip + ":3000/image/" + file_name.split('_temp')[0]+".jpg"
+
+                user_json['face_detection'] = str(detect_result.tolist())
+                user_json['avatar_file_url'] = avatar_file_url
+
+                user_collection.update_one({"_id":user_objectid},{"$set":user_json})
+
+                client.publish('/user/edit/result/'+user_json['id'], json.dumps({"result":True}), 1)
 
 
+            
 
-    # else if(msg.topic.find("/user/add") != -1) 
+
+            
+
+        
 
 def on_disconnect(client, userdata, flags, rc=0):
     print(str(rc))
@@ -109,19 +349,19 @@ src_pts = np.array(src_pts, dtype="float32")
 
 mask_img = cv2.imread("./mask.png", -1)
 
-det_model = insightface.model_zoo.get_model('retinaface_mnet025_v2')
+det_model = insightface.model_zoo.get_model('retinaface_r50_v1')
 det_model.prepare(-1, 0.4)
 
 rec_name = insightface.model_zoo.get_model('arcface_r100_v1')
 rec_name.prepare(-1)
 
 known_face_files = [1]
-target_face_files = os.listdir('./target_face')
+target_face_files = []
 
-emb_list = []
-emb_norm_list = []
-emb_label_list = []
-embs = []
+emb_list = [0]
+emb_norm_list = [0]
+emb_label_list = [0]
+embs = [0]
 
 def detect_face(path) :
     for known_face_file in known_face_files:
@@ -176,9 +416,9 @@ def detect_face(path) :
             continue
         
         emb = rec_name.get_embedding(crop_img).flatten()
-        emb_list.append(emb)
-        emb_norm_list.append(norm(emb))
-        emb_label_list.append(face_label)
+        emb_list[0] = emb
+        emb_norm_list[0] = norm(emb)
+        emb_label_list[0] = face_label
         return emb
 
 def str2ndarray(a):
@@ -201,8 +441,7 @@ def getClosestFace(emb):
 def recog_face(users) :
     result = []
     max_sim = 0
-    # max_label = ''
-    max_name = 'uknown'
+    max_name = 'unknown'
     max_type = 3
     for emb in users:
         face = np.array(literal_eval(emb["face_detection"]))
@@ -211,7 +450,6 @@ def recog_face(users) :
         result.append({"sim":sim,"name":emb['name'],"type":emb['type']})
         if(max_sim < sim):
             max_sim = sim
-            # max_label = emb["label"]
             max_name = emb['name']
             max_type = emb['type']
     return result,max_sim,max_name,max_type
@@ -238,5 +476,7 @@ client.on_message = on_message
 client.connect('localhost', 1883)
 client.subscribe("/access/realtime/+")
 client.subscribe("/user/add/+")
+client.subscribe("/user/edit/+")
+client.subscribe("/stranger/add/+")
 client.loop_forever()
 

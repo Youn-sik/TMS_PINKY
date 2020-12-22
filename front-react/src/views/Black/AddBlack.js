@@ -25,7 +25,14 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import {base_url} from 'server.json';
+import {base_url,mqtt_url} from 'server.json';
+import mqtt from 'mqtt';
+import moment from 'moment';
+import 'moment/locale/ko';
+
+let client
+let id = '';
+
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(4)
@@ -140,6 +147,33 @@ const AddBlack = props => {
   const onDrop = picture => {
     setPictures([picture, ...pictures]);
   };
+
+  useEffect(() => {
+    client = mqtt.connect('ws://'+mqtt_url+':8083/mqtt');
+
+    client.on('connect', () => {
+      console.log('isConnected')
+      client.subscribe('/user/add/result/+');
+    });
+
+    client.on('message', function(topic, message) {
+      if (topic.indexOf('/user/add/result/'+id) > -1) {
+        let result = JSON.parse(message.toString())
+        setLoading(false);
+        if(result.result) {
+          alert('등록 되었습니다.');
+          history.push('/users/black');
+        } else {
+          alert('인식 할수 없는 사진 입니다.')
+        }
+      }
+    })
+
+    return () => {
+      client.end(true)
+    };
+  },[])
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -166,7 +200,9 @@ const AddBlack = props => {
     position: '',
     mobile: '',
     mail: '',
-    gender: 1
+    gender: 1,
+    entered : '',
+    create_at : moment().format('YYYY-MM-DD HH:MM:SS'),
   });
 
   const handleChange = event => {
@@ -229,31 +265,56 @@ const AddBlack = props => {
       reader.onerror = error => reject(error);
     });
 
-  const addUser = async () => {
-    if (pictures.length === 0) alert('사진을 등록해주세요');
-    else if (userInfo.name === '') alert('이름을 입력해주세요');
-    else if (userInfo.location === '') alert('장소를 입력해주세요');
-    else if (userInfo.position === '') alert('사유를 입력해주세요');
-    else if(node._id){
-      setLoading(true);
-      let base64 = await toBase64(pictures[0][0]);
-      base64 = base64.replace('data:image/jpeg;base64,', '');
-      base64 = base64.replace('data:image/png;base64,', '');
-      await axios.post(base_url + '/user', {
-        ...userInfo,
-        type: 5,
-        groups_obids: [node._id ? node._id : undefined],
-        account: props.user_id,
-        authority : props.authority,
-        avatar_file: base64,
-        operation_auth: props.authority
-      });
-      alert('등록 되었습니다.');
-      history.push('/users/black');
-    } else {
-      alert('그룹을 선택해주세요.')
-    }
-  };
+    const addUser = async () => {
+      if (pictures.length === 0) alert('사진을 등록해주세요');
+      else if (userInfo.name === '') alert('이름을 입력해주세요');
+      else if (userInfo.location === '') alert('근무지를 입력해주세요');
+      else if (userInfo.position === '') alert('직급을 입력해주세요');
+      else if(node._id) {
+        setLoading(true);
+        let base64 = await toBase64(pictures[0][0]);
+        base64 = base64.replace('data:image/jpeg;base64,', '');
+        base64 = base64.replace('data:image/png;base64,', '');
+        id = Math.random().toString(36).substr(2,11)
+  
+        client.publish(
+          '/user/add/' + id,
+          JSON.stringify({
+            ...userInfo,
+            groups_obids: [node._id ? node._id : undefined],
+            account: props.user_id,
+            type: 5,
+            authority : props.authority,
+            avatar_file: base64,
+            operation_auth: props.authority,
+            id
+          })
+        )
+        
+        // let result = await axios.post(base_url + '/user', {
+        //   ...userInfo,
+        //   type: 1,
+        //   groups_obids: [node._id ? node._id : undefined],
+        //   account: props.user_id,
+        //   authority : props.authority,
+        //   avatar_file: base64,
+        //   operation_auth: props.authority
+        // });
+        
+        // if(result.data.result && result.data.result === '인식할수 없는 사진.') {
+        //   alert("인식할수 없는 사진 입니다.")
+        //   setLoading(false);
+        //   return 0;
+        // }
+  
+        // setLoading(false);
+        // alert('등록 되었습니다.');
+        // history.push('/users/employee');
+      } else {
+        alert('그룹을 선택해주세요.')
+      }
+    };
+
   return (
     <div className={classes.root}>
       <Grid container justify="center" alignItems="center" spacing={4}>

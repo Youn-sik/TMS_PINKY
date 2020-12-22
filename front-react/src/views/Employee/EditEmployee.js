@@ -26,10 +26,14 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import {base_url} from 'server.json';
+import {base_url,mqtt_url} from 'server.json';
+import mqtt from 'mqtt';
 import moment from 'moment';
 import 'moment/locale/ko';
 import {DatePicker} from 'rsuite';
+
+let client
+let id = '';
 
 Date.prototype.yyyymmdd = function() {
   var yyyy = this.getFullYear().toString();
@@ -176,6 +180,31 @@ const EditEmployee = props => {
     setOpen(false);
   };
 
+  useEffect(() => {
+    client = mqtt.connect('ws://'+mqtt_url+':8083/mqtt');
+
+    client.on('connect', () => {
+      console.log('isConnected')
+      client.subscribe('/user/edit/result/+');
+    });
+
+    client.on('message', function(topic, message) {
+      if (topic.indexOf('/user/edit/result/'+id) > -1) {
+        let result = JSON.parse(message.toString())
+        if(result.result) {
+          alert('수정 되었습니다.');
+          history.push('/users/employee');
+        } else {
+          alert('인식 할수 없는 사진 입니다.')
+        }
+      }
+    })
+
+    return () => {
+      client.end(true)
+    };
+  },[])
+
   const [userInfo, setUserInfo] = useState({
     name: '',
     location: '',
@@ -274,25 +303,22 @@ const EditEmployee = props => {
       base64 = base64.replace('data:image/jpeg;base64,', '');
       base64 = base64.replace('data:image/png;base64,', '');
     }
-    
-    let result = await axios.put(base_url + '/user/' + userObject[0]._id, {
-      ...userObject[0],
-      ...userInfo,
-      type: 1,
-      account: props.user_id,
-      clicked_groups:
-        node._id !== undefined ? [node._id] : userObject[0].groups_obids,
-      avatar_file: base64 ? base64 : userObject[0].avatar_file,
-      operation_auth: props.authority
-    });
+    id = Math.random().toString(36).substr(2,11)
 
-    if(result.data.result && result.data.result === '인식할수 없는 사진.') {
-      alert("인식할수 없는 사진 입니다.")
-      return 0;
-    }
-
-    alert('수정 되었습니다.');
-    history.push('/users/employee');
+    client.publish(
+      '/user/edit/' + id,
+      JSON.stringify({
+        ...userObject[0],
+        ...userInfo,
+        id,
+        type: 1,
+        account: props.user_id,
+        clicked_groups:
+          node._id !== undefined ? [node._id] : userObject[0].groups_obids,
+        avatar_file: base64 ? base64 : userObject[0].avatar_file,
+        operation_auth: props.authority
+      })
+    )
   };
 
   const locale = {

@@ -134,11 +134,11 @@ router.post('/',async function(req, res) {
             } else {
                 add.avatar_file_url = 'http://'+req.headers.host+'/image/'+add._id+'profile.jpg';
                 fs.writeFileSync('/var/www/backend/image/'+add._id+'profile.jpg',req.body.avatar_file,'base64')
-                let result = execSync(`python /var/www/backend/face_cut/face_detect.py -f /var/www/backend/image/${add._id}profile.jpg -n ${add.name} -t ${add.type}`).toString()
+                let result = execSync(`python3 /var/www/backend/face_cut/face_detect.py -f /var/www/backend/image/${add._id}profile.jpg -n ${add.name} -t ${add.type}`).toString()
                 console.log(result)
                 add.face_detection = result.split('use_landmarks True\n')[1]
                 add.face_detection = add.face_detection.replace('\n','')
-                // let brightness = execSync(`python /var/www/backend/face_cut/get_brightness.py -f /var/www/backend/image/face_cut_${add._id}profile.jpg`)
+                // let brightness = execSync(`python3 /var/www/backend/face_cut/get_brightness.py -f /var/www/backend/image/face_cut_${add._id}profile.jpg`)
                 // brightness = brightness.toString()
 
                 // if(brightness === "파일이 존재 하지 않습니다.\n") {
@@ -258,8 +258,8 @@ router.put('/:id',async function(req, res) {
             //     height: 200
             // });
 
-            execSync(`python /var/www/backend/face_cut/align_face.py -f /var/www/backend/image/${add._id}profile_updated.jpg -o /var/www/backend/image/face_cut_${add._id}profile_updated.jpg`)
-            let brightness = execSync(`python /var/www/backend/face_cut/get_brightness.py -f /var/www/backend/image/face_cut_${add._id}profile_updated.jpg`)
+            execSync(`python3 /var/www/backend/face_cut/align_face.py -f /var/www/backend/image/${add._id}profile_updated.jpg -o /var/www/backend/image/face_cut_${add._id}profile_updated.jpg`)
+            let brightness = execSync(`python3 /var/www/backend/face_cut/get_brightness.py -f /var/www/backend/image/face_cut_${add._id}profile_updated.jpg`)
             brightness = brightness.toString()
 
             if(brightness === "파일이 존재 하지 않습니다.\n") {

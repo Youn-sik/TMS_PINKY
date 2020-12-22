@@ -444,222 +444,222 @@ module.exports = {
         })
     },
 
-    async access_realtime(json,server_ip) {
-        try {
-            let insert_array = [];
-            let camera = await Camera.findOne( { serial_number : json.stb_sn });
-            let auth = camera.authority === 'admin' ? new RegExp('') : new RegExp("^"+camera.authority)
-            let Users = await User.find().regex('authority',auth)
-            let isHighTemp = false
-            if(camera) {
-                json.values.forEach(async function(element){
+    // async access_realtime(json,server_ip) {
+    //     try {
+    //         let insert_array = [];
+    //         let camera = await Camera.findOne( { serial_number : json.stb_sn });
+    //         let auth = camera.authority === 'admin' ? new RegExp('') : new RegExp("^"+camera.authority)
+    //         let Users = await User.find().regex('authority',auth)
+    //         let isHighTemp = false
+    //         if(camera) {
+    //             json.values.forEach(async function(element){
 
-                    if(element.avatar_distance === undefined) {
-                        element.avatar_distance = 0
-                    }
+    //                 if(element.avatar_distance === undefined) {
+    //                     element.avatar_distance = 0
+    //                 }
 
-                    if(element.avatar_temperature >= "37.5")
-                        isHighTemp = true;
+    //                 if(element.avatar_temperature >= "37.5")
+    //                     isHighTemp = true;
 
-                let buff = Buffer.from(element.avatar_file, 'base64');
-                let folder_date_path = "/uploads/accesss/temp/" + moment().format('YYYYMMDD');
-                let file_path = site.base_server_document + folder_date_path + "/" + json.stb_sn + "/";
-                mkdirp.sync(file_path);    
-                let temp_file = site.base_server_document + folder_date_path + "/" + json.stb_sn + "/" +"temp_file_"+ moment().format('YYYYMMDDHHmmss') + ".png"
-                let output = temp_file.replace("temp_file_","face_cut_")
-                fs.writeFileSync(temp_file, buff, 'utf-8')
-                try{
-                    execSync(`python /var/www/backend/face_cut/align_face.py -f ${temp_file} -o ${output}`)
-                } finally {
-                    fs.unlink(temp_file,()=>{})
-                }
-                let brightness = execSync(`python /var/www/backend/face_cut/get_brightness.py -f ${output}`)
-                brightness = brightness.toString()
+    //             let buff = Buffer.from(element.avatar_file, 'base64');
+    //             let folder_date_path = "/uploads/accesss/temp/" + moment().format('YYYYMMDD');
+    //             let file_path = site.base_server_document + folder_date_path + "/" + json.stb_sn + "/";
+    //             mkdirp.sync(file_path);    
+    //             let temp_file = site.base_server_document + folder_date_path + "/" + json.stb_sn + "/" +"temp_file_"+ moment().format('YYYYMMDDHHmmss') + ".png"
+    //             let output = temp_file.replace("temp_file_","face_cut_")
+    //             fs.writeFileSync(temp_file, buff, 'utf-8')
+    //             try{
+    //                 execSync(`python /var/www/backend/face_cut/align_face.py -f ${temp_file} -o ${output}`)
+    //             } finally {
+    //                 fs.unlink(temp_file,()=>{})
+    //             }
+    //             let brightness = execSync(`python /var/www/backend/face_cut/get_brightness.py -f ${output}`)
+    //             brightness = brightness.toString()
 
-                let temp = 0.0
-                if(brightness < '100')
-                    temp = 0.2
-                else if(brightness < '125')
-                    temp = 0.1
+    //             let temp = 0.0
+    //             if(brightness < '100')
+    //                 temp = 0.2
+    //             else if(brightness < '125')
+    //                 temp = 0.1
                 
-                // let detections = undefined
-                let descriptor;
-                if(brightness !== "파일이 존재 하지 않습니다.\n"){
-                    let image = await Jimp.read(output)//Jimp불러오기
-                    image.brightness(temp)//명도조절
-                    let result = await image.getBase64Async('image/png');
-                    result = result.replace('data:image/png;base64,','')
+    //             // let detections = undefined
+    //             let descriptor;
+    //             if(brightness !== "파일이 존재 하지 않습니다.\n"){
+    //                 let image = await Jimp.read(output)//Jimp불러오기
+    //                 image.brightness(temp)//명도조절
+    //                 let result = await image.getBase64Async('image/png');
+    //                 result = result.replace('data:image/png;base64,','')
                     
-                    fs.unlink(output,()=>{})
+    //                 fs.unlink(output,()=>{})
 
-                    const img = new Image();
-                    img.src = "data:image/png;base64,"+ result
+    //                 const img = new Image();
+    //                 img.src = "data:image/png;base64,"+ result
 
-                    buff = Buffer.from(result, 'base64');
+    //                 buff = Buffer.from(result, 'base64');
 
-                    // detections = await faceapi.detectSingleFace(img,new faceapi.SsdMobilenetv1Options({ minConfidence: 0.1 }))
-                    // .withFaceLandmarks()
-                    // .withFaceDescriptor();
+    //                 // detections = await faceapi.detectSingleFace(img,new faceapi.SsdMobilenetv1Options({ minConfidence: 0.1 }))
+    //                 // .withFaceLandmarks()
+    //                 // .withFaceDescriptor();
 
-                    descriptor = await faceapi.computeFaceDescriptor(img)
-                }
+    //                 descriptor = await faceapi.computeFaceDescriptor(img)
+    //             }
 
-                let userName = "unknown";
-                let user_obid = '';
-                let distance = 0;
+    //             let userName = "unknown";
+    //             let user_obid = '';
+    //             let distance = 0;
 
-                // if(descriptor) {
-                //     if(Users.length > 0) {
-                //         const labeledDescriptors = await Promise.all(
-                //             Users.map(async user => {
-                //                 return (
-                //                     new faceapi.LabeledFaceDescriptors(
-                //                         user.name+"|"
-                //                         +user.location+"|"
-                //                         +user.department_id+"|"
-                //                         +user.position+"|"
-                //                         +user.mobile+"|"
-                //                         +user.mail+"|"
-                //                         +user.gender+"|"
-                //                         +user.type+"|"
-                //                         +user.avatar_file_url+"|"
-                //                         +user.create_at+"|"
-                //                         +user._id,
-                //                         [new Float32Array(Object.values(JSON.parse(user.face_detection)))]
-                //                     )
-                //                 )
-                //             })
-                //         );
+    //             // if(descriptor) {
+    //             //     if(Users.length > 0) {
+    //             //         const labeledDescriptors = await Promise.all(
+    //             //             Users.map(async user => {
+    //             //                 return (
+    //             //                     new faceapi.LabeledFaceDescriptors(
+    //             //                         user.name+"|"
+    //             //                         +user.location+"|"
+    //             //                         +user.department_id+"|"
+    //             //                         +user.position+"|"
+    //             //                         +user.mobile+"|"
+    //             //                         +user.mail+"|"
+    //             //                         +user.gender+"|"
+    //             //                         +user.type+"|"
+    //             //                         +user.avatar_file_url+"|"
+    //             //                         +user.create_at+"|"
+    //             //                         +user._id,
+    //             //                         [new Float32Array(Object.values(JSON.parse(user.face_detection)))]
+    //             //                     )
+    //             //                 )
+    //             //             })
+    //             //         );
 
-                //         const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.5)
+    //             //         const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.5)
                 
-                //         const bestMatch = faceMatcher.findBestMatch(descriptor)
-                //         console.log("1",bestMatch._distance,bestMatch._label)
+    //             //         const bestMatch = faceMatcher.findBestMatch(descriptor)
+    //             //         console.log("1",bestMatch._distance,bestMatch._label)
 
-                //         if(bestMatch._label !== 'unknown') {
-                //             let userData = bestMatch._label.split('|')
-                //             userName = userData[0]
-                //             element.avatar_type = parseInt(userData[7])
-                //             user_obid = userData[10]
-                //             distance = bestMatch._distance === 1 ? 100 : (1 - bestMatch._distance) * 100
-                //         } 
+    //             //         if(bestMatch._label !== 'unknown') {
+    //             //             let userData = bestMatch._label.split('|')
+    //             //             userName = userData[0]
+    //             //             element.avatar_type = parseInt(userData[7])
+    //             //             user_obid = userData[10]
+    //             //             distance = bestMatch._distance === 1 ? 100 : (1 - bestMatch._distance) * 100
+    //             //         } 
 
-                //         // if(bestMatch._distance <= 0.425 && bestMatch._label !== 'unknown') {
-                //         //     let userData = bestMatch._label.split('|')
-                //         //     userName = userData[0]
-                //         //     element.avatar_type = parseInt(userData[7])
-                //         //     user_obid = userData[10]
-                //         // } 
-                //         // else {
-                //         //     // let image = await Jimp.read(buff)//Jimp불러오기
-                //         //     // image.brightness(temp)//명도조절
-                //         //     // let result = await image.getBase64Async('image/png');
-                //         //     // result = result.replace('data:image/png;base64,','')
+    //             //         // if(bestMatch._distance <= 0.425 && bestMatch._label !== 'unknown') {
+    //             //         //     let userData = bestMatch._label.split('|')
+    //             //         //     userName = userData[0]
+    //             //         //     element.avatar_type = parseInt(userData[7])
+    //             //         //     user_obid = userData[10]
+    //             //         // } 
+    //             //         // else {
+    //             //         //     // let image = await Jimp.read(buff)//Jimp불러오기
+    //             //         //     // image.brightness(temp)//명도조절
+    //             //         //     // let result = await image.getBase64Async('image/png');
+    //             //         //     // result = result.replace('data:image/png;base64,','')
 
-                //         //     const img2 = new Image();
-                //         //     img2.src = "data:image/png;base64,"+ element.avatar_file
+    //             //         //     const img2 = new Image();
+    //             //         //     img2.src = "data:image/png;base64,"+ element.avatar_file
 
-                //         //     // let detections2 = await faceapi.detectSingleFace(img2,new faceapi.SsdMobilenetv1Options({ minConfidence: 0.3 }))
-                //         //     // .withFaceLandmarks()
-                //         //     // .withFaceDescriptor();
-                //         //     let descriptor = await faceapi.computeFaceDescriptor(img2)
+    //             //         //     // let detections2 = await faceapi.detectSingleFace(img2,new faceapi.SsdMobilenetv1Options({ minConfidence: 0.3 }))
+    //             //         //     // .withFaceLandmarks()
+    //             //         //     // .withFaceDescriptor();
+    //             //         //     let descriptor = await faceapi.computeFaceDescriptor(img2)
 
-                //         //     if(descriptor) {
-                //         //         const bestMatch2 = faceMatcher.findBestMatch(descriptor)
-                //         //         console.log("2",bestMatch2._distance,bestMatch2._label)
-                //         //         if(bestMatch2._distance <= 0.425 && bestMatch2._label !== 'unknown') {
-                //         //             let userData = bestMatch2._label.split('|')
-                //         //             userName = userData[0]
-                //         //             element.avatar_type = parseInt(userData[7])
-                //         //             user_obid = userData[10]
-                //         //         }
-                //         //     }
-                //         // }
-                //     }
-                // } 
-                fs.unlink(temp_file,()=>{})
-                fs.unlink(output,()=>{})
-                let avatar_type = element.avatar_type === 5 ? 4 : element.avatar_type
-                let file_name = json.stb_sn +"_"+userName+"_"+avatar_type+ "_"+element.avatar_temperature+"_"+ + moment().format('YYYYMMDDHHmmss') + ".png";
-                let upload_url = "http://"+server_ip+ ':3000' + folder_date_path + "/" + json.stb_sn + "/" +file_name;
+    //             //         //     if(descriptor) {
+    //             //         //         const bestMatch2 = faceMatcher.findBestMatch(descriptor)
+    //             //         //         console.log("2",bestMatch2._distance,bestMatch2._label)
+    //             //         //         if(bestMatch2._distance <= 0.425 && bestMatch2._label !== 'unknown') {
+    //             //         //             let userData = bestMatch2._label.split('|')
+    //             //         //             userName = userData[0]
+    //             //         //             element.avatar_type = parseInt(userData[7])
+    //             //         //             user_obid = userData[10]
+    //             //         //         }
+    //             //         //     }
+    //             //         // }
+    //             //     }
+    //             // } 
+    //             fs.unlink(temp_file,()=>{})
+    //             fs.unlink(output,()=>{})
+    //             let avatar_type = element.avatar_type === 5 ? 4 : element.avatar_type
+    //             let file_name = json.stb_sn +"_"+userName+"_"+avatar_type+ "_"+element.avatar_temperature+"_"+ + moment().format('YYYYMMDDHHmmss') + ".png";
+    //             let upload_url = "http://"+server_ip+ ':3000' + folder_date_path + "/" + json.stb_sn + "/" +file_name;
                 
-                fs.writeFileSync(file_path + file_name, buff, 'utf-8')
+    //             fs.writeFileSync(file_path + file_name, buff, 'utf-8')
 
-                    insert_data = {
-                        avatar_file : 'avatar_file',
-                        avatar_file_checksum : element.avatar_file_checksum,
-                        avatar_type : element.avatar_type === 5 ? 4 : element.avatar_type,
-                        avatar_distance : element.avatar_distance,
-                        avatar_contraction_data : element.avatar_contraction_data,
-                        avatar_file_url : upload_url,
-                        avatar_temperature : element.avatar_temperature,
-                        access_time : moment().format('YYYY-MM-DD HH:mm:ss'),
-                        stb_sn : json.stb_sn,
-                        stb_obid : camera._id,
-                        stb_name : camera.name,
-                        stb_location : camera.location,
-                        authority: camera.authority,
-                        name : userName,
-                        distance : distance
-                    }
+    //                 insert_data = {
+    //                     avatar_file : 'avatar_file',
+    //                     avatar_file_checksum : element.avatar_file_checksum,
+    //                     avatar_type : element.avatar_type === 5 ? 4 : element.avatar_type,
+    //                     avatar_distance : element.avatar_distance,
+    //                     avatar_contraction_data : element.avatar_contraction_data,
+    //                     avatar_file_url : upload_url,
+    //                     avatar_temperature : element.avatar_temperature,
+    //                     access_time : moment().format('YYYY-MM-DD HH:mm:ss'),
+    //                     stb_sn : json.stb_sn,
+    //                     stb_obid : camera._id,
+    //                     stb_name : camera.name,
+    //                     stb_location : camera.location,
+    //                     authority: camera.authority,
+    //                     name : userName,
+    //                     distance : distance
+    //                 }
 
-                    insert_array.push(insert_data);
+    //                 insert_array.push(insert_data);
 
-                    let todayStatistics = await Statistics.findOne()
-                    .where('camera_obid').equals(camera._id)
-                    .where('access_date').equals(moment().format('YYYY-MM-DD'));
+    //                 let todayStatistics = await Statistics.findOne()
+    //                 .where('camera_obid').equals(camera._id)
+    //                 .where('access_date').equals(moment().format('YYYY-MM-DD'));
                     
-                    let hours = moment().format('HH:mm:ss').split(':')[0];
-                    if(hours[0] === '0') hours = hours.replace('0','');
+    //                 let hours = moment().format('HH:mm:ss').split(':')[0];
+    //                 if(hours[0] === '0') hours = hours.replace('0','');
 
-                    let type = 'stranger';
-                    if(element.avatar_type === 1) type = 'employee';
-                    else if(element.avatar_type === 5) type = 'black';
+    //                 let type = 'stranger';
+    //                 if(element.avatar_type === 1) type = 'employee';
+    //                 else if(element.avatar_type === 5) type = 'black';
                     
-                    if(todayStatistics === null) {
-                        todayStatistics = new Statistics({
-                            camera_obid : camera._id,
-                            authority : camera.authority,
-                            serial_number : json.stb_sn,
-                            access_date: moment().format('YYYY-MM-DD'),
-                            all_count : 1,
-                            [hours] : 1,
-                            maxTemp : element.avatar_temperature,
-                            maxUrl : upload_url,
-                            maxType : element.avatar_type === 5 ? 4 : element.avatar_type,
-                            maxName : userName,
-                            [type] : 1
-                        })
-                        todayStatistics.save()
-                    } else {
-                        await Statistics.findByIdAndUpdate(todayStatistics._id,{ 
-                            $inc: { 
-                                all_count: 1,
-                                [hours] : 1,
-                                [type] : 1
-                            }
-                        },
-                        {
+    //                 if(todayStatistics === null) {
+    //                     todayStatistics = new Statistics({
+    //                         camera_obid : camera._id,
+    //                         authority : camera.authority,
+    //                         serial_number : json.stb_sn,
+    //                         access_date: moment().format('YYYY-MM-DD'),
+    //                         all_count : 1,
+    //                         [hours] : 1,
+    //                         maxTemp : element.avatar_temperature,
+    //                         maxUrl : upload_url,
+    //                         maxType : element.avatar_type === 5 ? 4 : element.avatar_type,
+    //                         maxName : userName,
+    //                         [type] : 1
+    //                     })
+    //                     todayStatistics.save()
+    //                 } else {
+    //                     await Statistics.findByIdAndUpdate(todayStatistics._id,{ 
+    //                         $inc: { 
+    //                             all_count: 1,
+    //                             [hours] : 1,
+    //                             [type] : 1
+    //                         }
+    //                     },
+    //                     {
                             
-                        })
-                    }
-                    await Access.insertMany(insert_array)
+    //                     })
+    //                 }
+    //                 await Access.insertMany(insert_array)
 
-                    send_data = {
-                        stb_sn: json.stb_sn,
-                        values: insert_array
-                    };
+    //                 send_data = {
+    //                     stb_sn: json.stb_sn,
+    //                     values: insert_array
+    //                 };
                     
-                    if(isHighTemp)
-                        client.publish('/access/high_temp_realtime/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);    
+    //                 if(isHighTemp)
+    //                     client.publish('/access/high_temp_realtime/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);    
                     
-                    client.publish('/access/realtime/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
-                })
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    },
+    //                 client.publish('/access/realtime/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
+    //             })
+    //         }
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // },
 
     async access_addpeople(json,server_ip) {
         try{
