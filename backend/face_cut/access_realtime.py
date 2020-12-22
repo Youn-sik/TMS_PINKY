@@ -291,6 +291,7 @@ def on_message(client, userdata, msg):
                 client.publish('/user/edit/result/'+user_json['id'], json.dumps({"result":False}), 1)
             else :
                 updated_file_name = file_path+file_name.split('_temp')[0]+".jpg"
+                os.remove("/var/www/backend"+user_json['avatar_file_url'].split(":3000")[1])
                 os.rename(file_path+file_name , updated_file_name)
 
                 avatar_file_url = "http://" + server_ip + ":3000/image/" + file_name.split('_temp')[0]+".jpg"
