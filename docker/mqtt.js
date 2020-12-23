@@ -12,7 +12,7 @@ client.on('connect', function(test) {
         '/disconnect/result/+',
         '/download/+',
         '/access/request/+',
-        '/access/realtime/+',
+        // '/access/realtime/+',
         '/access/addpeople/+',
         '/control/log/result/+',
         '/control/capture/start/result/+',
@@ -157,11 +157,11 @@ client.on('message', async function(topic, message) {
         }
 
         /* 출입통제 > 단말 실시간 데이터*/
-        if (topic === "/access/realtime/" + json.stb_sn) {
-            if (json.stb_sn != undefined) {
-                fn.access_realtime(json,server_ip);
-            }
-        }
+        // if (topic === "/access/realtime/" + json.stb_sn) {
+        //     if (json.stb_sn != undefined) {
+        //         fn.access_realtime(json,server_ip);
+        //     }
+        // }
 
         /* 출입통제 > 단말 데이터 등록*/
         if (topic === "/access/addpeople/" + json.stb_sn) { 

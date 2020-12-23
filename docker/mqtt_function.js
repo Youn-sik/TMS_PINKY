@@ -32,44 +32,44 @@ const mqtt_option = {
     qos: 0
 }
 
-// const Influx = require('influx');
-// const influx = new Influx.InfluxDB({
-//     host: site.influxdb,
-//     database: 'g_rrd'
-// });
+const Influx = require('influx');
+const influx = new Influx.InfluxDB({
+    host: site.influxdb,
+    database: 'g_rrd'
+});
 
-// class InfluxQueue {
-//     constructor() {
-//         this._queue = [];
-//     }
+class InfluxQueue {
+    constructor() {
+        this._queue = [];
+    }
 
-//     push(data) {
-//         this._queue.push(data);
-//     }
+    push(data) {
+        this._queue.push(data);
+    }
 
-//     getAll() {
-//         let data = this._queue.splice(0, this._queue.length);
-//         this._queue = [];
-//         return data;
-//     }
+    getAll() {
+        let data = this._queue.splice(0, this._queue.length);
+        this._queue = [];
+        return data;
+    }
 
-//     get length() {
-//         return this._queue.length;
-//     }
-// }
+    get length() {
+        return this._queue.length;
+    }
+}
 
-// const influxInterver = 10000;
-// const influxQueue = new InfluxQueue();
+const influxInterver = 10000;
+const influxQueue = new InfluxQueue();
 
-// let influxInterverId = setInterval(() => {
-//     if (influxQueue.length > 0) {
-//         let data = influxQueue.getAll();
-//         influx.writePoints(data).then(() => {
-//             console.log(moment().format('YYYY-MM-DD HH:mm:ss.SSS') + ' ' + data.length + " RRD data was saved.");
-//             data = null;
-//         }).catch((err) => console.error(err.message));
-//     }
-// }, influxInterver);
+let influxInterverId = setInterval(() => {
+    if (influxQueue.length > 0) {
+        let data = influxQueue.getAll();
+        influx.writePoints(data).then(() => {
+            console.log(moment().format('YYYY-MM-DD HH:mm:ss.SSS') + ' ' + data.length + " RRD data was saved.");
+            data = null;
+        }).catch((err) => console.error(err.message));
+    }
+}, influxInterver);
 
 const mongoose = require('mongoose');
 const mongodb = mongoose.connection;
@@ -97,22 +97,22 @@ const Camera_monitor = require('./schema/camera_monitor_Schema');
 const Camera_filelist = require('./schema/camera_filelist_Schema');
 const Statistics_temp = require('./schema/statistics_temp');
 
-/*
-let data = {
-    name : "changbab",
-    location : "location",
-    ip : "172.16.135.89",
-    port : "4320",
-    user_obids : ['5ede078087ef1a04252d9c33'],
-    camera_obids : ['5eddcfa6c5965509a7631516'],
-    description : "설명"
-};
 
-let newUser = new Gateway(data);
-newUser.save(function (error, data2){
-    console.log("1234");
-})
-*/
+// let data = {
+//     name : "changbab",
+//     location : "location",
+//     ip : "172.16.135.89",
+//     port : "4320",
+//     user_obids : ['5ede078087ef1a04252d9c33'],
+//     camera_obids : ['5eddcfa6c5965509a7631516'],
+//     description : "설명"
+// };
+
+// let newUser = new Gateway(data);
+// newUser.save(function (error, data2){
+//     console.log("1234");
+// })
+
 
 // const getOverlayValues = landmarks => {
 //     const nose = landmarks.getNose()
@@ -276,12 +276,12 @@ module.exports = {
                             }
                             client.publish('/login/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
 
-                            // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 1, log_message: 'login', create_dt: json.create_time });
-                            // newGlogs.save(function (error, data) {
-                            //     if (error) {
-                            //         console.log(error);
-                            //     }
-                            // });
+                            let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 1, log_message: 'login', create_dt: json.create_time });
+                            newGlogs.save(function (error, data) {
+                                if (error) {
+                                    console.log(error);
+                                }
+                            });
                         }
                     });
                 }
@@ -302,12 +302,12 @@ module.exports = {
                         if(err){
                             console.log(err);
                         }else{
-                            // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 2, log_message: 'logout', create_dt: json.create_time });
-                            // newGlogs.save(function (error, data) {
-                            //     if (error) {
-                            //         console.log(error);
-                            //     }
-                            // });
+                            let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 2, log_message: 'logout', create_dt: json.create_time });
+                            newGlogs.save(function (error, data) {
+                                if (error) {
+                                    console.log(error);
+                                }
+                            });
                         }
                     });
                 }
@@ -356,12 +356,12 @@ module.exports = {
                             if(err){
                                 console.log(err);
                             }else{
-                                // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 4, log_message: 'contents_down_success', create_dt: json.create_time });
-                                // newGlogs.save(function (error, data) {
-                                //     if (error) {
-                                //         console.log(error);
-                                //     }
-                                // });
+                                let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 4, log_message: 'contents_down_success', create_dt: json.create_time });
+                                newGlogs.save(function (error, data) {
+                                    if (error) {
+                                        console.log(error);
+                                    }
+                                });
 
                                 send_data = {
                                     stb_sn: json.stb_sn,
@@ -417,12 +417,12 @@ module.exports = {
                         };
                         client.publish('/access/request/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
         
-                        // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 5, log_message: 'access_request', create_dt: json.create_time });
-                        // newGlogs.save(function (error, data) {
-                        //     if (error) {
-                        //         console.log(error);
-                        //     }
-                        // });
+                        let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 5, log_message: 'access_request', create_dt: json.create_time });
+                        newGlogs.save(function (error, data) {
+                            if (error) {
+                                console.log(error);
+                            }
+                        });
                     }
                 })
             }
@@ -434,12 +434,12 @@ module.exports = {
             if (err) {
                 console.log(err);
             }else{
-                // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 6, log_message: 'access_request_success', create_dt: json.create_time });
-                // newGlogs.save(function (error, data) {
-                //     if (error) {
-                //         console.log(error);
-                //     }
-                // });
+                let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 6, log_message: 'access_request_success', create_dt: json.create_time });
+                newGlogs.save(function (error, data) {
+                    if (error) {
+                        console.log(error);
+                    }
+                });
             }
         })
     },
@@ -701,12 +701,12 @@ module.exports = {
             };
             client.publish('/access/addpeople/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
 
-            // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 8, log_message: 'add_people', create_dt: json.create_time });
-            // newGlogs.save(function (error, data) {
-            //     if (error) {
-            //         console.log(error);
-            //     }
-            // });
+            let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 8, log_message: 'add_people', create_dt: json.create_time });
+            newGlogs.save(function (error, data) {
+                if (error) {
+                    console.log(error);
+                }
+            });
         } catch (error){
             console.log(error);
         }
@@ -724,17 +724,17 @@ module.exports = {
             mkdirp.sync(file_path);
             fs.promises.writeFile(file_path + file_name, buff, 'utf-8')
             
-            // send_data = {
-            //     stb_sn: json.stb_sn
-            // };
-            // client.publish('/access/addpeople/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
+            send_data = {
+                stb_sn: json.stb_sn
+            };
+            client.publish('/access/addpeople/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
 
-            // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 10, log_message: 'control_log_result', create_dt: json.create_time });
-            // newGlogs.save(function (error, data) {
-            //     if (error) {
-            //         console.log(error);
-            //     }
-            // });
+            let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 10, log_message: 'control_log_result', create_dt: json.create_time });
+            newGlogs.save(function (error, data) {
+                if (error) {
+                    console.log(error);
+                }
+            });
         } catch (error){
             console.log(error);
         }
@@ -749,12 +749,12 @@ module.exports = {
                     "config_data.capture_size":json.capture_size,
                 }
             }, {new: true })
-            // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 11, log_message: 'capture_start', create_dt: json.create_time });
-            // newGlogs.save(function (error, data) {
-            //     if (error) {
-            //         console.log(error);
-            //     }
-            // });
+            let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 11, log_message: 'capture_start', create_dt: json.create_time });
+            newGlogs.save(function (error, data) {
+                if (error) {
+                    console.log(error);
+                }
+            });
         } catch (error){
             console.log(error);
         }
@@ -809,12 +809,12 @@ module.exports = {
                 }
             }, 
                 {new: true })
-            // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 12, log_message: 'capture_stop', create_dt: json.create_time });
-            // newGlogs.save(function (error, data) {
-            //     if (error) {
-            //         console.log(error);
-            //     }
-            // });
+            let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 12, log_message: 'capture_stop', create_dt: json.create_time });
+            newGlogs.save(function (error, data) {
+                if (error) {
+                    console.log(error);
+                }
+            });
         } catch (error){
             console.log(error);
         }
@@ -823,12 +823,12 @@ module.exports = {
     async control_sdcard_delete_result(json) {
         try{
             let camera = await Camera.findOne( { serial_number : json.stb_sn });
-            // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 13, log_message: 'sdcard_delete', create_dt: json.create_time });
-            // newGlogs.save(function (error, data) {
-            //     if (error) {
-            //         console.log(error);
-            //     }
-            // });
+            let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 13, log_message: 'sdcard_delete', create_dt: json.create_time });
+            newGlogs.save(function (error, data) {
+                if (error) {
+                    console.log(error);
+                }
+            });
 
             send_data = {
                 stb_sn: camera.serial_number,
@@ -843,12 +843,12 @@ module.exports = {
     async control_sdcard_part_delete_result(json) {
         try{
             let camera = await Camera.findOne( { serial_number : json.stb_sn });
-            // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 15, log_message: 'part_sdcard_delete', create_dt: json.create_time });
-            // newGlogs.save(function (error, data) {
-            //     if (error) {
-            //         console.log(error);
-            //     }
-            // });
+            let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 15, log_message: 'part_sdcard_delete', create_dt: json.create_time });
+            newGlogs.save(function (error, data) {
+                if (error) {
+                    console.log(error);
+                }
+            });
 
             send_data = {
                 stb_sn: camera.serial_number,
@@ -863,12 +863,12 @@ module.exports = {
     async control_reboot_result(json) {
         try{
             let camera = await Camera.findOne( { serial_number : json.stb_sn });
-            // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 16, log_message: 'reboot_success', create_dt: json.create_time });
-            // newGlogs.save(function (error, data) {
-            //     if (error) {
-            //         console.log(error);
-            //     }
-            // });
+            let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 16, log_message: 'reboot_success', create_dt: json.create_time });
+            newGlogs.save(function (error, data) {
+                if (error) {
+                    console.log(error);
+                }
+            });
         } catch (error){
             console.log(error);
         }
@@ -913,29 +913,29 @@ module.exports = {
     async control_reset_result(json) {
         try{
             let camera = await Camera.findOne( { serial_number : json.stb_sn });
-            // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 24, log_message: 'stb_reset', create_dt: json.create_time });
-            // newGlogs.save(function (error, data) {
-            //     if (error) {
-            //         console.log(error);
-            //     }
-            // });
+            let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 24, log_message: 'stb_reset', create_dt: json.create_time });
+            newGlogs.save(function (error, data) {
+                if (error) {
+                    console.log(error);
+                }
+            });
         } catch (error){
             console.log(error);
         }
     },
 
     async control_temperature_result(json) {
-        // try{
-        //     let camera = await Camera.findOne( { serial_number : json.stb_sn });
-        //     let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 24, log_message: 'stb_reset', create_dt: json.create_time });
-        //     newGlogs.save(function (error, data) {
-        //         if (error) {
-        //             console.log(error);
-        //         }
-        //     });
-        // } catch (error){
-        //     console.log(error);
-        // }
+        try{
+            let camera = await Camera.findOne( { serial_number : json.stb_sn });
+            let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 24, log_message: 'stb_reset', create_dt: json.create_time });
+            newGlogs.save(function (error, data) {
+                if (error) {
+                    console.log(error);
+                }
+            });
+        } catch (error){
+            console.log(error);
+        }
     },
 
     async control_device_info(json) {
@@ -958,12 +958,12 @@ module.exports = {
                     client.publish('/control/device_info/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
                 }
             });
-            // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 29, log_message: 'control_device_info', create_dt: json.create_time });
-            // newGlogs.save(function (error, data) {
-            //     if (error) {
-            //         console.log(error);
-            //     }
-            // });
+            let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 29, log_message: 'control_device_info', create_dt: json.create_time });
+            newGlogs.save(function (error, data) {
+                if (error) {
+                    console.log(error);
+                }
+            });
         } catch (error) {
             console.log(error);
         }
@@ -987,67 +987,67 @@ module.exports = {
                 let network = rrd_value.network;
                 let disk = rrd_value.disk;
 
-                //console.log(rrd_value);
+                console.log(rrd_value);
 
                 // softirq가 없이 오는 경우가 있다. (단말 이슈)
-                // if (!isNaN(Number(cpu.idle)) &&
-                //     !isNaN(Number(cpu.nice)) &&
-                //     !isNaN(Number(cpu.usr)) &&
-                //     !isNaN(Number(cpu.softirq)) &&
-                //     !isNaN(Number(cpu.irq)) &&
-                //     !isNaN(Number(cpu.io)) &&
-                //     !isNaN(Number(cpu.sys))
-                // ) {
-                //     influxQueue.push({
-                //         measurement: json.stb_sn + '_cpu',
-                //         //tags: {
-                //         //    serial_number: json.stb_sn
-                //         //},
-                //         fields: {
-                //             idle: Number(cpu.idle),
-                //             nice: Number(cpu.nice),
-                //             usr: Number(cpu.usr),
-                //             softirq: Number(cpu.softirq),
-                //             irq: Number(cpu.irq),
-                //             io: Number(cpu.io),
-                //             sys: Number(cpu.sys)
-                //         },
-                //         timestamp: nowDate
-                //     });
-                // } else console.log("CPU DATA ERROR!");
+                if (!isNaN(Number(cpu.idle)) &&
+                    !isNaN(Number(cpu.nice)) &&
+                    !isNaN(Number(cpu.usr)) &&
+                    !isNaN(Number(cpu.softirq)) &&
+                    !isNaN(Number(cpu.irq)) &&
+                    !isNaN(Number(cpu.io)) &&
+                    !isNaN(Number(cpu.sys))
+                ) {
+                    influxQueue.push({
+                        measurement: json.stb_sn + '_cpu',
+                        //tags: {
+                        //    serial_number: json.stb_sn
+                        //},
+                        fields: {
+                            idle: Number(cpu.idle),
+                            nice: Number(cpu.nice),
+                            usr: Number(cpu.usr),
+                            softirq: Number(cpu.softirq),
+                            irq: Number(cpu.irq),
+                            io: Number(cpu.io),
+                            sys: Number(cpu.sys)
+                        },
+                        timestamp: nowDate
+                    });
+                } else console.log("CPU DATA ERROR!");
 
-                // if (!isNaN(Number(network.in)) &&
-                //     !isNaN(Number(network.out))
-                // ) {
-                //     influxQueue.push({
-                //         measurement: json.stb_sn + '_network',
-                //         //tags: {
-                //         //    serial_number: json.stb_sn
-                //         //},
-                //         fields: {
-                //             in: Number(network.in),
-                //             out: Number(network.out)
-                //         },
-                //         timestamp: nowDate
-                //     });
-                // } else console.log("NETWORK DATA ERROR!");
+                if (!isNaN(Number(network.in)) &&
+                    !isNaN(Number(network.out))
+                ) {
+                    influxQueue.push({
+                        measurement: json.stb_sn + '_network',
+                        //tags: {
+                        //    serial_number: json.stb_sn
+                        //},
+                        fields: {
+                            in: Number(network.in),
+                            out: Number(network.out)
+                        },
+                        timestamp: nowDate
+                    });
+                } else console.log("NETWORK DATA ERROR!");
 
-                // if (!isNaN(Number(disk.BytesUsed)) &&
-                //     !isNaN(Number(disk.BytesAvailable))
-                // ) {
-                //     influxQueue.push({
-                //         measurement: json.stb_sn + '_disk',
-                //         //tags: {
-                //         //    serial_number: json.stb_sn
-                //         //},
-                //         fields: {
-                //             available: Number(disk.BytesAvailable),
-                //             used: Number(disk.BytesUsed),
-                //             util: Number(disk.BytesAvailable) + Number(disk.BytesUsed)
-                //         },
-                //         timestamp: nowDate
-                //     });
-                // } else console.log("DISK DATA ERROR!");
+                if (!isNaN(Number(disk.BytesUsed)) &&
+                    !isNaN(Number(disk.BytesAvailable))
+                ) {
+                    influxQueue.push({
+                        measurement: json.stb_sn + '_disk',
+                        //tags: {
+                        //    serial_number: json.stb_sn
+                        //},
+                        fields: {
+                            available: Number(disk.BytesAvailable),
+                            used: Number(disk.BytesUsed),
+                            util: Number(disk.BytesAvailable) + Number(disk.BytesUsed)
+                        },
+                        timestamp: nowDate
+                    });
+                } else console.log("DISK DATA ERROR!");
             }
         } else {
             console.log("RRD Value is not array.");
@@ -1058,64 +1058,64 @@ module.exports = {
             let network = rrd_value.network[0];
             let disk = rrd_value.disk[0];
 
-            // if (!isNaN(Number(cpu.idle)) &&
-            //     !isNaN(Number(cpu.nice)) &&
-            //     !isNaN(Number(cpu.usr)) &&
-            //     !isNaN(Number(cpu.softirq)) &&
-            //     !isNaN(Number(cpu.irq)) &&
-            //     !isNaN(Number(cpu.io)) &&
-            //     !isNaN(Number(cpu.sys))
-            // ) {
-            //     influxQueue.push({
-            //         measurement: json.stb_sn + '_cpu',
-            //         //tags: {
-            //         //    serial_number: json.stb_sn
-            //         //},
-            //         fields: {
-            //             idle: cpu.idle,
-            //             nice: cpu.nice,
-            //             usr: cpu.usr,
-            //             softirq: cpu.softirq,
-            //             irq: cpu.irq,
-            //             io: cpu.io,
-            //             sys: cpu.sys
-            //         },
-            //         timestamp: nowDate
-            //     });
-            // }
+            if (!isNaN(Number(cpu.idle)) &&
+                !isNaN(Number(cpu.nice)) &&
+                !isNaN(Number(cpu.usr)) &&
+                !isNaN(Number(cpu.softirq)) &&
+                !isNaN(Number(cpu.irq)) &&
+                !isNaN(Number(cpu.io)) &&
+                !isNaN(Number(cpu.sys))
+            ) {
+                influxQueue.push({
+                    measurement: json.stb_sn + '_cpu',
+                    //tags: {
+                    //    serial_number: json.stb_sn
+                    //},
+                    fields: {
+                        idle: cpu.idle,
+                        nice: cpu.nice,
+                        usr: cpu.usr,
+                        softirq: cpu.softirq,
+                        irq: cpu.irq,
+                        io: cpu.io,
+                        sys: cpu.sys
+                    },
+                    timestamp: nowDate
+                });
+            }
 
-            // if (!isNaN(Number(network.in)) &&
-            //     !isNaN(Number(network.out))
-            // ) {
-            //     influxQueue.push({
-            //         measurement: json.stb_sn + '_network',
-            //         //tags: {
-            //         //    serial_number: json.stb_sn
-            //         //},
-            //         fields: {
-            //             in: network.in,
-            //             out: network.out
-            //         },
-            //         timestamp: nowDate
-            //     });
-            // }
+            if (!isNaN(Number(network.in)) &&
+                !isNaN(Number(network.out))
+            ) {
+                influxQueue.push({
+                    measurement: json.stb_sn + '_network',
+                    //tags: {
+                    //    serial_number: json.stb_sn
+                    //},
+                    fields: {
+                        in: network.in,
+                        out: network.out
+                    },
+                    timestamp: nowDate
+                });
+            }
 
-            // if (!isNaN(Number(disk.BytesUsed)) &&
-            //     !isNaN(Number(disk.BytesAvailable))
-            // ) {
-            //     influxQueue.push({
-            //         measurement: json.stb_sn + '_disk',
-            //         //tags: {
-            //         //    serial_number: json.stb_sn
-            //         //},
-            //         fields: {
-            //             available: disk.BytesAvailable,
-            //             used: disk.BytesUsed,
-            //             util: disk.BytesAvailable + disk.BytesUsed
-            //         },
-            //         timestamp: nowDate
-            //     });
-            // }
+            if (!isNaN(Number(disk.BytesUsed)) &&
+                !isNaN(Number(disk.BytesAvailable))
+            ) {
+                influxQueue.push({
+                    measurement: json.stb_sn + '_disk',
+                    //tags: {
+                    //    serial_number: json.stb_sn
+                    //},
+                    fields: {
+                        available: disk.BytesAvailable,
+                        used: disk.BytesUsed,
+                        util: disk.BytesAvailable + disk.BytesUsed
+                    },
+                    timestamp: nowDate
+                });
+            }
         }
 
         send_data = {
@@ -1123,12 +1123,12 @@ module.exports = {
         };
         client.publish('/control/rrd/result/' + camera.serial_number, JSON.stringify(send_data), mqtt_option);
 
-        // let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 30, log_message: 'control_rrd', create_dt: json.create_time });
-        // newGlogs.save(function (error, data) {
-        //     if (error) {
-        //         console.log(error);
-        //     }
-        // });
+        let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 30, log_message: 'control_rrd', create_dt: json.create_time });
+        newGlogs.save(function (error, data) {
+            if (error) {
+                console.log(error);
+            }
+        });
     },
 
     async log_status(json) {

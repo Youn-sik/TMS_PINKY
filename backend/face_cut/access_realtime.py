@@ -38,8 +38,8 @@ s.connect(("8.8.8.8", 80))
 server_ip = s.getsockname()[0]
 
 def on_message(client, userdata, msg):
-    
     if(msg.topic.find("/access/realtime/") != -1):
+        print("/access/realtime/")
         access_json = json.loads(msg.payload)
         camera = camera_collection.find_one({"serial_number":access_json['stb_sn']})
         auth = "^"+camera["authority"]
@@ -93,7 +93,6 @@ def on_message(client, userdata, msg):
                 avatar_type = 3
             else :
                 recog_result,max_sim,max_name,max_type = recog_face(users)
-                print(recog_result)
 
             if(max_sim >= 0.625) :
                 name = max_name
@@ -205,6 +204,7 @@ def on_message(client, userdata, msg):
 
             
     elif(msg.topic.find("/user/add/") != -1) :
+        print("/user/add/")
         user_json = json.loads(msg.payload)
         user_json['groups_obids'][0] = ObjectId(user_json['groups_obids'][0])
         file_path = '/var/www/backend/image/'
@@ -241,6 +241,7 @@ def on_message(client, userdata, msg):
             client.publish('/user/add/result/'+user_json['id'], json.dumps({"result":True}), 1)
 
     elif(msg.topic.find("/stranger/add/") != -1) :
+        print("/stranger/add/")
         user_json = json.loads(msg.payload)
         url_split = user_json['avatar_file_url'].split(":3000")
         file_path = "/var/www/backend"+url_split[1]
@@ -270,6 +271,7 @@ def on_message(client, userdata, msg):
 
             client.publish('/stranger/add/result/'+user_json['id'], json.dumps({"result":True}), 1)
     elif(msg.topic.find("/user/edit/") != -1) :
+        print("/user/edit/")
         user_json = json.loads(msg.payload)
         user_json['groups_obids'][0] = ObjectId(user_json['clicked_groups'][0])
         file_path = '/var/www/backend/image/'
