@@ -109,7 +109,7 @@ async function license_check(type){
                 }]
                 
 
-                conn.release();
+                // conn.release();
                 
                 if(qrystr.length < 1) {
                     //라이센스 등록으로 이동

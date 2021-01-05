@@ -14,15 +14,29 @@ const fs = require('fs')
 const mariadb = require('mariadb');
 const jwt = require('jsonwebtoken')
 
-const pool = mariadb.createPool({
-	connectionLimit : 30,
-	host : "101.79.73.84",
-	prot : "3306",
-	user : "koolsign",
-    password : "q1w2e3r4",
-    database: "cloud31_license",
-    charset : 'utf8_general_ci'
-})
+// const pool = mariadb.createPool({
+// 	connectionLimit : 30,
+// 	host : "101.79.73.84",
+// 	prot : "3306",
+// 	user : "koolsign",
+//     password : "q1w2e3r4",
+//     database: "cloud31_license",
+//     charset : 'utf8_general_ci'
+// })
+
+let qrystr = [{
+    "c_license_type" : "standard",	
+    "c_license_month" : 'limit',	
+    "c_company" : "함안군",	
+    "c_country":"kr",	
+    "c_name":"손영호",	
+    "c_email":"yhsohn@koolsign.net",	
+    "c_mac":"70:85:c2:81:ca:fc",	
+    "c_cnt" : 500,		
+    "c_end":"2070-11-17",	
+    "c_license_key1":"50500-99999-00000-ALIM-94SQ",	
+    "c_license_key1":"U2FsdGVkX1/pcs7DTGoQeyuc6yqEuPw4Rk+wrhHKs4aJ7S7ksy3L/eOAL135NgQT"
+}]
 
 function server_mac_check(eth) {
     // let dump = execSync(`/sbin/ifconfig | grep ${eth}`) //우분투 버전 문제 인지 mac 주소가 1행에 출력이 안된다
@@ -54,9 +68,9 @@ function license_on_off_check (data) {
             result({"result" : false , 'msg':"라이센스를 등록해주세요"})
         } else {
             let msg = fs.readFileSync('/var/www/backend/license.txt')
-            let val = decrypt(msg,'!@#koolsign_cloud3_!@#$')
+            let val = decrypt(msg.toString(),'!@#koolsign_cloud3_!@#$')
 
-            if(server_mac_check(val.license_eth) != val.license_mac) {
+            if(server_mac_check(val.license_eth) != val.info[0].mac) {
                 return({"result":false, "msg" : "올바르지 않은 맥주소 입니다 라이센스를 다시 등록해주세요."})
             }
 
@@ -75,7 +89,7 @@ function license_on_off_check (data) {
 }
 
 async function license_check(type,req){
-    let license_type = 'development' //이정보를 어디에 저장할것인가
+    let license_type = '' //이정보를 어디에 저장할것인가
     let stb_cnt
 
     req.headers.authorization = req.headers.authorization.replace('Bearer ','');
@@ -103,14 +117,13 @@ async function license_check(type,req){
             val = qryResult[0]
 
             if(val.c_type === 'off') {
-                let result = license_on_off_check()
+                let result = license_on_off_check(val)
                 return result
             } else {
-                let conn = await pool.getConnection();
-                let sqlstr = `select * from g_license where c_license_key1="${val.c_license_key1}"`
-                let qrystr = await conn.query(sqlstr)
-
-                conn.release();
+                // let conn = await pool.getConnection();
+                // let sqlstr = `select * from g_license where c_license_key1="${val.c_license_key1}"`
+                // let qrystr = await conn.query(sqlstr)
+                // conn.release();
                 
                 if(qrystr.length < 1) {
                     //라이센스 등록으로 이동
@@ -169,20 +182,19 @@ async function license_check(type,req){
 }
 
 async function license_server_stb_count (data) {
-    let conn = await pool.getConnection();
-    let sqlstr = `select * from g_license where c_license_key1="${data.c_license_key1}"`
-    let qrystr = await conn.query(sqlstr)
+    // let conn = await pool.getConnection();
+    // let sqlstr = `select * from g_license where c_license_key1="${data.c_license_key1}"`
+    // let qrystr = await conn.query(sqlstr)
 
     let val = qrystr[0]
 
-    conn.release();
+    // conn.release();
 
     return val
 }
 
 async function license_file_write(data) {
     let file = fs.existsSync('/var/www/backend/license.txt')
-    console.log(file)
     if(file){
         //이미 파일이 존재합니다.
         return({"result":false,'msg':"파일을 삭제 후 진행해주세요."})
@@ -223,6 +235,7 @@ async function license_file_write(data) {
             fs.chmodSync("/var/www/backend/license.txt",0777)
             // fs.chownSync
             // fs.chgrp
+            return({"result":true})
         }
     }
 }
@@ -230,8 +243,9 @@ async function license_file_write(data) {
 router.post("/license_save",async function (req, res) {
     try{
     if(req.body.c_type === "off"){
-        license_file_write(req.body)
-    } 
+        res.send(await license_file_write(req.body))
+        return 0;
+    }
     
     s_ip = "172.16.135.13" //해당 서버의 ip
     s_mac = server_mac_check(req.body.c_eth)
@@ -267,8 +281,7 @@ router.post("/license_save",async function (req, res) {
 })
 
 router.post("/license_check", async function (req,res) {
-    let result = await license_check(req.body.type,req)
-    console.log(result)
+    let result = await license_check("none",req)
     res.send(result)
 })
 
@@ -354,6 +367,22 @@ router.put('/:id',async function(req, res) {
         res.send({'error':'중복되는 시리얼 넘버'})
     }
 });
+
+router.get('/license', async function(req,res) {
+    let result = await api_v3_device_license.find({})
+    let response = []
+
+    if(result) {
+        response = [{
+            c_mac : result[0].c_mac,
+            c_eth : result[0].c_eth,
+            c_license_key1 : result[0].c_license_key1,
+            c_type : result[0].c_type
+        }]
+    }
+
+    res.send(response)
+})
 
 router.delete('/:id',async function(req, res) {
     try {

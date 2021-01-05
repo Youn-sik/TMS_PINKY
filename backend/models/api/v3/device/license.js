@@ -4,7 +4,7 @@ require('moment-timezone');
 moment.tz.setDefault("Asia/Seoul");
 
 const api_v3_device_license_Schema = new mongoose.Schema({
-    "c_tyoe" : {type:String},
+    "c_type" : {type:String},
     "c_mac" : {type:String},
     "c_eth" : {type:String},
     "c_license_key1" : {type:String},

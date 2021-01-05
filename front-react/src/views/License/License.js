@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import { makeStyles } from '@material-ui/styles';
 import  axios from 'axios';
 import  {base_url} from 'server.json';
@@ -42,19 +42,34 @@ const License = props => {
       setKey(e.target.value)
     }
 
+    useEffect(async () => {
+      let result = await axios.get(base_url + '/camera/license')
+      if(result.data.response.length > 0) {
+        setMac(result.data.response[0].c_mac)
+        setSelectedValue(result.data.response[0].c_type)
+        setNet(result.data.response[0].c_eth)
+        setKey(result.data.response[0].c_license_key1)
+      }
+    },[])
+
     const onClick = async () => {
       if(mac === '' || net === '' || key === ''){
         alert("항목을 모두 입력해주세요.")
       } else {
-        await axios.post(base_url+"/camera/license_save",{
+        let result = await axios.post(base_url+"/camera/license_save",{
           c_type:selectedValue,
           c_mac:mac,
           c_eth:net,
           c_license_key1:key
         })
 
-        alert('등록 되었습니다.')
-        props.history.push('/')
+        if(result.data.result) {
+          alert('등록 되었습니다.')
+          props.history.push('/')
+        } else {
+          alert(result.data.msg)
+        }
+        
       }
 
     }
@@ -98,15 +113,15 @@ const License = props => {
                       </tr>
                       <tr style={{margin:"5px 5px"}}>
                         <td style={{padding:"8px", width:"150px"}}>서버 맥주소</td>
-                        <td><TextField value={mac} onChange={handleMac} style={{width:"100%" , margin:"5px 0 5px 0"}} size="small" id="outlined-basic" variant="outlined" /></td>
+                        <td><TextField value={mac} onChange={handleMac} style={{width:"100%" , margin:"5px 0 5px 0"}} size="small" id="outlined-basic_mac" variant="outlined" /></td>
                       </tr>
                       <tr style={{margin:"5px 5px"}}>
                         <td style={{padding:"8px", width:"150px"}}>이더넷 종류</td>
-                        <td><TextField value={net} onChange={handleNet} style={{width:"100%" , margin:"5px 0 5px 0"}} size="small" id="outlined-basic" variant="outlined" /></td>
+                        <td><TextField value={net} onChange={handleNet} style={{width:"100%" , margin:"5px 0 5px 0"}} size="small" id="outlined-basic_net" variant="outlined" /></td>
                       </tr>
                       <tr style={{margin:"5px 5px"}}>
                         <td style={{padding:"8px", width:"150px"}}>라이센스키</td>
-                        <td><TextField value={key} onChange={handleKey} style={{width:"100%" , margin:"5px 0 20px 0"}} size="small" id="outlined-basic" variant="outlined" /></td>
+                        <td><TextField value={key} onChange={handleKey} style={{width:"100%" , margin:"5px 0 20px 0"}} size="small" id="outlined-basic_key" variant="outlined" /></td>
                       </tr>
                     </tbody>
                   </table>
