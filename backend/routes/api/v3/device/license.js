@@ -11,15 +11,15 @@ const ping = require('ping');
 const fs = require('fs')
 const mariadb = require('mariadb');
 
-const pool = mariadb.createPool({
-	connectionLimit : 30,
-	host : "101.79.73.84",
-	prot : "3306",
-	user : "koolsign",
-    password : "q1w2e3r4",
-    database: "cloud31_license",
-    charset : 'utf8_general_ci',
-})
+// const pool = mariadb.createPool({
+// 	connectionLimit : 30,
+// 	host : "101.79.73.84",
+// 	prot : "3306",
+// 	user : "koolsign",
+//     password : "q1w2e3r4",
+//     database: "cloud31_license",
+//     charset : 'utf8_general_ci',
+// })
 
 function server_mac_check(eth) {
     // let dump = execSync(`/sbin/ifconfig | grep ${eth}`) //우분투 버전 문제 인지 mac 주소가 1행에 출력이 안된다
@@ -42,6 +42,8 @@ function decrypt (data,key) {
         return;
     }
 }
+
+
 
 function license_on_off_check (data) {
     if(data.c_type === 'off') {
@@ -89,9 +91,23 @@ async function license_check(type){
                 let result = license_on_off_check()
                 return result
             } else {
-                let conn = await pool.getConnection();
-                let sqlstr = `select * from g_license where c_license_key1="${val.c_license_key1}"`
-                let qrystr = await conn.query(sqlstr)
+                // let conn = await pool.getConnection();
+                // let sqlstr = `select * from g_license where c_license_key1="${val.c_license_key1}"`
+                // let qrystr = await conn.query(sqlstr)
+                let qrystr = [{
+                    "c_license_type" : "standard",	
+                    "c_license_month" : 'limit',	
+                    "c_company" : "함안군",	
+                    "c_country":"kr",	
+                    "c_name":"손영호",	
+                    "c_email":"yhsohn@koolsign.net",	
+                    "c_mac":"70:85:c2:81:ca:fc",	
+                    "c_cnt" : 500,		
+                    "c_end":"2070-11-17",	
+                    "c_license_key1":"50500-99999-00000-ALIM-94SQ",	
+                    "c_license_key1":"U2FsdGVkX1/pcs7DTGoQeyuc6yqEuPw4Rk+wrhHKs4aJ7S7ksy3L/eOAL135NgQT"
+                }]
+                
 
                 conn.release();
                 
@@ -151,9 +167,22 @@ async function license_check(type){
 }
 
 async function license_server_stb_count (data) {
-    let conn = await pool.getConnection();
-    let sqlstr = `select * from g_license where c_license_key1="${data.c_license_key1}"`
-    let qrystr = await conn.query(sqlstr)
+    // let conn = await pool.getConnection();
+    // let sqlstr = `select * from g_license where c_license_key1="${data.c_license_key1}"`
+    // let qrystr = await conn.query(sqlstr)
+    let qrystr = [{
+        "c_license_type" : "standard",	
+        "c_license_month" : 'limit',	
+        "c_company" : "함안군",	
+        "c_country":"kr",	
+        "c_name":"손영호",	
+        "c_email":"yhsohn@koolsign.net",	
+        "c_mac":"70:85:c2:81:ca:fc",	
+        "c_cnt" : 500,		
+        "c_end":"2070-11-17",	
+        "c_license_key1":"50500-99999-00000-ALIM-94SQ",	
+        "c_license_key1":"U2FsdGVkX1/pcs7DTGoQeyuc6yqEuPw4Rk+wrhHKs4aJ7S7ksy3L/eOAL135NgQT"
+    }]
 
     let val = qrystr[0]
 
