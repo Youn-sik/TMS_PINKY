@@ -1,7 +1,0 @@
-FROM keymetrics/pm2:12-alpine
-
-RUN mkdir -p /var/www/docker
-WORKDIR /var/www/docker
-RUN npm install canvas
-
-CMD ["pm2-runtime", "start", "/var/www/docker/mqtt.js"]

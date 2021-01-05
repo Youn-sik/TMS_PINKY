@@ -1,0 +1,9 @@
+version: '3.7'
+
+services:
+  influx:
+    image: python
+    volumes:
+      - /var/www/access-control/backend/face_cut:/var/www/access-control/backend/face_cut
+    deploy:
+      replicas: 1

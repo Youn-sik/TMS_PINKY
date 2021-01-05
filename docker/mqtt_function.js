@@ -987,7 +987,7 @@ module.exports = {
                 let network = rrd_value.network;
                 let disk = rrd_value.disk;
 
-                console.log(rrd_value);
+                // console.log(rrd_value);
 
                 // softirq가 없이 오는 경우가 있다. (단말 이슈)
                 if (!isNaN(Number(cpu.idle)) &&

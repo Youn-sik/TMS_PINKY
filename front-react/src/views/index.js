@@ -29,3 +29,4 @@ export { AccessStat } from './Statistics';
 export { default as Operation } from './Operation';
 export { default as FaceDetection } from './FaceDetection';
 export { default as Settings } from './Settings';
+export { default as License } from './License';

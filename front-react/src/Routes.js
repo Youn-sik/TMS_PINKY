@@ -6,6 +6,7 @@ import { Main as MainLayout, Minimal as MinimalLayout } from './layouts';
 
 import {
   Dashboard as DashboardView,
+  License as LicenseView,
   AccessList as AccessListView,
   AttendanceList as AttendanceListView,
   Account as AccountView,
@@ -42,6 +43,17 @@ const Routes = props => {
   return (
     <Switch>
       <Redirect exact from="/" to="/dashboard" />
+      <RouteWithLayout
+        component={LicenseView}
+        exact
+        client={props.client}
+        user_id={props.user_id}
+        authority={props.authority}
+        tempLimit={props.tempLimit}
+        tempType={props.tempType}
+        layout={MainLayout}
+        path="/license"
+      />
       <RouteWithLayout
         component={DashboardView}
         exact

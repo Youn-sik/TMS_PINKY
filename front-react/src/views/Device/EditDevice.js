@@ -79,14 +79,23 @@ const EditDevice = props => {
     } else if(device.serial_number === '') {
       alert("단말 시리얼 넘버를 입력해주세요.")
     } else {
-      await axios.put(base_url + '/camera/' + deviceObject._id, {
+      let result = await axios.put(base_url + '/camera/' + deviceObject._id, {
         ...device,
         account: props.user_id,
         authority: props.authority,
         operation_auth: props.authority
       });
-      window.alert('단말 수정 완료.');
-      history.push('/device/list');
+
+      if(result.data.error) {
+        alert('중복된 시리얼 넘버 입니다.')
+      } else if(!result.data.result) {
+        alert(result.data.msg)
+        props.history.push('/license')
+        return 0;
+      } else {
+        window.alert('단말 수정 완료.');
+        history.push('/device/list');
+      }
     }
   };
 

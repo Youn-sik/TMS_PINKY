@@ -53,7 +53,7 @@ app.use(function (req, res, next) {
                 next();
             }
         });
-    } else if(req.path === '/login' || req.path.indexOf('.jpg') > -1 || req.path.indexOf('.png') > -1){
+    } else if(req.path === '/login' || req.path.indexOf('.jpg') > -1 || req.path.indexOf('.png') > -1 || req.path.indexOf('uploads') > -1 || req.path.indexOf('license_check') > -1){
         next()
     }  else {
         res.status(401).json({ err: '유효하지 않는 토큰입니다.' });
@@ -77,10 +77,10 @@ app.use('/history',historyRouter);
 app.use('/operation',operationRouter);
 
 //static
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static("/var/www/backend/uploads"));
 app.use('/image',express.static('/var/www/backend/image'));
-app.use('/stream',express.static('./videos'));
-app.use('/noImage',express.static('./defaultImage'));
+app.use('/stream',express.static('/var/www/backend/videos'));
+app.use('/noImage',express.static('/var/www/backend/defaultImage'));
 
 //swagger
 const swaggerJSDoc = require('swagger-jsdoc');

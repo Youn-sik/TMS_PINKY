@@ -1,18 +1,15 @@
 var express = require('express');
 var router = express.Router();
-const boom = require('boom')
-const api_v3_device_camera = require('../../../../models/api/v3/device/camera')
-const Operation = require('../../../../models/api/v1/person/operation')
 var moment = require('moment');
 require('moment-timezone'); 
-moment.tz.setDefault("Asia/Seoul");
+moment.tz.setDefault("Asia/Seoul"); 
 const execSync = require('child_process').execSync;
 const api_v3_device_license = require('../../../../models/api/v3/device/license.js')
+const api_v3_device_camera = require('../../../../models/api/v3/device/camera.js')
 const CryptoJS = require('crypto-js')
 const ping = require('ping');
 const fs = require('fs')
 const mariadb = require('mariadb');
-const jwt = require('jsonwebtoken')
 
 const pool = mariadb.createPool({
 	connectionLimit : 30,
@@ -21,7 +18,7 @@ const pool = mariadb.createPool({
 	user : "koolsign",
     password : "q1w2e3r4",
     database: "cloud31_license",
-    charset : 'utf8_general_ci'
+    charset : 'utf8_general_ci',
 })
 
 function server_mac_check(eth) {
@@ -54,7 +51,7 @@ function license_on_off_check (data) {
             result({"result" : false , 'msg':"라이센스를 등록해주세요"})
         } else {
             let msg = fs.readFileSync('/var/www/backend/license.txt')
-            let val = decrypt(msg,'!@#koolsign_cloud3_!@#$')
+            let val = decrypt(msg,'jjh')
 
             if(server_mac_check(val.license_eth) != val.license_mac) {
                 return({"result":false, "msg" : "올바르지 않은 맥주소 입니다 라이센스를 다시 등록해주세요."})
@@ -74,24 +71,10 @@ function license_on_off_check (data) {
     
 }
 
-async function license_check(type,req){
-    let license_type = 'development' //이정보를 어디에 저장할것인가
+async function license_check(type){
+    let licese_type = 'development' //이정보를 어디에 저장할것인가
     let stb_cnt
-
-    req.headers.authorization = req.headers.authorization.replace('Bearer ','');
-    const token = req.headers.authorization;
-    
-    let token_result = true
-
-    jwt.verify(token, 'jjh', (err) => {
-        if (err) {
-            token_result = false
-        }
-    })
-    if(!token_result)
-        return({"result":false,"msg":"유효하지 않느 토큰입니다."})
-
-    if(license_type === 'development') {
+    if(licese_type === 'development') {
         stb_cnt = '100000'
         return({"result" : true})
     } else {
@@ -119,7 +102,7 @@ async function license_check(type,req){
                     let _val = qrystr[0]
 
                     //라이센스 비교 
-                    let server1 = decrypt(val.c_license_key2,'!@#koolsign_cloud3_!@#$')
+                    let server1 = decrypt(val.c_license_key2,'jjh')
                     let server2 = decrypt(_val.c_license_key2,'!@#koolsign_cloud3_!@#$')
                     
                     server1 = server1.replace(/\s+/,"")
@@ -133,8 +116,7 @@ async function license_check(type,req){
 
                     //등록된 맥주소 확인
                     let local_mac = server_mac_check(val.c_eth)
-                    // let local_mac = '70:85:c2:82:35:5e'
-                    
+
                     if(_val.c_mac != local_mac) {
                         return({"result":false, "msg" : "올바르지 않은 맥주소 입니다 라이센스를 다시 등록해주세요."})
                     } 
@@ -180,9 +162,8 @@ async function license_server_stb_count (data) {
     return val
 }
 
-async function license_file_write(data) {
+async function licese_file_write(data) {
     let file = fs.existsSync('/var/www/backend/license.txt')
-    console.log(file)
     if(file){
         //이미 파일이 존재합니다.
         return({"result":false,'msg':"파일을 삭제 후 진행해주세요."})
@@ -194,7 +175,7 @@ async function license_file_write(data) {
         } else {
             let stb_info = license_server_stb_count(data);
 
-            let license_key2 = encrypt(data.c_mac,'!@#koolsign_cloud3_!@#$')
+            let license_key2 = encrypt(data.c_mac,'jjh')
             let file_path = 'lisence.txt'
 
             let stb_cnt = ''
@@ -217,10 +198,10 @@ async function license_file_write(data) {
                 ]
             }
 
-            msg = encrypt(json_data,'!@#koolsign_cloud3_!@#$')
+            msg = encrypt(json_data,'jjh')
 
-            fs.writeFileSync("/var/www/backend/license.txt",msg)
-            fs.chmodSync("/var/www/backend/license.txt",0777)
+            fs.writeFileSync("/var/www/backend/licese.txt",msg)
+            fs.chmodSync("/var/www/backend/licese.txt",0777)
             // fs.chownSync
             // fs.chgrp
         }
@@ -229,8 +210,8 @@ async function license_file_write(data) {
 
 router.post("/license_save",async function (req, res) {
     try{
-    if(req.body.c_type === "off"){
-        license_file_write(req.body)
+    if(req.body.selectedValue === "off"){
+        licese_file_write(req.body)
     } 
     
     s_ip = "172.16.135.13" //해당 서버의 ip
@@ -238,7 +219,7 @@ router.post("/license_save",async function (req, res) {
     let result = await api_v3_device_license.find({})
 
     let msg = req.body.c_mac
-    let license_key2 = encrypt(msg,'!@#koolsign_cloud3_!@#$')
+    let license_key2 = encrypt(msg,'jjh')
     if(result.length > 0) {
         await api_v3_device_license.updateOne({"_id":result[0]._id},{
             'c_type': req.body.c_type,
@@ -267,134 +248,9 @@ router.post("/license_save",async function (req, res) {
 })
 
 router.post("/license_check", async function (req,res) {
-    let result = await license_check(req.body.type,req)
+    let result = await license_check(req.body.type)
     console.log(result)
     res.send(result)
 })
-
-router.get('/',async function(req, res) {
-    try {
-        let get_data;
-        let auth = req.query.authority === 'admin' ? new RegExp('') : new RegExp("^"+req.query.authority+"$")
-        if(req.query.authority.split('-').length === 2){
-            auth = new RegExp("^"+req.query.authority)
-        }
-
-        if(req.query.authority === 'admin') {
-            get_data = await api_v3_device_camera.find().populate('gateway_obid').sort('status')
-        } else {
-            get_data = await api_v3_device_camera.find().populate('gateway_obid').sort('status')
-                .where('authority').regex('authority',auth)
-        }
-        res.send(get_data)
-    } catch (err) {
-        res.status(400).send({err:"잘못된 형식 입니다."})
-    }
-});
-
-router.get('/:id',async function(req, res) {
-    try {
-        const id = req.params === undefined ? req.id : req.params.id
-        const get_single_data = await api_v3_device_camera.findById(id)
-        res.send(get_single_data)
-    } catch (err) {
-        res.status(400).send({err:"잘못된 형식 입니다."})
-    }
-});
-
-router.post('/',async function (req, res) {
-    try {
-        let result = await license_check(req.body.type,req)
-
-        if(!result.result){
-            res.send(result)
-            return 0;
-        }
-
-        const add = new api_v3_device_camera(req.body)
-        // api_v3_device_gateway.findByIdAndUpdate(add ,{ $addToSet: { user_obids : add._id} }, {new: true }).exec()
-        const operation = new Operation({
-            id:req.body.account,
-            action: '단말기 추가',
-            date : moment().format('YYYY-MM-DD HH:mm:ss'),
-            description : add.serial_number +' 단말기 추가',
-            authority : req.body.operation_auth
-        })
-        operation.save();
-        await add.save()
-        res.send({...add, ...result})
-    } catch (err) {
-        console.log(err);
-        res.send({'error':'중복되는 시리얼 넘버'})
-    }
-});
-
-router.put('/:id',async function(req, res) {
-    try {
-        let result = await license_check("none",req)
-
-        if(!result.result){
-            res.send(result)
-            return 0;
-        }
-
-        const id = req.params === undefined ? req.id : req.params.id
-        const update_data = req.body === undefined ? req : req.body
-        const update = await api_v3_device_camera.findByIdAndUpdate(id, update_data, {new: true })
-        const operation = new Operation({
-            id:req.body.account,
-            action: '단말기 수정',
-            date : moment().format('YYYY-MM-DD HH:mm:ss'),
-            description : update.serial_number +' 단말기 수정',
-            authority : req.body.operation_auth
-        })
-        operation.save();
-        res.send({...update , ...result})
-    } catch (err) {
-        res.send({'error':'중복되는 시리얼 넘버'})
-    }
-});
-
-router.delete('/:id',async function(req, res) {
-    try {
-        let _result = await license_check("none",req)
-        if(!_result.result){
-            res.send(_result)
-            return 0;
-        }
-
-        if(req.body.devices === undefined) {
-            const id = req.params === undefined ? req.id : req.params.id
-            const delete_data = await api_v3_device_camera.findByIdAndRemove(id)
-            const operation = new Operation({
-                id:req.body.account,
-                action: '단말기 삭제',
-                date : moment().format('YYYY-MM-DD HH:mm:ss'),
-                description : delete_data.serial_number +' 단말기 삭제',
-                authority : req.body.operation_auth
-            })
-            operation.save();
-            res.send({..._result , ...delete_data}) 
-        } else {
-            let operations = []
-            let result = await api_v3_device_camera.deleteMany({ _id: { $in: req.body.list} })
-            req.body.devices.map((i) => {
-                operations.push(
-                    new Operation({
-                        id:req.body.account,
-                        action: '단말기 삭제',
-                        date : moment().format('YYYY-MM-DD HH:mm:ss'),
-                        description : i.serial_number +' 단말기 삭제',
-                        authority : req.body.operation_auth
-                    })
-                )
-            })
-            Operation.insertMany(operations)
-            res.send({..._result , ...result});
-        }
-    } catch (err) {
-        res.status(400).send({err:"잘못된 형식 입니다."})
-    }
-});
 
 module.exports = router;

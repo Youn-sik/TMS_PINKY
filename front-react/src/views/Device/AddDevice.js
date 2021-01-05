@@ -107,11 +107,16 @@ const AddDevice = props => {
         ...device,
         account: props.user_id,
         authority: props.authority,
-        operation_auth: props.authority
+        operation_auth: props.authority,
+        type : "device"
       });
-
+      console.log(result.data)
       if(result.data.error) {
         alert('중복된 시리얼 넘버 입니다.')
+      } else if(!result.data.result){
+        alert(result.data.msg)
+        props.history.push('/license')
+        return 0;
       } else {
         window.alert('단말 등록 완료.');
         history.push('/device/list');

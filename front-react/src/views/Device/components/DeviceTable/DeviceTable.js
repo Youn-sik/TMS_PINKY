@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import Pagination from '@material-ui/lab/Pagination';
@@ -11,6 +11,8 @@ import { NavLink as RouterLink } from 'react-router-dom';
 import NumberFormat from 'react-number-format';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
+import moment from 'moment';
+import 'moment/locale/ko';
 
 import {
   Card,
@@ -25,6 +27,7 @@ import {
   FormControlLabel,
   Checkbox,
   Table,
+  CircularProgress,
   TableBody,
   TableCell,
   TableHead,
@@ -38,22 +41,11 @@ import {
 } from '@material-ui/core';
 
 import mqtt from 'mqtt';
-import {mqtt_url} from 'server.json'
+import {mqtt_url,base_url} from 'server.json'
 
-const client = mqtt.connect('ws://'+mqtt_url+':8083/mqtt');
+let client
 
-client.on('connect', () => {
-  console.log('mqtt was connected');
-  client.subscribe('/access/realtime/result/+');
-  client.subscribe('/control/log/result/+');
-  client.subscribe('/control/capture/start/result/+');
-  client.subscribe('/control/capture/end/result+');
-  client.subscribe('/control/sdcard/delete/result/+');
-  client.subscribe('/control/sdcard/part/delete/result+');
-  client.subscribe('/control/reboot/result/+');
-  client.subscribe('/control/get_device_file_list/result/+');
-  client.subscribe('/control/reset/result/+');
-});
+let click
 
 function NumberFormatCustom(props) {
   const { inputRef, onChange, ...other } = props;
@@ -158,9 +150,54 @@ const DeviceTable = props => {
     min: '',
     sec: ''
   });
+  const [logLoading,setLogLoading] = useState(false);
   const [check, setCheck] = useState(false);
   const [sort, setSort] = useState('desc');
   const [temp, setTemp] = useState();
+
+  useEffect(() => {
+    click = false
+    client = mqtt.connect('ws://'+mqtt_url+':8083/mqtt');
+
+    client.on('connect', () => {
+      console.log('mqtt was connected');
+      client.subscribe('/access/realtime/result/+');
+      client.subscribe('/control/log/result/+');
+      client.subscribe('/control/capture/start/result/+');
+      client.subscribe('/control/capture/end/result+');
+      client.subscribe('/control/sdcard/delete/result/+');
+      client.subscribe('/control/sdcard/part/delete/result+');
+      client.subscribe('/control/reboot/result/+');
+      client.subscribe('/control/get_device_file_list/result/+');
+      client.subscribe('/control/reset/result/+');
+    });
+
+    client.on('message', function(topic, message) {
+        if(topic.indexOf('/control/log/result/') > -1 && click) {    
+          click = false
+          let result = JSON.parse(message.toString())
+          let msg = '에러가 발생했습니다 다시 시도해주세요.'
+          setSelectedObject(selectedObject => {
+            if(selectedObject.length > 0){
+              if (topic.indexOf('/control/log/result/'+selectedObject[0].serial_number) > -1) {
+                let folder_date_path = "/uploads/logs/" + moment().format('YYYYMMDD');
+                let file_name = result.filename;
+                msg = '다운로드가 완료 되었습니다'
+                window.location.href = base_url + folder_date_path +'/'+ file_name
+              }
+            }
+            return selectedObject
+          })
+          alert(msg)
+          setLogLoading(false);
+        }
+    })
+
+    return () => {
+      client.end(true)
+      click = false
+    };
+  },[])
 
   const createSortHandler = headerType => {
     if (sort === 'desc') {
@@ -308,11 +345,15 @@ const DeviceTable = props => {
             capture_status: 'N'
           })
         );
-      else if (name === 'log')
+      else if (name === 'log'){
+        click = true
+        setLogLoading(true)
+
         client.publish(
           '/control/log/' + selectedObject[0].serial_number,
           JSON.stringify({ stb_sn: selectedObject[0].serial_number })
         );
+      }
       else if (name === 'sd')
         client.publish(
           '/control/sdcard/delete/' + selectedObject[0].serial_number,
@@ -357,7 +398,6 @@ const DeviceTable = props => {
           })
         );
       }
-      alert('제어성공');
     }
   };
 
@@ -483,7 +523,14 @@ const DeviceTable = props => {
         maxWidth={'sm'}
         fullWidth={true}>
         <DialogTitle id="alert-dialog-title">{'Mqtt 제어'}</DialogTitle>
-        <DialogContent
+        {
+        logLoading ?
+        (<DialogContent style={{ textAlign: 'center', width: '70%', margin: '0 auto' }}>
+          <CircularProgress/>
+          <p>다운로드중...</p>
+        </DialogContent>)
+        :
+        (<DialogContent
           style={{ textAlign: 'center', width: '70%', margin: '0 auto' }}>
           <FormControlLabel
             control={
@@ -597,6 +644,19 @@ const DeviceTable = props => {
               </Button>
               <br />
               <br />
+              <Button
+                variant="contained"
+                onClick={() => {
+                  if(check){
+                    alert('로그 요청은 하나의 단말기만 선택 해주세요.')
+                  } else {
+                    mqttPubl('log')
+                  }
+                }}
+                style={{ width: '181.58px' }}
+                color="primary">
+                단말 로그 요청
+              </Button>
             </div>
           ) : (
             <div>
@@ -673,19 +733,19 @@ const DeviceTable = props => {
                 style={{ width: '181.58px' }}
                 color="primary">
                 시스템 초기화
-              </Button>
+              </Button> */}
               <br />
               <br />
               <Button
                 variant="contained"
                 onClick={() => {
-                  devicesMqttPubl('log');
+                  alert('로그 요청은 하나의 단말기만 선택 해주세요.')
                 }}
                 style={{ width: '181.58px' }}
                 color="primary">
                 단말 로그 요청
               </Button>
-              <br />
+              {/* <br />
               <br />
               <Button
                 variant="contained"
@@ -712,7 +772,8 @@ const DeviceTable = props => {
             </div>
           )}
           {/* </DialogContentText> */}
-        </DialogContent>
+        </DialogContent>)
+        }
         <DialogActions>
           <Button onClick={handleClose} color="primary" autoFocus>
             닫기

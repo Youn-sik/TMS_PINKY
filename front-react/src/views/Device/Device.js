@@ -349,16 +349,22 @@ const Employee = props => {
   const deleteDevice = async selectedDevice => {
     if (window.confirm('정말 삭제 하시겠습니까?')) {
       if (selectedDevice.length === 1) {
-        await axios.delete(base_url + '/camera/' + selectedDevice[0]._id, {
+        let result = await axios.delete(base_url + '/camera/' + selectedDevice[0]._id, {
           data: {
             account: props.user_id,
             operation_auth: props.authority
           }
         });
+
+        if(!result.data.result){
+          alert(result.data.msg)
+          props.history.push('/license')
+        }
+
         let temp = device.filter(i => i._id !== selectedDevice[0]._id);
         setDevice(temp);
       } else {
-        await axios.delete(base_url + '/camera/' + selectedDevice[0]._id, {
+        let result = await axios.delete(base_url + '/camera/' + selectedDevice[0]._id, {
           data: {
             account: props.user_id,
             devices: selectedDevice,
@@ -366,6 +372,12 @@ const Employee = props => {
             list: selectedDevice.map(i => i._id)
           }
         });
+        
+        if(!result.data.result){
+          alert(result.data.msg)
+          props.history.push('/license')
+        }
+
         let temp = [];
         temp = device.filter(val => !selectedDevice.includes(val));
         setDevice(temp);
