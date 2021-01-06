@@ -20,6 +20,8 @@ const Employee = props => {
   const [streamId, setStreamId] = useState('');
   const [loading, setLoading] = useState(true);
   const [activeType, setActiveType] = useState('create_at');
+  const [limit,setLimit] = useState(0)
+  const [currentDevices,setCurrentDevices] = useState(0)
   const classes = useStyles();
 
   const filterDevice = useCallback(
@@ -46,7 +48,16 @@ const Employee = props => {
 
   useEffect(() => {
     getDevcie();
+    getDeviceLimit();
   }, []);
+
+  const getDeviceLimit = async () => {
+    let result = await axios.get(base_url + '/camera/get_device_cnt')
+    if(result.data){
+      setLimit(result.data.limit)
+      setCurrentDevices(result.data.current_devices)
+    }
+  }
 
   const _setClickedNode = node => {
     setClickedNode(node);
@@ -417,6 +428,8 @@ const Employee = props => {
         <Grid item lg={12} md={12} xl={12} xs={12}>
           {/* <AccountDetails users={users}/> */}
           <DeviceTable
+            limit={limit}
+            currentDevices={currentDevices}
             activeType={activeType}
             sortAccesses={sortAccesses}
             stream={stream}

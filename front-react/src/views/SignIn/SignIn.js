@@ -413,13 +413,12 @@ const SignIn = props => {
           user_id: formState.values.id,
           user_pw: formState.values.password
         })
-        .catch(err => {
-          alert('존재하지 않는 계정입니다.');
-          return false;
-        });
-      // let temp =  await axios.get(base_url + '/auth?token=' + result.data.token)
-      // result.data = {...result.data, ...temp.data}
-      if (result.data && result.data.token) {
+
+      if(!result.data && !result.response) {
+        alert('서버와의 연결이 끊겼습니다.')
+      } else if(result.response && result.response.status === 400) {
+        alert('존재하지 않는 계정입니다')
+      } else if (result.data && result.data.token) {
         document.cookie = 'token=' + result.data.token+";path=/;";
         let decoded = jwt(result.data.token);
         let info = decoded.user_id+"|"+decoded.authority+"|"+decoded.tempType+"|"+decoded.tempLimit

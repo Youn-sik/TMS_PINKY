@@ -43,6 +43,7 @@ axios.interceptors.response.use(null, function (error) {
   document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
   document.cookie = 'ACTKINFO=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
   browserHistory.push('/sign-in');
+  return error
 });
 
 let message = false;

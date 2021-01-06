@@ -13,6 +13,7 @@ import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 import moment from 'moment';
 import 'moment/locale/ko';
+import axios from 'axios';
 
 import {
   Card,
@@ -116,6 +117,12 @@ const useStyles = makeStyles(theme => ({
   },
   off: {
     color: 'red'
+  },
+  cnt: {
+    [theme.breakpoints.down(400)]: {
+      width: '50px',
+      fontSize: "5px"
+    },
   }
 }));
 
@@ -154,6 +161,24 @@ const DeviceTable = props => {
   const [check, setCheck] = useState(false);
   const [sort, setSort] = useState('desc');
   const [temp, setTemp] = useState();
+
+  const addDevice = async () => {
+    if(props.currentDevices === props.limit) {
+      alert("더이상 단말기를 추가할 수 없습니다")
+      return 0;
+    } else {
+      let result = await axios.post(base_url + "/camera/license_check")
+
+      if(result.data.result) {
+        props.history.push({
+          pathname: '/device/add',
+        })
+      } else {
+        alert(result.data.msg)
+        props.history.push('/license')
+      }
+    }
+  }
 
   useEffect(() => {
     click = false
@@ -301,9 +326,15 @@ const DeviceTable = props => {
     // }
   };
 
-  const clickEdit = () => {
-    history.push({ pathname: '/device/edit', state: selectedObject[0] });
-    // history.push('/system/account')
+  const clickEdit = async () => {
+    let result = await axios.post(base_url + "/camera/license_check")
+
+    if(result.data.result) {
+      history.push({ pathname: '/device/edit', state: selectedObject[0] });
+    } else {
+      alert(result.data.msg)
+      props.history.push('/license')
+    }
   };
 
   const mqttPubl = name => {
@@ -877,7 +908,7 @@ const DeviceTable = props => {
             </Button>
           )}
 
-          <RouterLink
+          {/* <RouterLink
             style={{ textDecoration: 'none' }}
             className={classes.buttonStyle}
             to={{
@@ -886,11 +917,11 @@ const DeviceTable = props => {
               setClickedNode: props.setClickedNode,
               clickedNode: props.clickedNode,
               setUsers: props.setUsers
-            }}>
-            <Button variant="contained" color="primary">
+            }}> */}
+            <Button onClick={addDevice} className={classes.buttonStyle} variant="contained" color="primary">
               추가
             </Button>
-          </RouterLink>
+          {/* </RouterLink> */}
         </Grid>
       </CardActions>
       {/* }/> */}
@@ -1044,23 +1075,28 @@ const DeviceTable = props => {
       </CardContent>
       <CardActions className={classes.actions}>
         <Grid container alignItems="center" justify="center">
-          <Pagination
-            count={
-              props.device.length % rowsPerPage === 0
-                ? parseInt(props.device.length / rowsPerPage)
-                : parseInt(
-                    props.device.length / rowsPerPage +
-                      parseInt(props.device.length % rowsPerPage) /
-                        parseInt(props.device.length % rowsPerPage)
-                  )
-            }
-            onChange={handlePageChange}
-            page={page}
-            variant="outlined"
-            shape="rounded"
-          />
+          <Grid item style={{position:"relative"}}>
+            <Pagination
+              count={
+                props.device.length % rowsPerPage === 0
+                  ? parseInt(props.device.length / rowsPerPage)
+                  : parseInt(
+                      props.device.length / rowsPerPage +
+                        parseInt(props.device.length % rowsPerPage) /
+                          parseInt(props.device.length % rowsPerPage)
+                    )
+              }
+              onChange={handlePageChange}
+              page={page}
+              variant="outlined"
+              shape="rounded"
+            />
+            
+          </Grid>
         </Grid>
+        <p className={classes.cnt} style={{position:"absolute"}}>단말기 제한 : {props.currentDevices}/{props.limit}</p>
       </CardActions>
+      
     </Card>
   );
 };

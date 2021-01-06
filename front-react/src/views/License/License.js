@@ -42,15 +42,15 @@ const License = props => {
       setKey(e.target.value)
     }
 
-    useEffect(async () => {
-      let result = await axios.get(base_url + '/camera/license')
-      if(result.data.response.length > 0) {
-        setMac(result.data.response[0].c_mac)
-        setSelectedValue(result.data.response[0].c_type)
-        setNet(result.data.response[0].c_eth)
-        setKey(result.data.response[0].c_license_key1)
-      }
-    },[])
+    // useEffect(async () => {
+    //   let result = await axios.get(base_url + '/license/get_license')
+    //   if(result.data.length > 0) {
+    //     setMac(result.data[0].c_mac)
+    //     setSelectedValue(result.data[0].c_type)
+    //     setNet(result.data[0].c_eth)
+    //     setKey(result.data[0].c_license_key1)
+    //   }
+    // },[])
 
     const onClick = async () => {
       if(mac === '' || net === '' || key === ''){

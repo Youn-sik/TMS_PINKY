@@ -35,7 +35,7 @@ let qrystr = [{
     "c_cnt" : 500,		
     "c_end":"2070-11-17",	
     "c_license_key1":"50500-99999-00000-ALIM-94SQ",	
-    "c_license_key1":"U2FsdGVkX1/pcs7DTGoQeyuc6yqEuPw4Rk+wrhHKs4aJ7S7ksy3L/eOAL135NgQT"
+    "c_license_key2":"U2FsdGVkX1/pcs7DTGoQeyuc6yqEuPw4Rk+wrhHKs4aJ7S7ksy3L/eOAL135NgQT"
 }]
 
 function server_mac_check(eth) {
@@ -89,7 +89,7 @@ function license_on_off_check (data) {
 }
 
 async function license_check(type,req){
-    let license_type = '' //이정보를 어디에 저장할것인가
+    let license_type = 'development' //이정보를 어디에 저장할것인가
     let stb_cnt
 
     req.headers.authorization = req.headers.authorization.replace('Bearer ','');
@@ -240,43 +240,105 @@ async function license_file_write(data) {
     }
 }
 
+async function license_check_before_save(license_data){
+    let license_type = 'development' //이정보를 어디에 저장할것인가
+    let stb_cnt
+    if(license_type === 'development') {
+        stb_cnt = '100000'
+        return({"result" : true})
+    } else {
+        let val = license_data
+
+        if(qrystr.length < 1) {
+            //라이센스 등록으로 이동
+            return({"result":false, "msg" : "올바르지 않은 라이센스 입니다."})
+        } else {
+            let _val = qrystr[0]
+
+            //라이센스 비교 
+            let server1 = license_data.c_mac
+            let server2 = decrypt(_val.c_license_key2,'!@#koolsign_cloud3_!@#$')
+            
+            server1 = server1.replace(/\s+/,"")
+            server2 = server2.replace(/\s+/,"")
+
+            //CI로 암호화된 문자열 복호화 하는버 필요
+            
+            if(server1 != server2) {
+                return({"result":false, "msg" : "올바르지 않은 라이센스 입니다."})
+            }
+
+            //등록된 맥주소 확인
+            let local_mac = server_mac_check(val.c_eth)
+
+            if(_val.c_mac != local_mac) {
+                return({"result":false, "msg" : "올바르지 않은 맥주소 입니다."})
+            } 
+
+
+            //날짜 체크
+            let current_date = moment().format('YYYY-MM-DD')
+            let license_date = _val.c_end
+
+            if(current_date > license_date){
+                return({"result":false, "msg" : "라이센스 기간이 지났습니다."})
+            }
+
+            //라이센스 서버에서 정해진 전체 단말기 수를 가져온다.
+            if(_val.c_settop_cnt == 'limit'){
+                stb_cnt = '100000'
+            } else {
+                stb_cnt = _val.c_settop_cnt
+            }
+
+            return {"result" : true}
+        }
+    }
+}
+
 router.post("/license_save",async function (req, res) {
     try{
-    if(req.body.c_type === "off"){
-        res.send(await license_file_write(req.body))
-        return 0;
-    }
-    
-    s_ip = "172.16.135.13" //해당 서버의 ip
-    s_mac = server_mac_check(req.body.c_eth)
-    let result = await api_v3_device_license.find({})
+        let license_check = await license_check_before_save(req.body)
+        if(!license_check.result){
+            res.send(license_check)
+            return 0;
+        }
 
-    let msg = req.body.c_mac
-    let license_key2 = encrypt(msg,'!@#koolsign_cloud3_!@#$')
-    if(result.length > 0) {
-        await api_v3_device_license.updateOne({"_id":result[0]._id},{
-            'c_type': req.body.c_type,
-            'c_mac': req.body.c_mac,
-            'c_eth': req.body.c_eth,
-            'c_license_key1': req.body.c_license_key1,
-            'c_license_key2': license_key2,
-            'regdate': moment().format("YYYY-MM-DD HH:mm:ss")
-        })            
-    } else {
-        await api_v3_device_license.insertMany([{
-            'c_type': req.body.c_type,
-            'c_mac': s_mac,
-            'c_eth': req.body.c_eth,
-            'c_license_key1': req.body.c_license_key1,
-            'c_license_key2': license_key2,
-            'regdate': moment().format("YYYY-MM-DD HH:mm:ss")
-        }])
-    }
+        if(req.body.c_type === "off"){
+            res.send(await license_file_write(req.body))
+            return 0;
+        }
+        
+        s_ip = "172.16.135.13" //해당 서버의 ip
+        s_mac = server_mac_check(req.body.c_eth)
+        let result = await api_v3_device_license.find({})
 
-    res.send({"result":true})
-    } catch(err){
-        console.log(err)
-    }
+        let msg = req.body.c_mac
+        let license_key2 = encrypt(msg,'!@#koolsign_cloud3_!@#$')
+        if(result.length > 0) {
+            await api_v3_device_license.updateOne({"_id":result[0]._id},{
+                'c_type': req.body.c_type,
+                'c_mac': req.body.c_mac,
+                'c_eth': req.body.c_eth,
+                'c_license_key1': req.body.c_license_key1,
+                'c_license_key2': license_key2,
+                'regdate': moment().format("YYYY-MM-DD HH:mm:ss")
+            })            
+        } else {
+            await api_v3_device_license.insertMany([{
+                'c_type': req.body.c_type,
+                'c_mac': s_mac,
+                'c_eth': req.body.c_eth,
+                'c_license_key1': req.body.c_license_key1,
+                'c_license_key2': license_key2,
+                'regdate': moment().format("YYYY-MM-DD HH:mm:ss")
+            }])
+        }
+        
+        res.send({"result":true})
+        } catch(err){
+            console.log(err)
+        }
     
 })
 
@@ -305,15 +367,15 @@ router.get('/',async function(req, res) {
     }
 });
 
-router.get('/:id',async function(req, res) {
-    try {
-        const id = req.params === undefined ? req.id : req.params.id
-        const get_single_data = await api_v3_device_camera.findById(id)
-        res.send(get_single_data)
-    } catch (err) {
-        res.status(400).send({err:"잘못된 형식 입니다."})
-    }
-});
+// router.get('/:id',async function(req, res) {
+//     try {
+//         const id = req.params === undefined ? req.id : req.params.id
+//         const get_single_data = await api_v3_device_camera.findById(id)
+//         res.send(get_single_data)
+//     } catch (err) {
+//         res.status(400).send({err:"잘못된 형식 입니다."})
+//     }
+// });
 
 router.post('/',async function (req, res) {
     try {
@@ -368,7 +430,7 @@ router.put('/:id',async function(req, res) {
     }
 });
 
-router.get('/license', async function(req,res) {
+router.get('/license/get_license', async function(req,res) {
     let result = await api_v3_device_license.find({})
     let response = []
 
@@ -382,6 +444,15 @@ router.get('/license', async function(req,res) {
     }
 
     res.send(response)
+})
+
+router.get('/get_device_cnt', async function(req,res) {
+    let current_devices = await api_v3_device_camera.find({}).count()
+    let limit = qrystr[0].c_cnt    
+    res.send({
+        "current_devices":current_devices,
+        "limit":limit
+    })
 })
 
 router.delete('/:id',async function(req, res) {

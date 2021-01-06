@@ -21,6 +21,22 @@ const mariadb = require('mariadb');
 //     charset : 'utf8_general_ci',
 // })
 
+let qrystr = [{
+    "c_license_type" : "standard",	
+    "c_license_month" : 'limit',	
+    "c_company" : "함안군",	
+    "c_country":"kr",	
+    "c_name":"손영호",	
+    "c_email":"yhsohn@koolsign.net",	
+    "c_mac":"70:85:c2:81:ca:fc",	
+    "c_cnt" : 500,		
+    "c_end":"2070-11-17",	
+    "c_license_key1":"50500-99999-00000-ALIM-94SQ",	
+    "c_license_key2":"U2FsdGVkX1/pcs7DTGoQeyuc6yqEuPw4Rk+wrhHKs4aJ7S7ksy3L/eOAL135NgQT"
+}]
+
+
+
 function server_mac_check(eth) {
     // let dump = execSync(`/sbin/ifconfig | grep ${eth}`) //우분투 버전 문제 인지 mac 주소가 1행에 출력이 안된다
     let dump = execSync(`/sbin/ifconfig | grep ether`)
@@ -53,7 +69,7 @@ function license_on_off_check (data) {
             result({"result" : false , 'msg':"라이센스를 등록해주세요"})
         } else {
             let msg = fs.readFileSync('/var/www/backend/license.txt')
-            let val = decrypt(msg,'jjh')
+            let val = decrypt(msg,'!@#koolsign_cloud3_!@#$')
 
             if(server_mac_check(val.license_eth) != val.license_mac) {
                 return({"result":false, "msg" : "올바르지 않은 맥주소 입니다 라이센스를 다시 등록해주세요."})
@@ -74,7 +90,7 @@ function license_on_off_check (data) {
 }
 
 async function license_check(type){
-    let licese_type = 'development' //이정보를 어디에 저장할것인가
+    let licese_type = '' //이정보를 어디에 저장할것인가
     let stb_cnt
     if(licese_type === 'development') {
         stb_cnt = '100000'
@@ -94,21 +110,6 @@ async function license_check(type){
                 // let conn = await pool.getConnection();
                 // let sqlstr = `select * from g_license where c_license_key1="${val.c_license_key1}"`
                 // let qrystr = await conn.query(sqlstr)
-                let qrystr = [{
-                    "c_license_type" : "standard",	
-                    "c_license_month" : 'limit',	
-                    "c_company" : "함안군",	
-                    "c_country":"kr",	
-                    "c_name":"손영호",	
-                    "c_email":"yhsohn@koolsign.net",	
-                    "c_mac":"70:85:c2:81:ca:fc",	
-                    "c_cnt" : 500,		
-                    "c_end":"2070-11-17",	
-                    "c_license_key1":"50500-99999-00000-ALIM-94SQ",	
-                    "c_license_key1":"U2FsdGVkX1/pcs7DTGoQeyuc6yqEuPw4Rk+wrhHKs4aJ7S7ksy3L/eOAL135NgQT"
-                }]
-                
-
                 // conn.release();
                 
                 if(qrystr.length < 1) {
@@ -118,7 +119,7 @@ async function license_check(type){
                     let _val = qrystr[0]
 
                     //라이센스 비교 
-                    let server1 = decrypt(val.c_license_key2,'jjh')
+                    let server1 = decrypt(val.c_license_key2,'!@#koolsign_cloud3_!@#$')
                     let server2 = decrypt(_val.c_license_key2,'!@#koolsign_cloud3_!@#$')
                     
                     server1 = server1.replace(/\s+/,"")
@@ -170,23 +171,10 @@ async function license_server_stb_count (data) {
     // let conn = await pool.getConnection();
     // let sqlstr = `select * from g_license where c_license_key1="${data.c_license_key1}"`
     // let qrystr = await conn.query(sqlstr)
-    let qrystr = [{
-        "c_license_type" : "standard",	
-        "c_license_month" : 'limit',	
-        "c_company" : "함안군",	
-        "c_country":"kr",	
-        "c_name":"손영호",	
-        "c_email":"yhsohn@koolsign.net",	
-        "c_mac":"70:85:c2:81:ca:fc",	
-        "c_cnt" : 500,		
-        "c_end":"2070-11-17",	
-        "c_license_key1":"50500-99999-00000-ALIM-94SQ",	
-        "c_license_key1":"U2FsdGVkX1/pcs7DTGoQeyuc6yqEuPw4Rk+wrhHKs4aJ7S7ksy3L/eOAL135NgQT"
-    }]
 
     let val = qrystr[0]
 
-    conn.release();
+    // conn.release();
 
     return val
 }
@@ -204,7 +192,7 @@ async function licese_file_write(data) {
         } else {
             let stb_info = license_server_stb_count(data);
 
-            let license_key2 = encrypt(data.c_mac,'jjh')
+            let license_key2 = encrypt(data.c_mac,'!@#koolsign_cloud3_!@#$')
             let file_path = 'lisence.txt'
 
             let stb_cnt = ''
@@ -227,7 +215,7 @@ async function licese_file_write(data) {
                 ]
             }
 
-            msg = encrypt(json_data,'jjh')
+            msg = encrypt(json_data,'!@#koolsign_cloud3_!@#$')
 
             fs.writeFileSync("/var/www/backend/licese.txt",msg)
             fs.chmodSync("/var/www/backend/licese.txt",0777)
@@ -237,39 +225,112 @@ async function licese_file_write(data) {
     }
 }
 
+async function license_check_before_save(license_data){
+    let licese_type = '' //이정보를 어디에 저장할것인가
+    let stb_cnt
+    if(licese_type === 'development') {
+        stb_cnt = '100000'
+        return({"result" : true})
+    } else {
+        let val = license_data
+
+        if(val.c_type === 'off') {
+            let result = license_on_off_check()
+            return result
+        } else {
+            // let conn = await pool.getConnection();
+            // let sqlstr = `select * from g_license where c_license_key1="${val.c_license_key1}"`
+            // let qrystr = await conn.query(sqlstr)
+            // conn.release();
+            
+            if(qrystr.length < 1) {
+                //라이센스 등록으로 이동
+                return({"result":false, "msg" : "올바르지 않은 라이센스 입니다 라이센스를 다시 등록해주세요."})
+            } else {
+                let _val = qrystr[0]
+
+                //라이센스 비교 
+                let server1 = decrypt(val.c_license_key2,'!@#koolsign_cloud3_!@#$')
+                let server2 = decrypt(_val.c_license_key2,'!@#koolsign_cloud3_!@#$')
+                
+                server1 = server1.replace(/\s+/,"")
+                server2 = server2.replace(/\s+/,"")
+
+                //CI로 암호화된 문자열 복호화 하는버 필요
+                
+                if(server1 != server2) {
+                    return({"result":false, "msg" : "올바르지 않은 라이센스 입니다 라이센스를 다시 등록해주세요."})
+                }
+
+                //등록된 맥주소 확인
+                let local_mac = server_mac_check(val.c_eth)
+
+                if(_val.c_mac != local_mac) {
+                    return({"result":false, "msg" : "올바르지 않은 맥주소 입니다 라이센스를 다시 등록해주세요."})
+                } 
+
+
+                //날짜 체크
+                let current_date = moment().format('YYYY-MM-DD')
+                let license_date = _val.c_end
+
+                if(current_date > license_date){
+                    return({"result":false, "msg" : "라이센스 기간이 지났습니다 다시 등록해 주세요."})
+                }
+
+                //라이센스 서버에서 정해진 전체 단말기 수를 가져온다.
+                if(_val.c_settop_cnt == 'limit'){
+                    stb_cnt = '100000'
+                } else {
+                    stb_cnt = _val.c_settop_cnt
+                }
+
+                return {"result" : true}
+            }
+        }
+    }
+}
+
 router.post("/license_save",async function (req, res) {
     try{
-    if(req.body.selectedValue === "off"){
-        licese_file_write(req.body)
-    } 
-    
-    s_ip = "172.16.135.13" //해당 서버의 ip
-    s_mac = server_mac_check(req.body.c_eth)
-    let result = await api_v3_device_license.find({})
+        let license_check = await license_check_before_save(req.body)
+        console.log(license_check)
+        if(!license_check.result){
+            res.send(license_check)
+            return 0;
+        }
 
-    let msg = req.body.c_mac
-    let license_key2 = encrypt(msg,'jjh')
-    if(result.length > 0) {
-        await api_v3_device_license.updateOne({"_id":result[0]._id},{
-            'c_type': req.body.c_type,
-            'c_mac': req.body.c_mac,
-            'c_eth': req.body.c_eth,
-            'c_license_key1': req.body.c_license_key1,
-            'c_license_key2': license_key2,
-            'regdate': moment().format("YYYY-MM-DD HH:mm:ss")
-        })            
-    } else {
-        await api_v3_device_license.insertMany([{
-            'c_type': req.body.c_type,
-            'c_mac': s_mac,
-            'c_eth': req.body.c_eth,
-            'c_license_key1': req.body.c_license_key1,
-            'c_license_key2': license_key2,
-            'regdate': moment().format("YYYY-MM-DD HH:mm:ss")
-        }])
-    }
+        if(req.body.selectedValue === "off"){
+            licese_file_write(req.body)
+        } 
+        
+        s_ip = "172.16.135.13" //해당 서버의 ip
+        s_mac = server_mac_check(req.body.c_eth)
+        let result = await api_v3_device_license.find({})
 
-    res.send({"result":true})
+        let msg = req.body.c_mac
+        let license_key2 = encrypt(msg,'!@#koolsign_cloud3_!@#$')
+        if(result.length > 0) {
+            await api_v3_device_license.updateOne({"_id":result[0]._id},{
+                'c_type': req.body.c_type,
+                'c_mac': req.body.c_mac,
+                'c_eth': req.body.c_eth,
+                'c_license_key1': req.body.c_license_key1,
+                'c_license_key2': license_key2,
+                'regdate': moment().format("YYYY-MM-DD HH:mm:ss")
+            })            
+        } else {
+            await api_v3_device_license.insertMany([{
+                'c_type': req.body.c_type,
+                'c_mac': s_mac,
+                'c_eth': req.body.c_eth,
+                'c_license_key1': req.body.c_license_key1,
+                'c_license_key2': license_key2,
+                'regdate': moment().format("YYYY-MM-DD HH:mm:ss")
+            }])
+        }
+
+        res.send({"result":true})
     } catch(err){
         console.log(err)
     }
