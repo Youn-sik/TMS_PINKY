@@ -197,11 +197,12 @@ const DeviceTable = props => {
       client.subscribe('/control/reset/result/+');
     });
 
-    client.on('message', function(topic, message) {
-        if(topic.indexOf('/control/log/result/') > -1 && click) {    
-          click = false
-          let result = JSON.parse(message.toString())
-          let msg = '에러가 발생했습니다 다시 시도해주세요.'
+    client.on('message', async function(topic, message) {
+      if(topic.indexOf('/control/log/result/') > -1 && click) {    
+        click = false
+        let result = JSON.parse(message.toString())
+        let msg = '에러가 발생했습니다 다시 시도해주세요.'
+        setTimeout(() => {
           setSelectedObject(selectedObject => {
             if(selectedObject.length > 0){
               if (topic.indexOf('/control/log/result/'+selectedObject[0].serial_number) > -1) {
@@ -215,8 +216,9 @@ const DeviceTable = props => {
           })
           alert(msg)
           setLogLoading(false);
-        }
-    })
+        },500)
+      }
+  })
 
     return () => {
       client.end(true)
