@@ -7,26 +7,26 @@ var moment = require('moment');
 require('moment-timezone'); 
 moment.tz.setDefault("Asia/Seoul"); 
 const mkdirp = require('mkdirp');
-const execSync = require('child_process').execSync;
+// const execSync = require('child_process').execSync;
 const client = require('./mqtt_load');
-const canvas = require("canvas");
-const { loadImage, Canvas, Image, ImageData } = canvas;
-const fetch = require('node-fetch')
-var asyncJSON = require('async-json');
-const tf = require('@tensorflow/tfjs-node');
+// const canvas = require("canvas");
+// const { loadImage, Canvas, Image, ImageData } = canvas;
+// const fetch = require('node-fetch')
+// var asyncJSON = require('async-json');
+// const tf = require('@tensorflow/tfjs-node');
 // require('@tensorflow/tfjs-backend-webgl');
-const faceapi = require('face-api.js');
-const Jimp = require('jimp');
+// const faceapi = require('face-api.js');
+// const Jimp = require('jimp');
 
-Promise.all([
+// Promise.all([
     // tf.setBackend('webgl'),
-    faceapi.nets.ssdMobilenetv1.loadFromDisk(`${__dirname}/schema/face-models/`),
-    faceapi.nets.faceRecognitionNet.loadFromDisk(`${__dirname}/schema/face-models/`),
-    faceapi.nets.faceLandmark68Net.loadFromDisk(`${__dirname}/schema/face-models/`),
-    faceapi.nets.tinyFaceDetector.loadFromDisk(`${__dirname}/schema/face-models/`),
-    faceapi.nets.mtcnn.loadFromDisk(`${__dirname}/schema/face-models/`),
-    faceapi.env.monkeyPatch({ Canvas, Image, ImageData,fetch: fetch }),
-])
+//     faceapi.nets.ssdMobilenetv1.loadFromDisk(`${__dirname}/schema/face-models/`),
+//     faceapi.nets.faceRecognitionNet.loadFromDisk(`${__dirname}/schema/face-models/`),
+//     faceapi.nets.faceLandmark68Net.loadFromDisk(`${__dirname}/schema/face-models/`),
+//     faceapi.nets.tinyFaceDetector.loadFromDisk(`${__dirname}/schema/face-models/`),
+//     faceapi.nets.mtcnn.loadFromDisk(`${__dirname}/schema/face-models/`),
+//     faceapi.env.monkeyPatch({ Canvas, Image, ImageData,fetch: fetch }),
+// ])
 const mqtt_option = {
     retain: false,
     qos: 0
