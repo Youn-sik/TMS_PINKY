@@ -187,7 +187,7 @@ const DeviceTable = props => {
     client.on('connect', () => {
       console.log('mqtt was connected');
       client.subscribe('/access/realtime/result/+');
-      client.subscribe('/control/log/result/+');
+      client.subscribe('/control/log/save/+');
       client.subscribe('/control/capture/start/result/+');
       client.subscribe('/control/capture/end/result+');
       client.subscribe('/control/sdcard/delete/result/+');
@@ -198,14 +198,14 @@ const DeviceTable = props => {
     });
 
     client.on('message', async function(topic, message) {
-      if(topic.indexOf('/control/log/result/') > -1 && click) {    
+      if(topic.indexOf('/control/log/save/') > -1 && click) {    
         click = false
         let result = JSON.parse(message.toString())
         let msg = '에러가 발생했습니다 다시 시도해주세요.'
         setTimeout(() => {
           setSelectedObject(selectedObject => {
             if(selectedObject.length > 0){
-              if (topic.indexOf('/control/log/result/'+selectedObject[0].serial_number) > -1) {
+              if (topic.indexOf('/control/log/save/'+selectedObject[0].serial_number) > -1) {
                 let folder_date_path = "/uploads/logs/" + moment().format('YYYYMMDD');
                 let file_name = result.filename;
                 msg = '다운로드가 완료 되었습니다'

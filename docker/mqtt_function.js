@@ -676,7 +676,7 @@ module.exports = {
                 
                 mkdirp.sync(file_path);
                 
-                fs.promises.writeFile(file_path + file_name, buff, 'utf-8')
+                fs.writeFileSync(file_path + file_name, buff, 'utf-8')
                 
                 insert_data = {
                     avatar_file : element.avatar_file,
@@ -722,14 +722,15 @@ module.exports = {
             //let upload_url = site.base_local_url + folder_date_path + "/" + file_name;
             let buff = Buffer.from(json.data, 'base64');
             mkdirp.sync(file_path);
-            fs.promises.writeFile(file_path + file_name, buff, 'utf-8')
+            fs.writeFileSync(file_path + file_name, buff, 'utf-8')
             
             send_data = {
-                stb_sn: json.stb_sn
+                stb_sn: json.stb_sn,
+                filename : file_name
             };
 
             // setTimeout(function() {
-            //     client.publish('/access/addpeople/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
+            client.publish('/control/log/save/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
             // }, 500);            
 
             let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 10, log_message: 'control_log_result', create_dt: json.create_time });
