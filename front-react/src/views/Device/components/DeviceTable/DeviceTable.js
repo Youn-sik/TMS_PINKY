@@ -377,6 +377,10 @@ const DeviceTable = props => {
           })
         );
       else if (name === 'log'){
+        if(selectedObject[0].status === "N") {
+          alert('전원이 꺼져있습니다.')
+          return 0;
+        }
         click = true
         setLogLoading(true)
 

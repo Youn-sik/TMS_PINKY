@@ -86,11 +86,11 @@ const License = props => {
                 <CardContent>
                   <Alert style={{marginBottom : "20px"}} severity="error">
                     <AlertTitle>주의 사항</AlertTitle>
-                    1.인터넷을 연결한 상태에서 해 주셔야 합니다.
+                    1.인터넷을 연결한 상태에서 해주셔야 합니다.
                     <br/><br/>
                     2.인증 방법을 오프라인으로 설정 후 재인증은
                     /var/www/html/license.txt
-                    파일을 삭제 후 재 인증해주세요.
+                    파일을 삭제 후 재인증해주세요.
                   </Alert>
                   <table style={{width:"100%"}}>
                     <tbody>

@@ -727,7 +727,10 @@ module.exports = {
             send_data = {
                 stb_sn: json.stb_sn
             };
-            client.publish('/access/addpeople/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
+
+            setTimeout(function() {
+                client.publish('/access/addpeople/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
+            }, 500);            
 
             let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 10, log_message: 'control_log_result', create_dt: json.create_time });
             newGlogs.save(function (error, data) {

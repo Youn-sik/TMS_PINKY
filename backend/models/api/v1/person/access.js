@@ -19,6 +19,8 @@ const api_v1_person_access_Schema = new mongoose.Schema({
     stb_name : { type:String},
     stb_location : { type:String},
     stb_obid : { type:ObjectId, ref:'camera'},
+    age : {type: Number},
+    gender : {type : String},
     access_time : { type: String },
     statistics_status : { type: String },
     create_at : { type: String, default: moment().format('YYYY-MM-DD HH:mm:ss') },
