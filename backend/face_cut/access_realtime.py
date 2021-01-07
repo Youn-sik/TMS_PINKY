@@ -71,6 +71,7 @@ def on_message(client, userdata, msg):
             current_time = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
             current_time_db = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
             current_date = time.strftime('%Y%m%d', time.localtime(time.time()))
+            current_date_stat = time.strftime('%Y-%m-%d', time.localtime(time.time()))
             current_hour = time.strftime('%H', time.localtime(time.time()))
             imgdata = base64.b64decode(value['avatar_file'])
             time_cnt[int(current_hour)] += 1
@@ -140,14 +141,14 @@ def on_message(client, userdata, msg):
                             "serial_number":access_json['stb_sn']
                         },
                         {
-                            "access_date":current_date
+                            "access_date":current_date_stat
                         }
                     ]
                 }
             )
 
             if(todayStatistics) :
-                stat_collection.update_one({"serial_number":access_json['stb_sn']},{
+                stat_collection.update_one({"serial_number":access_json['stb_sn'],"access_date":current_date_stat},{
                     "$inc":{
                         "all_count":1,
                         'employee':employee,
@@ -157,11 +158,11 @@ def on_message(client, userdata, msg):
                     }
                 })
             else :
-                stat_collection.insert({
+                stat_collection.insert_one({
                     'camera_obid' : camera['_id'],
                     'authority' : camera['authority'],
                     'serial_number' : access_json['stb_sn'],
-                    'access_date': current_date,
+                    'access_date': current_date_stat,
                     'all_count' : 1,
                     '0' : time_cnt[0],
                     '1' : time_cnt[1],
@@ -315,9 +316,6 @@ def on_message(client, userdata, msg):
 
 def on_disconnect(client, userdata, flags, rc=0):
     print(str(rc))
-
-def on_publish(client, userdata, mid):
-    print("In on_pub callback mid= ", mid)
 
 def blend_transparent(face_t_img, overlay_t_img):
     # Split out the transparency mask from the colour info
@@ -474,7 +472,6 @@ def recog_face(users) :
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_disconnect = on_disconnect
-client.on_publish = on_publish
 client.on_message = on_message
 client.connect('localhost', 1883)
 client.subscribe("/access/realtime/+")
