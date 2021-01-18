@@ -92,7 +92,7 @@ const EditAccount = props => {
       ...selectedAccounts[0],
       ...accountInfo,
       authority: accountInfo.authority === 'admin' ? 'admin' : 
-      accountInfo.authority === 'manager' ? 'manager-' + accountInfo.user_id : 
+      accountInfo.authority === 'manager' ? 'manager-' + accountInfo.user_id +'e' : 
       props.authority.length > 2 ? props.authority : props.authority + '-user-' + accountInfo.user_id,
       account: props.user_id,
       operation_auth : props.authority

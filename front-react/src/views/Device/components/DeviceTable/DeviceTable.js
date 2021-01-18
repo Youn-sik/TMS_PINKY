@@ -836,7 +836,7 @@ const DeviceTable = props => {
           }}
         />
         <FormControl>
-        <InputLabel id="demo-simple-select-label">리스트</InputLabel>
+        <InputLabel style={{width:"200px"}} id="demo-simple-select-label">리스트</InputLabel>
           <Select
             style={{width:'50px',marginBottom:'11px'}}
             labelId="demo-simple-select-label"
@@ -913,21 +913,9 @@ const DeviceTable = props => {
               수정
             </Button>
           )}
-
-          {/* <RouterLink
-            style={{ textDecoration: 'none' }}
-            className={classes.buttonStyle}
-            to={{
-              pathname: '/device/add',
-              groups: props.groups,
-              setClickedNode: props.setClickedNode,
-              clickedNode: props.clickedNode,
-              setUsers: props.setUsers
-            }}> */}
             <Button onClick={addDevice} className={classes.buttonStyle} variant="contained" color="primary">
               추가
             </Button>
-          {/* </RouterLink> */}
         </Grid>
       </CardActions>
       {/* }/> */}

@@ -249,20 +249,6 @@ const AccessesTable = props => {
               <Table size="small" className={classes.inner}>
                 <TableHead>
                   <TableRow>
-                    {/* <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={
-                          selected.length === 7 ? 
-                            true
-                            : 
-                            selected.length === props.users.length && props.users.length !== 0 ?
-                            true 
-                            : 
-                            false
-                        }
-                        onChange={handleSelectAllClick}
-                      />
-                    </TableCell> */}
                     <TableCell>사진</TableCell>
                     <TableCell>이름</TableCell>
                     <TableCell>사번</TableCell>
