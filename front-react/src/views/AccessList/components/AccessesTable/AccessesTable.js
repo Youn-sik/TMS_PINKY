@@ -414,7 +414,7 @@ const AccessesTable = props => {
                     '온도'
                   )}
                 </TableCell>
-                <TableCell>{accesses.length > 0 ? (
+                {/* <TableCell>{accesses.length > 0 ? (
                     <TableSortLabel
                       active={activeType === 'distnace'}
                       direction={sort}
@@ -425,7 +425,7 @@ const AccessesTable = props => {
                     </TableSortLabel>
                   ) : (
                     '확률'
-                  )}</TableCell>
+                  )}</TableCell> */}
                 <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel
@@ -506,9 +506,9 @@ const AccessesTable = props => {
                                 )
                               : '비정상 체온'}
                           </TableCell>
-                          <TableCell className={classes.redFont}>
+                          {/* <TableCell className={classes.redFont}>
                             {access.distance ? String(access.distance).substr(0,4) : 0}%
-                          </TableCell>
+                          </TableCell> */}
                           <TableCell className={classes.redFont}>
                             {access.access_time.split(' ')[0]}
                           </TableCell>
@@ -591,9 +591,9 @@ const AccessesTable = props => {
                                 )
                               : '비정상 체온'}
                           </TableCell>
-                          <TableCell className={classes.orangeFont}>
+                          {/* <TableCell className={classes.orangeFont}>
                             {access.distance ? String(access.distance).substr(0,4) : 0}%
-                          </TableCell>
+                          </TableCell> */}
                           <TableCell className={classes.orangeFont}>
                             {access.access_time.split(' ')[0]}
                           </TableCell>
@@ -674,9 +674,9 @@ const AccessesTable = props => {
                                 )
                               : '정상 체온'}
                           </TableCell>
-                          <TableCell>
+                          {/* <TableCell>
                             {access.distance ? String(access.distance).substr(0,4) : 0}%
-                          </TableCell>
+                          </TableCell> */}
                           <TableCell>{access.access_time.split(' ')[0]}</TableCell>
                           <TableCell>
                             {
