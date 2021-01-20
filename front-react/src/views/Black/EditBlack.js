@@ -138,6 +138,7 @@ const EditBlack = props => {
   const [pictures, setPictures] = useState([]);
   const [open, setOpen] = useState(false);
   const [node, setNode] = useState({});
+  id = Math.random().toString(36).substr(2,11)
   const onDrop = picture => {
     setPictures([picture, ...pictures]);
   };
@@ -272,7 +273,6 @@ const EditBlack = props => {
       base64 = base64.replace('data:image/jpeg;base64,', '');
       base64 = base64.replace('data:image/png;base64,', '');
     }
-    id = Math.random().toString(36).substr(2,11)
     
     client.publish(
       '/user/edit/' + id,

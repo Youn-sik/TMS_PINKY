@@ -172,7 +172,7 @@ const AddEmployee = props => {
   const [node, setNode] = useState({});
   const [groups,setGroups] = useState([])
   const [loading, setLoading] = useState(false);
-  
+  id = Math.random().toString(36).substr(2,11)
   useEffect(() => {
     client = mqtt.connect('ws://'+mqtt_url+':8083/mqtt');
 
@@ -304,7 +304,6 @@ const AddEmployee = props => {
       let base64 = await toBase64(pictures[0][0]);
       base64 = base64.replace('data:image/jpeg;base64,', '');
       base64 = base64.replace('data:image/png;base64,', '');
-      id = Math.random().toString(36).substr(2,11)
 
       client.publish(
         '/user/add/' + id,

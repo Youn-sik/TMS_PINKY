@@ -25,7 +25,7 @@ router.get('/',async function(req, res) {
         }
         
         if(req.query.type === 'todayStatistics') {
-            employee = await api_v1_person_access.aggregate([
+            let employee = await api_v1_person_access.aggregate([
                 {
                     $match: {
                         avatar_type : 1,
@@ -38,7 +38,7 @@ router.get('/',async function(req, res) {
                 },
             ]).allowDiskUse(true);
 
-            black = await api_v1_person_access.aggregate([
+            let black = await api_v1_person_access.aggregate([
                 {
                     $match: {
                         avatar_type : 4,
@@ -51,7 +51,7 @@ router.get('/',async function(req, res) {
                 },
             ]).allowDiskUse(true);
 
-            stranger = await api_v1_person_access.aggregate([
+            let stranger = await api_v1_person_access.aggregate([
                 {
                     $match: {
                         avatar_type : 3,
@@ -86,7 +86,7 @@ router.get('/',async function(req, res) {
             ]
 
         } else if(req.query.type === 'weekStatistics') {
-            employee = await api_v1_person_access.aggregate([
+            let employee = await api_v1_person_access.aggregate([
                 {
                     $match: {
                         avatar_type : 1,
@@ -99,7 +99,7 @@ router.get('/',async function(req, res) {
                 },
             ]).allowDiskUse(true);
 
-            black = await api_v1_person_access.aggregate([
+            let black = await api_v1_person_access.aggregate([
                 {
                     $match: {
                         avatar_type : 4,
@@ -112,7 +112,7 @@ router.get('/',async function(req, res) {
                 },
             ]).allowDiskUse(true);
 
-            stranger = await api_v1_person_access.aggregate([
+            let stranger = await api_v1_person_access.aggregate([
                 {
                     $match: {
                         avatar_type : 3,

@@ -144,6 +144,7 @@ const AddBlack = props => {
   const [node, setNode] = useState({});
   const [loading, setLoading] = useState(false);
   const [groups, setGroups] = useState([])
+  id = Math.random().toString(36).substr(2,11)
   const onDrop = picture => {
     setPictures([picture, ...pictures]);
   };
@@ -275,7 +276,6 @@ const AddBlack = props => {
         let base64 = await toBase64(pictures[0][0]);
         base64 = base64.replace('data:image/jpeg;base64,', '');
         base64 = base64.replace('data:image/png;base64,', '');
-        id = Math.random().toString(36).substr(2,11)
   
         client.publish(
           '/user/add/' + id,

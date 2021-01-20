@@ -60,7 +60,7 @@ const Device = props => {
         hoverBorderColor: theme.palette.white
       }
     ],
-    labels: ['ON', 'OFF']
+    labels: ['OFF', 'ON']
   };
 
   const options = {
