@@ -55,7 +55,12 @@ const Black = props => {
 
   useEffect(() => {
     getUsers()
-  },[page,clickedNode])
+  },[page])
+
+  useEffect(() => {
+    setPage(1)
+    getUsers()
+  },[clickedNode])
 
   const _setSearchType = (e) => {
     setSearchType(e.target.value)

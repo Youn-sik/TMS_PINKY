@@ -55,8 +55,12 @@ const Employee = props => {
 
   useEffect(() => {
     getUsers()
-  },[page,clickedNode,date])
+  },[page,date])
 
+  useEffect(() => {
+    setPage(1)
+    getUsers()
+  },[clickedNode])
 
   const handleDate = val => {
     setDate(val);
