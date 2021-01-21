@@ -12,8 +12,8 @@ client.on('connect', function(test) {
         '/disconnect/result/+',
         '/download/+',
         '/access/request/+',
-        // '/access/realtime/+',
         '/access/addpeople/+',
+        '/control/door/result/+',
         '/control/log/result/+',
         '/control/capture/start/result/+',
         '/control/capture/upload/+',
@@ -174,6 +174,13 @@ client.on('message', async function(topic, message) {
         if (topic === "/control/log/result/" + json.stb_sn) { 
             if (json.stb_sn != undefined) {
                 fn.control_log_result(json);
+            }
+        }
+
+        /* 제어 > 출입문 설정*/
+        if (topic === "/control/door/result/" + json.stb_sn) { 
+            if (json.stb_sn != undefined) {
+                fn.control_door_result(json);
             }
         }
         

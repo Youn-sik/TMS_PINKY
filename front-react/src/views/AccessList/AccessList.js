@@ -197,8 +197,7 @@ const AccessList = props => {
 
   const sortAccesses = async (_type, headerType) => {
     setActiveType(headerType);
-
-    
+    setPage(1)
 
     let firstDate = '';
     let lastDate = '';
@@ -221,7 +220,7 @@ const AccessList = props => {
     setCurrentHeaderType(headerType)
 
     let result = await axios.get(base_url + 
-      `/access?auth=${props.authority}&avatar_type=${type}&searchType=${searchType}&rowsPerPage=${rowsPerPage}&headerType=${headerType}&date=${firstDate}/${lastDate}&page=${page}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
+      `/access?auth=${props.authority}&avatar_type=${type}&searchType=${searchType}&rowsPerPage=${rowsPerPage}&headerType=${headerType}&date=${firstDate}/${lastDate}&page=${1}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
 

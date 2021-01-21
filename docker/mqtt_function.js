@@ -1170,4 +1170,12 @@ module.exports = {
             console.log(error);
         }
     },
+
+    async control_door_result(json) {
+        try {
+            
+        } catch(error) {
+            console.log(error)
+        }
+    }
 }

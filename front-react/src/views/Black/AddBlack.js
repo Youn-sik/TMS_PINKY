@@ -165,7 +165,7 @@ const AddBlack = props => {
           alert('등록 되었습니다.');
           history.push('/users/black');
         } else {
-          alert('인식 할수 없는 사진 입니다.')
+          alert(result.msg)
         }
       }
     })

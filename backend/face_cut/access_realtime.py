@@ -219,7 +219,9 @@ def on_message(client, userdata, msg):
         result = detect_face(file_path+file_name)
         if result is None :
             os.remove(file_path+file_name)
-            client.publish('/user/add/result/'+user_json['id'], json.dumps({"result":False}), 1)
+            client.publish('/user/add/result/'+user_json['id'], json.dumps({"result":False,"msg":"인식할수 없는 사진 입니다."}), 1)
+        elif result is False :
+            client.publish('/user/add/result/'+user_json['id'], json.dumps({"result":False,"msg":"더 낮은 해상도의 사진을 사용해주세요."}), 1)
         else :
             os.remove(file_path+file_name)
 
@@ -366,15 +368,15 @@ embs = [0]
 
 def detect_face(path) :
     for known_face_file in known_face_files:
-        # print(f'Start to known process {known_face_file}')
         face_img = cv2.imread(path)
-        face_label = path
+        print(face_img.shape)
+        if(face_img.shape[0] * face_img.shape[1] > 1500000) : 
+            return False
 
+        face_label = path
         # Mask
         h, w = face_img.shape[:2]
-
         bboxes, landmarks = det_model.detect(face_img, threshold=0.3, scale=1.0)
-
         find = False
 
         for i in range(bboxes.shape[0]):
@@ -382,7 +384,7 @@ def detect_face(path) :
             bbox = bboxes[i, 0:4]
             det_score = bboxes[i, 4]
             landmark = landmarks[i]
-
+            
             # 마스크 씌우는 로직
             dst_pts = np.array(
                 [

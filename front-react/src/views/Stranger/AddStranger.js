@@ -206,7 +206,7 @@ const AddStranger = props => {
           else 
             history.push('/users/black');
         } else {
-          alert('인식 할수 없는 사진 입니다.')
+          alert(result.msg)
         }
       } else if(topic.indexOf('/user/add/result/'+id) > -1) {
         let result = JSON.parse(message.toString())
@@ -218,7 +218,7 @@ const AddStranger = props => {
           else 
             history.push('/users/black');
         } else {
-          alert('인식 할수 없는 사진 입니다.')
+          alert(result.msg)
         }
       }
     })

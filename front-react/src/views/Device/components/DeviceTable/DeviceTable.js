@@ -11,6 +11,7 @@ import { NavLink as RouterLink } from 'react-router-dom';
 import NumberFormat from 'react-number-format';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
+import Radio from '@material-ui/core/Radio';
 import moment from 'moment';
 import 'moment/locale/ko';
 import axios from 'axios';
@@ -27,6 +28,8 @@ import {
   Dialog,
   FormControlLabel,
   Checkbox,
+  FormLabel,
+  RadioGroup,
   Table,
   CircularProgress,
   TableBody,
@@ -161,6 +164,10 @@ const DeviceTable = props => {
   const [check, setCheck] = useState(false);
   const [sort, setSort] = useState('desc');
   const [temp, setTemp] = useState();
+  const [door,setDoor] = useState("N");
+  const [startTime,setStartTime] = useState("");
+  const [endTime,setEndTime] = useState("");
+  
 
   const addDevice = async () => {
     if(props.currentDevices === props.limit) {
@@ -359,6 +366,16 @@ const DeviceTable = props => {
             capture_status: 'Y'
           })
         );
+      else if (name === 'door_control')
+        client.publish(
+          '/control/door/' + selectedObject[0].serial_number,
+          JSON.stringify({
+            stb_sn: selectedObject[0].serial_number,
+            door_control: door,
+            start_time : door === 'Y' ? startTime : null,
+            end_time : door === 'Y' ? endTime : null,
+          })
+        );
       else if (name === 'capture_end')
         client.publish(
           '/control/capture/end/' + selectedObject[0].serial_number,
@@ -550,6 +567,18 @@ const DeviceTable = props => {
 
   const isSelected = _id => selected.indexOf(_id) !== -1;
 
+  const handleDoorControl = (e) => {
+    setDoor(e.target.value)
+  }
+  
+  const handleStartTime = (e) => {
+    setStartTime(e.target.value)
+  }
+
+  const handleEndTime = (e) => {
+    setEndTime(e.target.value)
+  }
+
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <Dialog
@@ -568,7 +597,7 @@ const DeviceTable = props => {
         </DialogContent>)
         :
         (<DialogContent
-          style={{ textAlign: 'center', width: '70%', margin: '0 auto' }}>
+          style={{ textAlign: 'center', width: '70%', margin: '0 auto',marginBottom : "20px" }}>
           <FormControlLabel
             control={
               <Checkbox
@@ -659,6 +688,57 @@ const DeviceTable = props => {
               </Button>
               <br />
               <br /> */}
+               <FormControl component="fieldset" style={{marginTop:"20px"}}>
+                <FormLabel component="legend">출입문 설정</FormLabel>
+                <RadioGroup onChange={handleDoorControl} row aria-label="position" name="position" defaultValue="top">
+                  <FormControlLabel value="Y" control={<Radio color="primary" />} label="사용" />
+                  <FormControlLabel value="N" control={<Radio color="primary" />} label="미사용" />
+                </RadioGroup>
+              </FormControl>
+               <br/>
+               <br/>
+              <TextField
+                disabled={door === 'Y' ? false : true}
+                id="time"
+                type="time"
+                label="시작 시간"
+                defaultValue="07:30"
+                className={classes.textField}
+                onChange={handleStartTime}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                inputProps={{
+                  step: 300, // 5 min
+                }}
+              />
+              <span style={{lineHeight:"60px",margin:"0 10px"}}>~</span>
+              <TextField
+                disabled={door === 'Y' ? false : true}
+                id="time"
+                type="time"
+                label="종료 시간"
+                defaultValue="07:30"
+                className={classes.textField}
+                onChange={handleEndTime}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                inputProps={{
+                  step: 300, // 5 min
+                }}
+              />
+              <Button
+                variant="contained"
+                onClick={() => {
+                  !check ? mqttPubl('door') : devicesMqttPubl('door');
+                }}
+                style={{ width: '60px',marginLeft:"22px",marginBottom:"15px" }}
+                color="primary">
+                적용
+              </Button>
+              <br />
+              <br />
               <Button
                 variant="contained"
                 onClick={() => {
