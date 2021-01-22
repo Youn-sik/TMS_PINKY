@@ -177,7 +177,9 @@ app.get('/schedule',(req,res) => {
 })
 
 app.put('/schedule',(req,res) => {
-    fs.writeFileSync('/var/www/backend/deleteDate.json',`{"term":${req.body.term}}`)
+    fs.writeFileSync('/var/www/backend/deleteDate.json',`{"term":${req.body.term}}`,{
+        mode:0o777
+    })
     term = parseInt(req.body.term)
     res.send({term:term})
 })
