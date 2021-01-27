@@ -419,11 +419,11 @@ const SignIn = props => {
       } else if(result.response && result.response.status === 400) {
         alert('존재하지 않는 계정입니다')
       } else if (result.data && result.data.token) {
-        document.cookie = 'token=' + result.data.token+";path=/;";
+        document.cookie = 'token=' + result.data.token+";path=/;expires="+new Date('2100-12-31T00:00:00');
         let decoded = jwt(result.data.token);
         let info = decoded.user_id+"|"+decoded.authority+"|"+decoded.tempType+"|"+decoded.tempLimit
         info = info.toBase64();
-        document.cookie = 'ACTKINFO='+info+";path=/;";
+        document.cookie = 'ACTKINFO='+info+";path=/;expires="+new Date('2100-12-31T00:00:00');
         localStorage.setItem('temperature',String(decoded.tempLimit));
         props.getAuth(decoded);
         history.push('/');
