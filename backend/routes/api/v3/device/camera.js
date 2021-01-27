@@ -38,6 +38,8 @@ let qrystr = [{
     "c_license_key2":"U2FsdGVkX1/pcs7DTGoQeyuc6yqEuPw4Rk+wrhHKs4aJ7S7ksy3L/eOAL135NgQT"
 }]
 
+let license_type = 'development'
+
 function server_mac_check(eth) {
     // let dump = execSync(`/sbin/ifconfig | grep ${eth}`) //우분투 버전 문제 인지 mac 주소가 1행에 출력이 안된다
     let dump = execSync(`/sbin/ifconfig | grep ether`)
@@ -89,7 +91,6 @@ function license_on_off_check (data) {
 }
 
 async function license_check(type,req){
-    let license_type = 'development' //이정보를 어디에 저장할것인가
     let stb_cnt
 
     req.headers.authorization = req.headers.authorization.replace('Bearer ','');
@@ -451,7 +452,7 @@ router.get('/get_device_cnt', async function(req,res) {
     let limit = qrystr[0].c_cnt    
     res.send({
         "current_devices":current_devices,
-        "limit":limit
+        "limit": license_type === 'development' ? 99999 : limit
     })
 })
 

@@ -3,6 +3,7 @@ const client = require('./mqtt_load');
 const fn = require('./mqtt_function.js');
 var ip = require('ip');
 let server_ip
+
 client.on('connect', function(test) {
     console.log('MQTT connected.');
     server_ip = ip.address()

@@ -30,7 +30,7 @@
     "moment": "^2.27.0",
     "mongodb": "^3.6.0",
     "mongoose": "^5.10.2",
-    "mqtt": "^4.2.1",
+    "mqtt": "^4.2.6",
     "mysql": "^2.18.1",
     "mysql2": "^2.1.0",
     "node-datetime": "^2.1.2",

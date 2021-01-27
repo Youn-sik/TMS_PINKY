@@ -174,7 +174,11 @@ const AddEmployee = props => {
   const [loading, setLoading] = useState(false);
   id = Math.random().toString(36).substr(2,11)
   useEffect(() => {
-    client = mqtt.connect('ws://'+mqtt_url+':8083/mqtt');
+    client = mqtt.connect('ws://'+mqtt_url+':8083/mqtt',{
+      username: 'admin_server',
+      password:"masterQ!W@E#R$",
+      rejectUnauthorized: false,
+    });
 
     client.on('connect', () => {
       console.log('isConnected')

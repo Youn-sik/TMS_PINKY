@@ -102,8 +102,8 @@ const TempAlert = props => {
                         : '블랙리스트'}
                     </TableCell>
                     <TableCell className={classes.redFont}>{access.stb_location}</TableCell>
-                    <TableCell className={classes.redFont}>{access.stb_sn}</TableCell>
                     <TableCell className={classes.redFont}>{access.stb_name}</TableCell>
+                    <TableCell className={classes.redFont}>{access.stb_sn}</TableCell>
                     <TableCell className={classes.redFont}>
                       {tempType === 1
                         ? String(access.avatar_temperature).substring(0, 4)
@@ -138,8 +138,8 @@ const TempAlert = props => {
                         : '블랙리스트'}
                     </TableCell>
                     <TableCell>{access.stb_location}</TableCell>
-                    <TableCell>{access.stb_sn}</TableCell>
                     <TableCell>{access.stb_name}</TableCell>
+                    <TableCell>{access.stb_sn}</TableCell>
                     <TableCell>
                       {tempType === 1
                         ? String(access.avatar_temperature).substring(0, 4)

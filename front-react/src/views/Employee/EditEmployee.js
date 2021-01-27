@@ -182,7 +182,11 @@ const EditEmployee = props => {
   };
 
   useEffect(() => {
-    client = mqtt.connect('ws://'+mqtt_url+':8083/mqtt');
+    client = mqtt.connect('ws://'+mqtt_url+':8083/mqtt',{
+      username: 'admin_server',
+      password:"masterQ!W@E#R$",
+      rejectUnauthorized: false,
+    });
 
     client.on('connect', () => {
       console.log('isConnected')

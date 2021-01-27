@@ -14,6 +14,7 @@
     "mqtt_user": "cloud40_core_web",
     "mqtt_passwd" : "masterQ!W@E#R$",
     "mqtt_port": 1883,
+    "mqtts_port": 8883,
     "mqtt_websocket_port": 8083,
     "mqtt_dashboard_port": 18083,
     "mqtt_dashboard_user": "admin",

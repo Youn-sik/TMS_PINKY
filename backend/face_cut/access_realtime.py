@@ -17,6 +17,7 @@ from bson.objectid import ObjectId
 import pathlib
 from ast import literal_eval
 import paho.mqtt.client as mqtt
+import ssl
 my_client = MongoClient("mongodb://localhost:27017/")
 db = my_client.get_database("cloud40")
 acc_collection = db.get_collection('accesses')
@@ -471,11 +472,16 @@ def recog_face(users) :
 #         collection.update({"_id":result["_id"]},{"$set":{"detected":True,"name":max_name,"type":max_type}})
 
 
-client = mqtt.Client()
+client = mqtt.Client(client_id='mqtt_testing_client')
 client.on_connect = on_connect
 client.on_disconnect = on_disconnect
 client.on_message = on_message
-client.connect('localhost', 1883)
+# client.tls_set("/media/jjh/data/openssl_back/ca-cert.pem", tls_version=ssl.PROTOCOL_TLSv1_2)
+client.tls_set("/media/jjh/data/openssl_back/my_root_ca.pem",None,
+               None, cert_reqs=ssl.CERT_NONE, tls_version=ssl.PROTOCOL_TLSv1_2, ciphers=None)
+client.tls_insecure_set(True)
+client.username_pw_set("admin_server","masterQ!W@E#R$")
+client.connect('localhost', 8883)
 client.subscribe("/access/realtime/+")
 client.subscribe("/user/add/+")
 client.subscribe("/user/edit/+")
