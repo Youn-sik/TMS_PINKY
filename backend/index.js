@@ -12,15 +12,8 @@ const schedule = require('node-schedule');
 const moment = require('moment');
 const fs = require('fs');
 require('moment-timezone'); 
-moment.tz.setDefault("Asia/Seoul"); 
-const https = require('https')
-const http = require('http')
+moment.tz.setDefault("Asia/Seoul");
 const exec = require('child_process').exec;
-
-const options = {
-    key: fs.readFileSync('/etc/emqx/certs/emqx.key'),
-    cert: fs.readFileSync('/etc/emqx/certs/server.pem')
-}
 
 //model
 const User = require('./models/User')
@@ -212,7 +205,6 @@ let s = schedule.scheduleJob('0 0 0 * * *', async function(){//스케쥴 설정
 
 // Run the server!
 const start = async () => {
-    await http.createServer(options,app).listen(3000)
-    // await app.listen(3000,'0.0.0.0')
+    await app.listen(3000,'0.0.0.0')
 }
 start()
