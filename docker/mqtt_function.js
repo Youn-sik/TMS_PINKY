@@ -249,6 +249,11 @@ module.exports = {
                     if(json.stb_mac) camera.config_data.mac_address = json.stb_mac;
                     if(json.stb_version) camera.app_version = json.stb_version;
                     if(json.stb_ip) camera.ip = json.stb_ip;
+                    if(json.control_door) {
+                        camera.control_door = json.control_door
+                        camera.start_time = json.start_time
+                        camera.end_time = json.end_time
+                    }
                     camera.save( (err) => {
                         if(err){
                             console.log(err);
