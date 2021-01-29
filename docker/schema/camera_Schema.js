@@ -26,6 +26,9 @@ const cameraSchema = new mongoose.Schema({
     create_ut : { type: String, default: Date.now },
     update_at : { type: String },
     update_ut : { type: String },
+    door_control : { type : String },
+    start_time : { type : String },
+    end_time : { type : String },
     config_data : {
         device_run_type : { type: Number },
         capture_status : { type: String },
