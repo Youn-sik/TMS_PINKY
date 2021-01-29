@@ -1178,7 +1178,16 @@ module.exports = {
 
     async control_door_result(json) {
         try {
-            
+            await Camera.findOne( { serial_number : json.stb_sn }, (err,camera) => {
+                if (err) {
+                    console.log(err);
+                }else{
+                    camera.door_control = json.door_control
+                    camera.start_time = json.start_time
+                    camera.end_time = json.end_time
+                    camera.save();
+                }
+            });
         } catch(error) {
             console.log(error)
         }

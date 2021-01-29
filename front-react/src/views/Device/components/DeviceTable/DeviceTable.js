@@ -735,7 +735,7 @@ const DeviceTable = props => {
               <Button
                 variant="contained"
                 onClick={() => {
-                  !check ? mqttPubl('door') : devicesMqttPubl('door');
+                  !check ? mqttPubl('door_control') : devicesMqttPubl('door_control');
                 }}
                 style={{ width: '60px',marginLeft:"22px",marginBottom:"15px" }}
                 color="primary">
@@ -867,7 +867,7 @@ const DeviceTable = props => {
               <Button
                 variant="contained"
                 onClick={() => {
-                  devicesMqttPubl('door');
+                  devicesMqttPubl('door_control');
                 }}
                 style={{ width: '60px',marginLeft:"22px",marginBottom:"15px" }}
                 color="primary">
