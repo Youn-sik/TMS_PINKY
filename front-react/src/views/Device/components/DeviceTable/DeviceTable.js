@@ -15,6 +15,7 @@ import Radio from '@material-ui/core/Radio';
 import moment from 'moment';
 import 'moment/locale/ko';
 import axios from 'axios';
+import { withStyles } from '@material-ui/core/styles';
 
 import {
   Card,
@@ -25,6 +26,8 @@ import {
   DialogTitle,
   CardContent,
   FormControl,
+  FormGroup,
+  Switch,
   Dialog,
   FormControlLabel,
   Checkbox,
@@ -129,6 +132,59 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const IOSSwitch = withStyles((theme) => ({
+  root: {
+    width: 42,
+    height: 26,
+    padding: 0,
+    margin: theme.spacing(1),
+  },
+  switchBase: {
+    padding: 1,
+    '&$checked': {
+      transform: 'translateX(16px)',
+      color: theme.palette.common.white,
+      '& + $track': {
+        backgroundColor: '#52d869',
+        opacity: 1,
+        border: 'none',
+      },
+    },
+    '&$focusVisible $thumb': {
+      color: '#52d869',
+      border: '6px solid #fff',
+    },
+  },
+  thumb: {
+    width: 24,
+    height: 24,
+  },
+  track: {
+    borderRadius: 26 / 2,
+    border: `1px solid ${theme.palette.grey[400]}`,
+    backgroundColor: theme.palette.grey[50],
+    opacity: 1,
+    transition: theme.transitions.create(['background-color', 'border']),
+  },
+  checked: {},
+  focusVisible: {},
+}))(({ classes, ...props }) => {
+  return (
+    <Switch
+      focusVisibleClassName={classes.focusVisible}
+      disableRipple
+      classes={{
+        root: classes.root,
+        switchBase: classes.switchBase,
+        thumb: classes.thumb,
+        track: classes.track,
+        checked: classes.checked,
+      }}
+      {...props}
+    />
+  );
+});
+
 const DeviceTable = props => {
   const {
     sortAccesses,
@@ -164,10 +220,33 @@ const DeviceTable = props => {
   const [check, setCheck] = useState(false);
   const [sort, setSort] = useState('desc');
   const [temp, setTemp] = useState();
-  const [door,setDoor] = useState("N");
-  const [startTime,setStartTime] = useState("07:00");
-  const [endTime,setEndTime] = useState("19:00");
-  
+  const [door,setDoor] = useState("");
+  const [startTime,setStartTime] = useState("");
+  const [endTime,setEndTime] = useState("");
+  const [doorModal,setDoorModal] = useState(false)
+  const [doorDays,setDoorDays] = useState([false,false,false,false,false,false,false])
+
+  const convertDays = () => {
+    let temp = '';
+    doorDays.forEach((i,index) => {
+      if(i)
+        temp = temp + index + ','
+    })
+    return temp === '' ? null : temp.slice(0,-1)
+  }
+
+  const reverseDays = () => {
+    let temp = []
+    let days = [...doorDays];
+    if(selectedObject[0].door_days && selectedObject[0].door_days !== '') {
+      let db_days = selectedObject[0].door_days.split(',')
+      db_days.forEach((i,index) => {
+        let val = parseInt(i)
+        days[val] = true
+      })
+    }
+    return days
+  }
 
   const addDevice = async () => {
     if(props.currentDevices === props.limit) {
@@ -185,6 +264,26 @@ const DeviceTable = props => {
         props.history.push('/license')
       }
     }
+  }
+
+  const doorDaysSet = (index,value) => {
+    let temp = [...doorDays];
+    temp[index] = value
+    setDoorDays(temp)
+  }
+
+  const doorSetModal = () => {
+    setDoorModal(!doorModal)
+  }
+
+  const doorControlValSet = () => {
+    setDoor(selectedObject[0].door_control ? selectedObject[0].door_control : false)
+    setStartTime(selectedObject[0].start_time ? selectedObject[0].start_time : null)
+    setEndTime(selectedObject[0].end_time ? selectedObject[0].end_time : null)
+
+    let days = reverseDays()
+    
+    setDoorDays(days)
   }
 
   useEffect(() => {
@@ -317,6 +416,7 @@ const DeviceTable = props => {
       setSelectedObject(props.device);
       return;
     }
+    setSelectedObject([]);
     setSelected([]);
   };
 
@@ -378,6 +478,7 @@ const DeviceTable = props => {
             door_control: door,
             start_time : door === 'Y' ? startTime : null,
             end_time : door === 'Y' ? endTime : null,
+            door_days : convertDays()
           })
         );
       else if (name === 'capture_end')
@@ -484,6 +585,17 @@ const DeviceTable = props => {
           capture_status: 'Y'
         })
       );
+    else if (name === 'door_control')
+      client.publish(
+        '/control/door/devices',
+        JSON.stringify({
+          stb_sn: stb_sns,
+          door_control: door,
+          start_time : door === 'Y' ? startTime : null,
+          end_time : door === 'Y' ? endTime : null,
+          door_days : convertDays()
+        })
+      );
     else if (name === 'capture_end')
       client.publish(
         '/control/capture/end/devices',
@@ -584,7 +696,163 @@ const DeviceTable = props => {
   }
 
   return (
+    // doorSetModal
     <Card {...rest} className={clsx(classes.root, className)}>
+      <Dialog 
+        open={doorModal}
+        onClose={doorSetModal}
+        maxWidth={'sm'}
+        fullWidth={true}
+      >
+        <DialogTitle id="alert-dialog-title">{'출입문 설정'}</DialogTitle>
+        <DialogContent
+          style={{ textAlign: 'center', width: '70%', margin: '0 auto',marginBottom : "20px" }}>
+          <FormControlLabel
+          control={
+            <Checkbox
+              checked={check}
+              onChange={handleCheckChange}
+              inputProps={{ 'aria-label': 'primary checkbox' }}
+            />
+          }
+          label="모든 단말에 적용하기"
+          />
+          <br/>
+          <FormControl component="fieldset" style={{marginTop:"20px"}}>
+            <FormLabel component="legend">출입문 설정</FormLabel>
+            <RadioGroup value={door} onChange={handleDoorControl} row aria-label="position" name="position" defaultValue="top">
+              <FormControlLabel value="Y" control={<Radio color="primary" />} label="사용" />
+              <FormControlLabel value="N" control={<Radio color="primary" />} label="미사용" />
+            </RadioGroup>
+          </FormControl>
+          <br/>
+          <br/>
+          <FormLabel component="legend" style={{marginBottom:"10px"}}>시간 설정</FormLabel>
+          <TextField
+            disabled={door === 'Y' ? false : true}
+            id="time"
+            type="time"
+            label="시작 시간"
+            defaultValue={startTime}
+            className={classes.textField}
+            onChange={handleStartTime}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            inputProps={{
+              step: 300, // 5 min
+            }}
+          />
+          <span style={{lineHeight:"60px",margin:"0 10px"}}>~</span>
+          <TextField
+            disabled={door === 'Y' ? false : true}
+            id="time"
+            type="time"
+            label="종료 시간"
+            defaultValue={endTime}
+            className={classes.textField}
+            onChange={handleEndTime}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            inputProps={{
+              step: 300, // 5 min
+            }}
+          />
+          <br/>
+          <br/>
+          <FormLabel component="legend">요일 설정</FormLabel>
+          <FormGroup aria-label="position" row>
+            <FormControlLabel
+              disabled={door === 'Y' ? false : true}
+              control={<IOSSwitch name="checkedB" />}
+              checked={doorDays[0]}
+              onChange = { (e) => {
+                doorDaysSet(0,e.target.checked)
+              } }
+              label="일"
+              labelPlacement="bottom"
+            />
+            <FormControlLabel
+              disabled={door === 'Y' ? false : true}
+              control={<IOSSwitch name="checkedB" />}
+              checked={doorDays[1]}
+              onChange = { (e) => {
+                doorDaysSet(1,e.target.checked)
+              } }
+              label="월"
+              labelPlacement="bottom"
+            />
+            <FormControlLabel
+              disabled={door === 'Y' ? false : true}
+              control={<IOSSwitch name="checkedB" />}
+              checked={doorDays[2]}
+              onChange = { (e) => {
+                doorDaysSet(2,e.target.checked)
+              } }
+              label="화"
+              labelPlacement="bottom"
+            />
+            <FormControlLabel
+              disabled={door === 'Y' ? false : true}
+              control={<IOSSwitch name="checkedB" />}
+              checked={doorDays[3]}
+              onChange = { (e) => {
+                doorDaysSet(3,e.target.checked)
+              } }
+              label="수"
+              labelPlacement="bottom"
+            />
+            <div style={{margin:"0 auto"}}>
+              <FormControlLabel
+                disabled={door === 'Y' ? false : true}
+                control={<IOSSwitch name="checkedB" />}
+                checked={doorDays[4]}
+                onChange = { (e) => {
+                  doorDaysSet(4,e.target.checked)
+                } }
+                label="목"
+                labelPlacement="bottom"
+              />
+              <FormControlLabel
+                disabled={door === 'Y' ? false : true}
+                control={<IOSSwitch name="checkedB" />}
+                checked={doorDays[5]}
+                onChange = { (e) => {
+                  doorDaysSet(5,e.target.checked)
+                } }
+                label="금"
+                labelPlacement="bottom"
+              />
+              <FormControlLabel
+                disabled={door === 'Y' ? false : true}
+                control={<IOSSwitch name="checkedB" />}
+                checked={doorDays[6]}
+                onChange = { (e) => {
+                  doorDaysSet(6,e.target.checked)
+                } }
+                label="토"
+                labelPlacement="bottom"
+              />
+            </div>
+          </FormGroup>
+          <br/>
+          <br/>
+          <Button
+            variant="contained"
+            onClick={() => {
+              !check ? 
+                selectedObject.length > 1 ? 
+                devicesMqttPubl('door_control') : mqttPubl('door_control') 
+              : 
+              devicesMqttPubl('door_control');
+            }}
+            style={{ width: '60px',marginBottom:"15px" }}
+            color="primary">
+            적용
+          </Button>
+        </DialogContent>
+      </Dialog>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -692,54 +960,14 @@ const DeviceTable = props => {
               </Button>
               <br />
               <br /> */}
-               <FormControl component="fieldset" style={{marginTop:"20px"}}>
-                <FormLabel component="legend">출입문 설정</FormLabel>
-                <RadioGroup onChange={handleDoorControl} row aria-label="position" name="position" defaultValue="top">
-                  <FormControlLabel value="Y" control={<Radio color="primary" />} label="사용" />
-                  <FormControlLabel value="N" control={<Radio color="primary" />} label="미사용" />
-                </RadioGroup>
-              </FormControl>
-               <br/>
-               <br/>
-              <TextField
-                disabled={door === 'Y' ? false : true}
-                id="time"
-                type="time"
-                label="시작 시간"
-                defaultValue={startTime}
-                className={classes.textField}
-                onChange={handleStartTime}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                inputProps={{
-                  step: 300, // 5 min
-                }}
-              />
-              <span style={{lineHeight:"60px",margin:"0 10px"}}>~</span>
-              <TextField
-                disabled={door === 'Y' ? false : true}
-                id="time"
-                type="time"
-                label="종료 시간"
-                defaultValue={endTime}
-                className={classes.textField}
-                onChange={handleEndTime}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                inputProps={{
-                  step: 300, // 5 min
-                }}
-              />
               <Button
                 variant="contained"
                 onClick={() => {
-                  !check ? mqttPubl('door_control') : devicesMqttPubl('door_control');
+                  doorSetModal(true)
                 }}
-                style={{ width: '60px',marginLeft:"22px",marginBottom:"15px" }}
+                style={{ width: '181.58px' }}
                 color="primary">
-                적용
+                출입문 설정
               </Button>
               <br />
               <br />
@@ -824,55 +1052,17 @@ const DeviceTable = props => {
               </Button>
               <br />
               <br /> */}
-                             <FormControl component="fieldset" style={{marginTop:"20px"}}>
-                <FormLabel component="legend">출입문 설정</FormLabel>
-                <RadioGroup onChange={handleDoorControl} row aria-label="position" name="position" defaultValue="top">
-                  <FormControlLabel value="Y" control={<Radio color="primary" />} label="사용" />
-                  <FormControlLabel value="N" control={<Radio color="primary" />} label="미사용" />
-                </RadioGroup>
-              </FormControl>
-               <br/>
-               <br/>
-              <TextField
-                disabled={door === 'Y' ? false : true}
-                id="time"
-                type="time"
-                label="시작 시간"
-                defaultValue={startTime}
-                className={classes.textField}
-                onChange={handleStartTime}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                inputProps={{
-                  step: 300, // 5 min
-                }}
-              />
-              <span style={{lineHeight:"60px",margin:"0 10px"}}>~</span>
-              <TextField
-                disabled={door === 'Y' ? false : true}
-                id="time"
-                type="time"
-                label="종료 시간"
-                defaultValue={endTime}
-                className={classes.textField}
-                onChange={handleEndTime}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                inputProps={{
-                  step: 300, // 5 min
-                }}
-              />
               <Button
                 variant="contained"
                 onClick={() => {
-                  devicesMqttPubl('door_control');
+                  doorSetModal(true)
                 }}
-                style={{ width: '60px',marginLeft:"22px",marginBottom:"15px" }}
+                style={{ width: '181.58px' }}
                 color="primary">
-                적용
+                출입문 설정
               </Button>
+              <br />
+              <br />
               <Button
                 variant="contained"
                 onClick={() => {
@@ -1015,6 +1205,7 @@ const DeviceTable = props => {
                 if (selectedObject.status === 'N') {
                   alert('단말을 연결해주세요');
                 } else {
+                  doorControlValSet()
                   setOpen(true);
                 }
               }}>

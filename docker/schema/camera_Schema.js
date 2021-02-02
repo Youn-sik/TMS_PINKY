@@ -29,6 +29,7 @@ const cameraSchema = new mongoose.Schema({
     door_control : { type : String },
     start_time : { type : String },
     end_time : { type : String },
+    door_days : {type:String},
     config_data : {
         device_run_type : { type: Number },
         capture_status : { type: String },

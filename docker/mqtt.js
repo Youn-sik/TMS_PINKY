@@ -33,6 +33,7 @@ client.on('connect', function(test) {
         '/control/log/devices',
         '/control/sdcard/delete/devices',
         '/control/sdcard/part/delete/devices',
+        '/control/door/devices',
         '/control/reboot/devices',
         '/control/get_device_file_list/devices',
         '/control/reset/devices',
@@ -108,6 +109,13 @@ client.on('message', async function(topic, message) {
                 fn.temperature(json);
             }
         }
+
+        if (topic === '/control/door/devices') {
+            if (json.stb_sn[0] != undefined) {
+                fn.door(json);
+            }
+        }
+
 
         // if (topic === '/control/capture/start/devices') {
         //     if (json.stb_sn[0] != undefined) {

@@ -225,6 +225,12 @@ module.exports = {
         })
     },
 
+    async door(json) {
+        json.stb_sn.map((i) => {
+            client.publish('/control/door/' + i,JSON.stringify({type:1,...json,stb_sn : i}));
+        })
+    },
+
     async login(json) {
         await Camera.findOne( { serial_number : json.stb_sn }, (err, camera) => {
             if (err) {
@@ -1185,6 +1191,7 @@ module.exports = {
                     camera.door_control = json.door_control
                     camera.start_time = json.start_time
                     camera.end_time = json.end_time
+                    camera.door_days = json.door_days
                     camera.save();
                 }
             });
