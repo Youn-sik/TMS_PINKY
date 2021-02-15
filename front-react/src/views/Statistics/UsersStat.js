@@ -8,7 +8,14 @@ import moment from 'moment';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import 'moment/locale/ko';
 import { Access, TempChart, Attendance, Tree } from './components';
-import {base_url} from 'server.json';
+import {base_url as in_base_url,out_base_url} from 'server.json';
+
+let currentUrl = window.location.href
+let base_url = in_base_url
+if(currentUrl.indexOf("172.16.33.130") <= -1) {
+  base_url = out_base_url
+}
+
 // eslint-disable-next-line no-extend-native
 Date.prototype.yyyymmdd = function() {
   var yyyy = this.getFullYear().toString();

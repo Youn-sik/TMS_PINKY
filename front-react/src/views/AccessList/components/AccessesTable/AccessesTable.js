@@ -9,7 +9,7 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Checkbox from '@material-ui/core/Checkbox';
 import axios from 'axios';
-import {base_url} from 'server.json';
+import {base_url as in_base_url,out_base_url} from 'server.json';
 import GroupIcon from '@material-ui/icons/FolderShared';
 import PersonIcon from '@material-ui/icons/Person';
 import TreeView from '@material-ui/lab/TreeView';
@@ -32,6 +32,14 @@ import {
   Paper,
   Button
 } from '@material-ui/core';
+
+let currentUrl = window.location.href
+let base_url = in_base_url
+let isOut = false
+if(currentUrl.indexOf("172.16.33.130") <= -1) {
+  base_url = out_base_url
+  isOut = true
+}
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -226,7 +234,7 @@ const AccessesTable = props => {
         <img
         alt="screenShot"
         style={{maxWidth:'50vw'}}
-        src={currentUrl}></img>
+        src={isOut ? currentUrl.replace('172.16.33.130','211.204.122.90') : currentUrl}></img>
       </Dialog>
       <Dialog onClose={handleClose} open={openEdit}>
         <Card >
@@ -273,7 +281,7 @@ const AccessesTable = props => {
                                 alt="프로필사진"
                                 height="90px"
                                 width="70px"
-                                src={user.avatar_file_url}></img>
+                                src={isOut ? user.avatar_file_url.replace('172.16.33.130','211.204.122.90') : user.avatar_file_url}></img>
                             </div>
                           </TableCell>
                           <TableCell>{user.name}</TableCell>
@@ -468,7 +476,7 @@ const AccessesTable = props => {
                                 height="90px"
                                 width="70px"
                                 className={classes.hightTempAvatar}
-                                src={access.avatar_file_url}></img>
+                                src={isOut ? access.avatar_file_url.replace('172.16.33.130','211.204.122.90') : access.avatar_file_url}></img>
                             </div>
                           </TableCell>
                           <TableCell className={classes.redFont}>

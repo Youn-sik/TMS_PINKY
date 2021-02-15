@@ -14,10 +14,17 @@ import Routes from './Routes';
 import axios from 'axios';
 import { Base64 } from 'js-base64';
 import { SnackbarProvider } from 'notistack';
-import {mqtt_url} from 'server.json'
+import {mqtt_url,base_url as in_base_url,out_base_url} from 'server.json'
 import mqtt from 'mqtt';
 import { useSnackbar } from 'notistack';
 import CustomSnack from 'CustomSnack.js'
+
+let currentUrl = window.location.href
+let base_url = in_base_url
+if(currentUrl.indexOf("172.16.33.130") <= -1) {
+  base_url = out_base_url
+}
+
 
 const client = mqtt.connect({
   protocol:"ws",

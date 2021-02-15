@@ -25,8 +25,15 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import {base_url,mqtt_url} from 'server.json';
+import {base_url as in_base_url,out_base_url,mqtt_url} from 'server.json';
 import mqtt from 'mqtt';
+
+let currentUrl = window.location.href
+let base_url = in_base_url
+if(currentUrl.indexOf("172.16.33.130") <= -1) {
+  base_url = out_base_url
+}
+
 let client
 let id = '';
 const useStyles = makeStyles(theme => ({

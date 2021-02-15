@@ -16,7 +16,13 @@ import {
   Button,
   CircularProgress
 } from '@material-ui/core';
-import {base_url} from 'server.json';
+import {base_url as in_base_url,out_base_url} from 'server.json';
+
+let currentUrl = window.location.href
+let base_url = in_base_url
+if(currentUrl.indexOf("172.16.33.130") <= -1) {
+  base_url = out_base_url
+}
 
 const useStyles = makeStyles(theme => ({
   root: {},

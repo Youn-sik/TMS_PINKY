@@ -9,9 +9,16 @@ import { TweenLite, Circ } from 'gsap';
 import './SignIn.css';
 import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css';
-import {base_url} from 'server.json';
+import {base_url as in_base_url,out_base_url} from 'server.json';
 import jwt from "jwt-decode";
 import { Base64 } from 'js-base64';
+
+let currentUrl = window.location.href
+let base_url = in_base_url
+if(currentUrl.indexOf("172.16.33.130") <= -1) {
+  base_url = out_base_url
+}
+
 Base64.extendString();
 
 const schema = {
@@ -406,7 +413,8 @@ const SignIn = props => {
     } else if (verify === false) {
       alert('밀어서 확인을 해주세요.');
       return false;
-    } else {
+    } 
+    else {
       document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
       let result = await axios
         .post(base_url + '/login', {

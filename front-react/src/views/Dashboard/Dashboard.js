@@ -17,8 +17,15 @@ import {
   Attendance
 } from './components';
 import './Dashboard.css';
-import {base_url,mqtt_url} from 'server.json'
+import {base_url as in_base_url,out_base_url,mqtt_url} from 'server.json'
 import { useSnackbar } from 'notistack';
+
+let currentUrl = window.location.href
+let base_url = in_base_url
+if(currentUrl.indexOf("172.16.33.130") <= -1) {
+  base_url = out_base_url
+}
+
 
 let message = false;
 

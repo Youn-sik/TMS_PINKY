@@ -45,6 +45,12 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
+let currentUrl = window.location.href
+let isOut = false;
+if(currentUrl.indexOf("172.16.33.130") <= -1) {
+  isOut = true;
+}
+
 const TempAlert = props => {
   const { temp, tempLimit, tempType, className, ...rest } = props;
 
@@ -88,7 +94,7 @@ const TempAlert = props => {
                       <img
                         alt="picture"
                         className={classes.image}
-                        src={access.avatar_file_url}
+                        src={isOut ? access.avatar_file_url.replace('172.16.33.130','211.204.122.90') : access.avatar_file_url}
                       />
                     </TableCell>
                     <TableCell className={classes.redFont}>{access.name === 'unknown' ? null : access.name}</TableCell>
@@ -124,7 +130,7 @@ const TempAlert = props => {
                       <img
                         alt="Product"
                         className={classes.image}
-                        src={access.avatar_file_url}
+                        src={isOut ? access.avatar_file_url.replace('172.16.33.130','211.204.122.90') : access.avatar_file_url}
                       />
                     </TableCell>
                     <TableCell>{access.name === 'unknown' ? null : access.name}</TableCell>

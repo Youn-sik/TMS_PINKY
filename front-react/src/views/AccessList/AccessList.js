@@ -8,9 +8,17 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import DialogContent from '@material-ui/core/DialogContent';
 import moment from 'moment';
 import 'moment/locale/ko';
-import {base_url} from 'server.json';
+import {base_url as in_base_url,out_base_url} from 'server.json';
 import ExcelJS from 'exceljs/dist/es5/exceljs.browser.js'
 import { saveAs } from 'file-saver'
+
+let currentUrl = window.location.href
+let base_url = in_base_url
+if(currentUrl.indexOf("172.16.33.130") <= -1) {
+  base_url = out_base_url
+}
+
+
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3)

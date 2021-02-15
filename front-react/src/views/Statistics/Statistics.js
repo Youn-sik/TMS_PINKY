@@ -8,10 +8,17 @@ import moment from 'moment';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import 'moment/locale/ko';
 import { DeviceStats, DeviceError } from './components';
-import {base_url} from 'server.json';
+import {base_url as in_base_url,out_base_url} from 'server.json';
 import Button from '@material-ui/core/Button';
 import { saveAs } from 'file-saver'
 import ExcelJS from 'exceljs/dist/es5/exceljs.browser.js'
+
+let currentUrl = window.location.href
+let base_url = in_base_url
+if(currentUrl.indexOf("172.16.33.130") <= -1) {
+  base_url = out_base_url
+}
+
 // eslint-disable-next-line no-extend-native
 Date.prototype.yyyymmdd = function() {
   var yyyy = this.getFullYear().toString();

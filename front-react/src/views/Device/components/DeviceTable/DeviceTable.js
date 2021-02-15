@@ -48,7 +48,13 @@ import {
 } from '@material-ui/core';
 
 import mqtt from 'mqtt';
-import {mqtt_url,base_url} from 'server.json'
+import {mqtt_url,base_url as in_base_url,out_base_url} from 'server.json'
+
+let currentUrl = window.location.href
+let base_url = in_base_url
+if(currentUrl.indexOf("172.16.33.130") <= -1) {
+  base_url = out_base_url
+}
 
 let client
 

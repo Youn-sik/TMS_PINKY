@@ -3,11 +3,17 @@ import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 import axios from 'axios';
 import { Groups, UsersTable } from './components';
-import {base_url} from 'server.json';
+import {base_url as in_base_url,out_base_url} from 'server.json';
 import ExcelJS from 'exceljs/dist/es5/exceljs.browser.js'
 import { saveAs } from 'file-saver'
 import moment from 'moment';
 import 'moment/locale/ko';
+
+let currentUrl = window.location.href
+let base_url = in_base_url
+if(currentUrl.indexOf("172.16.33.130") <= -1) {
+  base_url = out_base_url
+}
 
 const useStyles = makeStyles(theme => ({
   root: {
