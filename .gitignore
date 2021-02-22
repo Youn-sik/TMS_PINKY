@@ -5,5 +5,5 @@ result_face
 known_face
 target_face
 node_modules
-
+.vscode
 nohup.out
