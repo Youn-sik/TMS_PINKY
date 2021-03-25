@@ -4,8 +4,8 @@ const site_info_json = fs.readFileSync(path.join(__dirname, "./cloud40.json"));
 const site = JSON.parse(site_info_json);
 const imageInfo = require('image-info');
 var moment = require('moment');
-require('moment-timezone'); 
-moment.tz.setDefault("Asia/Seoul"); 
+require('moment-timezone');
+moment.tz.setDefault("Asia/Seoul");
 const mkdirp = require('mkdirp');
 // const execSync = require('child_process').execSync;
 const client = require('./mqtt_load');
@@ -78,8 +78,8 @@ mongodb.once('open', function () {
     console.log('mongodb open');
 });
 
-mongoose.connect('mongodb://' + site.mongodb_host + ':27017/' + site.mongodb_database, { 
-    useNewUrlParser: true, 
+mongoose.connect('mongodb://' + site.mongodb_host + ':27017/' + site.mongodb_database, {
+    useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
     useFindAndModify: false,
@@ -117,19 +117,19 @@ const Statistics_temp = require('./schema/statistics_temp');
 // const getOverlayValues = landmarks => {
 //     const nose = landmarks.getNose()
 //     const jawline = landmarks.getJawOutline()
-  
+
 //     const jawLeft = jawline[0]
 //     const jawRight = jawline.splice(-1)[0]
 //     const adjacent = jawRight.x - jawLeft.x
 //     const opposite = jawRight.y - jawLeft.y
 //     const jawLength = Math.sqrt(Math.pow(adjacent, 2) + Math.pow(opposite, 2))
-  
+
 //     // Both of these work. The chat believes atan2 is better.
 //     // I don't know why. (It doesn’t break if we divide by zero.)
 //     // const angle = Math.round(Math.tan(opposite / adjacent) * 100)
 //     const angle = Math.atan2(opposite, adjacent) * (180 / Math.PI)
 //     const width = jawLength * 2.2
-  
+
 //     return {
 //       width,
 //       angle,
@@ -137,12 +137,12 @@ const Statistics_temp = require('./schema/statistics_temp');
 //       topOffset: nose[0].y - width * 0.47,
 //     }
 //   }
-  
+
 
 module.exports = {
 
     async chk_status () {
-        //접속된 디바이스중 uptime 이 10분이상 차이나며 off로 판단한다. 
+        //접속된 디바이스중 uptime 이 10분이상 차이나며 off로 판단한다.
         var chk_time = moment().subtract(10, 'minutes').format('YYYY-MM-DD HH:mm:ss');
         Camera.updateMany(
             {
@@ -163,7 +163,7 @@ module.exports = {
             client.publish('/control/capture/start/'+i,
                 JSON.stringify({stb_sn:i,
                     "capture_time":json.capture_time,
-                    "capture_size":json.capture_size, 
+                    "capture_size":json.capture_size,
                     "capture_status":json.capture_status
             }))
         })
@@ -173,9 +173,9 @@ module.exports = {
         json.stb_sn.map((i) => {
             client.publish('/control/capture/end/'+i,
             JSON.stringify({stb_sn:i,
-                "stb_id":"", 
+                "stb_id":"",
                 "capture_time":json.capture_time,
-                "capture_size":json.capture_size, 
+                "capture_size":json.capture_size,
                 "capture_status":json.capture_status
             }))
         })
@@ -256,7 +256,8 @@ module.exports = {
                     if(json.stb_version) camera.app_version = json.stb_version;
                     if(json.stb_ip) camera.ip = json.stb_ip;
                     if(json.control_door) {
-                        camera.control_door = json.control_door
+                        camera.door_control = json.door_control
+                        camera.door_days = json.door_days
                         camera.start_time = json.start_time
                         camera.end_time = json.end_time
                     }
@@ -270,6 +271,10 @@ module.exports = {
                                     message: "login",
                                     result: "ok",
                                     stb_id: camera.name,
+                                    door_control : camera.door_control ? camera.door_control : null,
+                                    door_days : camera.door_days ? camera.door_days : null,
+                                    start_time : camera.start_time ? camera.start_time : null,
+                                    end_time : camera.end_time ? camera.end_time : null,
                                     capture_option : {
                                         capture_time: camera.config_data.capture_time,
                                         capture_size: camera.config_data.capture_size,
@@ -282,6 +287,10 @@ module.exports = {
                                     message: "login",
                                     result: "ok",
                                     stb_id: camera.name,
+                                    door_control : camera.door_control ? camera.door_control : null,
+                                    door_days : camera.door_days ? camera.door_days : null,
+                                    start_time : camera.start_time ? camera.start_time : null,
+                                    end_time : camera.end_time ? camera.end_time : null,
                                     capture_option : ""
                                 };
                             }
@@ -306,7 +315,7 @@ module.exports = {
                 console.log(err);
             }else{
                 if(camera === null){
-                    
+
                 }else{
                     camera.status = "N";
                     camera.save( (err) => {
@@ -332,7 +341,7 @@ module.exports = {
                 console.log(err);
             }else{
                 if(camera === null){
-                    
+
                 }else{
                     camera.status = "N";
                     camera.save( (err) => {
@@ -358,7 +367,7 @@ module.exports = {
                 console.log(err);
             }else{
                 if(camera === null){
-                    
+
                 }else{
                     if(json.percent > 95){
                         camera.status = "Y";
@@ -421,13 +430,13 @@ module.exports = {
                             };
                             user_array.push(user_data)
                         });
-        
+
                         send_data = {
                             stb_sn: json.stb_sn,
                             values: user_array
                         };
                         client.publish('/access/request/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
-        
+
                         let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 5, log_message: 'access_request', create_dt: json.create_time });
                         newGlogs.save(function (error, data) {
                             if (error) {
@@ -475,7 +484,7 @@ module.exports = {
     //             let buff = Buffer.from(element.avatar_file, 'base64');
     //             let folder_date_path = "/uploads/accesss/temp/" + moment().format('YYYYMMDD');
     //             let file_path = site.base_server_document + folder_date_path + "/" + json.stb_sn + "/";
-    //             mkdirp.sync(file_path);    
+    //             mkdirp.sync(file_path);
     //             let temp_file = site.base_server_document + folder_date_path + "/" + json.stb_sn + "/" +"temp_file_"+ moment().format('YYYYMMDDHHmmss') + ".png"
     //             let output = temp_file.replace("temp_file_","face_cut_")
     //             fs.writeFileSync(temp_file, buff, 'utf-8')
@@ -492,7 +501,7 @@ module.exports = {
     //                 temp = 0.2
     //             else if(brightness < '125')
     //                 temp = 0.1
-                
+
     //             // let detections = undefined
     //             let descriptor;
     //             if(brightness !== "파일이 존재 하지 않습니다.\n"){
@@ -500,7 +509,7 @@ module.exports = {
     //                 image.brightness(temp)//명도조절
     //                 let result = await image.getBase64Async('image/png');
     //                 result = result.replace('data:image/png;base64,','')
-                    
+
     //                 fs.unlink(output,()=>{})
 
     //                 const img = new Image();
@@ -543,7 +552,7 @@ module.exports = {
     //             //         );
 
     //             //         const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.5)
-                
+
     //             //         const bestMatch = faceMatcher.findBestMatch(descriptor)
     //             //         console.log("1",bestMatch._distance,bestMatch._label)
 
@@ -553,14 +562,14 @@ module.exports = {
     //             //             element.avatar_type = parseInt(userData[7])
     //             //             user_obid = userData[10]
     //             //             distance = bestMatch._distance === 1 ? 100 : (1 - bestMatch._distance) * 100
-    //             //         } 
+    //             //         }
 
     //             //         // if(bestMatch._distance <= 0.425 && bestMatch._label !== 'unknown') {
     //             //         //     let userData = bestMatch._label.split('|')
     //             //         //     userName = userData[0]
     //             //         //     element.avatar_type = parseInt(userData[7])
     //             //         //     user_obid = userData[10]
-    //             //         // } 
+    //             //         // }
     //             //         // else {
     //             //         //     // let image = await Jimp.read(buff)//Jimp불러오기
     //             //         //     // image.brightness(temp)//명도조절
@@ -587,13 +596,13 @@ module.exports = {
     //             //         //     }
     //             //         // }
     //             //     }
-    //             // } 
+    //             // }
     //             fs.unlink(temp_file,()=>{})
     //             fs.unlink(output,()=>{})
     //             let avatar_type = element.avatar_type === 5 ? 4 : element.avatar_type
     //             let file_name = json.stb_sn +"_"+userName+"_"+avatar_type+ "_"+element.avatar_temperature+"_"+ + moment().format('YYYYMMDDHHmmss') + ".png";
     //             let upload_url = "http://"+server_ip+ ':3000' + folder_date_path + "/" + json.stb_sn + "/" +file_name;
-                
+
     //             fs.writeFileSync(file_path + file_name, buff, 'utf-8')
 
     //                 insert_data = {
@@ -619,14 +628,14 @@ module.exports = {
     //                 let todayStatistics = await Statistics.findOne()
     //                 .where('camera_obid').equals(camera._id)
     //                 .where('access_date').equals(moment().format('YYYY-MM-DD'));
-                    
+
     //                 let hours = moment().format('HH:mm:ss').split(':')[0];
     //                 if(hours[0] === '0') hours = hours.replace('0','');
 
     //                 let type = 'stranger';
     //                 if(element.avatar_type === 1) type = 'employee';
     //                 else if(element.avatar_type === 5) type = 'black';
-                    
+
     //                 if(todayStatistics === null) {
     //                     todayStatistics = new Statistics({
     //                         camera_obid : camera._id,
@@ -643,15 +652,15 @@ module.exports = {
     //                     })
     //                     todayStatistics.save()
     //                 } else {
-    //                     await Statistics.findByIdAndUpdate(todayStatistics._id,{ 
-    //                         $inc: { 
+    //                     await Statistics.findByIdAndUpdate(todayStatistics._id,{
+    //                         $inc: {
     //                             all_count: 1,
     //                             [hours] : 1,
     //                             [type] : 1
     //                         }
     //                     },
     //                     {
-                            
+
     //                     })
     //                 }
     //                 await Access.insertMany(insert_array)
@@ -660,10 +669,10 @@ module.exports = {
     //                     stb_sn: json.stb_sn,
     //                     values: insert_array
     //                 };
-                    
+
     //                 if(isHighTemp)
-    //                     client.publish('/access/high_temp_realtime/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);    
-                    
+    //                     client.publish('/access/high_temp_realtime/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
+
     //                 client.publish('/access/realtime/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
     //             })
     //         }
@@ -676,7 +685,7 @@ module.exports = {
         try{
             let insert_array = [];
             let camera = await Camera.findOne( { serial_number : json.stb_sn });
-            
+
             json.values.forEach(function(element){
                 let folder_date_path = "/uploads/user/" + moment().format('YYYYMMDD');
                 let file_name = element.avatar_name + "_" + moment().format('YYYYMMDDHHmmss') + ".png";
@@ -684,11 +693,11 @@ module.exports = {
                 let file_path = site.base_server_document + folder_date_path + "/";
                 let upload_url = "http://"+server_ip+ ':3000' + folder_date_path + "/" + file_name;
                 let buff = Buffer.from(element.avatar_file, 'base64');
-                
+
                 mkdirp.sync(file_path);
-                
+
                 fs.writeFileSync(file_path + file_name, buff, 'utf-8')
-                
+
                 insert_data = {
                     avatar_file : element.avatar_file,
                     avatar_file_checksum : element.avatar_file_checksum,
@@ -705,7 +714,7 @@ module.exports = {
             })
 
             await User.insertMany(insert_array)
-            
+
             send_data = {
                 stb_sn: json.stb_sn,
                 values:insert_array
@@ -726,7 +735,7 @@ module.exports = {
     async control_log_result(json) {
         try{
             let camera = await Camera.findOne( { serial_number : json.stb_sn });
-            
+
             let folder_date_path = "/uploads/logs/" + moment().format('YYYYMMDD');
             let file_name = json.filename;
             let file_path = site.base_server_document + folder_date_path + "/";
@@ -734,7 +743,7 @@ module.exports = {
             let buff = Buffer.from(json.data, 'base64');
             mkdirp.sync(file_path);
             fs.writeFileSync(file_path + file_name, buff, 'utf-8')
-            
+
             send_data = {
                 stb_sn: json.stb_sn,
                 filename : file_name
@@ -742,7 +751,7 @@ module.exports = {
 
             // setTimeout(function() {
             client.publish('/control/log/save/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
-            // }, 500);            
+            // }, 500);
 
             let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 10, log_message: 'control_log_result', create_dt: json.create_time });
             newGlogs.save(function (error, data) {
@@ -787,7 +796,7 @@ module.exports = {
             mkdirp.sync(file_path);
             fs.promises.writeFile(file_path + file_name, buff, 'utf-8')
 
-            
+
             imageInfo(file_path + file_name, (err, image_info) => {
                 insert_data = {
                     camera_obids : camera._id,
@@ -802,7 +811,7 @@ module.exports = {
                     filename : file_name,
                     create_dt : json.create_time,
                 };
-                
+
                 Camera_monitor.insertMany(insert_data)
                 send_data = {
                     stb_sn: json.stb_sn,
@@ -822,7 +831,7 @@ module.exports = {
                 {
                     "config_data.capture_status":"N"
                 }
-            }, 
+            },
                 {new: true })
             let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 12, log_message: 'capture_stop', create_dt: json.create_time });
             newGlogs.save(function (error, data) {
@@ -889,7 +898,7 @@ module.exports = {
         }
     },
 
-    async control_get_device_file_list_result(json) { 
+    async control_get_device_file_list_result(json) {
         try{
             camera = await Camera.findOne( { serial_number : json.stb_sn });
         } catch (error){
@@ -914,9 +923,9 @@ module.exports = {
         }
 
         try {
-            //let delete_original = await 
-            await Camera_filelist.deleteMany({ 
-                camera_obids : camera._id 
+            //let delete_original = await
+            await Camera_filelist.deleteMany({
+                camera_obids : camera._id
             });
             await Camera_filelist.insertMany(file_list);
 
@@ -1192,7 +1201,9 @@ module.exports = {
                     camera.start_time = json.start_time
                     camera.end_time = json.end_time
                     camera.door_days = json.door_days
-                    camera.save();
+                    camera.save((err) => {
+                        console.log(err)
+                    });
                 }
             });
         } catch(error) {

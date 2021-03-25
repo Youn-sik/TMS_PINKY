@@ -8,6 +8,7 @@ client.on('connect', function(test) {
     console.log('MQTT connected.');
     server_ip = ip.address()
     client.subscribe([
+        '/control/door/+',
         '/login/+',
         '/logout/+',
         '/disconnect/result/+',
@@ -47,7 +48,7 @@ client.on('connect', function(test) {
     });
 });
 
-setInterval(function() { //10분마다 on / off 를 확인한다.    
+setInterval(function() { //10분마다 on / off 를 확인한다.
     fn.chk_status();
 }, 10 * 60 * 1000);
 
@@ -122,7 +123,7 @@ client.on('message', async function(topic, message) {
         //         fn.login(json);
         //     }
         // }
-        
+
         /* 로그인 > 로그인 시도 */
         if (topic === "/login/" + json.stb_sn) {
             if (json.stb_sn != undefined) {
@@ -138,28 +139,28 @@ client.on('message', async function(topic, message) {
         }
 
         /* 서버 접속 종료 > 서버 접속 종료 (서버가 끊긴경우 ) */
-        if (topic === "/disconnect/result/" + json.stb_sn) { 
+        if (topic === "/disconnect/result/" + json.stb_sn) {
             if (json.stb_sn != undefined) {
                 fn.disconnect_result(json);
             }
         }
 
         /* 컨텐츠 > 다운로드 진행율 */
-        if (topic === "/download/" + json.stb_sn) { 
+        if (topic === "/download/" + json.stb_sn) {
             if (json.stb_sn != undefined) {
                 fn.download(json);
             }
         }
 
         /* 출입통제 > 서버에서 가진 데이터 요청*/
-        if (topic === "/access/request/" + json.stb_sn) { 
+        if (topic === "/access/request/" + json.stb_sn) {
             if (json.stb_sn != undefined) {
                 fn.access_request(json);
             }
         }
 
         /* 출입통제 > 서버에서 가진 데이터 요청*/
-        if (topic === "/access/request/result/result/" + json.stb_sn) { 
+        if (topic === "/access/request/result/result/" + json.stb_sn) {
             if (json.stb_sn != undefined) {
                 fn.access_request_result_result(json);
             }
@@ -173,111 +174,111 @@ client.on('message', async function(topic, message) {
         // }
 
         /* 출입통제 > 단말 데이터 등록*/
-        if (topic === "/access/addpeople/" + json.stb_sn) { 
+        if (topic === "/access/addpeople/" + json.stb_sn) {
             if (json.stb_sn != undefined) {
                 fn.access_addpeople(json,server_ip);
             }
         }
 
         /* 제어 > 단말기 로그 요청 */
-        if (topic === "/control/log/result/" + json.stb_sn) { 
+        if (topic === "/control/log/result/" + json.stb_sn) {
             if (json.stb_sn != undefined) {
                 fn.control_log_result(json);
             }
         }
 
         /* 제어 > 출입문 설정*/
-        if (topic === "/control/door/result/" + json.stb_sn) { 
+        if (topic === "/control/door/" + json.stb_sn) {
             if (json.stb_sn != undefined) {
                 fn.control_door_result(json);
             }
         }
-        
+
         /* 제어 > 화면 캡쳐 시작 */
-        if (topic === "/control/capture/start/result/" + json.stb_sn) { 
+        if (topic === "/control/capture/start/result/" + json.stb_sn) {
             if (json.stb_sn != undefined) {
                 fn.control_capture_start_result(json);
             }
         }
 
         /* 제어 > 화면 캡쳐 업로드 */
-        if (topic === "/control/capture/upload/" + json.stb_sn) { 
+        if (topic === "/control/capture/upload/" + json.stb_sn) {
             if (json.stb_sn != undefined) {
                 fn.control_capture_upload(json,server_ip);
             }
         }
 
         /* 제어 > 화면 캡쳐 종료 */
-        if (topic === "/control/capture/end/result/" + json.stb_sn) { 
+        if (topic === "/control/capture/end/result/" + json.stb_sn) {
             if (json.stb_sn != undefined) {
                 fn.control_capture_end_result(json);
             }
         }
 
         /* 제어 > sdcard 삭제 */
-        if (topic === "/control/sdcard/delete/result/" + json.stb_sn) { 
+        if (topic === "/control/sdcard/delete/result/" + json.stb_sn) {
             if (json.stb_sn != undefined) {
                 fn.control_sdcard_delete_result(json);
             }
         }
-                
+
         /* 제어 > sdcard 사용하지 않는 파일삭제 */
-        if (topic === "/control/sdcard/part/delete/result/" + json.stb_sn) { 
+        if (topic === "/control/sdcard/part/delete/result/" + json.stb_sn) {
             if (json.stb_sn != undefined) {
                 fn.control_sdcard_part_delete_result(json);
             }
         }
 
         /* 제어 > 재부팅 */
-        if (topic === "/control/reboot/result/" + json.stb_sn) { 
+        if (topic === "/control/reboot/result/" + json.stb_sn) {
             if (json.stb_sn != undefined) {
                 fn.control_reboot_result(json);
             }
         }
 
         /* 제어 > 디바이스 컨텐츠리스트 요청 */
-        if (topic === "/control/get_device_file_list/result/" + json.stb_sn) { 
+        if (topic === "/control/get_device_file_list/result/" + json.stb_sn) {
             if (json.stb_sn != undefined) {
                 fn.control_get_device_file_list_result(json);
             }
         }
 
         /* 제어 > 시스템 초기화 */
-        if (topic === "/control/reset/result/" + json.stb_sn) { 
+        if (topic === "/control/reset/result/" + json.stb_sn) {
             if (json.stb_sn != undefined) {
                 fn.control_reset_result(json);
             }
         }
 
         /* 제어 > 온도 설정 */
-        if (topic === "/control/temperature/result/" + json.stb_sn) { 
+        if (topic === "/control/temperature/result/" + json.stb_sn) {
             if (json.stb_sn != undefined) {
                 fn.control_temperature_result(json);
             }
         }
-        
+
         /* 통계 > 디바이스 정보 */
-        if (topic === "/control/device_info/" + json.stb_sn) { 
+        if (topic === "/control/device_info/" + json.stb_sn) {
             if (json.stb_sn != undefined) {
                 fn.control_device_info(json);
             }
         }
-        
+
         /* 통계 > RRD 정보 */
-        if (topic === "/control/rrd/" + json.stb_sn) { 
+        if (topic === "/control/rrd/" + json.stb_sn) {
             if (json.stb_sn != undefined) {
                 fn.control_rrd(json);
             }
         }
-        
+
         /* 통계 > 각종 로그 */
-        if (topic === "/log/status/" + json.stb_sn) { 
+        if (topic === "/log/status/" + json.stb_sn) {
             if (json.stb_sn != undefined) {
                 fn.log_status(json);
             }
         }
-        
-        
+
+
     } catch (error) {
         console.log(error);
     }
