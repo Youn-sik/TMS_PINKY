@@ -287,14 +287,17 @@ module.exports = {
                                     message: "login",
                                     result: "ok",
                                     stb_id: camera.name,
-                                    door_control : camera.door_control ? camera.door_control : null,
-                                    door_days : camera.door_days ? camera.door_days : null,
-                                    start_time : camera.start_time ? camera.start_time : null,
-                                    end_time : camera.end_time ? camera.end_time : null,
                                     capture_option : ""
                                 };
                             }
                             client.publish('/login/result/' + json.stb_sn, JSON.stringify(send_data), mqtt_option);
+                            client.publish('/control/door/' + json.stb_sn, JSON.stringify({
+                                stb_sn: camera.serial_number,
+                                door_control : camera.door_control ? camera.door_control : null,
+                                door_days : camera.door_days ? camera.door_days : null,
+                                start_time : camera.start_time ? camera.start_time : null,
+                                end_time : camera.end_time ? camera.end_time : null,
+                            }), mqtt_option);
 
                             let newGlogs = new glogs({ stb_id: camera.name, stb_sn: camera.serial_number, log_no: 1, log_message: 'login', create_dt: json.create_time });
                             newGlogs.save(function (error, data) {
