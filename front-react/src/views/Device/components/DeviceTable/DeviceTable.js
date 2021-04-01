@@ -288,7 +288,7 @@ const DeviceTable = props => {
     setEndTime(selectedObject[0].end_time ? selectedObject[0].end_time : null)
 
     let days = reverseDays()
-    
+
     setDoorDays(days)
   }
 
@@ -314,7 +314,7 @@ const DeviceTable = props => {
     });
 
     client.on('message', async function(topic, message) {
-      if(topic.indexOf('/control/log/save/') > -1 && click) {    
+      if(topic.indexOf('/control/log/save/') > -1 && click) {
         click = false
         let result = JSON.parse(message.toString())
         let msg = '에러가 발생했습니다 다시 시도해주세요.'
@@ -355,7 +355,7 @@ const DeviceTable = props => {
   const handleClose = () => {
     setOpen(false);
   };
-  
+
   const handleRowsPerPage = (e) => {
     setRowsPerPage(e.target.value)
   }
@@ -476,7 +476,11 @@ const DeviceTable = props => {
             capture_status: 'Y'
           })
         );
-      else if (name === 'door_control')
+      else if (name === 'door_control'){
+        if(door === 'Y' && (startTime === null || endTime === null)) {
+          alert("시간을 설정해주세요.")
+          return;
+        }
         client.publish(
           '/control/door/' + selectedObject[0].serial_number,
           JSON.stringify({
@@ -487,6 +491,7 @@ const DeviceTable = props => {
             door_days : convertDays()
           })
         );
+      }
       else if (name === 'capture_end')
         client.publish(
           '/control/capture/end/' + selectedObject[0].serial_number,
@@ -692,7 +697,7 @@ const DeviceTable = props => {
   const handleDoorControl = (e) => {
     setDoor(e.target.value)
   }
-  
+
   const handleStartTime = (e) => {
     setStartTime(e.target.value)
   }
@@ -704,7 +709,7 @@ const DeviceTable = props => {
   return (
     // doorSetModal
     <Card {...rest} className={clsx(classes.root, className)}>
-      <Dialog 
+      <Dialog
         open={doorModal}
         onClose={doorSetModal}
         maxWidth={'sm'}
@@ -847,10 +852,10 @@ const DeviceTable = props => {
           <Button
             variant="contained"
             onClick={() => {
-              !check ? 
-                selectedObject.length > 1 ? 
-                devicesMqttPubl('door_control') : mqttPubl('door_control') 
-              : 
+              !check ?
+                selectedObject.length > 1 ?
+                devicesMqttPubl('door_control') : mqttPubl('door_control')
+              :
               devicesMqttPubl('door_control');
             }}
             style={{ width: '60px',marginBottom:"15px" }}
@@ -1373,7 +1378,7 @@ const DeviceTable = props => {
                       </TableCell>
                       <TableCell>{device.name}</TableCell>
                       <TableCell>{device.authority === 'admin' ? device.authority :
-                        device.authority.split('-').length === 2 ? device.authority.split('-')[1].substring(0,device.authority.split('-')[1].length - 1) : 
+                        device.authority.split('-').length === 2 ? device.authority.split('-')[1].substring(0,device.authority.split('-')[1].length - 1) :
                         device.authority.split('-').length === 3 ? device.authority.split('-')[2] : device.authority.split('-')[3]}
                       </TableCell>
                       <TableCell>{device.serial_number}</TableCell>
@@ -1415,12 +1420,12 @@ const DeviceTable = props => {
               variant="outlined"
               shape="rounded"
             />
-            
+
           </Grid>
         </Grid>
         <p className={classes.cnt} style={{position:"absolute"}}>단말기 제한 : {props.currentDevices}/{props.limit}</p>
       </CardActions>
-      
+
     </Card>
   );
 };

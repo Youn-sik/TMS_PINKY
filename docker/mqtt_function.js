@@ -1196,19 +1196,14 @@ module.exports = {
 
     async control_door_result(json) {
         try {
-            await Camera.findOne( { serial_number : json.stb_sn }, (err,camera) => {
-                if (err) {
-                    console.log(err);
-                }else{
-                    camera.door_control = json.door_control
-                    camera.start_time = json.start_time
-                    camera.end_time = json.end_time
-                    camera.door_days = json.door_days
-                    camera.save((err) => {
-                        console.log(err)
-                    });
+            await Camera.findOneAndUpdate({ serial_number : json.stb_sn }, {$set:
+                {
+                    "door_control": json.door_control,
+                    "start_time":json.start_time,
+                    "end_time":json.end_time,
+                    "door_days":json.door_days,
                 }
-            });
+            }, {new: true })
         } catch(error) {
             console.log(error)
         }
