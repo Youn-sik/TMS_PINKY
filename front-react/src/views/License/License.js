@@ -2,7 +2,7 @@ import React,{useEffect} from 'react';
 import { makeStyles } from '@material-ui/styles';
 import  axios from 'axios';
 import  {base_url as in_base_url,out_base_url} from 'server.json';
-import { 
+import {
   Grid,
   Card,
   CardHeader,
@@ -16,6 +16,7 @@ import { Alert, AlertTitle } from '@material-ui/lab';
 
 let currentUrl = window.location.href
 let base_url = in_base_url
+console.log(currentUrl.indexOf("172.16.33.130"))
 if(currentUrl.indexOf("172.16.33.130") <= -1) {
   base_url = out_base_url
 }
@@ -75,7 +76,7 @@ const License = props => {
         } else {
           alert(result.data.msg)
         }
-        
+
       }
 
     }

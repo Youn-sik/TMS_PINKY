@@ -15,6 +15,7 @@ import ExcelJS from 'exceljs/dist/es5/exceljs.browser.js'
 
 let currentUrl = window.location.href
 let base_url = in_base_url
+console.log(currentUrl.indexOf("172.16.33.130"))
 if(currentUrl.indexOf("172.16.33.130") <= -1) {
   base_url = out_base_url
 }
@@ -96,7 +97,7 @@ const AccessStat = props => {
           access.map((i) => {
             data[index] += i[time]
           })
-          
+
           // if(access.length === 1) {
           //   let maxData = temp[0][time].split('|')
           //     maxTemp[index] = maxData[1]
@@ -121,8 +122,8 @@ const AccessStat = props => {
           //     }
           //   }
           // }
-          
-          
+
+
         })
       } else {
         ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
@@ -154,7 +155,7 @@ const AccessStat = props => {
     } else {
       setChartData({})
     }
-    
+
 
     // let labels = [];
     // let data = [];
@@ -286,7 +287,7 @@ const AccessStat = props => {
             </Select>
             <Button
             size="small"
-            style={{float: 'right',marginRight:'10px' }} 
+            style={{float: 'right',marginRight:'10px' }}
             variant="contained" color="primary" onClick={clickExport}>
               엑셀로 다운로드
             </Button>

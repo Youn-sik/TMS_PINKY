@@ -9,6 +9,7 @@ import {base_url as in_base_url,out_base_url} from 'server.json';
 
 let currentUrl = window.location.href
 let base_url = in_base_url
+console.log(currentUrl.indexOf("172.16.33.130"))
 if(currentUrl.indexOf("172.16.33.130") <= -1) {
   base_url = out_base_url
 }
@@ -69,7 +70,7 @@ const AddAccount = props => {
     user_lang: 'KOR',
     user_pw: '',
     pw_chk: '',
-    authority: props.authority === 'admin' ? 'admin' : 
+    authority: props.authority === 'admin' ? 'admin' :
     props.authority.split('-').length === 2 ? 'manager' : 'user'
   });
 
@@ -103,7 +104,7 @@ const AddAccount = props => {
       // props.authority + '-user-' + accountInfo.user_id
       let result = await axios.post(base_url + '/account', {
         ...accountInfo,
-        authority: accountInfo.authority === 'admin' ? 'admin' : 
+        authority: accountInfo.authority === 'admin' ? 'admin' :
         accountInfo.authority === 'manager' ? 'manager' : 'user',
         account: props.user_id,
         parentAuth: props.authority,

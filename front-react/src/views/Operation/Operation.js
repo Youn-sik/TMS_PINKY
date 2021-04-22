@@ -9,6 +9,7 @@ import {base_url as in_base_url,out_base_url} from 'server.json';
 
 let currentUrl = window.location.href
 let base_url = in_base_url
+console.log(currentUrl.indexOf("172.16.33.130"))
 if(currentUrl.indexOf("172.16.33.130") <= -1) {
   base_url = out_base_url
 }
@@ -63,7 +64,7 @@ const Operation = props => {
 
       if(parseInt(result.data.count%7))
         temp++;
-      
+
       setPages(temp);
       setOper(result.data.data);
     }
@@ -89,7 +90,7 @@ const Operation = props => {
     setActiveType(headerType);
     if(type === 'desc')
       headerType = '-'+headerType;
-    
+
     getOper(headerType)
   };
 
@@ -112,7 +113,7 @@ const Operation = props => {
   };
 
 
-  
+
 
   return (
     <div className={classes.root}>

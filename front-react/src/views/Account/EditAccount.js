@@ -9,6 +9,7 @@ import {base_url as in_base_url,out_base_url} from 'server.json';
 
 let currentUrl = window.location.href
 let base_url = in_base_url
+console.log(currentUrl.indexOf("172.16.33.130"))
 if(currentUrl.indexOf("172.16.33.130") <= -1) {
   base_url = out_base_url
 }
@@ -98,8 +99,8 @@ const EditAccount = props => {
     await axios.put(base_url + '/account/' + selectedAccounts[0]._id, {
       ...selectedAccounts[0],
       ...accountInfo,
-      authority: accountInfo.authority === 'admin' ? 'admin' : 
-      accountInfo.authority === 'manager' ? 'manager-' + accountInfo.user_id +'e' : 
+      authority: accountInfo.authority === 'admin' ? 'admin' :
+      accountInfo.authority === 'manager' ? 'manager-' + accountInfo.user_id +'e' :
       props.authority.length > 2 ? props.authority : props.authority + '-user-' + accountInfo.user_id,
       account: props.user_id,
       operation_auth : props.authority

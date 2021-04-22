@@ -14,28 +14,29 @@ import Routes from './Routes';
 import axios from 'axios';
 import { Base64 } from 'js-base64';
 import { SnackbarProvider } from 'notistack';
-import {mqtt_url,base_url as in_base_url,out_base_url} from 'server.json'
+import {mqtt_url,out_mqtt_url,base_url as in_base_url,out_base_url} from 'server.json'
 import mqtt from 'mqtt';
 import { useSnackbar } from 'notistack';
 import CustomSnack from 'CustomSnack.js'
 
 let currentUrl = window.location.href
 let base_url = in_base_url
+let base_mqtt_url = mqtt_url
+let port = "8083"
+console.log(currentUrl.indexOf("172.16.33.130"))
 if(currentUrl.indexOf("172.16.33.130") <= -1) {
   base_url = out_base_url
+  base_mqtt_url = out_mqtt_url
+  port = "18083"
 }
-
 
 const client = mqtt.connect({
   protocol:"ws",
-  port:"8083",
-  host:mqtt_url,
+  port:port,
+  host:base_mqtt_url,
+  keepalive:0,
   path:'/mqtt',
-  username: 'admin_server',
-  password:"masterQ!W@E#R$",
   clean: true,
-  rejectUnauthorized: false,
-  ca : "/media/jjh/data/openssl_back/my_root_ca.pem",
 })
 
 client.on('error', (err) => {
@@ -83,7 +84,7 @@ function Popup() {
           imgSrc = result[0].avatar_file_url
           enqueueSnackbar(`${result[0].stb_location}에서 고발열자(${String(result[0].avatar_temperature).substring(0,4)}℃)가 탐지 되었습니다.|${imgSrc}`,{ variant: 'error',autoHideDuration:null});
         }
-      } 
+      }
     });
   }
   return (null);
@@ -103,7 +104,7 @@ export default class App extends React.Component {
     let value = document.cookie.match('(^|;) ?token=([^;]*)(;|$)') ? document.cookie.match('(^|;) ?token=([^;]*)(;|$)') : [undefined,undefined,undefined];
     let user_info = document.cookie.match('(^|;) ?ACTKINFO=([^;]*)(;|$)') ? document.cookie.match('(^|;) ?ACTKINFO=([^;]*)(;|$)') : [undefined,undefined,undefined];
     axios.defaults.headers.common['Authorization'] = value[2];
-    
+
     if(!value[2] || !user_info[2]){
       if(browserHistory.location.pathname !== '/sign-in')
         browserHistory.push('/sign-in');
@@ -115,7 +116,7 @@ export default class App extends React.Component {
         auth = new RegExp("^"+splited[1])
       else
         auth = new RegExp("")
-      
+
       this.setState({
         auth: true,
         user_id: splited[0],
@@ -130,7 +131,7 @@ export default class App extends React.Component {
       let value = document.cookie.match('(^|;) ?token=([^;]*)(;|$)') ? document.cookie.match('(^|;) ?token=([^;]*)(;|$)') : [undefined,undefined,undefined];
       let user_info = document.cookie.match('(^|;) ?ACTKINFO=([^;]*)(;|$)') ? document.cookie.match('(^|;) ?ACTKINFO=([^;]*)(;|$)') : [undefined,undefined,undefined];
       axios.defaults.headers.common['Authorization'] = value[2];
-      
+
       if(!value[2] || !user_info[2]){
         if(browserHistory.location.pathname !== '/sign-in')
           browserHistory.push('/sign-in');
@@ -164,13 +165,13 @@ export default class App extends React.Component {
 
     const notistackRef = React.createRef();
 
-    if(browserHistory.location.pathname === '/sign-in' || this.state.authority !== '') { 
-        return ( 
+    if(browserHistory.location.pathname === '/sign-in' || this.state.authority !== '') {
+        return (
           <ThemeProvider theme={theme}>
-            <SnackbarProvider 
+            <SnackbarProvider
               ref={notistackRef}
               id="mySnackBar"
-              maxSnack={1} 
+              maxSnack={1}
               anchorOrigin={{
                   vertical: 'top',
                   horizontal: 'right',

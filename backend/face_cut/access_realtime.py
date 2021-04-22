@@ -8,15 +8,17 @@ from numpy.linalg import norm
 from centerface import CenterFace
 import time
 import codecs, json
+import random
 import shutil
 import re
 import socket
 import base64
-from pymongo import MongoClient 
+from pymongo import MongoClient
 from bson.objectid import ObjectId
 import pathlib
 from ast import literal_eval
 import paho.mqtt.client as mqtt
+import tracemalloc
 import ssl
 my_client = MongoClient("mongodb://localhost:27017/")
 db = my_client.get_database("cloud40")
@@ -24,8 +26,18 @@ acc_collection = db.get_collection('accesses')
 camera_collection = db.get_collection('cameras')
 user_collection = db.get_collection('users')
 stat_collection = db.get_collection('statistics')
+group_collection = db.get_collection('groups')
 
-with open('./cloud40.json') as json_file:
+users_cursor = user_collection.find({"authority":{"$regex":""}})
+users = []
+for user in users_cursor :
+    users.append(user)
+random.shuffle(users)
+
+original_emb = None
+original_emb_label = None
+
+with open('/var/www/backend/face_cut/cloud40.json') as json_file:
     json_data = json.load(json_file)
 
 def on_connect(client, userdata, flags, rc):
@@ -39,6 +51,8 @@ s.connect(("8.8.8.8", 80))
 server_ip = s.getsockname()[0]
 
 def on_message(client, userdata, msg):
+
+    global users
     if(msg.topic.find("/access/realtime/") != -1):
         print("/access/realtime/")
         access_json = json.loads(msg.payload)
@@ -46,11 +60,9 @@ def on_message(client, userdata, msg):
         auth = "^"+camera["authority"]
         if(camera["authority"] == "admin") :
             auth = ''
-        
-        users_cursor = user_collection.find({"authority":{"$regex":""}})
-        users = []
-        for user in users_cursor :
-            users.append(user)
+
+        start = time.time()
+        print("time :", time.time() - start)
 
         # origin_emb = np.array(literal_eval(users[0]['face_detection']))
         # origin_emb = origin_emb.flatten()
@@ -59,7 +71,7 @@ def on_message(client, userdata, msg):
         file_path = json_data['base_server_document'] + folder_date_path + "/" + access_json['stb_sn'] + "/"
 
         pathlib.Path(file_path).mkdir(parents=True, exist_ok=True)
-        
+
         time_cnt = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
         insert_array = []
@@ -82,19 +94,26 @@ def on_message(client, userdata, msg):
             max_sim = 0
             max_name = 'unknown'
             max_type = 3
-            
+            max_gender = ''
+            max_employee_id = ''
+            max_group_id = ''
+            max_position = ''
+            group_name = ''
+
             with open(file_path+file_name, 'wb') as f:
                 f.write(imgdata)
-
-            emb_list = []
-            emb_label_list = []
 
             result = detect_face(file_path+file_name)
             if result is None :
                 name = 'unknown'
                 avatar_type = 3
             else :
-                recog_result,max_sim,max_name,max_type = recog_face(users)
+                recog_result,max_sim,max_name,max_type,max_gender,max_employee_id,max_group_id,max_position = recog_face(users)
+
+                if(max_group_id != '') :
+                    cursor = group_collection.find({"_id":ObjectId(max_group_id)})
+                    for group in cursor :
+                        group_name = group['name']
 
             if(max_sim >= 0.625) :
                 name = max_name
@@ -106,16 +125,16 @@ def on_message(client, userdata, msg):
                     employee += 1
             else :
                 stranger += 1
-                    
+
 
             os.remove(file_path+file_name)
             file_name = access_json['stb_sn']+"_"+name+"_"+str(avatar_type)+"_"+value['avatar_temperature']+"_"+time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))+".png"
-            
+
             with open(file_path+file_name, 'wb') as f:
                 f.write(imgdata)
-            
+
             upload_url = "http://" + server_ip + ":3000" + "/uploads/accesss/temp/" + time.strftime('%Y%m%d', time.localtime(time.time())) + "/" + access_json['stb_sn'] + "/" + file_name
- 
+
             insert_data = {
                 "avatar_file" : 'avatar_file',
                 "avatar_file_checksum" : "element.avatar_file_checksum",
@@ -131,6 +150,10 @@ def on_message(client, userdata, msg):
                 'stb_location' : camera['location'],
                 'authority': camera['authority'],
                 'name' : name,
+                "gender" : max_gender,
+                "employee_id" : max_employee_id,
+                "group_name" : group_name,
+                "position" : max_position
             }
 
             insert_array.append(insert_data)
@@ -194,17 +217,16 @@ def on_message(client, userdata, msg):
                     'stranger' : stranger
                 })
 
-                
+
         acc_collection.insert_many(insert_array)
         del insert_array[0]['_id']
         send_data = {
             'stb_sn': access_json['stb_sn'],
             'values': insert_array
         }
-
         client.publish('/access/realtime/result/'+access_json['stb_sn'], json.dumps(send_data), 1)
 
-            
+
     elif(msg.topic.find("/user/add/") != -1) :
         print("/user/add/")
         user_json = json.loads(msg.payload)
@@ -215,7 +237,7 @@ def on_message(client, userdata, msg):
 
         with open(file_path+file_name, 'wb') as f:
             f.write(imgdata)
-        
+
         result = []
         result = detect_face(file_path+file_name)
         if result is None :
@@ -226,9 +248,10 @@ def on_message(client, userdata, msg):
         else :
             os.remove(file_path+file_name)
 
-            face_detection = str(result.tolist())
+            face_detection = result.tolist()
             user_json['face_detection'] = face_detection
             user_json['avatar_file_url'] = ''
+            user_json['avatar_file'] = ''
 
             user_collection.insert_one(user_json)
             user_objectid = str(user_json['_id'])
@@ -244,6 +267,12 @@ def on_message(client, userdata, msg):
 
             client.publish('/user/add/result/'+user_json['id'], json.dumps({"result":True}), 1)
 
+        users_cursor = user_collection.find({"authority":{"$regex":""}})
+        users = []
+        for user in users_cursor :
+            users.append(user)
+        random.shuffle(users)
+
     elif(msg.topic.find("/stranger/add/") != -1) :
         print("/stranger/add/")
         user_json = json.loads(msg.payload)
@@ -255,7 +284,7 @@ def on_message(client, userdata, msg):
         if detect_result is None :
             client.publish('/stranger/add/result/'+user_json['id'], json.dumps({"result":False}), 1)
         else :
-            user_json['face_detection'] = str(detect_result.tolist())
+            user_json['face_detection'] = detect_result.tolist()
             user_json['groups_obids'][0] = ObjectId(user_json['groups_obids'][0])
             user_collection.insert_one(user_json)
             user_objectid = str(user_json['_id'])
@@ -265,7 +294,7 @@ def on_message(client, userdata, msg):
 
             shutil.copyfile(file_path,_file_path+file_name)
 
-            avatar_file_url = "http://" + server_ip + ":3000/image/"+file_name 
+            avatar_file_url = "http://" + server_ip + ":3000/image/"+file_name
 
             user_collection.update_one({"_id":user_json['_id']},{
                 "$set":{
@@ -274,6 +303,12 @@ def on_message(client, userdata, msg):
             })
 
             client.publish('/stranger/add/result/'+user_json['id'], json.dumps({"result":True}), 1)
+
+        users_cursor = user_collection.find({"authority":{"$regex":""}})
+        users = []
+        for user in users_cursor :
+            users.append(user)
+        random.shuffle(users)
     elif(msg.topic.find("/user/edit/") != -1) :
         print("/user/edit/")
         user_json = json.loads(msg.payload)
@@ -289,7 +324,7 @@ def on_message(client, userdata, msg):
             imgdata = base64.b64decode(user_json['avatar_file'])
             with open(file_path+file_name, 'wb') as f:
                 f.write(imgdata)
-            
+
             detect_result = detect_face(file_path+file_name)
 
             if detect_result is None :
@@ -309,13 +344,26 @@ def on_message(client, userdata, msg):
 
                 client.publish('/user/edit/result/'+user_json['id'], json.dumps({"result":True}), 1)
 
+        users_cursor = user_collection.find({"authority":{"$regex":""}})
+        users = []
+        for user in users_cursor :
+            users.append(user)
+        random.shuffle(users)
 
-            
+    elif(msg.topic.find("/user/delete/") != -1) :
+        users_cursor = user_collection.find({"authority":{"$regex":""}})
+        users = []
+        for user in users_cursor :
+            users.append(user)
+        random.shuffle(users)
 
 
-            
 
-        
+
+
+
+
+
 
 def on_disconnect(client, userdata, flags, rc=0):
     print(str(rc))
@@ -337,10 +385,10 @@ def blend_transparent(face_t_img, overlay_t_img):
     face_part = (face_t_img * (1 / 255.0)) * (background_mask * (1 / 255.0))
     overlay_part = (overlay_img * (1 / 255.0)) * (overlay_mask * (1 / 255.0))
 
-    # And finally just add them together, and rescale it back to an 8bit integer image    
+    # And finally just add them together, and rescale it back to an 8bit integer image
     return np.uint8(cv2.addWeighted(face_part, 255.0, overlay_part, 255.0, 0.0))
 
-with open("./mask_retinaface.csv") as csv_file:
+with open("/var/www/backend/face_cut/mask_retinaface.csv") as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=",")
     src_pts = []
     for i, row in enumerate(csv_reader):
@@ -351,7 +399,7 @@ with open("./mask_retinaface.csv") as csv_file:
             continue
 src_pts = np.array(src_pts, dtype="float32")
 
-mask_img = cv2.imread("./mask.png", -1)
+mask_img = cv2.imread("/var/www/backend/face_cut/mask.png", -1)
 
 det_model = insightface.model_zoo.get_model('retinaface_r50_v1')
 det_model.prepare(-1, 0.4)
@@ -359,33 +407,24 @@ det_model.prepare(-1, 0.4)
 rec_name = insightface.model_zoo.get_model('arcface_r100_v1')
 rec_name.prepare(-1)
 
-known_face_files = [1]
-target_face_files = []
-
-emb_list = [0]
-emb_norm_list = [0]
-emb_label_list = [0]
-embs = [0]
-
 def detect_face(path) :
-    for known_face_file in known_face_files:
+        global original_emb
+        global original_emb_label
+    # for known_face_file in known_face_files:
         face_img = cv2.imread(path)
+        crop_img = None
         print(face_img.shape)
-        if(face_img.shape[0] * face_img.shape[1] > 1500000) : 
+        if(face_img.shape[0] * face_img.shape[1] > 1500000) :
             return False
 
         face_label = path
         # Mask
-        h, w = face_img.shape[:2]
+
         bboxes, landmarks = det_model.detect(face_img, threshold=0.3, scale=1.0)
-        find = False
 
         for i in range(bboxes.shape[0]):
-            find = True
-            bbox = bboxes[i, 0:4]
-            det_score = bboxes[i, 4]
             landmark = landmarks[i]
-            
+
             # 마스크 씌우는 로직
             dst_pts = np.array(
                 [
@@ -416,13 +455,13 @@ def detect_face(path) :
             crop_img = insightface.utils.face_align.norm_crop(face_img, landmark=landmark)
             break
 
-        if not find:
-            continue
-        
+        if crop_img is None :
+            return None
+
         emb = rec_name.get_embedding(crop_img).flatten()
-        emb_list[0] = emb
-        emb_norm_list[0] = norm(emb)
-        emb_label_list[0] = face_label
+        original_emb = emb
+        original_emb_label = face_label
+
         return emb
 
 def str2ndarray(a):
@@ -431,14 +470,15 @@ def str2ndarray(a):
     return np.array(a)
 
 def getClosestFace(emb):
+    global original_emb_label
+    global original_emb
     closest_sim = 0
     closest_label = ''
-    for i, origin_emb in enumerate(emb_list):
-        sim = np.dot(emb, origin_emb) / (norm(emb) * norm(origin_emb))
+    sim = np.dot(emb, original_emb) / (norm(emb) * norm(original_emb))
 
-        if sim > closest_sim:
-            closest_sim = sim
-            closest_label = emb_label_list[i]
+    if sim > closest_sim:
+        closest_sim = sim
+        closest_label = original_emb_label
 
     return closest_sim, closest_label
 
@@ -446,17 +486,37 @@ def recog_face(users) :
     result = []
     max_sim = 0
     max_name = 'unknown'
+    max_position = ''
+    max_gender = ''
+    max_group_id = ''
+    max_employee_id = ''
+    max_employee_id = ''
     max_type = 3
+    start = time.time()
     for emb in users:
-        face = np.array(literal_eval(emb["face_detection"]))
-        face = face.flatten()
+        # if(emb['name'].find("샘플") == -1):
+        face = np.array(emb["face_detection"])
+        # face = face.flatten()
         sim, label = getClosestFace(face)
+        del face
         result.append({"sim":sim,"name":emb['name'],"type":emb['type']})
         if(max_sim < sim):
             max_sim = sim
             max_name = emb['name']
+            max_group_id = emb['groups_obids'][0]
+            if 'user_id' in emb:
+                max_employee_id = emb['user_id']
+            else:
+                max_employee_id = "0"
+            # max_employee_id = emb['user_id'] if emb['user_id'] else "0"
+            max_gender = emb['gender']
             max_type = emb['type']
-    return result,max_sim,max_name,max_type
+            max_position = emb['position']
+
+        if(max_sim >= 0.625):
+            break
+    print("time :", time.time() - start)
+    return result,max_sim,max_name,max_type,max_gender,max_employee_id,max_group_id,max_position
 
 # def interval_db() :
 #     results=collection.find({"detected":{"$exists":False}})
@@ -472,19 +532,15 @@ def recog_face(users) :
 #         collection.update({"_id":result["_id"]},{"$set":{"detected":True,"name":max_name,"type":max_type}})
 
 
-client = mqtt.Client(client_id='mqtt_testing_client')
+client = mqtt.Client()
 client.on_connect = on_connect
 client.on_disconnect = on_disconnect
 client.on_message = on_message
-# client.tls_set("/media/jjh/data/openssl_back/ca-cert.pem", tls_version=ssl.PROTOCOL_TLSv1_2)
-client.tls_set("/media/jjh/data/openssl_back/my_root_ca.pem",None,
-               None, cert_reqs=ssl.CERT_NONE, tls_version=ssl.PROTOCOL_TLSv1_2, ciphers=None)
-client.tls_insecure_set(True)
-client.username_pw_set("admin_server","masterQ!W@E#R$")
-client.connect('localhost', 8883)
+client.connect('localhost', 1883)
 client.subscribe("/access/realtime/+")
 client.subscribe("/user/add/+")
 client.subscribe("/user/edit/+")
 client.subscribe("/stranger/add/+")
 client.loop_forever()
+
 

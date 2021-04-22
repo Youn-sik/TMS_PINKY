@@ -25,13 +25,18 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import {base_url as in_base_url,out_base_url,mqtt_url} from 'server.json';
+import {base_url as in_base_url,out_base_url,mqtt_url,out_mqtt_url} from 'server.json';
 import mqtt from 'mqtt';
 
 let currentUrl = window.location.href
 let base_url = in_base_url
+let base_mqtt_url = mqtt_url
+let port = "8083"
+console.log(currentUrl.indexOf("172.16.33.130"))
 if(currentUrl.indexOf("172.16.33.130") <= -1) {
   base_url = out_base_url
+  base_mqtt_url = out_mqtt_url
+  port = "18083"
 }
 
 let client
@@ -158,11 +163,7 @@ const EditBlack = props => {
   };
 
   useEffect(() => {
-    client = mqtt.connect('ws://'+mqtt_url+':8083/mqtt',{
-      username: 'admin_server',
-      password:"masterQ!W@E#R$",
-      rejectUnauthorized: false,
-    });
+    client = mqtt.connect('ws://'+base_mqtt_url+':'+port+'/mqtt');
 
     client.on('connect', () => {
       console.log('isConnected')
@@ -245,7 +246,7 @@ const EditBlack = props => {
             variant="body2"
             className={classes.labelText}>
             {node.name} ({node.authority === 'admin' ? node.authority :
-            node.authority.split('-').length === 2 ? node.authority.split('-')[1].substring(0,node.authority.split('-')[1].length - 1) : 
+            node.authority.split('-').length === 2 ? node.authority.split('-')[1].substring(0,node.authority.split('-')[1].length - 1) :
             node.authority.split('-').length === 3 ? node.authority.split('-')[2] : node.authority.split('-')[3]})
           </Typography>
         </div>
@@ -284,7 +285,7 @@ const EditBlack = props => {
       base64 = base64.replace('data:image/jpeg;base64,', '');
       base64 = base64.replace('data:image/png;base64,', '');
     }
-    
+
     client.publish(
       '/user/edit/' + id,
       JSON.stringify({

@@ -48,12 +48,17 @@ import {
 } from '@material-ui/core';
 
 import mqtt from 'mqtt';
-import {mqtt_url,base_url as in_base_url,out_base_url} from 'server.json'
+import {mqtt_url,out_mqtt_url,base_url as in_base_url,out_base_url} from 'server.json'
 
 let currentUrl = window.location.href
 let base_url = in_base_url
+let base_mqtt_url = mqtt_url
+let port = "8083"
+console.log(currentUrl.indexOf("172.16.33.130"))
 if(currentUrl.indexOf("172.16.33.130") <= -1) {
   base_url = out_base_url
+  base_mqtt_url = out_mqtt_url
+  port = "18083"
 }
 
 let client
@@ -229,8 +234,12 @@ const DeviceTable = props => {
   const [door,setDoor] = useState("");
   const [startTime,setStartTime] = useState("");
   const [endTime,setEndTime] = useState("");
+  const [originalDoor,setOriginalDoor] = useState("");
+  const [originalStartTime,setOriginalStartTime] = useState("");
+  const [originalEndTime,setOriginalEndTime] = useState("");
   const [doorModal,setDoorModal] = useState(false)
   const [doorDays,setDoorDays] = useState([false,false,false,false,false,false,false])
+  const [originalDoorDays,setOriginalDoorDays] = useState([false,false,false,false,false,false,false])
 
   const convertDays = () => {
     let temp = '';
@@ -282,23 +291,24 @@ const DeviceTable = props => {
     setDoorModal(!doorModal)
   }
 
-  const doorControlValSet = () => {
-    setDoor(selectedObject[0].door_control ? selectedObject[0].door_control : false)
-    setStartTime(selectedObject[0].start_time ? selectedObject[0].start_time : null)
-    setEndTime(selectedObject[0].end_time ? selectedObject[0].end_time : null)
+  const doorControlValSet = async () => {
+    let result = await axios.get(base_url + "/camera/getone/"+selectedObject[0]._id)
+    setDoor(result.data.door_control ? result.data.door_control : false)
+    setStartTime(result.data.start_time ? result.data.start_time : null)
+    setEndTime(result.data.end_time ? result.data.end_time : null)
+    setOriginalDoor(result.data.door_control ? result.data.door_control : false)
+    setOriginalStartTime(result.data.start_time ? result.data.start_time : null)
+    setOriginalEndTime(result.data.end_time ? result.data.end_time : null)
 
     let days = reverseDays()
 
     setDoorDays(days)
+    setOriginalDoorDays(days)
   }
 
   useEffect(() => {
     click = false
-    client = mqtt.connect('ws://'+mqtt_url+':8083/mqtt',{
-      username: 'admin_server',
-      password:"masterQ!W@E#R$",
-      rejectUnauthorized: false,
-    });
+    client = mqtt.connect('ws://'+base_mqtt_url+':'+port+'/mqtt');
 
     client.on('connect', () => {
       console.log('mqtt was connected');
@@ -852,6 +862,11 @@ const DeviceTable = props => {
           <Button
             variant="contained"
             onClick={() => {
+              setOriginalDoor(door)
+              setOriginalStartTime(startTime)
+              setOriginalEndTime(endTime)
+              setOriginalDoorDays(doorDays)
+
               !check ?
                 selectedObject.length > 1 ?
                 devicesMqttPubl('door_control') : mqttPubl('door_control')
@@ -974,6 +989,10 @@ const DeviceTable = props => {
               <Button
                 variant="contained"
                 onClick={() => {
+                  setDoor(originalDoor)
+                  setDoorDays(originalDoorDays)
+                  setStartTime(originalStartTime)
+                  setEndTime(originalEndTime)
                   doorSetModal(true)
                 }}
                 style={{ width: '181.58px' }}
@@ -1066,6 +1085,9 @@ const DeviceTable = props => {
               <Button
                 variant="contained"
                 onClick={() => {
+                  setDoor(originalDoor)
+                  setStartTime(originalStartTime)
+                  setEndTime(originalEndTime)
                   doorSetModal(true)
                 }}
                 style={{ width: '181.58px' }}

@@ -4,7 +4,7 @@ const boom = require('boom')
 const api_v3_device_camera = require('../../../../models/api/v3/device/camera')
 const Operation = require('../../../../models/api/v1/person/operation')
 var moment = require('moment');
-require('moment-timezone'); 
+require('moment-timezone');
 moment.tz.setDefault("Asia/Seoul");
 const execSync = require('child_process').execSync;
 const api_v3_device_license = require('../../../../models/api/v3/device/license.js')
@@ -25,16 +25,16 @@ const jwt = require('jsonwebtoken')
 // })
 
 let qrystr = [{
-    "c_license_type" : "standard",	
-    "c_license_month" : 'limit',	
-    "c_company" : "함안군",	
-    "c_country":"kr",	
-    "c_name":"손영호",	
-    "c_email":"yhsohn@koolsign.net",	
-    "c_mac":"70:85:c2:81:ca:fc",	
-    "c_cnt" : 500,		
-    "c_end":"2070-11-17",	
-    "c_license_key1":"50500-99999-00000-ALIM-94SQ",	
+    "c_license_type" : "standard",
+    "c_license_month" : 'limit',
+    "c_company" : "함안군",
+    "c_country":"kr",
+    "c_name":"손영호",
+    "c_email":"yhsohn@koolsign.net",
+    "c_mac":"70:85:c2:81:ca:fc",
+    "c_cnt" : 500,
+    "c_end":"2070-11-17",
+    "c_license_key1":"50500-99999-00000-ALIM-94SQ",
     "c_license_key2":"U2FsdGVkX1/pcs7DTGoQeyuc6yqEuPw4Rk+wrhHKs4aJ7S7ksy3L/eOAL135NgQT"
 }]
 
@@ -87,7 +87,7 @@ function license_on_off_check (data) {
     } else {
         return {'result' : true};
     }
-    
+
 }
 
 async function license_check(type,req){
@@ -95,7 +95,7 @@ async function license_check(type,req){
 
     req.headers.authorization = req.headers.authorization.replace('Bearer ','');
     const token = req.headers.authorization;
-    
+
     let token_result = true
 
     jwt.verify(token, 'jjh', (err) => {
@@ -125,22 +125,22 @@ async function license_check(type,req){
                 // let sqlstr = `select * from g_license where c_license_key1="${val.c_license_key1}"`
                 // let qrystr = await conn.query(sqlstr)
                 // conn.release();
-                
+
                 if(qrystr.length < 1) {
                     //라이센스 등록으로 이동
                     return({"result":false, "msg" : "올바르지 않은 라이센스 입니다 라이센스를 다시 등록해주세요."})
                 } else {
                     let _val = qrystr[0]
 
-                    //라이센스 비교 
+                    //라이센스 비교
                     let server1 = decrypt(val.c_license_key2,'!@#koolsign_cloud3_!@#$')
                     let server2 = decrypt(_val.c_license_key2,'!@#koolsign_cloud3_!@#$')
-                    
+
                     server1 = server1.replace(/\s+/,"")
                     server2 = server2.replace(/\s+/,"")
 
                     //CI로 암호화된 문자열 복호화 하는버 필요
-                    
+
                     if(server1 != server2) {
                         return({"result":false, "msg" : "올바르지 않은 라이센스 입니다 라이센스를 다시 등록해주세요."})
                     }
@@ -148,10 +148,10 @@ async function license_check(type,req){
                     //등록된 맥주소 확인
                     let local_mac = server_mac_check(val.c_eth)
                     // let local_mac = '70:85:c2:82:35:5e'
-                    
+
                     if(_val.c_mac != local_mac) {
                         return({"result":false, "msg" : "올바르지 않은 맥주소 입니다 라이센스를 다시 등록해주세요."})
-                    } 
+                    }
 
 
                     //날짜 체크
@@ -256,15 +256,15 @@ async function license_check_before_save(license_data){
         } else {
             let _val = qrystr[0]
 
-            //라이센스 비교 
+            //라이센스 비교
             let server1 = license_data.c_mac
             let server2 = decrypt(_val.c_license_key2,'!@#koolsign_cloud3_!@#$')
-            
+
             server1 = server1.replace(/\s+/,"")
             server2 = server2.replace(/\s+/,"")
 
             //CI로 암호화된 문자열 복호화 하는버 필요
-            
+
             if(server1 != server2) {
                 return({"result":false, "msg" : "올바르지 않은 라이센스 입니다."})
             }
@@ -274,7 +274,7 @@ async function license_check_before_save(license_data){
 
             if(_val.c_mac != local_mac) {
                 return({"result":false, "msg" : "올바르지 않은 맥주소 입니다."})
-            } 
+            }
 
 
             //날짜 체크
@@ -309,7 +309,7 @@ router.post("/license_save",async function (req, res) {
             res.send(await license_file_write(req.body))
             return 0;
         }
-        
+
         s_ip = "172.16.135.13" //해당 서버의 ip
         s_mac = server_mac_check(req.body.c_eth)
         let result = await api_v3_device_license.find({})
@@ -324,7 +324,7 @@ router.post("/license_save",async function (req, res) {
                 'c_license_key1': req.body.c_license_key1,
                 'c_license_key2': license_key2,
                 'regdate': moment().format("YYYY-MM-DD HH:mm:ss")
-            })            
+            })
         } else {
             await api_v3_device_license.insertMany([{
                 'c_type': req.body.c_type,
@@ -335,12 +335,12 @@ router.post("/license_save",async function (req, res) {
                 'regdate': moment().format("YYYY-MM-DD HH:mm:ss")
             }])
         }
-        
+
         res.send({"result":true})
         } catch(err){
             console.log(err)
         }
-    
+
 })
 
 router.post("/license_check", async function (req,res) {
@@ -368,15 +368,15 @@ router.get('/',async function(req, res) {
     }
 });
 
-// router.get('/:id',async function(req, res) {
-//     try {
-//         const id = req.params === undefined ? req.id : req.params.id
-//         const get_single_data = await api_v3_device_camera.findById(id)
-//         res.send(get_single_data)
-//     } catch (err) {
-//         res.status(400).send({err:"잘못된 형식 입니다."})
-//     }
-// });
+router.get('/getone/:id',async function(req, res) {
+    try {
+        const id = req.params === undefined ? req.id : req.params.id
+        const get_single_data = await api_v3_device_camera.findById(id)
+        res.send(get_single_data)
+    } catch (err) {
+        res.status(400).send({err:"잘못된 형식 입니다."})
+    }
+});
 
 router.post('/',async function (req, res) {
     try {
@@ -449,7 +449,7 @@ router.get('/license/get_license', async function(req,res) {
 
 router.get('/get_device_cnt', async function(req,res) {
     let current_devices = await api_v3_device_camera.find({}).count()
-    let limit = qrystr[0].c_cnt    
+    let limit = qrystr[0].c_cnt
     res.send({
         "current_devices":current_devices,
         "limit": license_type === 'development' ? 99999 : limit
@@ -475,7 +475,7 @@ router.delete('/:id',async function(req, res) {
                 authority : req.body.operation_auth
             })
             operation.save();
-            res.send({..._result , ...delete_data}) 
+            res.send({..._result , ...delete_data})
         } else {
             let operations = []
             let result = await api_v3_device_camera.deleteMany({ _id: { $in: req.body.list} })

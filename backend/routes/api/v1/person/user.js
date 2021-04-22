@@ -11,8 +11,8 @@ const crypto = require('crypto');
 
 var fs = require('fs')
 var moment = require('moment');
-require('moment-timezone'); 
-moment.tz.setDefault("Asia/Seoul"); 
+require('moment-timezone');
+moment.tz.setDefault("Asia/Seoul");
 
 router.get('/',async function(req, res) {
     try {
@@ -60,7 +60,7 @@ router.get('/',async function(req, res) {
             .regex(searchType,search)
             .regex(enteredName,entered)
             .count()
-            
+
             get_data.data = await api_v1_person_user.find({type:req.query.type})
             .regex('authority',auth)
             .select('-face_detection -avatar_file')
@@ -180,7 +180,7 @@ router.get('/:id',async function(req, res) {
 //                 await api_v1_group_group.findOneAndUpdate({name:'undefined',type:req.body.type},{ $addToSet: { user_obids : add._id} }, {new: true }).exec()
 //                 add.groups_obids = [groups[0]._id];
 //             }
-            
+
 //         }
 //         let type = '';
 //         if(add.type === 1) type = '사원';
@@ -225,7 +225,7 @@ router.get('/:id',async function(req, res) {
 //                 }
 //                 group = group === null ? await api_v1_group_group.findOne({name:'undefined',type:req.body.type}) : group
 //                 req.body.clicked_groups = [group._id];
-//             }            
+//             }
 //         }
 
 //         if(req.body.avatar_file){
@@ -269,24 +269,24 @@ router.get('/:id',async function(req, res) {
 //             fs.unlink('/var/www/backend/image/face_cut_'+add._id+'profile_updated.jpg',()=>{})
 
 //             fs.writeFileSync('/var/www/backend/image/'+req.body._id+'profile_updated.jpg', image);
-            
+
 //             const imageDir = await canvas.loadImage('/var/www/backend/image/'+req.body._id+'profile_updated.jpg')
 //             const detections = await faceapi.detectSingleFace(imageDir)
 //             .withFaceLandmarks()
 //             .withFaceDescriptor();
-            
+
 //             if(!detections) {
 //                 res.send({
 //                     result:"인식할수 없는 사진."
 //                 })
 //                 return false;
 //             }
-            
+
 //             asyncJSON.stringify(detections.descriptor,function(err, jsonValue) {
 //                 update_data.face_detection = jsonValue;
 //             })
 //         }
-        
+
 //         update_data.groups_obids = req.body.clicked_groups;
 //         update_data.update_at = moment().format('YYYY-MM-DD HH:mm:ss');
 //         update_data.update_ut = Date.now();
@@ -343,7 +343,7 @@ router.delete('/:id',async function(req, res) {
                 operation.save();
                 deleted_data.push(delete_data)
             })
-            
+
             // history.save();
             res.send(deleted_data);
         } catch (err) {
@@ -368,7 +368,7 @@ router.delete('/:id',async function(req, res) {
                 let temp = parseInt(result.body.count/rowsPerPage)
                 if(parseInt(result.body.count%rowsPerPage))
                     temp++;
-                
+
                 for(let i = 0; i<temp; i++) {
                     if(req.query.group_obid) {
                         users = await api_v1_person_user.find({type:req.query.type})
@@ -406,9 +406,9 @@ router.delete('/:id',async function(req, res) {
                     .regex(searchType,search)
                     .regex(enteredName,entered)
                 }
-                
+
             }
-            
+
             users.map(async (i,index) => {
                 await api_v1_group_group.updateMany({type:i.type},{ $pull: { user_obids : i._id} }, {new: true }).exec();
                 deletedList.push(await api_v1_person_user.findByIdAndDelete(i._id));
@@ -437,5 +437,5 @@ router.delete('/:id',async function(req, res) {
         }
     }
 });
- 
+
 module.exports = router;

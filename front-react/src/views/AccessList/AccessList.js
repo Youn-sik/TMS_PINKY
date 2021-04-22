@@ -14,10 +14,10 @@ import { saveAs } from 'file-saver'
 
 let currentUrl = window.location.href
 let base_url = in_base_url
+console.log(currentUrl.indexOf("172.16.33.130"))
 if(currentUrl.indexOf("172.16.33.130") <= -1) {
   base_url = out_base_url
 }
-
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -49,7 +49,7 @@ const AccessList = props => {
     moment()
       .locale('ko')
       .format('YYYY-MM-DD')
-  ]); 
+  ]);
   const [type, setType] = useState('0');
   const [temp, setTemp] = useState('0');
   const [loading, setLoading] = useState(true);
@@ -65,7 +65,7 @@ const AccessList = props => {
   const [excelLoading,setExcelLoading] = useState(false);
 
   const isSelected = _id => selected.findIndex(i => i._id == _id) !== -1;
-  
+
   const handleSelectAllClick = event => {
     if (event.target.checked) {
       const newSelecteds = accesses.map(n => n);
@@ -129,7 +129,7 @@ const AccessList = props => {
 
     const ws = wb.addWorksheet("Info", {properties:{ defaultRowHeight: 50 }})
 
-    
+
 
     ws.addRow(['이름','타입', '단말기 이름','단말기 시리얼','단말기 위치','타입','거리','온도','출입 시간'])
     accesses.map(async (access,index) => {
@@ -168,16 +168,16 @@ const AccessList = props => {
     if(headerType === 'access_time'){
       headerType = '_id'
     }
-    if(sort === 'desc') 
+    if(sort === 'desc')
       headerType = '-'+headerType;
 
 
-    let _pages = await axios.get(base_url + 
+    let _pages = await axios.get(base_url +
       `/access?auth=${props.authority}&headerType=${currentHeaderType}&headerType=${currentHeaderType}&avatar_type=${type}&searchType=${searchType}&search=${search}&type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&avatar_type=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
 
-    let result = await axios.get(base_url + 
+    let result = await axios.get(base_url +
       `/access?auth=${props.authority}&headerType=${currentHeaderType}&avatar_type=${type}&searchType=${searchType}&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&page=${page}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
@@ -222,17 +222,17 @@ const AccessList = props => {
       setCurrentHeaderType('_id')
       headerType = '_id'
     }
-    if(_type === 'desc') 
+    if(_type === 'desc')
       headerType = '-'+headerType;
 
     setCurrentHeaderType(headerType)
 
-    let result = await axios.get(base_url + 
+    let result = await axios.get(base_url +
       `/access?auth=${props.authority}&avatar_type=${type}&searchType=${searchType}&rowsPerPage=${rowsPerPage}&headerType=${headerType}&date=${firstDate}/${lastDate}&page=${1}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
 
-    let _pages = await axios.get(base_url + 
+    let _pages = await axios.get(base_url +
       `/access?auth=${props.authority}&headerType=${currentHeaderType}&avatar_type=${type}&searchType=${searchType}&type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&search=${search}&avatar_type=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
@@ -244,7 +244,7 @@ const AccessList = props => {
       _temp++;
 
     setPages(_temp);
-    
+
     setLoading(false);
     setAccesses(result.data);
   };
@@ -266,7 +266,7 @@ const AccessList = props => {
       if(accessCount%5000)
         _pages++;
 
-      let result = await axios.delete(base_url + 
+      let result = await axios.delete(base_url +
         `/access?auth=${props.authority}&headerType=${currentHeaderType}&searchType=${searchType}&pages=${_pages}&type=all&rowsPerPage=${rowsPerPage}&date=${firstDate}/${lastDate}&page=${page}&search=${search}&avatar_type=${type}&tempType=${temp}&avatar_temperature=${props.tempLimit}`, {
         cancelToken: source.token
       });
@@ -274,13 +274,13 @@ const AccessList = props => {
       alert('삭제 되었습니다')
       resetSearch()
     }
-    
+
   }
 
   async function getAccesses() {
     setLoading(true)
 
-    
+
 
     let firstDate = '';
     let lastDate = '';
@@ -292,16 +292,16 @@ const AccessList = props => {
       firstDate = date[0]
       lastDate = date[1]
     }
-    
 
-    let _pages = await axios.get(base_url + 
+
+    let _pages = await axios.get(base_url +
       `/access?auth=${props.authority}&headerType=${currentHeaderType}&avatar_type=${type}&searchType=${searchType}&search=${search}&type=dateCount&rowsPerPage=${rowsPerPage}&date=${firstDate}/${lastDate}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
 
     setLoading(false);
     if(_pages && _pages.data.length !== 0) {
-      let result = await axios.get(base_url + 
+      let result = await axios.get(base_url +
         `/access?auth=${props.authority}&headerType=${currentHeaderType}&avatar_type=${type}&searchType=${searchType}&search=${search}&date=${firstDate}/${lastDate}&&rowsPerPage=${rowsPerPage}page=${page}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
         cancelToken: source.token
       });
@@ -314,7 +314,7 @@ const AccessList = props => {
       let _temp = parseInt(count/rowsPerPage);
       if(count%rowsPerPage)
         _temp++;
-  
+
       setPages(_temp);
       setAccesses(result.data);
     } else {
@@ -355,15 +355,15 @@ const AccessList = props => {
       lastDate = date[1]
     }
 
-    if(sort === 'desc') 
+    if(sort === 'desc')
       headerType = '-'+headerType;
 
-    let _pages = await axios.get(base_url + 
+    let _pages = await axios.get(base_url +
       `/access?auth=${props.authority}&headerType=${currentHeaderType}&avatar_type=${type}&searchType=${searchType}&search=${search}&type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${5000}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
 
-    let count = 0 
+    let count = 0
     _pages.data.map(i => count += parseInt(i.count));
 
     setAccessCount(count)
@@ -374,17 +374,17 @@ const AccessList = props => {
 
     let accesses = [];
     for(let i = 1; i <= _temp; i++) {
-      
+
       let result = await axios.get(base_url + `/access?auth=${props.authority}&avatar_type=${type}&searchType=${searchType}&rowsPerPage=${5000}&headerType=${headerType}&date=${firstDate}/${lastDate}&page=${page}&search=${search}&avatar_temp=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
         cancelToken: source.tfirstDate
       });
       accesses = accesses.concat(result.data)
     }
-    
+
     const wb = new ExcelJS.Workbook()
 
     const ws = wb.addWorksheet("Info", {properties:{ defaultRowHeight: 50 }})
-    
+
     ws.addRow(['이름','타입','단말 위치','단말명','시리얼 번호','거리','온도','출입 시간'])
     accesses.map((access,index) => {
       let temp = []
@@ -419,14 +419,14 @@ const AccessList = props => {
       lastDate = date[1]
     }
     setPage(page)
-    if(sort === 'desc') 
+    if(sort === 'desc')
       headerType = '-'+headerType;
-      
+
     let result = await axios.get(base_url + `/access?auth=${props.authority}&avatar_type=${type}&searchType=${searchType}&search=${search}&date=${date[0]}/${date[1]}&avatar_type=${type}&page=${page}&headerType=${headerType}&rowsPerPage=${rowsPerPage}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
       cancelToken: source.token
     });
 
-    // let _pages = await axios.get(base_url + 
+    // let _pages = await axios.get(base_url +
     //   `/access?auth=${props.authority}&searchType=${searchType}&search=${search}&type=dateCount&date=${date[0]}/${date[1]}&rowsPerPage=${rowsPerPage}&search=${search}&avatar_type=${type}&tempType=${temp}${temp !== '0' ? "&avatar_temperature="+tempLimit : ''}`, {
     //   cancelToken: source.token
     // });
@@ -446,7 +446,7 @@ const AccessList = props => {
   useEffect(() => {
     getAccesses();
   },[type,temp,date,rowsPerPage])
-  
+
   const _setSort = (type) => {
     setSort(type);
   }

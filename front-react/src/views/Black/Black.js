@@ -3,16 +3,22 @@ import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 import axios from 'axios';
 import { Groups, UsersTable } from './components';
-import {base_url as in_base_url,out_base_url} from 'server.json';
+import {base_url as in_base_url,out_base_url,mqtt_url,out_mqtt_url} from 'server.json';
 import ExcelJS from 'exceljs/dist/es5/exceljs.browser.js'
 import { saveAs } from 'file-saver'
 import moment from 'moment';
+import mqtt from 'mqtt';
 import 'moment/locale/ko';
 
 let currentUrl = window.location.href
 let base_url = in_base_url
+let base_mqtt_url = mqtt_url
+let port = "8083"
+console.log(currentUrl.indexOf("172.16.33.130"))
 if(currentUrl.indexOf("172.16.33.130") <= -1) {
   base_url = out_base_url
+  base_mqtt_url = out_mqtt_url
+  port = "18083"
 }
 
 const useStyles = makeStyles(theme => ({
@@ -20,6 +26,9 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(4)
   }
 }));
+
+let client
+let id = '';
 
 const Black = props => {
   const [groups, setGroups] = useState([]);
@@ -58,6 +67,19 @@ const Black = props => {
     }
 
   }
+
+  useEffect(() => {
+    client = mqtt.connect('ws://'+base_mqtt_url+':'+port+'/mqtt');
+
+    client.on('connect', () => {
+      console.log('isConnected')
+      client.subscribe('/user/add/result/+');
+    });
+
+    return () => {
+      client.end(true)
+    };
+  },[])
 
   useEffect(() => {
     getUsers()
@@ -102,13 +124,13 @@ const Black = props => {
     const wb = new ExcelJS.Workbook()
 
     const ws = wb.addWorksheet("Info", {properties:{ defaultRowHeight: 50 }})
-    
+
     ws.addRow(['사진', '이름', '성별','장소','사유','휴대폰 번호','생성일'])
 
     if(search === '' && users.length > 0) {
       users.map((user,index) => {
         let temp = []
-  
+
         temp.push('');
         temp.push(user['name']);
         temp.push(user['gender'] === 1 ? '남자' : '여자')
@@ -116,7 +138,7 @@ const Black = props => {
         temp.push(user['position']);
         temp.push(user['mobile']);
         temp.push(user['create_at']);
-  
+
         ws.addRow(temp)
       })
     } else {
@@ -282,6 +304,7 @@ const Black = props => {
       setClickedNode({});
       setUsers([]);
       setFilteredUsers([]);
+      client.publish("/user/delete/","")
       alert('삭제 되었습니다');
     }
   };
@@ -296,6 +319,7 @@ const Black = props => {
           operation_auth: props.authority
         }
       });
+      client.publish("/user/delete/","")
       alert('삭제 되었습니다.')
       getUsers();
     }
@@ -318,7 +342,7 @@ const Black = props => {
           operation_auth: props.authority
         }
       });
-      
+      client.publish("/user/delete/","")
       alert('삭제 되었습니다.')
       getUsers();
     }

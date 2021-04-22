@@ -26,7 +26,7 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import {base_url,mqtt_url} from 'server.json';
+import {base_url,mqtt_url,out_mqtt_url} from 'server.json';
 import mqtt from 'mqtt';
 import moment from 'moment';
 import 'moment/locale/ko';
@@ -34,6 +34,15 @@ import {DatePicker} from 'rsuite';
 
 let client
 let id = '';
+
+let currentUrl = window.location.href
+let base_mqtt_url = mqtt_url
+let port = "8083"
+console.log(currentUrl.indexOf("172.16.33.130"))
+if(currentUrl.indexOf("172.16.33.130") <= -1) {
+  base_mqtt_url = out_mqtt_url
+  port = "18083"
+}
 
 Date.prototype.yyyymmdd = function() {
   var yyyy = this.getFullYear().toString();
@@ -182,11 +191,7 @@ const EditEmployee = props => {
   };
 
   useEffect(() => {
-    client = mqtt.connect('ws://'+mqtt_url+':8083/mqtt',{
-      username: 'admin_server',
-      password:"masterQ!W@E#R$",
-      rejectUnauthorized: false,
-    });
+    client = mqtt.connect('ws://'+base_mqtt_url+':'+port+'/mqtt');
 
     client.on('connect', () => {
       console.log('isConnected')
@@ -226,7 +231,7 @@ const EditEmployee = props => {
       history.go(-1);
     } else {
       let user = JSON.parse(JSON.stringify(userObject[0]));
-      
+
       let editedUser = {
         name: user.name,
         location: user.location,
@@ -269,7 +274,7 @@ const EditEmployee = props => {
           )}
           <Typography variant="body2" className={classes.labelText}>
           {node.name} ({node.authority === 'admin' ? node.authority :
-            node.authority.split('-').length === 2 ? node.authority.split('-')[1].substring(0,node.authority.split('-')[1].length - 1) : 
+            node.authority.split('-').length === 2 ? node.authority.split('-')[1].substring(0,node.authority.split('-')[1].length - 1) :
             node.authority.split('-').length === 3 ? node.authority.split('-')[2] : node.authority.split('-')[3]})
           </Typography>
         </div>

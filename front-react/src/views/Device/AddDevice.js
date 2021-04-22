@@ -8,6 +8,7 @@ import {base_url as in_base_url,out_base_url} from 'server.json';
 
 let currentUrl = window.location.href
 let base_url = in_base_url
+console.log(currentUrl.indexOf("172.16.33.130"))
 if(currentUrl.indexOf("172.16.33.130") <= -1) {
   base_url = out_base_url
 }
@@ -128,7 +129,7 @@ const AddDevice = props => {
         window.alert('단말 등록 완료.');
         history.push('/device/list');
       }
-      
+
     }
   };
 
@@ -153,7 +154,7 @@ const AddDevice = props => {
             name="gateway_obid"
             value={device.gateway_obid}
             labelId="gatewaySelector"
-            style={{width:'100%'}} 
+            style={{width:'100%'}}
             onChange={handleDeviceChange}
             >
               {gateway.map((i) => (
@@ -300,19 +301,19 @@ const AddDevice = props => {
               {/* <Select
                           name="gender"
                           value={userInfo.gender}
-                          style={{width:'100%'}} 
+                          style={{width:'100%'}}
                           onChange={handleChange}
                           >
                           <MenuItem value={1}>남자</MenuItem>
                           <MenuItem value={0}>여자</MenuItem>
                       </Select>
                       <div style={{width: '100%'}}>
-                          <TextField 
+                          <TextField
                           name="name"
                           value={userInfo.name}
-                          style={{width:'100%'}} 
-                          required 
-                          id="standard-required" 
+                          style={{width:'100%'}}
+                          required
+                          id="standard-required"
                           label="이름"
                           onChange={handleChange}
                           />

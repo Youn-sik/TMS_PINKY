@@ -15,6 +15,7 @@ import ExcelJS from 'exceljs/dist/es5/exceljs.browser.js'
 
 let currentUrl = window.location.href
 let base_url = in_base_url
+console.log(currentUrl.indexOf("172.16.33.130"))
 if(currentUrl.indexOf("172.16.33.130") <= -1) {
   base_url = out_base_url
 }
@@ -64,7 +65,7 @@ const Statistics = props => {
     ];
 
     dates.map((date, index) => {
-      
+
       let empCnt = 0
       employee.map((i) => {if(i._id.date === date) empCnt = i.count;})
       let strCnt = 0
@@ -105,7 +106,7 @@ const Statistics = props => {
       data.employee.unshift('사원')
       data.stranger.unshift('미등록자')
       data.black.unshift('블랙리스트')
-      
+
       ws.addRow(dates)
       ws.addRow(data.employee)
       ws.addRow(data.stranger)
@@ -117,7 +118,7 @@ const Statistics = props => {
   }
 
   const clickErrorExport = async () => {
-    
+
     let dates = [
       '',
       date[0],
@@ -138,14 +139,14 @@ const Statistics = props => {
     // data.cpu.unshift('cpu 부족')
     data.disconnect.unshift('연결 끊김')
     data.memory.unshift('메모리 부족')
-    
+
     ws.addRow(dates)
     // ws.addRow(data.disconnect)
     ws.addRow(data.cpu)
     ws.addRow(data.memory)
 
     const buf = await wb.csv.writeBuffer()
-    
+
     saveAs(new Blob(["\uFEFF"+buf]), 'statistics '+moment().format('YYYY-MM-DD_HH-mm-ss')+'.csv',{type: 'text/plain;charset=utf-8'})
   }
 
@@ -213,7 +214,7 @@ const Statistics = props => {
         }
       })
     })
-    
+
     setPeopleData({
       employee: employee,
       visitor: stranger,
@@ -257,7 +258,7 @@ const Statistics = props => {
     if(result && result.data.length > 0) {
       filterAccesses(result.data);
     }
-    
+
     setLoading(false);
   }
 

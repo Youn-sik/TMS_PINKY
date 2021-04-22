@@ -36,6 +36,7 @@ import {
 let currentUrl = window.location.href
 let base_url = in_base_url
 let isOut = false
+console.log(currentUrl.indexOf("172.16.33.130"))
 if(currentUrl.indexOf("172.16.33.130") <= -1) {
   base_url = out_base_url
   isOut = true
@@ -140,7 +141,7 @@ const AccessesTable = props => {
 
   const getGroups = async () => {
     let tempGroups = await axios.get(base_url + '/group?type=1&auth='+props.authority);
-    if(tempGroups && tempGroups.data.length){ 
+    if(tempGroups && tempGroups.data.length){
       let index = tempGroups.data.findIndex(i => i.name === 'undefined');
       if (index !== -1) {
         let undefinedGroup = tempGroups.data.splice(index, 1);
@@ -196,7 +197,7 @@ const AccessesTable = props => {
 
   useEffect(() => {
     // getUsers()
-    getGroups()
+    // getGroups()
   },[])
 
   const handlePageChange = (event, page) => {
@@ -523,7 +524,7 @@ const AccessesTable = props => {
                           <TableCell>
                             {
                               access.distance <= 57.5 && access.name !== 'unknown' ? <Button variant="contained" color="primary" onClick={() => {handleEdit(access)}}>수정</Button>:
-                              access.avatar_type === 3 ? 
+                              access.avatar_type === 3 ?
                               <RouterLink
                                 style={{ textDecoration: 'none' }}
                                 to={{
@@ -561,7 +562,7 @@ const AccessesTable = props => {
                                 height="90px"
                                 width="70px"
                                 className={classes.hightTempAvatar}
-                                src={access.avatar_file_url}></img>
+                                src={isOut ? access.avatar_file_url.replace('172.16.33.130','211.204.122.90') : access.avatar_file_url}></img>
                             </div>
                           </TableCell>
                           <TableCell className={classes.orangeFont}>
@@ -608,7 +609,7 @@ const AccessesTable = props => {
                           <TableCell>
                             {
                               access.distance <= 57.5 && access.name !== 'unknown' ? <Button variant="contained" color="primary" onClick={() => {handleEdit(access)}}>수정</Button>:
-                              access.avatar_type === 3 ? 
+                              access.avatar_type === 3 ?
                               <RouterLink
                                 style={{ textDecoration: 'none' }}
                                 to={{
@@ -644,7 +645,7 @@ const AccessesTable = props => {
                                 height="90px"
                                 width="70px"
                                 className={classes.avatar}
-                                src={access.avatar_file_url}></img>
+                                src={isOut ? access.avatar_file_url.replace('172.16.33.130','211.204.122.90') : access.avatar_file_url}></img>
                             </div>
                           </TableCell>
                           <TableCell>
@@ -689,7 +690,7 @@ const AccessesTable = props => {
                           <TableCell>
                             {
                               access.distance <= 57.5 && access.name !== 'unknown' ? <Button variant="contained" color="primary" onClick={() => {handleEdit(access)}}>수정</Button>:
-                              access.avatar_type === 3 ? 
+                              access.avatar_type === 3 ?
                               <RouterLink
                                 style={{ textDecoration: 'none' }}
                                 to={{

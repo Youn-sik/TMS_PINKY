@@ -29,6 +29,7 @@ import {
 
 let isOut = false
 let currentUrl = window.location.href
+console.log(currentUrl.indexOf("172.16.33.130"))
 if(currentUrl.indexOf('172.16.33.130') <= -1){
   isOut = true
 }
@@ -232,7 +233,7 @@ const UsersTable = props => {
         <Button
           variant="contained"
           color="primary"
-          
+
           disabled>
           수정
         </Button>
@@ -269,9 +270,9 @@ const UsersTable = props => {
             전체 삭제
           </Button>
         )}
-        <DatePicker 
-            format="YYYY-MM-DD" 
-            block 
+        <DatePicker
+            format="YYYY-MM-DD"
+            block
             cleanable={false}
             placeholder="입사일"
             onChange={val => {
@@ -334,12 +335,12 @@ const UsersTable = props => {
                 <TableCell padding="checkbox">
                   <Checkbox
                     checked={
-                      selected.length === 7 ? 
+                      selected.length === 7 ?
                         true
-                        : 
+                        :
                         selected.length === props.users.length && props.users.length !== 0 ?
-                        true 
-                        : 
+                        true
+                        :
                         false
                     }
                     onChange={handleSelectAllClick}
