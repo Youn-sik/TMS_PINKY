@@ -41,6 +41,9 @@ original_emb_label = None
 with open('/var/www/backend/face_cut/cloud40.json') as json_file:
     json_data = json.load(json_file)
 
+with open('/var/www/backend/face_cut/visit.json') as json_file:
+    visitor_data = json.load(json_file)
+
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("connected OK")
@@ -79,7 +82,6 @@ def on_message(client, userdata, msg):
         employee = 0
         black = 0
         stranger = 0
-
         for value in access_json['values'] :
             current_time = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
             current_time_db = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
@@ -367,7 +369,8 @@ def on_message(client, userdata, msg):
             "gender" : '',
             "employee_id" : '',
             "group_name" : '',
-            "position" : ''
+            "position" : '',
+            "avatar_type" : 0
         }
 
         camera = camera_collection.find_one({"serial_number":rfid_json['stb_sn']})
@@ -388,12 +391,20 @@ def on_message(client, userdata, msg):
                     insert_data['gender'] = user['gender']
                     insert_data['employee_id'] = user['user_id']
                     insert_data['position'] = user['position']
-                    insert_data['group_name'] = user['name']
+                    insert_data['group_name'] = group_name
+                    insert_data['avatar_type'] = 1
+
+        if(insert_data['avatar_type'] != 1) :
+            for visitor in visitor_data :
+                if(visitor == rfid) :
+                    insert_data['name'] = "방문자"
+                    insert_data['group_name'] = "손님"
+                    insert_data['avatar_type'] = 2
 
 
         client.publish('/access/RFID/result/'+rfid_json['stb_sn'], json.dumps({"stb_sn":rfid_json['stb_sn'], "values":[
             insert_data
-        ]}), 1)
+        ]},ensure_ascii=False), 1)
 
 
 
