@@ -463,6 +463,8 @@ def detect_face(path) :
         global original_emb_label
     # for known_face_file in known_face_files:
         face_img = cv2.imread(path)
+        # face_img = cv2.resize(face_img, dsize=(0,0), fx=0.8,fy=0.8, interpolation=cv2.INTER_AREA)
+        face_img = cv2.resize(face_img, dsize=(122,172), interpolation=cv2.INTER_AREA)
         crop_img = None
         print(face_img.shape)
         if(face_img.shape[0] * face_img.shape[1] > 1500000) :
