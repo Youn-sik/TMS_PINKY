@@ -20,6 +20,7 @@ from ast import literal_eval
 import paho.mqtt.client as mqtt
 import tracemalloc
 import ssl
+import re
 my_client = MongoClient("mongodb://localhost:27017/")
 db = my_client.get_database("cloud40")
 acc_collection = db.get_collection('accesses')
@@ -51,13 +52,12 @@ s.connect(("8.8.8.8", 80))
 server_ip = s.getsockname()[0]
 
 def on_message(client, userdata, msg):
-
     global users
     if(msg.topic.find("/access/realtime/") != -1):
         print("/access/realtime/")
         access_json = json.loads(msg.payload)
         camera = camera_collection.find_one({"serial_number":access_json['stb_sn']})
-        auth = "^"+camera["authority"]
+        auth = camera["authority"]
         if(camera["authority"] == "admin") :
             auth = ''
 
@@ -108,7 +108,7 @@ def on_message(client, userdata, msg):
                 name = 'unknown'
                 avatar_type = 3
             else :
-                recog_result,max_sim,max_name,max_type,max_gender,max_employee_id,max_group_id,max_position = recog_face(users)
+                recog_result,max_sim,max_name,max_type,max_gender,max_employee_id,max_group_id,max_position = recog_face(users,auth)
 
                 if(max_group_id != '') :
                     cursor = group_collection.find({"_id":ObjectId(max_group_id)})
@@ -357,6 +357,46 @@ def on_message(client, userdata, msg):
             users.append(user)
         random.shuffle(users)
 
+    elif(msg.topic.find("/access/RFID/") != 1) :
+        print("/access/RFID/")
+        rfid_json = json.loads(msg.payload)
+        rfid = rfid_json['RFID']
+
+        insert_data = {
+            'name' : "unknown",
+            "gender" : '',
+            "employee_id" : '',
+            "group_name" : '',
+            "position" : ''
+        }
+
+        camera = camera_collection.find_one({"serial_number":rfid_json['stb_sn']})
+        auth = camera["authority"]
+        if(camera["authority"] == "admin") :
+            auth = ''
+
+        for user in users :
+            if(user.get("rfid")) :
+                if(user['rfid'] == rfid) :
+
+                    # 그룹 찾기
+                    cursor = group_collection.find({"_id":ObjectId(user['groups_obids'][0])})
+                    for group in cursor :
+                        group_name = group['name']
+
+                    insert_data['name'] = user['name']
+                    insert_data['gender'] = user['gender']
+                    insert_data['employee_id'] = user['user_id']
+                    insert_data['position'] = user['position']
+                    insert_data['group_name'] = user['name']
+
+
+        client.publish('/access/RFID/result/'+rfid_json['stb_sn'], json.dumps({"stb_sn":rfid_json['stb_sn'], "values":[
+            insert_data
+        ]}), 1)
+
+
+
 
 
 
@@ -482,7 +522,7 @@ def getClosestFace(emb):
 
     return closest_sim, closest_label
 
-def recog_face(users) :
+def recog_face(users,auth) :
     result = []
     max_sim = 0
     max_name = 'unknown'
@@ -494,6 +534,9 @@ def recog_face(users) :
     max_type = 3
     start = time.time()
     for emb in users:
+        # print(auth,emb['authority'])
+        if(re.match(auth,emb['authority']) is None) :
+            continue
         # if(emb['name'].find("샘플") == -1):
         face = np.array(emb["face_detection"])
         # face = face.flatten()
@@ -538,6 +581,7 @@ client.on_disconnect = on_disconnect
 client.on_message = on_message
 client.connect('localhost', 1883)
 client.subscribe("/access/realtime/+")
+client.subscribe("/access/RFID/+")
 client.subscribe("/user/add/+")
 client.subscribe("/user/edit/+")
 client.subscribe("/stranger/add/+")
