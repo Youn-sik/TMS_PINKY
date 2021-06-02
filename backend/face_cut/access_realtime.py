@@ -359,7 +359,7 @@ def on_message(client, userdata, msg):
             users.append(user)
         random.shuffle(users)
 
-    elif(msg.topic.find("/access/RFID/") != 1) :
+    elif(msg.topic.find("/access/RFID/") != -1) :
         print("/access/RFID/")
         rfid_json = json.loads(msg.payload)
         rfid = rfid_json['RFID']
@@ -406,6 +406,52 @@ def on_message(client, userdata, msg):
             insert_data
         ]},ensure_ascii=False), 1)
 
+    elif(msg.topic.find("/access/QR/") != -1) :
+        print("/access/QR/")
+        qr_json = json.loads(msg.payload)
+        qr = qr_json['qrData']
+
+        insert_data = {
+            'name' : "unknown",
+            "gender" : '',
+            "employee_id" : '',
+            "group_name" : '',
+            "position" : '',
+            "avatar_type" : 0
+        }
+
+        camera = camera_collection.find_one({"serial_number":qr_json['stb_sn']})
+        auth = camera["authority"]
+        if(camera["authority"] == "admin") :
+            auth = ''
+
+        for user in users :
+            if(user.get("rfid")) :
+                if(user['rfid'] == qr) :
+
+                    # 그룹 찾기
+                    cursor = group_collection.find({"_id":ObjectId(user['groups_obids'][0])})
+                    for group in cursor :
+                        group_name = group['name']
+
+                    insert_data['name'] = user['name']
+                    insert_data['gender'] = user['gender']
+                    insert_data['employee_id'] = user['user_id']
+                    insert_data['position'] = user['position']
+                    insert_data['group_name'] = group_name
+                    insert_data['avatar_type'] = 1
+
+        if(insert_data['avatar_type'] != 1) :
+            for visitor in visitor_data :
+                if(visitor == qr) :
+                    insert_data['name'] = "방문자"
+                    insert_data['group_name'] = "손님"
+                    insert_data['avatar_type'] = 2
+
+
+        client.publish('/access/QR/result/'+qr_json['stb_sn'], json.dumps({"stb_sn":qr_json['stb_sn'], "values":[
+            insert_data
+        ]},ensure_ascii=False), 1)
 
 
 
@@ -461,9 +507,7 @@ rec_name.prepare(-1)
 def detect_face(path) :
         global original_emb
         global original_emb_label
-    # for known_face_file in known_face_files:
         face_img = cv2.imread(path)
-        # face_img = cv2.resize(face_img, dsize=(0,0), fx=0.8,fy=0.8, interpolation=cv2.INTER_AREA)
         face_img = cv2.resize(face_img, dsize=(122,172), interpolation=cv2.INTER_AREA)
         crop_img = None
         print(face_img.shape)
@@ -595,6 +639,7 @@ client.on_message = on_message
 client.connect('localhost', 1883)
 client.subscribe("/access/realtime/+")
 client.subscribe("/access/RFID/+")
+client.subscribe("/access/QR/+")
 client.subscribe("/user/add/+")
 client.subscribe("/user/edit/+")
 client.subscribe("/stranger/add/+")
