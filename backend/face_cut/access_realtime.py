@@ -613,8 +613,8 @@ def recog_face(users,auth) :
             max_type = emb['type']
             max_position = emb['position']
 
-        if(max_sim >= 0.625):
-            break
+        # if(max_sim >= 0.625):
+        #     break
     print("time :", time.time() - start)
     return result,max_sim,max_name,max_type,max_gender,max_employee_id,max_group_id,max_position
 
