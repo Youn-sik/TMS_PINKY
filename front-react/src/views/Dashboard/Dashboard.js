@@ -4,7 +4,6 @@ import { Grid } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CardHeader from '@material-ui/core/CardHeader';
 import axios from 'axios';
-import mqtt from 'mqtt';
 import {
   Employee,
   Visitor,
@@ -13,12 +12,9 @@ import {
   Device,
   Access,
   TempAlert,
-  DeviceErrors,
-  Attendance
 } from './components';
 import './Dashboard.css';
-import {base_url as in_base_url,out_base_url,mqtt_url} from 'server.json'
-import { useSnackbar } from 'notistack';
+import {base_url as in_base_url,out_base_url} from 'server.json'
 
 let currentUrl = window.location.href
 let base_url = in_base_url
@@ -26,17 +22,6 @@ console.log(currentUrl.indexOf("172.16.33.130"))
 if(currentUrl.indexOf("172.16.33.130") <= -1) {
   base_url = out_base_url
 }
-
-
-let message = false;
-
-// const client = mqtt.connect('ws://'+mqtt_url+':8083/mqtt');
-
-// client.on('connect', () => {
-//   console.log('test');
-//   client.subscribe('/access/realtime/result/+');
-//   client.subscribe('/access/high_temp_realtime/result/+');
-// });
 
 const useStyles = makeStyles(theme => ({
   root: {

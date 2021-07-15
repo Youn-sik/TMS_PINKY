@@ -9,7 +9,6 @@ import {
   Button,
   Typography
 } from '@material-ui/core';
-import axios from 'axios';
 import PropTypes from 'prop-types';
 import ImageUploader from 'react-images-upload';
 import './image.css';

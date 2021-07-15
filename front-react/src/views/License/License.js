@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/styles';
 import  axios from 'axios';
 import  {base_url as in_base_url,out_base_url} from 'server.json';

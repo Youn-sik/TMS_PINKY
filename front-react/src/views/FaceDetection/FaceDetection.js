@@ -1,12 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import ImageUploader from 'react-images-upload';
 import {
   Grid,
-  Card,
-  CardContent,
-  TextField,
-  Button,
-  Typography
+  Card
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import './image.css';

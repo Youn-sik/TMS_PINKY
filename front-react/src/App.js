@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { Chart } from 'react-chartjs-2';
 import { ThemeProvider } from '@material-ui/styles';
 import validate from 'validate.js';
 import { chartjs } from './helpers';
-import { Helmet } from 'react-helmet'
 import theme from './theme';
 import 'rsuite/dist/styles/rsuite-default.css';
 import 'react-perfect-scrollbar/dist/css/styles.css';
@@ -13,13 +12,11 @@ import './assets/scss/index.scss';
 import validators from './common/validators';
 import Routes from './Routes';
 import axios from 'axios';
-import { Base64 } from 'js-base64';
 import { SnackbarProvider } from 'notistack';
 import {mqtt_url,out_mqtt_url,base_url as in_base_url,out_base_url} from 'server.json'
 import mqtt from 'mqtt';
 import { useSnackbar } from 'notistack';
 import CustomSnack from 'CustomSnack.js'
-import { KeyboardBackspace, KeyboardCapslockOutlined } from '@material-ui/icons';
 
 // window.Kakao.init("c236b82b99b895e9afd2539b91ed1579")
 

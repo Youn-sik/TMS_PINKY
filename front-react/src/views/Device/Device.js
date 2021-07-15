@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 import axios from 'axios';
-import { Stream, DeviceTable } from './components';
+import { DeviceTable } from './components';
 import {base_url as in_base_url,out_base_url} from 'server.json';
 
 let currentUrl = window.location.href

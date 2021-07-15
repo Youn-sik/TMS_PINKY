@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Switch, Redirect } from 'react-router-dom';
 
 import { RouteWithLayout } from './components';
@@ -8,7 +8,6 @@ import {
   Dashboard as DashboardView,
   License as LicenseView,
   AccessList as AccessListView,
-  AttendanceList as AttendanceListView,
   Account as AccountView,
   SignUp as SignUpView,
   SignIn as SignInView,

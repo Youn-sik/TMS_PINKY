@@ -9,7 +9,6 @@ import {
   Button,
   Typography
 } from '@material-ui/core';
-import axios from 'axios';
 import PropTypes from 'prop-types';
 import ImageUploader from 'react-images-upload';
 import emailMask from 'text-mask-addons/dist/emailMask';
@@ -26,7 +25,7 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import {base_url,mqtt_url,out_mqtt_url} from 'server.json';
+import {mqtt_url,out_mqtt_url} from 'server.json';
 import mqtt from 'mqtt';
 import moment from 'moment';
 import 'moment/locale/ko';
