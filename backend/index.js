@@ -11,9 +11,11 @@ const crypto = require('crypto');
 const schedule = require('node-schedule');
 const moment = require('moment');
 const fs = require('fs');
-require('moment-timezone'); 
+require('moment-timezone');
 moment.tz.setDefault("Asia/Seoul");
 const exec = require('child_process').exec;
+const nodemailer = require('nodemailer');
+const QRCode = require('qrcode')
 
 //model
 const User = require('./models/User')
@@ -91,7 +93,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 
 app.post('/login', async function(req, res) {
-    try {   
+    try {
         const user_id = req.body === undefined ? req.user_id : req.body.user_id
         const user_pw = req.body === undefined ? req.user_pw : req.body.user_pw
         const user = await User.findOne({ user_id: user_id })
@@ -153,8 +155,8 @@ app.get('/auth', async function(req, res) {
     if(tokenAuth.user_id) {
         const user = await User.findById({ _id: tokenAuth.user_id })
         res.send({
-            auth, 
-            user_id:tokenAuth.user_id, 
+            auth,
+            user_id:tokenAuth.user_id,
             authority : tokenAuth.authority,
             tempLimit : user.tempLimit,
             tempType : user.tempType,
@@ -164,7 +166,7 @@ app.get('/auth', async function(req, res) {
             auth
         });
     }
-    
+
 });
 
 //const mongoose = require('mongoose')
@@ -183,6 +185,44 @@ app.put('/schedule',(req,res) => {
     term = parseInt(req.body.term)
     res.send({term:term})
 })
+
+
+//메일
+app.post("/qr_mail", function(req, res, next){
+    // let email = req.body.email;
+    QRCode.toDataURL(req.body.rfid, function (err, url) {
+        let transporter = nodemailer.createTransport({
+            host: "mail.koolsign.net",
+            port: 25,
+            secure: false, // true for 465, false for other ports
+            auth: {
+            user: 'jjh@koolsign.net', // generated ethereal user
+            pass: 'jjh4222#', // generated ethereal password
+            },
+            tls: {
+                rejectUnauthorized: false
+            }
+        });
+
+        let mailOptions = {
+        from: 'jjh@koolsign.net',    // 발송 메일 주소 (위에서 작성한 gmail 계정 아이디)
+        to: req.body.mail,                     // 수신 메일 주소
+        subject: 'QRCode 공유',   // 제목
+        // text: url  // 내용
+        html:`<img src="${url}"/>`
+        };
+
+        transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+            console.log(error);
+        }
+        else {
+            console.log('Email sent: ' + info.response);
+        }
+        });
+    })
+  })
+
 
 //사진보관 기간 설정
 // let term = 28; //기본 보관 날짜 28일 4주

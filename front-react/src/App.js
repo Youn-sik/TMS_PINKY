@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { Chart } from 'react-chartjs-2';
 import { ThemeProvider } from '@material-ui/styles';
 import validate from 'validate.js';
 import { chartjs } from './helpers';
+import { Helmet } from 'react-helmet'
 import theme from './theme';
 import 'rsuite/dist/styles/rsuite-default.css';
 import 'react-perfect-scrollbar/dist/css/styles.css';
@@ -18,6 +19,9 @@ import {mqtt_url,out_mqtt_url,base_url as in_base_url,out_base_url} from 'server
 import mqtt from 'mqtt';
 import { useSnackbar } from 'notistack';
 import CustomSnack from 'CustomSnack.js'
+import { KeyboardBackspace, KeyboardCapslockOutlined } from '@material-ui/icons';
+
+// window.Kakao.init("c236b82b99b895e9afd2539b91ed1579")
 
 let currentUrl = window.location.href
 let base_url = in_base_url
@@ -168,6 +172,10 @@ export default class App extends React.Component {
     if(browserHistory.location.pathname === '/sign-in' || this.state.authority !== '') {
         return (
           <ThemeProvider theme={theme}>
+            {/* 카카오 sdk 적용 */}
+            {/* <Helmet>
+              <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+            </Helmet> */}
             <SnackbarProvider
               ref={notistackRef}
               id="mySnackBar"

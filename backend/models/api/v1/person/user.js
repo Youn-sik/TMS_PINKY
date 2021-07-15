@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 var moment = require('moment');
-require('moment-timezone'); 
-moment.tz.setDefault("Asia/Seoul"); 
+require('moment-timezone');
+moment.tz.setDefault("Asia/Seoul");
 const ObjectId = mongoose.Schema.Types.ObjectId
 
 const api_v1_person_user_Schema = new mongoose.Schema({
@@ -33,7 +33,8 @@ const api_v1_person_user_Schema = new mongoose.Schema({
     create_ut : { type: String, default: Date.now()},
     update_at : { type: String },
     update_ut : { type: String },
-    face_detection : {type: String}
+    face_detection : {type: String},
+    rfid : {type: String}
 });
 mongoose.set('useCreateIndex', true)
 api_v1_person_user_Schema.index({type: 1 });

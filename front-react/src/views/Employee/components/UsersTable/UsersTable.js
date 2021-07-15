@@ -103,6 +103,7 @@ const UsersTable = props => {
     deleteAllUsers,
     className,
     users,
+    handleQRModal,
     ...rest
   } = props;
 
@@ -445,6 +446,9 @@ const UsersTable = props => {
                     '입사일'
                   )}
                 </TableCell>
+                <TableCell>
+                  QR
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -477,6 +481,11 @@ const UsersTable = props => {
                       <TableCell>{user.mobile}</TableCell>
                       <TableCell>{user.mail}</TableCell>
                       <TableCell>{user.entered}</TableCell>
+                      <TableCell>
+                        <Button variant="contained" color="primary" onClick={()=>{handleQRModal(user.rfid,user.mail)}}>
+                          QR보기
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   );
                 })}

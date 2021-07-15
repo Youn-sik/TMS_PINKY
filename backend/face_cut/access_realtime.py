@@ -339,7 +339,7 @@ def on_message(client, userdata, msg):
 
                 avatar_file_url = "http://" + server_ip + ":3000/image/" + file_name.split('_temp')[0]+".jpg"
 
-                user_json['face_detection'] = str(detect_result.tolist())
+                user_json['face_detection'] = detect_result.tolist()
                 user_json['avatar_file_url'] = avatar_file_url
 
                 user_collection.update_one({"_id":user_objectid},{"$set":user_json})

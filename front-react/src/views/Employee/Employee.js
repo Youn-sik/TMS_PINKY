@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback,useRef } from 'react';
 import { makeStyles } from '@material-ui/styles';
-import { Grid } from '@material-ui/core';
+import { Grid,Dialog,DialogContent,Button } from '@material-ui/core';
 import axios from 'axios';
 import { Groups, UsersTable } from './components';
 import {base_url as in_base_url,out_base_url,mqtt_url,out_mqtt_url} from 'server.json';
@@ -9,6 +9,7 @@ import { saveAs } from 'file-saver'
 import moment from 'moment';
 import 'moment/locale/ko';
 import mqtt from 'mqtt';
+import QRCode from 'qrcode.react';
 
 let currentUrl = window.location.href
 let base_url = in_base_url
@@ -47,7 +48,66 @@ const Employee = props => {
   const [pages,setPages] = useState(0);
   const [usersCount,setUsersCount] = useState(0);
   const [sortHeaderType,setSortHeaderType] = useState('-_id');
+  const [QRModal, setQRModal] = useState(false);
+  const [currentQR, setCurrentQR] = useState(false);
+  const [userMail, serUserMail] = useState('')
   const rowsPerPage = 7;
+  const canvasRef = useRef();
+
+  const createKakaoButton = () => {
+    // kakao sdk script이 정상적으로 불러와졌으면 window.Kakao로 접근이 가능합니다
+    if (window.Kakao) {
+      const kakao = window.Kakao
+      setTimeout(() => {
+
+        let canvas = canvasRef.current.querySelector("canvas")
+        canvas.toBlob(function(blob) {
+          let file = new File([blob],"QRCode")
+
+          kakao.Link.uploadImage({
+            file: [file]
+          }).then(function(res){
+            console.log(res.infos.original.url)
+            kakao.Link.createDefaultButton({
+              container: '#kakao-link-btn',  // 컨테이너는 아까 위에 버튼이 쓰여진 부분 id
+              objectType: 'feed',
+              content: {  // 여기부터 실제 내용이 들어갑니다.
+                title: 'QRCode', // 본문 제목
+                imageUrl: res.infos.original.url, // 이미지
+                link: {
+                  mobileWebUrl: res.infos.original.url,
+                  webUrl: res.infos.original.url
+                }
+              },
+              buttons: [
+                {
+                  title: '자세히 보기',
+                  link: {
+                    mobileWebUrl: res.infos.original.url,
+                    webUrl: res.infos.original.url
+                  }
+                }
+              ]
+            });
+
+          });
+        })
+      },0)
+    }
+  }
+
+  const initKakao = () => {
+    // kakao sdk script이 정상적으로 불러와졌으면 window.Kakao로 접근이 가능합니다
+    if (window.Kakao) {
+      console.log("test")
+      const kakao = window.Kakao
+      // 중복 initialization 방지
+      if (!kakao.isInitialized()) {
+        // 두번째 step 에서 가져온 javascript key 를 이용하여 initialize
+        kakao.init('c236b82b99b895e9afd2539b91ed1579')
+      }
+    }
+  }
 
   const getUsers = async (headerType = '-_id') => {
     let result
@@ -73,6 +133,16 @@ const Employee = props => {
   },[page,date])
 
   useEffect(() => {
+    if(currentQR)
+      createKakaoButton()
+  },[currentQR])
+
+  useEffect(() => {
+    initKakao()
+  },[])
+
+
+  useEffect(() => {
     setPage(1)
     getUsers()
   },[clickedNode])
@@ -80,6 +150,21 @@ const Employee = props => {
   const handleDate = val => {
     setDate(val);
   };
+
+  const handleQRModal = (rfid,mail) => {
+    if(!rfid || rfid === '') {
+      alert("RFID가 존재하지 않습니다.")
+      return 0;
+    } else {
+      let _rfid = rfid
+
+      setQRModal(!QRModal)
+      if(!QRModal){
+        setCurrentQR(_rfid)
+        serUserMail(mail)
+      }
+    }
+  }
 
   const _setSearchType = (e) => {
     setSearchType(e.target.value)
@@ -197,6 +282,16 @@ const Employee = props => {
   }, [search, groups, filterGroup]);
 
   useEffect(() => {
+    // kakao link 활성화
+    // kakao_button
+    // window.Kakao.Link.createDefaultButton({
+    //   container:".kakao_button",
+    //   objectType:"feed",
+    //   content:{
+    //     title:"test"
+    //   }
+    // })
+
     client = mqtt.connect('ws://'+base_mqtt_url+':'+port+'/mqtt');
 
     client.on('connect', () => {
@@ -342,8 +437,36 @@ const Employee = props => {
     setPage(page);
   };
 
+  const exportToMail = async () => {
+    if(userMail === '') {
+      alert("메일을 입력해주세요.")
+      return ;
+    } else {
+      await axios.post(base_url + "/qr_mail" ,{
+        rfid : currentQR,
+        mail : userMail
+      })
+
+      alert("메일 전송이 완료 되었습니다.")
+    }
+  }
+
   return (
     <div className={classes.root}>
+      <Dialog onClose={handleQRModal} aria-labelledby="simple-dialog-title" open={QRModal}>
+        <DialogContent>
+          <div ref={canvasRef} style={{textAlign: "center"}}>
+            <QRCode value={currentQR} />
+          </div>
+          <Button variant="contained" style={{background: '#f0d700', color:"#3c2622", marginRight:"10px"}} id="kakao-link-btn">
+            <img src={require('../../assets/kakao.png')} width="20" height="20"></img>
+            &nbsp;&nbsp;공유
+          </Button>
+          <Button variant="contained" color="primary" onClick={exportToMail}>
+            메일 공유
+          </Button>
+        </DialogContent>
+      </Dialog>
       <Grid container spacing={4}>
         <Grid item lg={4} md={4} xl={3} xs={12}>
           <Groups
@@ -384,6 +507,7 @@ const Employee = props => {
             users={users}
             userSearch={userSearch}
             setUserSearch={setUserSearch}
+            handleQRModal={handleQRModal}
           />
         </Grid>
       </Grid>
