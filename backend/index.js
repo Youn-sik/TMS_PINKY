@@ -188,40 +188,40 @@ app.put('/schedule',(req,res) => {
 
 
 //메일
-app.post("/qr_mail", function(req, res, next){
-    // let email = req.body.email;
-    QRCode.toDataURL(req.body.rfid, function (err, url) {
-        let transporter = nodemailer.createTransport({
-            host: "mail.koolsign.net",
-            port: 25,
-            secure: false, // true for 465, false for other ports
-            auth: {
-            user: 'jjh@koolsign.net', // generated ethereal user
-            pass: 'jjh4222#', // generated ethereal password
-            },
-            tls: {
-                rejectUnauthorized: false
-            }
-        });
+// app.post("/qr_mail", function(req, res, next){
+//     // let email = req.body.email;
+//     QRCode.toDataURL(req.body.rfid, function (err, url) {
+//         let transporter = nodemailer.createTransport({
+//             host: "mail.koolsign.net",
+//             port: 25,
+//             secure: false, // true for 465, false for other ports
+//             auth: {
+//             user: 'jjh@koolsign.net', // generated ethereal user
+//             pass: 'jjh4222#', // generated ethereal password
+//             },
+//             tls: {
+//                 rejectUnauthorized: false
+//             }
+//         });
 
-        let mailOptions = {
-        from: 'jjh@koolsign.net',    // 발송 메일 주소 (위에서 작성한 gmail 계정 아이디)
-        to: req.body.mail,                     // 수신 메일 주소
-        subject: 'QRCode 공유',   // 제목
-        // text: url  // 내용
-        html:`<img src="${url}"/>`
-        };
+//         let mailOptions = {
+//         from: 'jjh@koolsign.net',    // 발송 메일 주소 (위에서 작성한 gmail 계정 아이디)
+//         to: req.body.mail,                     // 수신 메일 주소
+//         subject: 'QRCode 공유',   // 제목
+//         // text: url  // 내용
+//         html:`<img src="${url}"/>`
+//         };
 
-        transporter.sendMail(mailOptions, function(error, info){
-        if (error) {
-            console.log(error);
-        }
-        else {
-            console.log('Email sent: ' + info.response);
-        }
-        });
-    })
-  })
+//         transporter.sendMail(mailOptions, function(error, info){
+//         if (error) {
+//             console.log(error);
+//         }
+//         else {
+//             console.log('Email sent: ' + info.response);
+//         }
+//         });
+//     })
+//   })
 
 
 //사진보관 기간 설정

@@ -29,10 +29,10 @@ import {
 
 let isOut = false
 let currentUrl = window.location.href
-console.log(currentUrl.indexOf("172.16.33.130"))
-if(currentUrl.indexOf('172.16.33.130') <= -1){
-  isOut = true
-}
+// console.log(currentUrl.indexOf("172.16.33.130"))
+// if(currentUrl.indexOf('172.16.33.130') <= -1){
+//   isOut = true
+// }
 
 Date.prototype.yyyymmdd = function() {
   var yyyy = this.getFullYear().toString();
@@ -103,7 +103,7 @@ const UsersTable = props => {
     deleteAllUsers,
     className,
     users,
-    handleQRModal,
+    // handleQRModal,
     ...rest
   } = props;
 
@@ -446,9 +446,9 @@ const UsersTable = props => {
                     '입사일'
                   )}
                 </TableCell>
-                <TableCell>
+                {/* <TableCell>
                   QR
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -481,11 +481,11 @@ const UsersTable = props => {
                       <TableCell>{user.mobile}</TableCell>
                       <TableCell>{user.mail}</TableCell>
                       <TableCell>{user.entered}</TableCell>
-                      <TableCell>
+                      {/* <TableCell>
                         <Button variant="contained" color="primary" onClick={()=>{handleQRModal(user.rfid,user.mail)}}>
                           QR보기
                         </Button>
-                      </TableCell>
+                      </TableCell> */}
                     </TableRow>
                   );
                 })}

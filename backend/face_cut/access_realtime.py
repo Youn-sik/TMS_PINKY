@@ -21,6 +21,7 @@ import paho.mqtt.client as mqtt
 import tracemalloc
 import ssl
 import re
+from insightface.app import FaceAnalysis #모델 다운로드를 위한 import
 my_client = MongoClient("mongodb://localhost:27017/")
 db = my_client.get_database("cloud40")
 acc_collection = db.get_collection('accesses')
@@ -499,9 +500,11 @@ src_pts = np.array(src_pts, dtype="float32")
 mask_img = cv2.imread("/var/www/backend/face_cut/mask.png", -1)
 
 det_model = insightface.model_zoo.get_model('retinaface_r50_v1')
+# det_model = FaceAnalysis(name=['retinaface_r50_v1'])
 det_model.prepare(-1, 0.4)
 
 rec_name = insightface.model_zoo.get_model('arcface_r100_v1')
+# rec_name = FaceAnalysis(name=['arcface_r100_v1'])
 rec_name.prepare(-1)
 
 def detect_face(path) :

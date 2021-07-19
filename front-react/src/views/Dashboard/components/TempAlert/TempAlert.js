@@ -46,10 +46,10 @@ const useStyles = makeStyles(() => ({
 
 let currentUrl = window.location.href
 let isOut = false;
-console.log(currentUrl.indexOf("172.16.33.130"))
-if(currentUrl.indexOf("172.16.33.130") <= -1) {
-  isOut = true;
-}
+// console.log(currentUrl.indexOf("172.16.33.130"))
+//
+//   isOut = true;
+// }
 
 const TempAlert = props => {
   const { temp, tempLimit, tempType, className, ...rest } = props;
