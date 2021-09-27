@@ -385,17 +385,22 @@ const AccessList = props => {
 
     const ws = wb.addWorksheet("Info", {properties:{ defaultRowHeight: 50 }})
 
-    ws.addRow(['이름','타입','단말 위치','단말명','시리얼 번호','거리','온도','출입 시간'])
+    ws.addRow(['이름','성별', '생년월일','타입', '소속 학교/원', '단말 위치','단말명','시리얼 번호','온도','미세먼지(ug/m3)', 'CO2(ppm)', '등원 시간', '기상 데이터'])
     accesses.map((access,index) => {
       let temp = []
       temp.push(access['name'])
-      temp.push(access['avatar_type'] === 1 ? '사원' : access['avatar_type'] === 3 ? '미등록자' : "블랙리스트")
+      temp.push(access['gender'])
+      temp.push(access['user_id'])
+      temp.push(access['avatar_type'] === 1 ? '학생' : access['avatar_type'] === 3 ? '미등록자' : "블랙리스트")
+      temp.push(access['location'])
       temp.push(access['stb_location'])
       temp.push(access['stb_name'])
       temp.push(access['stb_sn'])
-      temp.push(String(access['avatar_distance']).substring(0,3)+"M");
       temp.push(access['avatar_temperature'].length < 4 ? access['avatar_temperature'] : access['avatar_temperature'].substring(0,4));
+      temp.push(access['dust'])
+      temp.push(access['CO2'])
       temp.push(access['access_time']);
+      temp.push(access['weather'])
 
       ws.addRow(temp)
     })
@@ -472,7 +477,7 @@ const AccessList = props => {
         <Dialog open={excelLoading}>
           <DialogContent>
             <LinearProgress style={{marginTop:"20px"}}/>
-            <p style={{width:"30vw",textAlign: 'right',padding:"10px 25px 10px 10px"}}>출입 목록을 불러오는 중입니다...</p>
+            <p style={{width:"30vw",textAlign: 'right',padding:"10px 25px 10px 10px"}}>등원 목록을 불러오는 중입니다...</p>
           </DialogContent>
         </Dialog>
         <AccessesToolbar

@@ -275,7 +275,7 @@ const UsersTable = props => {
             format="YYYY-MM-DD"
             block
             cleanable={false}
-            placeholder="입사일"
+            placeholder="입학일"
             onChange={val => {
                 dateChange([val.yyyymmdd()]);
             }}
@@ -319,10 +319,10 @@ const UsersTable = props => {
             onChange={setSearchType}
           >
             <MenuItem value={'name'}>이름</MenuItem>
-            <MenuItem value={'user_id'}>사번</MenuItem>
-            <MenuItem value={'position'}>직급</MenuItem>
-            <MenuItem value={'mobile'}>휴대폰 번호</MenuItem>
-            <MenuItem value={'mail'}>이메일</MenuItem>
+            <MenuItem value={'user_id'}>생년월일</MenuItem>
+            <MenuItem value={'position'}>학년/반</MenuItem>
+            <MenuItem value={'mobile'}>보호자 연락처</MenuItem>
+            {/* <MenuItem value={'mail'}>이메일</MenuItem> */}
           </Select>
         </div>
       </CardActions>
@@ -365,20 +365,6 @@ const UsersTable = props => {
                 <TableCell>
                   {props.users.length > 0 ? (
                     <TableSortLabel
-                      active={activeType === 'user_id'}
-                      direction={sort}
-                      onClick={() => {
-                        createSortHandler('user_id');
-                      }}>
-                      사번
-                    </TableSortLabel>
-                  ) : (
-                    '사번'
-                  )}
-                </TableCell>
-                <TableCell>
-                  {props.users.length > 0 ? (
-                    <TableSortLabel
                       active={activeType === 'gender'}
                       direction={sort}
                       onClick={() => {
@@ -393,15 +379,43 @@ const UsersTable = props => {
                 <TableCell>
                   {props.users.length > 0 ? (
                     <TableSortLabel
+                      active={activeType === 'user_id'}
+                      direction={sort}
+                      onClick={() => {
+                        createSortHandler('user_id');
+                      }}>
+                      생년월일
+                    </TableSortLabel>
+                  ) : (
+                    '생년월일'
+                  )}
+                </TableCell>
+                <TableCell>
+                  {props.users.length > 0 ? (
+                    <TableSortLabel
+                      active={activeType === 'location'}
+                      direction={sort}
+                      onClick={() => {
+                        createSortHandler('location');
+                      }}>
+                      소속 학교/원
+                    </TableSortLabel>
+                  ) : (
+                    ['소속 학교/원']
+                  )}
+                </TableCell>
+                <TableCell>
+                  {props.users.length > 0 ? (
+                    <TableSortLabel
                       active={activeType === 'position'}
                       direction={sort}
                       onClick={() => {
                         createSortHandler('position');
                       }}>
-                      직급
+                      학년/반
                     </TableSortLabel>
                   ) : (
-                    '직급'
+                    '학년/반'
                   )}
                 </TableCell>
                 <TableCell>
@@ -412,13 +426,13 @@ const UsersTable = props => {
                       onClick={() => {
                         createSortHandler('mobile');
                       }}>
-                      휴대폰번호
+                      보호자 연락처
                     </TableSortLabel>
                   ) : (
-                    '휴대폰번호'
+                    '보호자 연락처'
                   )}
                 </TableCell>
-                <TableCell>
+                {/* <TableCell>
                   {props.users.length > 0 ? (
                     <TableSortLabel
                       active={activeType === 'mail'}
@@ -431,7 +445,7 @@ const UsersTable = props => {
                   ) : (
                     '이메일'
                   )}
-                </TableCell>
+                </TableCell> */}
                 <TableCell>
                   {props.users.length > 0 ? (
                     <TableSortLabel
@@ -440,10 +454,10 @@ const UsersTable = props => {
                       onClick={() => {
                         createSortHandler('entered');
                       }}>
-                      입사일
+                      입학일
                     </TableSortLabel>
                   ) : (
-                    '입사일'
+                    '입학일'
                   )}
                 </TableCell>
                 {/* <TableCell>

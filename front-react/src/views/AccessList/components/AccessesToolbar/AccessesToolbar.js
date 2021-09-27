@@ -186,7 +186,7 @@ const AccessesToolbar = props => {
             style={{ width: '95px',marginBottom:'11px'}}
             onChange={handleTypeChange}>
             <MenuItem value="0">전체</MenuItem>
-            <MenuItem value="1">사원</MenuItem>
+            <MenuItem value="1">학생</MenuItem>
             <MenuItem value="3">미등록자</MenuItem>
             <MenuItem value="4">블랙리스트</MenuItem>
           </Select>

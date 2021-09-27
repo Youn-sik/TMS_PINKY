@@ -341,6 +341,32 @@ const AccessesTable = props => {
                     '이름'
                   )}
                 </TableCell>
+                <TableCell>
+                  {accesses.length > 0 ? (
+                    <TableSortLabel
+                      active={activeType === 'gender'}
+                      direction={sort}
+                      onClick={() => {
+                        createSortHandler('gender');
+                      }}>
+                      성별
+                    </TableSortLabel>
+                  ) : (
+                    '성별'
+                  )}
+                </TableCell>
+                <TableCell>{accesses.length > 0 ? (
+                    <TableSortLabel
+                      active={activeType === 'user_id'}
+                      direction={sort}
+                      onClick={() => {
+                        createSortHandler('user_id');
+                      }}>
+                      생년월일
+                    </TableSortLabel>
+                  ) : (
+                    ['생년',<br/>,'월일']
+                  )}</TableCell>
                 <TableCell>{accesses.length > 0 ? (
                     <TableSortLabel
                       active={activeType === 'avatar_type'}
@@ -353,6 +379,20 @@ const AccessesTable = props => {
                   ) : (
                     '타입'
                   )}</TableCell>
+                  <TableCell>
+                  {accesses.length > 0 ? (
+                    <TableSortLabel
+                      active={activeType === 'location'}
+                      direction={sort}
+                      onClick={() => {
+                        createSortHandler('location');
+                      }}>
+                      소속 학교/원
+                    </TableSortLabel>
+                  ) : (
+                    ['소속',<br/>,'학교/원']
+                  )}
+                </TableCell>
                 <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel
@@ -364,7 +404,7 @@ const AccessesTable = props => {
                       단말 위치
                     </TableSortLabel>
                   ) : (
-                    '단말 위치'
+                    ['단말',<br/>,'위치']
                   )}
                 </TableCell>
                 <TableCell>
@@ -378,7 +418,7 @@ const AccessesTable = props => {
                       단말기 이름
                     </TableSortLabel>
                   ) : (
-                    '단말기 이름'
+                    ['단말기',<br/>,'이름']
                   )}
                 </TableCell>
                 <TableCell>
@@ -392,10 +432,10 @@ const AccessesTable = props => {
                       단말기 시리얼
                     </TableSortLabel>
                   ) : (
-                    '단말기 시리얼'
+                    ['단말기',<br/>,'시리얼']
                   )}
                 </TableCell>
-                <TableCell>
+                {/* <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel
                       active={activeType === 'avatar_distance'}
@@ -408,7 +448,7 @@ const AccessesTable = props => {
                   ) : (
                     '거리'
                   )}
-                </TableCell>
+                </TableCell> */}
                 <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel
@@ -438,18 +478,60 @@ const AccessesTable = props => {
                 <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel
+                      active={activeType === ''} //#####################
+                      direction={sort}
+                      onClick={() => {
+                        createSortHandler(''); //#####################
+                      }}>
+                      미세먼지(ug/m3)
+                    </TableSortLabel>
+                  ) : (
+                    ['미세먼지',<br/>,'(ug/m3)']
+                  )}
+                </TableCell>
+                <TableCell>
+                  {accesses.length > 0 ? (
+                    <TableSortLabel
+                      active={activeType === ''} //#####################
+                      direction={sort}
+                      onClick={() => {
+                        createSortHandler(''); //#####################
+                      }}>
+                      CO2(ppm)
+                    </TableSortLabel>
+                  ) : (
+                    ['CO2',<br/>,'(ppm)']
+                  )}
+                </TableCell>
+                <TableCell>
+                  {accesses.length > 0 ? (
+                    <TableSortLabel
                       active={activeType === 'access_time'}
                       direction={sort}
                       onClick={() => {
                         createSortHandler('access_time');
                       }}>
-                      출입시간
+                      등원시간
                     </TableSortLabel>
                   ) : (
-                    '출입시간'
+                    ['등원',<br/>,'시간']
                   )}
                 </TableCell>
-                <TableCell>동작</TableCell>
+                <TableCell>
+                  {accesses.length > 0 ? (
+                    <TableSortLabel
+                      active={activeType === ''} //#####################
+                      direction={sort}
+                      onClick={() => {
+                        createSortHandler(''); //#####################
+                      }}>
+                      기상 데이터
+                    </TableSortLabel>
+                  ) : (
+                    ['기상',<br/>,'데이터']
+                  )}
+                </TableCell>
+                <TableCell>알람</TableCell>
               </TableRow>
             </TableHead>
             {

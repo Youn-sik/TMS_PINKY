@@ -54,7 +54,7 @@ const Employee = props => {
               color="textSecondary"
               gutterBottom
               variant="body2">
-                사원
+                학생
             </Typography>
             <Typography variant="h3">{props.count}명</Typography>
           </Grid>

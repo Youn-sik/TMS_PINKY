@@ -236,7 +236,7 @@ const Dashboard = props => {
             sm={12}
             xl={12}
             xs={12}>
-              <CardHeader style={{padding:0}} title="금일 출입" />
+              <CardHeader style={{padding:0}} title="금일 현황" />
           </Grid>
           <Grid
             item

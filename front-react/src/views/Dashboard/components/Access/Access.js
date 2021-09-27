@@ -62,7 +62,7 @@ const Access = props => {
         hoverBorderColor: theme.palette.white
       }
     ],
-    labels: ['미등록자','블랙리스트','사원',]
+    labels: ['미등록자','블랙리스트','학생',]
   };
 
   const options = {
@@ -104,7 +104,7 @@ const Access = props => {
       color: theme.palette.success.main
     },
     {
-      title: '사원',
+      title: '학생',
       value: props.employee,
       icon: <PermIdentity />,
       color: theme.palette.primary.main
@@ -125,7 +125,7 @@ const Access = props => {
 
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
-      <CardHeader title="주간 출입" />
+      <CardHeader title="주간 등원" />
       <Divider />
       <CardContent className={classes.cardContent}>
         <Grid

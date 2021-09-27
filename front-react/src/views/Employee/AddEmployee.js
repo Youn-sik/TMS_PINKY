@@ -308,8 +308,9 @@ const AddEmployee = props => {
   const addUser = async () => {
     if (pictures.length === 0) alert('사진을 등록해주세요');
     else if (userInfo.name === '') alert('이름을 입력해주세요');
-    else if (userInfo.location === '') alert('근무지를 입력해주세요');
-    else if (userInfo.position === '') alert('직급을 입력해주세요');
+    else if (userInfo.location === '') alert('소속을 입력해주세요');
+    else if (userInfo.position === '') alert('학년을 입력해주세요');
+    else if (userInfo.mobile === '') alert('학부모 연락처를 입력해주세요');
     else if(node._id) {
       setLoading(true);
       let base64 = await toBase64(pictures[0][0]);
@@ -416,7 +417,8 @@ const AddEmployee = props => {
                   style={{ width: '100%' }}
                   required
                   id="standard-required"
-                  label="사번"
+                  label="생년월일"
+                  placeholder="ex)2021/01/01"
                   onChange={handleChange}
                 />
               </div>
@@ -427,7 +429,8 @@ const AddEmployee = props => {
                   style={{ width: '100%' }}
                   required
                   id="standard-required"
-                  label="근무지"
+                  label="소속"
+                  placeholder="ex)가산초등학교/유치원"
                   onChange={handleChange}
                 />
               </div>
@@ -439,7 +442,8 @@ const AddEmployee = props => {
                   required
                   id="standard-required"
                   onChange={handleChange}
-                  label="직급"
+                  label="학년/반"
+                  placeholder="ex)1학년 1반"
                 />
               </div>
               <div style={{ width: '100%' }}>
@@ -447,14 +451,16 @@ const AddEmployee = props => {
                   name="mobile"
                   value={userInfo.mobile}
                   style={{ width: '100%' }}
-                  label="핸드폰 번호"
+                  id="standard-required"
+                  label="학부모 연락처 *"
                   onChange={handleChange}
+                  
                   InputProps={{
                     inputComponent: TextMaskCustom
                   }}
                 />
               </div>
-              <div style={{ width: '100%' }}>
+              {/* <div style={{ width: '100%' }}>
                 <TextField
                   name="mail"
                   value={userInfo.mail}
@@ -465,9 +471,9 @@ const AddEmployee = props => {
                     inputComponent: emailMaskCustom
                   }}
                 />
-              </div>
+              </div> */}
               <div style={{ width: '100%' }}>
-                <p style={{ marginTop:'15px' }}>입사일</p>
+                <p style={{ marginTop:'15px' }}>입학일</p>
                 <DatePicker
                   style={{ width: '100%', marginTop:'4px' }}
                   onChange={val => {

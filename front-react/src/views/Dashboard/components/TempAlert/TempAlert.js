@@ -61,7 +61,7 @@ const TempAlert = props => {
       {...rest}
       className={(clsx(classes.root, className), classes.cardStyle)}
       style={{ overflow: 'auto' }}>
-      <CardHeader title="실시간 출입 정보" />
+      <CardHeader title="실시간 등원 정보" />
       <Divider />
       <CardContent className={classes.content}>
         <TableContainer>
@@ -78,7 +78,7 @@ const TempAlert = props => {
                 <TableCell>단말명</TableCell>
                 <TableCell>시리얼번호</TableCell>
                 <TableCell>온도</TableCell>
-                <TableCell>날짜</TableCell>
+                <TableCell>시간</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

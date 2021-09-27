@@ -129,7 +129,6 @@ const AddDevice = props => {
         window.alert('단말 등록 완료.');
         history.push('/device/list');
       }
-
     }
   };
 

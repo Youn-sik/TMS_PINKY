@@ -5,7 +5,7 @@
   "private": true,
   "main": "index.js",
   "bin": {
-    "index": "/var/www/backend/index.js"
+    "index": "/home/choyounsik/문서/git/access-control/backend/index.js"
   },
   "scripts": {
     "start": "./node_modules/nodemon/bin/nodemon.js ./src/index.js",
@@ -50,7 +50,7 @@
     "mongoose": "^5.10.9",
     "mongoose-tree": "^0.2.2",
     "multer": "^1.4.2",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "node-schedule": "^1.3.2",
     "nodemailer": "^6.6.2",
     "nodemon": "^2.0.2",

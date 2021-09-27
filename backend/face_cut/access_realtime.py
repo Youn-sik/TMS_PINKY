@@ -74,6 +74,7 @@ def on_message(client, userdata, msg):
         folder_date_path = "/uploads/accesss/temp/" + time.strftime('%Y%m%d', time.localtime(time.time()))
         file_path = json_data['base_server_document'] + folder_date_path + "/" + access_json['stb_sn'] + "/"
 
+        #아바타 사진을 저장 디렉토리를 생성
         pathlib.Path(file_path).mkdir(parents=True, exist_ok=True)
 
         time_cnt = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
@@ -102,6 +103,7 @@ def on_message(client, userdata, msg):
             max_group_id = ''
             max_position = ''
             group_name = ''
+          
 
             with open(file_path+file_name, 'wb') as f:
                 f.write(imgdata)
@@ -156,8 +158,10 @@ def on_message(client, userdata, msg):
                 "gender" : max_gender,
                 "employee_id" : max_employee_id,
                 "group_name" : group_name,
-                "position" : max_position
+                "position" : max_position,
+               
             }
+
 
             insert_array.append(insert_data)
 
@@ -232,6 +236,7 @@ def on_message(client, userdata, msg):
 
     elif(msg.topic.find("/user/add/") != -1) :
         print("/user/add/")
+        print(msg)
         user_json = json.loads(msg.payload)
         user_json['groups_obids'][0] = ObjectId(user_json['groups_obids'][0])
         file_path = '/var/www/backend/image/'

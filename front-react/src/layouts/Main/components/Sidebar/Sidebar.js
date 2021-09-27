@@ -46,7 +46,7 @@ const Sidebar = props => {
       icon: <DashboardIcon />
     },
     {
-      title: '출입 관리',
+      title: '현황 관리',
       // href: '/access',
       href: '/access/records',
       icon: <SyncAltIcon />,
@@ -58,11 +58,11 @@ const Sidebar = props => {
       // ]
     },
     {
-      title: '인사관리',
+      title: '학생관리',
       href: '/users',
       children: [
         {
-          title: '사원 관리',
+          title: '학생관리 세부',
           href: '/users/employee'
         },
         {
@@ -104,7 +104,7 @@ const Sidebar = props => {
         //   href: '/stats/users'
         // },
         {
-          title: '출입 통계',
+          title: '데이터 통계',
           href: '/stats/access'
         }
       ],

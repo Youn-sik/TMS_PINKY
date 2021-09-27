@@ -466,7 +466,7 @@ const SignIn = props => {
               textAlign: 'center',
               fontWeight: 'bold'
             }}>
-            <span style={{ color: 'white' }}>K</span>oolsign&nbsp;
+            <span style={{ color: 'white' }}>SAFE </span>INNOVATION&nbsp;
           </div>
           {/* </div> */}
           {/* </div> */}
