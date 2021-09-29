@@ -111,8 +111,9 @@ function Popup() {
                     body: result[0].name+' 학생이 '+alarm+'했습니다', 
             },
             data: { 
-                title: 'title',
-                body: '{"key" : "value","key" : "value","key" : "value"}'
+                name: result[0].name,
+                user_birth: result[0].user_birth,
+                mobile: result[0].mobile,
             },
             priority: 'high'
           };
