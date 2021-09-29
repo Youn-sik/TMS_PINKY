@@ -17,6 +17,7 @@ import {mqtt_url,out_mqtt_url,base_url as in_base_url,out_base_url} from 'server
 import mqtt from 'mqtt';
 import { useSnackbar } from 'notistack';
 import CustomSnack from 'CustomSnack.js'
+import FCM from 'fcm-node';
 
 // window.Kakao.init("c236b82b99b895e9afd2539b91ed1579")
 
@@ -68,6 +69,11 @@ axios.interceptors.response.use(null, function (error) {
   return error
 });
 
+//
+var serverKey = 'AAAAfXhPMwY:APA91bHSUEqHWbWFsDucyVThOkyyxZNw0DGdS10yDKRICpzhjfpxA65tCawhoHdbRhqeINProc-NyJReIS1crul877cKgZdxidNoFgEmUtPfFC1PcVXBAfPPHtlez9ryL-KihnIUPpby';
+var fcm = new FCM(serverKey);
+//
+
 let message = false;
 let imgSrc = null;
 let auth = null;
@@ -89,6 +95,37 @@ function Popup() {
           imgSrc = result[0].avatar_file_url
           enqueueSnackbar(`${result[0].stb_location}에서 비상알림이 호출 되었습니다.|${imgSrc}`,{ variant: 'error',autoHideDuration:null});
         }
+        //
+        var alarm = '';
+        if(result[0].alarm_type == 1) alarm = '승차';
+        else if(result[0].alarm_type == 2) alarm = '하차';
+        else if(result[0].alarm_type == 3) alarm = '등원';
+        else if(result[0].alarm_type == 4) alarm = '하원';
+        if(result[0].name != 'unknown'){
+          var fcmMessage = {
+            to:'dZq8djW-SPC88u7Pm1VJuv:APA91bE1I4EykLhK1hctGmnSIsaT9gGzZRTyVdjdGBYpv2qY9mjudsLXJJBI973D-TuvuRr8Y0l5ZwTNAq6zu7nYy3pEUS4g9oyA522S24mc3U-77rhHLr8CTXArlU8zG9UjDKc6PZEK',
+                notification: {
+                    title: 'PINKY',
+                    body: result[0].name+' 학생이 '+alarm+'했습니다', 
+            },
+            data: { 
+                title: 'title',
+                body: '{"key" : "value","key" : "value","key" : "value"}'
+            }
+          };
+          
+          fcm.send(fcmMessage, function(err, response) {
+            if (err) {
+                console.log("Something has gone wrong!"+err);
+                console.log("Respponse:! "+response);
+            } else {
+                // showToast("Successfully sent with response");
+                console.log("Successfully sent with response: ", response);
+            }
+  
+          });
+        }
+        //
       }
     });
   }

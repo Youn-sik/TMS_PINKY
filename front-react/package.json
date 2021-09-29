@@ -40,6 +40,7 @@
     "date-fns": "^2.11.1",
     "exceljs": "^4.1.1",
     "face-api.js": "^0.22.2",
+    "fcm-node": "^1.6.1",
     "file-saver": "^2.0.2",
     "gsap": "^3.5.0",
     "history": "^4.9.0",
