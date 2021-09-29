@@ -41,7 +41,7 @@ const DeviceStats = props => {
   const data = {
     datasets: [
       {
-        label: '사원',
+        label: '학생',
         data: chartData.employee,
         backgroundColor: ['rgba(255, 99, 132, 0.2)'],
         borderColor: [

@@ -3,7 +3,9 @@ import { makeStyles } from '@material-ui/styles';
 import { Grid, Card, CardContent, TextField, Button } from '@material-ui/core';
 import axios from 'axios';
 import './image.css';
-import {base_url as in_base_url,out_base_url} from 'server.json';
+import {mqtt_url,out_mqtt_url,base_url as in_base_url,out_base_url} from 'server.json';
+
+import mqtt from 'mqtt';
 
 let currentUrl = window.location.href
 let base_url = in_base_url
@@ -11,6 +13,11 @@ let base_url = in_base_url
 // if(currentUrl.indexOf("172.16.33.130") <= -1) {
 //   base_url = out_base_url
 // }
+let base_mqtt_url = mqtt_url
+let port = "8083"
+
+let client
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -59,6 +66,15 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const EditDevice = props => {
+
+  useEffect(() => {
+    client = mqtt.connect('ws://'+base_mqtt_url+':'+port+'/mqtt');
+
+    return () => {
+      client.end(true)
+    };
+  },[])
+
   const deviceObject = props.location.state;
   const classes = useStyles();
   const history = props.history;
@@ -69,7 +85,9 @@ const EditDevice = props => {
     description: '',
     serial_number: '',
     status: 'N',
-    protocol: '1'
+    protocol: '1',
+    lat : '',
+    lng : ''
   });
 
   const handleDeviceChange = event => {
@@ -86,6 +104,10 @@ const EditDevice = props => {
       alert("단말 장소를 입력해주세요.")
     } else if(device.serial_number === '') {
       alert("단말 시리얼 넘버를 입력해주세요.")
+    } else if(device.getX === '') {
+      alert("위도를 입력해주세요.")
+    } else if(device.getY === '') {
+      alert("경도를 입력해주세요.")
     } else {
       let result = await axios.put(base_url + '/camera/' + deviceObject._id, {
         ...device,
@@ -101,8 +123,15 @@ const EditDevice = props => {
         props.history.push('/license')
         return 0;
       } else {
-        window.alert('단말 수정 완료.');
-        history.push('/device/list');
+        window.alert('단말 수정 완료. 단말기가 재시작 됩니다.');
+        client.publish(
+          '/control/reboot/' +device.serial_number,
+          JSON.stringify({
+            stb_sn: device.serial_number,
+            message: 'reboot'
+          })
+        );
+        setTimeout(() => {history.push('/device/list')},0);
       }
     }
   };
@@ -114,10 +143,13 @@ const EditDevice = props => {
       location: device.location,
       description: device.description,
       serial_number: device.serial_number,
+      lat : device.lat,
+      lng : device.lng,
       status: 'N'
     };
     setDevice(editedUser);
   }, [deviceObject]);
+
 
   return (
     <div className={classes.root}>
@@ -137,6 +169,7 @@ const EditDevice = props => {
                     onChange={handleDeviceChange}
                   />
                 </div>
+                <br/>
                 <div style={{ width: '100%' }}>
                   <TextField
                     name="location"
@@ -148,6 +181,7 @@ const EditDevice = props => {
                     onChange={handleDeviceChange}
                   />
                 </div>
+                <br/>
                 <div style={{ width: '100%' }}>
                   <TextField
                     name="serial_number"
@@ -156,6 +190,30 @@ const EditDevice = props => {
                     required
                     id="standard-required"
                     label="시리얼넘버"
+                    onChange={handleDeviceChange}
+                  />
+                </div>
+                <br/>
+                <div style={{ width: '100%' }}>
+                  <TextField
+                    name="lat"
+                    value={device.lat}
+                    style={{ width: '100%' }}
+                    required
+                    id="standard-required"
+                    label="위도"
+                    onChange={handleDeviceChange}
+                  />
+                </div>
+                <br/>
+                <div style={{ width: '100%' }}>
+                  <TextField
+                    name="lng"
+                    value={device.lng}
+                    style={{ width: '100%' }}
+                    required
+                    id="standard-required"
+                    label="경도"
                     onChange={handleDeviceChange}
                   />
                 </div>

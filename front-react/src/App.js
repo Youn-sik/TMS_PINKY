@@ -34,7 +34,7 @@ let port = "8083"
 const client = mqtt.connect({
   protocol:"ws",
   port:port,
-  host:base_mqtt_url,
+  host:"base_mqtt_url",
   keepalive:0,
   path:'/mqtt',
   clean: true,
@@ -46,7 +46,7 @@ client.on('error', (err) => {
 
 client.on('connect', () => {
   console.log('connected')
-  client.subscribe('/access/realtime/result/+');
+  client.subscribe('/access/realtime/check/result/+');
 });
 
 const browserHistory = createBrowserHistory();
@@ -76,7 +76,7 @@ function Popup() {
   if(!message){
     message = true;
     client.on('message', function(topic, message) {
-      if (topic.indexOf('/access/realtime/result/') > -1) {
+      if (topic.indexOf('/access/realtime/check/result/') > -1) {
         let result = JSON.parse(message.toString()).values
         let accessAuth = result[0].authority;
         let matchRe = accessAuth.match(auth)
@@ -84,6 +84,10 @@ function Popup() {
         if(matchRe && window.location.pathname !== '/sign-in' && result[0].avatar_temperature >= templimit){
           imgSrc = result[0].avatar_file_url
           enqueueSnackbar(`${result[0].stb_location}에서 고발열자(${String(result[0].avatar_temperature).substring(0,4)}℃)가 탐지 되었습니다.|${imgSrc}`,{ variant: 'error',autoHideDuration:null});
+        }
+        else if(matchRe && window.location.pathname !== '/sign-in' && result[0].alarm_type == 5){
+          imgSrc = result[0].avatar_file_url
+          enqueueSnackbar(`${result[0].stb_location}에서 비상알림이 호출 되었습니다.|${imgSrc}`,{ variant: 'error',autoHideDuration:null});
         }
       }
     });

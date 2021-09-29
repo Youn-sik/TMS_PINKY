@@ -71,7 +71,7 @@ const UsersStat = props => {
 
   const [activeType, setActiveType] = useState('time');
 
-  const [openNode, setOpenNode] = useState(['사원', '방문자', '블랙리스트']);
+  const [openNode, setOpenNode] = useState(['학생', '방문자', '블랙리스트']);
 
   const filteringGroups = (search, group) => {
     if (group.children.length > 0) {
@@ -102,7 +102,7 @@ const UsersStat = props => {
 
   const handleSearch = e => {
     let _groups = JSON.parse(JSON.stringify(groups));
-    setOpenNode(['사원', '방문자', '블랙리스트']);
+    setOpenNode(['학생', '방문자', '블랙리스트']);
     setSearch(e.target.value);
     if (e.target.value !== '') {
       let _filteredGroups = JSON.parse(

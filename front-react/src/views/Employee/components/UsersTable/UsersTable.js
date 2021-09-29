@@ -187,7 +187,7 @@ const UsersTable = props => {
   };
 
   useEffect(() => {
-    console.log(users);
+    // console.log(users);
     setSelectedObject([])
     setSelected([])
   },[page])
@@ -466,7 +466,8 @@ const UsersTable = props => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {props.users
+              {
+              props.users
                 .map((user, index) => {
                   const isItemSelected = isSelected(user._id);
                   return (
@@ -483,17 +484,17 @@ const UsersTable = props => {
                             alt="프로필사진"
                             height="90px"
                             width="70px"
-                            src={isOut ? user.avatar_file_url.replace("172.16.33.130","211.204.122.90") : user.avatar_file_url}></img>
+                            src={isOut ? user.avatar_file_url.replace("172.16.41.114","211.204.122.90") : user.avatar_file_url}></img>
                         </div>
                       </TableCell>
                       <TableCell>{user.name}</TableCell>
-                      <TableCell>{user.user_id}</TableCell>
                       <TableCell>
                         {user.gender === 1 ? '남자' : '여자'}
                       </TableCell>
+                      <TableCell>{user.user_id}</TableCell>
+                      <TableCell>{user.location}</TableCell>
                       <TableCell>{user.position}</TableCell>
                       <TableCell>{user.mobile}</TableCell>
-                      <TableCell>{user.mail}</TableCell>
                       <TableCell>{user.entered}</TableCell>
                       {/* <TableCell>
                         <Button variant="contained" color="primary" onClick={()=>{handleQRModal(user.rfid,user.mail)}}>

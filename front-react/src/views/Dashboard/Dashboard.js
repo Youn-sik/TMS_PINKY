@@ -202,7 +202,7 @@ const Dashboard = props => {
 
   useEffect(() => {
       props.client.on('message', function(topic, message) {
-        if (topic.indexOf('/access/realtime/result/') > -1) {
+        if (topic.indexOf('/access/realtime/check/result/') > -1) {
           let result = JSON.parse(message.toString()).values
           let auth = result[0].authority.split('-')
           if(props.authority === 'admin') {

@@ -125,7 +125,7 @@ const Access = props => {
 
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
-      <CardHeader title="주간 등원" />
+      <CardHeader title="주간 현황" />
       <Divider />
       <CardContent className={classes.cardContent}>
         <Grid

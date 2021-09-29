@@ -312,7 +312,7 @@ const DeviceTable = props => {
 
     client.on('connect', () => {
       console.log('mqtt was connected');
-      client.subscribe('/access/realtime/result/+');
+      client.subscribe('/access/realtime/check/result/+');
       client.subscribe('/control/log/save/+');
       client.subscribe('/control/capture/start/result/+');
       client.subscribe('/control/capture/end/result+');
@@ -986,7 +986,7 @@ const DeviceTable = props => {
               </Button>
               <br />
               <br /> */}
-              <Button
+              {/* <Button
                 variant="contained"
                 onClick={() => {
                   setDoor(originalDoor)
@@ -1000,7 +1000,7 @@ const DeviceTable = props => {
                 출입문 설정
               </Button>
               <br />
-              <br />
+              <br /> */}
               <Button
                 variant="contained"
                 onClick={() => {
@@ -1082,7 +1082,7 @@ const DeviceTable = props => {
               </Button>
               <br />
               <br /> */}
-              <Button
+              {/* <Button
                 variant="contained"
                 onClick={() => {
                   setDoor(originalDoor)
@@ -1095,7 +1095,7 @@ const DeviceTable = props => {
                 출입문 설정
               </Button>
               <br />
-              <br />
+              <br /> */}
               <Button
                 variant="contained"
                 onClick={() => {

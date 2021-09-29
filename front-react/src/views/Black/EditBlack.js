@@ -347,6 +347,8 @@ const EditBlack = props => {
                 <MenuItem value={1}>남자</MenuItem>
                 <MenuItem value={0}>여자</MenuItem>
               </Select>
+              <br/>
+              <br/>
               <div style={{ width: '100%' }}>
                 <TextField
                   name="name"
@@ -358,6 +360,7 @@ const EditBlack = props => {
                   onChange={handleChange}
                 />
               </div>
+              <br/>
               <div style={{ width: '100%' }}>
                 <TextField
                   name="location"
@@ -365,10 +368,11 @@ const EditBlack = props => {
                   style={{ width: '100%' }}
                   required
                   id="standard-required"
-                  label="장소"
+                  label="소속 학교/원"
                   onChange={handleChange}
                 />
               </div>
+              <br/>
               <div style={{ width: '100%' }}>
                 <TextField
                   name="position"
@@ -377,9 +381,10 @@ const EditBlack = props => {
                   required
                   id="standard-required"
                   onChange={handleChange}
-                  label="사유"
+                  label="학년/반"
                 />
               </div>
+              <br/>
               <div style={{ width: '100%' }}>
                 <TextField
                   name="mobile"

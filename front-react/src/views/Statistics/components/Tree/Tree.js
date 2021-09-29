@@ -191,7 +191,7 @@ const Tree = props => {
             style={{ overflow: 'auto' }}>
             {/* {groups.length ? groups.map(group => renderTree(group,0)) : <div></div>} */}
             <TreeItem
-              nodeId="사원"
+              nodeId="학생"
               label={
                 <div className={classes.labelRoot}>
                   <GroupIcon color="inherit" className={classes.labelIcon} />
@@ -199,7 +199,7 @@ const Tree = props => {
                     color="inherit"
                     variant="body2"
                     className={classes.labelText}>
-                    사원
+                    학생
                   </Typography>
                 </div>
               }

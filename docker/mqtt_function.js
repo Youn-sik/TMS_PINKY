@@ -271,6 +271,10 @@ module.exports = {
                                     message: "login",
                                     result: "ok",
                                     stb_id: camera.name,
+                                    lat: camera.lat,
+                                    lng: camera.lng,
+                                    x: camera.x,
+                                    y: camera.y,
                                     door_control : camera.door_control ? camera.door_control : null,
                                     door_days : camera.door_days ? camera.door_days : null,
                                     start_time : camera.start_time ? camera.start_time : null,
@@ -284,6 +288,10 @@ module.exports = {
                             }else{
                                 send_data = {
                                     stb_sn: camera.serial_number,
+                                    lat: camera.lat,
+                                    lng: camera.lng ,
+                                    x: camera.x ,
+                                    y: camera.y ,
                                     message: "login",
                                     result: "ok",
                                     stb_id: camera.name,

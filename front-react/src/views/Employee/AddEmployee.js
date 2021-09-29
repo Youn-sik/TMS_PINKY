@@ -317,6 +317,7 @@ const AddEmployee = props => {
       base64 = base64.replace('data:image/jpeg;base64,', '');
       base64 = base64.replace('data:image/png;base64,', '');
 
+      console.log(userInfo);
       client.publish(
         '/user/add/' + id,
         JSON.stringify({
@@ -429,7 +430,7 @@ const AddEmployee = props => {
                   style={{ width: '100%' }}
                   required
                   id="standard-required"
-                  label="소속"
+                  label="소속 학교/원"
                   placeholder="ex)가산초등학교/유치원"
                   onChange={handleChange}
                 />
@@ -452,7 +453,7 @@ const AddEmployee = props => {
                   value={userInfo.mobile}
                   style={{ width: '100%' }}
                   id="standard-required"
-                  label="학부모 연락처 *"
+                  label="보호자 연락처 *"
                   onChange={handleChange}
                   
                   InputProps={{

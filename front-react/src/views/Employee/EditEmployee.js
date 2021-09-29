@@ -393,6 +393,7 @@ const EditEmployee = props => {
                 <MenuItem value={1}>남자</MenuItem>
                 <MenuItem value={0}>여자</MenuItem>
               </Select>
+              <br/>
               <div style={{ width: '100%' }}>
                 <TextField
                   name="name"
@@ -404,6 +405,7 @@ const EditEmployee = props => {
                   onChange={handleChange}
                 />
               </div>
+              <br/>
               <div style={{ width: '100%' }}>
                 <TextField
                   name="user_id"
@@ -411,10 +413,11 @@ const EditEmployee = props => {
                   style={{ width: '100%' }}
                   required
                   id="standard-required"
-                  label="사번"
+                  label="생년월일"
                   onChange={handleChange}
                 />
               </div>
+              <br/>
               <div style={{ width: '100%' }}>
                 <TextField
                   name="location"
@@ -422,10 +425,11 @@ const EditEmployee = props => {
                   style={{ width: '100%' }}
                   required
                   id="standard-required"
-                  label="근무지"
+                  label="소속 학교/원"
                   onChange={handleChange}
                 />
               </div>
+              <br/>
               <div style={{ width: '100%' }}>
                 <TextField
                   name="position"
@@ -434,22 +438,23 @@ const EditEmployee = props => {
                   required
                   id="standard-required"
                   onChange={handleChange}
-                  label="직급"
+                  label="학년/반"
                 />
               </div>
+              <br/>
               <div style={{ width: '100%' }}>
                 <TextField
                   name="mobile"
                   value={userInfo.mobile}
                   style={{ width: '100%' }}
-                  label="핸드폰 번호"
+                  label="보호자 연락처"
                   onChange={handleChange}
                   InputProps={{
                     inputComponent: TextMaskCustom
                   }}
                 />
               </div>
-              <div style={{ width: '100%' }}>
+              {/* <div style={{ width: '100%' }}>
                 <TextField
                   name="mail"
                   value={userInfo.mail}
@@ -460,9 +465,9 @@ const EditEmployee = props => {
                     inputComponent: emailMaskCustom
                   }}
                 />
-              </div>
+              </div> */}
               <div style={{ width: '100%' }}>
-                <p style={{ marginTop:'15px' }}>입사일</p>
+                <p style={{ marginTop:'15px' }}>입학일</p>
                 <DatePicker
                   style={{ width: '100%', marginTop:'4px' }}
                   onChange={val => {

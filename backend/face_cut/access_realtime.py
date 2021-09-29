@@ -4,9 +4,11 @@ import urllib.request
 import cv2
 import numpy as np
 import os, csv
+import os.path
 from numpy.linalg import norm
 from centerface import CenterFace
 import time
+from datetime import datetime
 import codecs, json
 import random
 import shutil
@@ -23,12 +25,15 @@ import ssl
 import re
 from insightface.app import FaceAnalysis #모델 다운로드를 위한 import
 my_client = MongoClient("mongodb://localhost:27017/")
-db = my_client.get_database("cloud40")
-acc_collection = db.get_collection('accesses')
-camera_collection = db.get_collection('cameras')
-user_collection = db.get_collection('users')
-stat_collection = db.get_collection('statistics')
-group_collection = db.get_collection('groups')
+db = my_client["cloud40"]
+acc_collection = db['accesses']
+camera_collection = db['cameras']
+user_collection = db['users']
+stat_collection = db['statistics']
+group_collection = db['groups']
+
+os.environ['TZ'] = 'Asia/Seoul'
+time.tzset()
 
 users_cursor = user_collection.find({"authority":{"$regex":""}})
 users = []
@@ -42,7 +47,7 @@ original_emb_label = None
 with open('/var/www/backend/face_cut/cloud40.json') as json_file:
     json_data = json.load(json_file)
 
-with open('/var/www/backend/face_cut/visit.json') as json_file:
+with open('/var/www/backend/face_cut/cloud40.json') as json_file:
     visitor_data = json.load(json_file)
 
 def on_connect(client, userdata, flags, rc):
@@ -54,12 +59,70 @@ def on_connect(client, userdata, flags, rc):
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.connect(("8.8.8.8", 80))
 server_ip = s.getsockname()[0]
+print(server_ip)
 
 def on_message(client, userdata, msg):
     global users
-    if(msg.topic.find("/access/realtime/") != -1):
-        print("/access/realtime/")
+
+    if(msg.topic.find("/access/realtime/check/") != -1) :
+        print("/access/realtime/check/")
         access_json = json.loads(msg.payload)
+        # print(access_json)
+        insert_array = []
+       
+        for value in access_json['values'] :
+            checkVal = int(value['check'])
+
+            insert_data = {
+                "avatar_file" : value['avatar_file'],
+                'avatar_temperature' : value['avatar_temperature'],
+                'access_time' : value['access_time'],
+                'name' : value['name'],
+                "gender" : value['gender'], 
+                "user_birth" : value['user_birth'],
+                "group_name" : value['group_name'],
+                "location" : value['location'], 
+                "position" : value['position'], 
+                "mobile" : value['mobile'], 
+                "alarm_type" : value['alarm_type'],
+                'stb_name' : value['stb_name'],
+                'stb_location' : value['stb_location'],
+                "sensor_dust" : value['sensor_dust'],
+                "sensor_CO2" : value['sensor_CO2'],
+                "sensor_humidity" : value['sensor_humidity'],
+                "weather_temperature" : value['weather_temperature'],
+                "weather_rain" : value['weather_rain'],
+                "weather_humidity" : value['weather_humidity'],
+                "weather_windSpeed" : value['weather_windSpeed'],
+
+                "avatar_file_checksum" : value['avatar_file_checksum'], #
+                "avatar_type" : value['avatar_type'], #
+                'avatar_distance' : value['avatar_distance'], #
+                'avatar_contraction_data' : value['avatar_contraction_data'], #
+                'avatar_file_url' : value['avatar_file_url'], #
+                'stb_sn' : value['stb_sn'],
+                'stb_obid' : value['stb_obid'], #
+                'authority': value['authority'], #
+                "employee_id" : value['employee_id'], #
+            }
+
+            insert_array.append(insert_data)
+      
+        if(checkVal == 1) :
+            acc_collection.insert_many(insert_array)    
+            del insert_array[0]['_id']
+            client.publish('/access/realtime/check/result/'+access_json['stb_sn'], json.dumps(access_json), 1)
+        
+
+
+        # client.publish('/access/realtime/result/'+access_json['stb_sn'], json.dumps(send_data), 1)
+
+
+    elif(msg.topic.find("/access/realtime/") != -1):
+        print("/access/realtime/")
+    
+        access_json = json.loads(msg.payload)
+        # print(access_json)
         camera = camera_collection.find_one({"serial_number":access_json['stb_sn']})
         auth = camera["authority"]
         if(camera["authority"] == "admin") :
@@ -72,9 +135,8 @@ def on_message(client, userdata, msg):
         # origin_emb = origin_emb.flatten()
 
         folder_date_path = "/uploads/accesss/temp/" + time.strftime('%Y%m%d', time.localtime(time.time()))
-        file_path = json_data['base_server_document'] + folder_date_path + "/" + access_json['stb_sn'] + "/"
+        file_path = "/" + json_data['base_server_document'] + folder_date_path + "/" + access_json['stb_sn'] + "/"
 
-        #아바타 사진을 저장 디렉토리를 생성
         pathlib.Path(file_path).mkdir(parents=True, exist_ok=True)
 
         time_cnt = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
@@ -85,6 +147,7 @@ def on_message(client, userdata, msg):
         black = 0
         stranger = 0
         for value in access_json['values'] :
+            auto = value['auto']
             current_time = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
             current_time_db = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
             current_date = time.strftime('%Y%m%d', time.localtime(time.time()))
@@ -103,7 +166,39 @@ def on_message(client, userdata, msg):
             max_group_id = ''
             max_position = ''
             group_name = ''
-          
+            
+            ###
+            # alarm_type => 1:on, 2:off, 3:attend, 4:gohome, 5:emergency
+            alarm_type = int(value['alarm_type'])
+            
+            for sensor_values in value['sensor']:
+                if sensor_values['type'] == 'dust':
+                    sensor_dust = sensor_values['value']
+                elif sensor_values['type'] == 'CO2':
+                    sensor_CO2 = sensor_values['value']
+                elif sensor_values['type'] == 'humidity':
+                    sensor_humidity = sensor_values['value']
+                else :
+                    sensor_dust=''
+                    sensor_CO2 = ''
+                    sensor_humidity = ''
+            
+            for weather_values in value['weather']:
+                if weather_values['type'] == 'temperature':
+                    weather_temperature = weather_values['value']
+                elif weather_values['type'] == 'rain':
+                    weather_rain = weather_values['value']
+                elif weather_values['type'] == 'humidity':
+                    weather_humidity = weather_values['value']
+                elif weather_values['type'] == 'windSpeed':
+                    weather_windSpeed = weather_values['value']
+                else :
+                    weather_temperature=''
+                    weather_rain = ''
+                    weather_humidity = ''
+                    weather_windSpeed = ''
+            ###
+            
 
             with open(file_path+file_name, 'wb') as f:
                 f.write(imgdata)
@@ -112,8 +207,20 @@ def on_message(client, userdata, msg):
             if result is None :
                 name = 'unknown'
                 avatar_type = 3
+
+                if alarm_type == 5:
+                    max_sim = 0
+                    max_name = ''
+                    max_type = 4
+                    max_gender = ''
+                    max_employee_id = ''
+                    max_group_id = ''
+                    max_position = ''
+                    max_location = ''
+                    max_mobile = ''
+                
             else :
-                recog_result,max_sim,max_name,max_type,max_gender,max_employee_id,max_group_id,max_position = recog_face(users,auth)
+                recog_result,max_sim,max_name,max_type,max_gender,max_employee_id,max_group_id,max_position,max_location,max_mobile = recog_face(users,auth)
 
                 if(max_group_id != '') :
                     cursor = group_collection.find({"_id":ObjectId(max_group_id)})
@@ -132,7 +239,7 @@ def on_message(client, userdata, msg):
                 stranger += 1
 
 
-            os.remove(file_path+file_name)
+            # os.remove(file_path+file_name)
             file_name = access_json['stb_sn']+"_"+name+"_"+str(avatar_type)+"_"+value['avatar_temperature']+"_"+time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))+".png"
 
             with open(file_path+file_name, 'wb') as f:
@@ -140,28 +247,39 @@ def on_message(client, userdata, msg):
 
             upload_url = "http://" + server_ip + ":3000" + "/uploads/accesss/temp/" + time.strftime('%Y%m%d', time.localtime(time.time())) + "/" + access_json['stb_sn'] + "/" + file_name
 
+
             insert_data = {
-                "avatar_file" : 'avatar_file',
-                "avatar_file_checksum" : "element.avatar_file_checksum",
-                "avatar_type" : avatar_type,
-                'avatar_distance' : value['avatar_distance'],
-                'avatar_contraction_data' : 'element.avatar_contraction_data',
-                'avatar_file_url' : upload_url,
+                "avatar_file" : value['avatar_file'],
                 'avatar_temperature' : value['avatar_temperature'],
                 'access_time' : current_time_db,
-                'stb_sn' : access_json['stb_sn'],
-                'stb_obid' : str(camera['_id']),
+                'name' : name,
+                "gender" : max_gender, 
+                "user_birth" : max_employee_id,
+                "group_name" : group_name,
+                "location" : max_location, 
+                "position" : max_position, 
+                "mobile" : max_mobile, 
+                "alarm_type" : alarm_type,
                 'stb_name' : camera['name'],
                 'stb_location' : camera['location'],
-                'authority': camera['authority'],
-                'name' : name,
-                "gender" : max_gender,
-                "employee_id" : max_employee_id,
-                "group_name" : group_name,
-                "position" : max_position,
-               
-            }
+                "sensor_dust" : sensor_dust,
+                "sensor_CO2" : sensor_CO2,
+                "sensor_humidity" : sensor_humidity,
+                "weather_temperature" : weather_temperature,
+                "weather_rain" : weather_rain,
+                "weather_humidity" : weather_humidity,
+                "weather_windSpeed" : weather_windSpeed,
 
+                "avatar_file_checksum" : "element.avatar_file_checksum", #
+                "avatar_type" : avatar_type, #
+                'avatar_distance' : value['avatar_distance'], #
+                'avatar_contraction_data' : 'element.avatar_contraction_data', #
+                'avatar_file_url' : upload_url, #
+                'stb_sn' : access_json['stb_sn'],
+                'stb_obid' : str(camera['_id']), #
+                'authority': camera['authority'], #
+                "employee_id" : max_employee_id, #
+            }
 
             insert_array.append(insert_data)
 
@@ -177,6 +295,8 @@ def on_message(client, userdata, msg):
                     ]
                 }
             )
+
+            
 
             if(todayStatistics) :
                 stat_collection.update_one({"serial_number":access_json['stb_sn'],"access_date":current_date_stat},{
@@ -224,27 +344,38 @@ def on_message(client, userdata, msg):
                     'stranger' : stranger
                 })
 
-
-        acc_collection.insert_many(insert_array)
-        del insert_array[0]['_id']
         send_data = {
             'stb_sn': access_json['stb_sn'],
             'values': insert_array
         }
-        client.publish('/access/realtime/result/'+access_json['stb_sn'], json.dumps(send_data), 1)
 
+        if(auto == 0) : 
+            print('auto: ' + str(auto))
+
+        else :
+            print('auto: ' + str(auto))
+            acc_collection.insert_many(insert_array)    
+            del insert_array[0]['_id']
+            
+            client.publish('/access/realtime/check/result/'+access_json['stb_sn'], json.dumps(send_data), 1)      
+
+        client.publish('/access/realtime/result/'+access_json['stb_sn'], json.dumps(send_data), 1)
 
     elif(msg.topic.find("/user/add/") != -1) :
         print("/user/add/")
-        print(msg)
         user_json = json.loads(msg.payload)
+        # print('----')
+        # print(user_json)
+        # print('----')
         user_json['groups_obids'][0] = ObjectId(user_json['groups_obids'][0])
         file_path = '/var/www/backend/image/'
         file_name = 'temp_'+user_json['id']+".jpg"
         imgdata = base64.b64decode(user_json['avatar_file'])
+        # print(file_path+file_name)
 
-        with open(file_path+file_name, 'wb') as f:
+        with open(file_path+file_name, 'wb') as f: 
             f.write(imgdata)
+        
 
         result = []
         result = detect_face(file_path+file_name)
@@ -261,12 +392,15 @@ def on_message(client, userdata, msg):
             user_json['avatar_file_url'] = ''
             user_json['avatar_file'] = ''
 
+            
             user_collection.insert_one(user_json)
             user_objectid = str(user_json['_id'])
 
             file_name = user_objectid+"profile.jpg"
 
             avatar_file_url = upload_url = "http://" + server_ip + ":3000" + "/image/" + file_name
+
+            print(avatar_file_url)
 
             user_collection.update_one({"_id":ObjectId(user_objectid)},{"$set":{"avatar_file_url":avatar_file_url}})
 
@@ -285,8 +419,7 @@ def on_message(client, userdata, msg):
         print("/stranger/add/")
         user_json = json.loads(msg.payload)
         url_split = user_json['avatar_file_url'].split(":3000")
-        file_path = "/var/www/backend"+url_split[1]
-
+        file_path = "/var/www/backend/"+url_split[1]
         detect_result = detect_face(file_path)
 
         if detect_result is None :
@@ -459,15 +592,6 @@ def on_message(client, userdata, msg):
             insert_data
         ]},ensure_ascii=False), 1)
 
-
-
-
-
-
-
-
-
-
 def on_disconnect(client, userdata, flags, rc=0):
     print(str(rc))
 
@@ -505,10 +629,12 @@ src_pts = np.array(src_pts, dtype="float32")
 mask_img = cv2.imread("/var/www/backend/face_cut/mask.png", -1)
 
 det_model = insightface.model_zoo.get_model('retinaface_r50_v1')
+print(det_model)
 # det_model = FaceAnalysis(name=['retinaface_r50_v1'])
 det_model.prepare(-1, 0.4)
 
 rec_name = insightface.model_zoo.get_model('arcface_r100_v1')
+
 # rec_name = FaceAnalysis(name=['arcface_r100_v1'])
 rec_name.prepare(-1)
 
@@ -597,6 +723,9 @@ def recog_face(users,auth) :
     max_employee_id = ''
     max_employee_id = ''
     max_type = 3
+    max_location = ''
+    max_mobile = ''
+    max_gender_text = ''
     start = time.time()
     for emb in users:
         # print(auth,emb['authority'])
@@ -617,14 +746,20 @@ def recog_face(users,auth) :
             else:
                 max_employee_id = "0"
             # max_employee_id = emb['user_id'] if emb['user_id'] else "0"
+            max_location = emb['location']
+            max_mobile = emb['mobile']
             max_gender = emb['gender']
             max_type = emb['type']
             max_position = emb['position']
+            # if 'gender'==1 in emb:
+            #     max_gender_text = '남자'
+            # else:
+            #     max_gender_text = '여자'
 
         # if(max_sim >= 0.625):
         #     break
     print("time :", time.time() - start)
-    return result,max_sim,max_name,max_type,max_gender,max_employee_id,max_group_id,max_position
+    return result,max_sim,max_name,max_type,max_gender,max_employee_id,max_group_id,max_position,max_location,max_mobile
 
 # def interval_db() :
 #     results=collection.find({"detected":{"$exists":False}})
@@ -646,6 +781,7 @@ client.on_disconnect = on_disconnect
 client.on_message = on_message
 client.connect('localhost', 1883)
 client.subscribe("/access/realtime/+")
+client.subscribe("/access/realtime/check/+")
 client.subscribe("/access/RFID/+")
 client.subscribe("/access/QR/+")
 client.subscribe("/user/add/+")

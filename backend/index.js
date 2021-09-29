@@ -94,6 +94,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.post('/login', async function(req, res) {
     try {
+        console.log(req.body);
         const user_id = req.body === undefined ? req.user_id : req.body.user_id
         const user_pw = req.body === undefined ? req.user_pw : req.body.user_pw
         const user = await User.findOne({ user_id: user_id })

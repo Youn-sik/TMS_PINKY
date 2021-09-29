@@ -150,7 +150,7 @@ const UsersTable = props => {
                           </TableCell>
                           <TableCell className={classes.redFont}>
                             {access.avatar_type === 1
-                              ? '사원'
+                              ? '학생'
                               : access.avatar_type === 2
                               ? '방문자'
                               : access.avatar_type === 4
@@ -206,7 +206,7 @@ const UsersTable = props => {
                           </TableCell>
                           <TableCell>
                             {access.avatar_type === 1
-                              ? '사원'
+                              ? '학생'
                               : access.avatar_type === 2
                               ? '방문자'
                               : access.avatar_type === 4

@@ -116,6 +116,8 @@ const Employee = props => {
     } else {
       result = await axios.get(base_url + `/user?rowsPerPage=${rowsPerPage}&page=${page}&searchType=${searchType}&entered=${date[0]}&headerType=${headerType}&search=${userSearch}&type=1&auth=`+props.authority)
     }
+    // console.log('result:'+JSON.stringify(result));
+    // console.log('result.data:'+JSON.stringify(result.data));
 
     if(result && result.data.count >= 0) {
       setUsersCount(result.data.count);
@@ -204,21 +206,19 @@ const Employee = props => {
 
     const ws = wb.addWorksheet("Info", {properties:{ defaultRowHeight: 50 }})
 
-    ws.addRow(['이름','사번', '성별','근무지','부서','직급','휴대폰 번호','이메일','생성일'])
+    ws.addRow(['이름','성별', '생년월일','소속 학교/원','학년/반','보호자 연락처','입학일'])
 
     if(users.length > 0) {
       users.map((user,index) => {
         let temp = []
 
         temp.push(user['name']);
-        temp.push(user['user_id']);
         temp.push(user['gender'] === 1 ? '남자' : '여자')
+        temp.push(user['user_id']);
         temp.push(user['location']);
-        temp.push(user['department_id']);
         temp.push(user['position']);
-        temp.push(user['mail']);
+        temp.push(user['mobile']);
         temp.push(user['entered']);
-        temp.push(user['create_at']);
 
         ws.addRow(temp)
       })
@@ -450,6 +450,7 @@ const Employee = props => {
   //     alert("메일 전송이 완료 되었습니다.")
   //   }
   // }
+  
 
   return (
     <div className={classes.root}>

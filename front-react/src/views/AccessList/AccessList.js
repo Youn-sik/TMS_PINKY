@@ -139,12 +139,14 @@ const AccessList = props => {
       //   extension: 'png'
       // })
 
+
+      
       temp.push(access['name']);
-      temp.push(access['avatar_type']);
+      temp.push(access['avatar_type']); 
       temp.push(access['stb_name'])
       temp.push(access['stb_sn'])
       temp.push(access['stb_location'])
-      temp.push(access['avatar_type'] === 1 ? '사원' : access['avatar_type'] === 3 ? '미등록자' : '블랙리스트');
+      temp.push(access['avatar_type'] === 1 ? '학생' : access['avatar_type'] === 3 ? '미등록자' : '블랙리스트'); 
       temp.push(String(access['avatar_distance']).substring(0,3)+"M");
       temp.push(access['avatar_temperature'].length < 4 ? access['avatar_temperature'] : access['avatar_temperature'].substring(0,4));
       temp.push(access['access_time']);
@@ -385,22 +387,30 @@ const AccessList = props => {
 
     const ws = wb.addWorksheet("Info", {properties:{ defaultRowHeight: 50 }})
 
-    ws.addRow(['이름','성별', '생년월일','타입', '소속 학교/원', '단말 위치','단말명','시리얼 번호','온도','미세먼지(ug/m3)', 'CO2(ppm)', '등원 시간', '기상 데이터'])
+    ws.addRow(['이름','성별', '타입','생년월일', '소속 학교/원','학년/반', '단말 위치','단말기 이름','단말기 시리얼','온도','미세먼지(ug/m3)', 'CO2(ppm)', '등원 시간', '기상 데이터', '알람'])
     accesses.map((access,index) => {
       let temp = []
       temp.push(access['name'])
-      temp.push(access['gender'])
-      temp.push(access['user_id'])
-      temp.push(access['avatar_type'] === 1 ? '학생' : access['avatar_type'] === 3 ? '미등록자' : "블랙리스트")
+      temp.push(access['gender'] == 1 ? '남자' : '여자')
+      temp.push(access['alarm_type'] === 1 ? '승차' : access['alarm_type'] === 2 ? '하차' : access['alarm_type'] === 3 ? '등원' : access['alarm_type'] === 4 ? '하원' : '비상')
+      temp.push(access['employee_id'])
       temp.push(access['location'])
+      temp.push(access['position'])
       temp.push(access['stb_location'])
       temp.push(access['stb_name'])
       temp.push(access['stb_sn'])
       temp.push(access['avatar_temperature'].length < 4 ? access['avatar_temperature'] : access['avatar_temperature'].substring(0,4));
-      temp.push(access['dust'])
-      temp.push(access['CO2'])
-      temp.push(access['access_time']);
-      temp.push(access['weather'])
+      temp.push(access['sensor_dust'])
+      temp.push(access['sensor_CO2'])
+      temp.push(access['access_time'])
+      let weather_tmp = [];
+      weather_tmp.push("온도: "+access['weather_temperature'] + "°C ")
+      weather_tmp.push("강수: "+access['weather_rain'])
+      weather_tmp.push("습도: "+access['weather_humidity'] + "%")
+      weather_tmp.push("풍속: "+access['weather_windSpeed'] + "m/s")
+      let weather = weather_tmp.toString()
+      temp.push(weather)
+      temp.push(access['alarm_type'] == 5 ? access['access_time'] : "")
 
       ws.addRow(temp)
     })

@@ -102,7 +102,7 @@ const Statistics = props => {
 
       let data = JSON.parse(JSON.stringify(peopleData));
 
-      data.employee.unshift('사원')
+      data.employee.unshift('학생')
       data.stranger.unshift('미등록자')
       data.black.unshift('블랙리스트')
 

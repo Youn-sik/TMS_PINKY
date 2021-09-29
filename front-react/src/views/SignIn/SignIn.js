@@ -423,6 +423,7 @@ const SignIn = props => {
           user_pw: formState.values.password
         })
 
+      console.log(result);
       if(!result.data && !result.response) {
         alert('서버와의 연결이 끊겼습니다.')
       } else if(result.response && result.response.status === 400) {

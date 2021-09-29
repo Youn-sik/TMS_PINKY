@@ -125,13 +125,12 @@ const Black = props => {
 
     const ws = wb.addWorksheet("Info", {properties:{ defaultRowHeight: 50 }})
 
-    ws.addRow(['사진', '이름', '성별','장소','사유','휴대폰 번호','생성일'])
+    ws.addRow(['이름','성별','소속 학교/원','학년/반','휴대폰 번호','생성일'])
 
     if(search === '' && users.length > 0) {
       users.map((user,index) => {
         let temp = []
 
-        temp.push('');
         temp.push(user['name']);
         temp.push(user['gender'] === 1 ? '남자' : '여자')
         temp.push(user['location']);

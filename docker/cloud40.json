@@ -2,7 +2,7 @@
     "base_url": "http://127.0.0.1/",
     "base_server_document": "/var/www/backend",
     "base_document": "/var/www/docker/",
-    "base_local_url": "http://172.16.40.252",
+    "base_local_url": "http://172.16.41.114",
     "local_url": "127.0.0.1",
 
     "mongodb_host": "127.0.0.1",

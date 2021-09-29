@@ -332,10 +332,10 @@ const UsersTable = props => {
                       onClick={() => {
                         createSortHandler('location');
                       }}>
-                      장소
+                      소속 학교/원
                     </TableSortLabel>
                   ) : (
-                    '장소'
+                    '소속 학교/원'
                   )}
                 </TableCell>
                 <TableCell>
@@ -346,10 +346,10 @@ const UsersTable = props => {
                       onClick={() => {
                         createSortHandler('position');
                       }}>
-                      사유
+                      학년/반
                     </TableSortLabel>
                   ) : (
-                    '사유'
+                    '학년/반'
                   )}
                 </TableCell>
                 <TableCell>
@@ -360,10 +360,10 @@ const UsersTable = props => {
                       onClick={() => {
                         createSortHandler('mobile');
                       }}>
-                      휴대폰번호
+                      휴대폰 번호
                     </TableSortLabel>
                   ) : (
-                    '휴대폰번호'
+                    '휴대폰 번호'
                   )}
                 </TableCell>
                 <TableCell>

@@ -348,8 +348,9 @@ const AddStranger = props => {
     }
     if (type === 1) {
       if (userInfo.name === '') alert('이름을 입력해주세요');
-      else if (userInfo.location === '') alert('근무지를 입력해주세요');
-      else if (userInfo.position === '') alert('직급을 입력해주세요');
+      else if (userInfo.location === '') alert('소속을 입력해주세요');
+      else if (userInfo.position === '') alert('학년을 입력해주세요');
+      else if (userInfo.mobile === '') alert('학부모 연락처를 입력해주세요');
       else if(!selectedGroup._id) {
         alert('그룹을 선택해주세요')
       } else {
@@ -510,7 +511,8 @@ const AddStranger = props => {
             style={{ width: '100%' }}
             required
             id="standard-required"
-            label="사번"
+            label="생년월일"
+            placeholder="ex)2021/01/01"
             onChange={handleChange}
           />
         </div>
@@ -521,7 +523,8 @@ const AddStranger = props => {
             style={{ width: '100%' }}
             required
             id="standard-required"
-            label="근무지"
+            placeholder="ex)가산초등학교/유치원"
+            label="소속"
             onChange={handleChange}
           />
         </div>
@@ -533,7 +536,8 @@ const AddStranger = props => {
             required
             id="standard-required"
             onChange={handleChange}
-            label="직급"
+            placeholder="ex)1학년 1반"
+            label="학년/반"
           />
         </div>
         <div style={{ width: '100%' }}>
@@ -541,14 +545,15 @@ const AddStranger = props => {
             name="mobile"
             value={userInfo.mobile}
             style={{ width: '100%' }}
-            label="핸드폰 번호"
+            label="보호자 연락처 *"
             onChange={handleChange}
+            id="standard-required"
             InputProps={{
               inputComponent: TextMaskCustom
             }}
           />
         </div>
-        <div style={{ width: '100%' }}>
+        {/* <div style={{ width: '100%' }}>
           <TextField
             name="mail"
             value={userInfo.mail}
@@ -559,9 +564,9 @@ const AddStranger = props => {
               inputComponent: emailMaskCustom
             }}
           />
-        </div>
+        </div> */}
         <div style={{ width: '100%' }}>
-                <p style={{ marginTop:'15px' }}>입사일</p>
+                <p style={{ marginTop:'15px' }}>입학일</p>
                 <DatePicker
                   style={{ width: '100%', marginTop:'4px' }}
                   onChange={val => {
@@ -680,7 +685,7 @@ const AddStranger = props => {
             }}
           />
         </div>
-        <div style={{ width: '100%' }}>
+        {/* <div style={{ width: '100%' }}>
           <TextField
             name="mail"
             value={userInfo.mail}
@@ -691,7 +696,7 @@ const AddStranger = props => {
               inputComponent: emailMaskCustom
             }}
           />
-        </div>
+        </div> */}
       </div>
     );
   };
@@ -764,7 +769,7 @@ const AddStranger = props => {
                 value={type}
                 style={{ width: '100%' }}
                 onChange={handleTypeChange}>
-                <MenuItem value={1}>사원</MenuItem>
+                <MenuItem value={1}>학생</MenuItem>
                 <MenuItem value={5}>블랙리스트</MenuItem>
               </Select>
               <InputLabel shrink id="gender">

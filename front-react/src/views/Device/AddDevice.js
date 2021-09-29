@@ -70,6 +70,8 @@ const AddDevice = props => {
     gateway_obid: '',
     description: '',
     serial_number: '',
+    gridX : '',
+    gridY : '',
     status: 'N',
     protocol: '1'
   });
@@ -110,6 +112,10 @@ const AddDevice = props => {
       alert("단말 장소를 입력해주세요.")
     } else if(device.serial_number === '') {
       alert("단말 시리얼 넘버를 입력해주세요.")
+    } else if(device.getX === '') {
+      alert("위도를 입력해주세요.")
+    } else if(device.getY === '') {
+      alert("경도를 입력해주세요.")
     } else {
       let result = await axios.post(base_url + '/camera', {
         ...device,
@@ -129,6 +135,7 @@ const AddDevice = props => {
         window.alert('단말 등록 완료.');
         history.push('/device/list');
       }
+
     }
   };
 
@@ -143,7 +150,6 @@ const AddDevice = props => {
     window.alert('게이트웨이 등록 완료.');
     history.push('/device/list');
   };
-
   const renderDevice = () => {
     return (
       <div>
@@ -196,6 +202,30 @@ const AddDevice = props => {
         </div>
         <div style={{ width: '100%' }}>
           <TextField
+            name="gridX"
+            value={device.gridX}
+            style={{ width: '100%' }}
+            required
+            id="standard-required"
+            placeholder="37.484593"
+            label="위도"
+            onChange={handleDeviceChange}
+          />
+        </div>
+        <div style={{ width: '100%' }}>
+          <TextField
+            name="gridY"
+            value={device.gridY}
+            style={{ width: '100%' }}
+            required
+            placeholder="126.892547"
+            id="standard-required"
+            label="경도"
+            onChange={handleDeviceChange}
+          />
+        </div>
+        <div style={{ width: '100%' }}>
+          <TextField
             name="description"
             value={device.description}
             style={{ width: '100%' }}
@@ -203,6 +233,9 @@ const AddDevice = props => {
             label="비고"
             onChange={handleDeviceChange}
           />
+        </div>
+        <div style={{fontSize: 10}}><br/>
+          *기상 정보를 위해 위도, 경도 값을 입력 해 주세요.
         </div>
         <div style={{ width: '100%', textAlign: 'center', marginTop: '15px' }}>
           <Button variant="contained" color="primary" onClick={addDevice}>
@@ -263,6 +296,28 @@ const AddDevice = props => {
             id="standard-required"
             label="포트 번호"
             onChange={handleGateChange}
+          />
+        </div>
+        <div style={{ width: '100%' }}>
+          <TextField
+            name="gridX"
+            value={device.gridX}
+            style={{ width: '100%' }}
+            required
+            id="standard-required"
+            label="위도"
+            onChange={handleDeviceChange}
+          />
+        </div>
+        <div style={{ width: '100%' }}>
+          <TextField
+            name="gridY"
+            value={device.gridY}
+            style={{ width: '100%' }}
+            required
+            id="standard-required"
+            label="경도"
+            onChange={handleDeviceChange}
           />
         </div>
         <div style={{ width: '100%', textAlign: 'center', marginTop: '15px' }}>

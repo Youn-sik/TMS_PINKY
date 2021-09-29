@@ -66,7 +66,15 @@ const useStyles = makeStyles(theme => ({
   },
   highTempRow: {
     borderLeft: '3px solid red',
-    background: 'rgba(255, 204, 204, 0.575)'
+    background: 'rgba(255, 204, 204, 0.275)'
+  },
+  emergencyRow: {
+    borderLeft: '3px solid red',
+    background: 'rgba(255, 102, 102, 0.73)'
+  },
+  blacklistRow: {
+    borderLeft: '3px solid gray',
+    background: 'rgba(224, 224, 224, 0.8)'
   },
   lowPerRow: {
     borderLeft: '3px solid orange',
@@ -235,7 +243,7 @@ const AccessesTable = props => {
         <img
         alt="screenShot"
         style={{maxWidth:'50vw'}}
-        src={isOut ? currentUrl.replace('172.16.33.130','211.204.122.90') : currentUrl}></img>
+        src={isOut ? currentUrl.replace('172.16.41.114','211.204.122.90') : currentUrl}></img>
       </Dialog>
       <Dialog onClose={handleClose} open={openEdit}>
         <Card >
@@ -260,8 +268,8 @@ const AccessesTable = props => {
                   <TableRow>
                     <TableCell>사진</TableCell>
                     <TableCell>이름</TableCell>
-                    <TableCell>사번</TableCell>
                     <TableCell>성별</TableCell>
+                    <TableCell>생년월일</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -282,14 +290,14 @@ const AccessesTable = props => {
                                 alt="프로필사진"
                                 height="90px"
                                 width="70px"
-                                src={isOut ? user.avatar_file_url.replace('172.16.33.130','211.204.122.90') : user.avatar_file_url}></img>
+                                src={isOut ? user.avatar_file_url.replace('172.16.41.114','211.204.122.90') : user.avatar_file_url}></img>
                             </div>
                           </TableCell>
                           <TableCell>{user.name}</TableCell>
-                          <TableCell>{user.user_id}</TableCell>
                           <TableCell>
                             {user.gender === 1 ? '남자' : '여자'}
                           </TableCell>
+                          <TableCell>{user.user_id}</TableCell>
                         </TableRow>
                       );
                     })}
@@ -357,27 +365,27 @@ const AccessesTable = props => {
                 </TableCell>
                 <TableCell>{accesses.length > 0 ? (
                     <TableSortLabel
-                      active={activeType === 'user_id'}
+                      active={activeType === 'alarm_type'}
                       direction={sort}
                       onClick={() => {
-                        createSortHandler('user_id');
-                      }}>
-                      생년월일
-                    </TableSortLabel>
-                  ) : (
-                    ['생년',<br/>,'월일']
-                  )}</TableCell>
-                <TableCell>{accesses.length > 0 ? (
-                    <TableSortLabel
-                      active={activeType === 'avatar_type'}
-                      direction={sort}
-                      onClick={() => {
-                        createSortHandler('avatar_type');
+                        createSortHandler('alarm_type');
                       }}>
                       타입
                     </TableSortLabel>
                   ) : (
                     '타입'
+                  )}</TableCell>
+                <TableCell>{accesses.length > 0 ? (
+                    <TableSortLabel
+                      active={activeType === 'user_id'}
+                      direction={sort}
+                      onClick={() => {
+                        createSortHandler('user_id');
+                      }}>
+                      생년<br/>월일
+                    </TableSortLabel>
+                  ) : (
+                    '생년월일'
                   )}</TableCell>
                   <TableCell>
                   {accesses.length > 0 ? (
@@ -387,10 +395,24 @@ const AccessesTable = props => {
                       onClick={() => {
                         createSortHandler('location');
                       }}>
-                      소속 학교/원
+                      소속<br/>학교/원
                     </TableSortLabel>
                   ) : (
-                    ['소속',<br/>,'학교/원']
+                    '소속 학교/원'
+                  )}
+                </TableCell>
+                <TableCell>
+                  {accesses.length > 0 ? (
+                    <TableSortLabel
+                      active={activeType === 'position'}
+                      direction={sort}
+                      onClick={() => {
+                        createSortHandler('position');
+                      }}>
+                      학년/반
+                    </TableSortLabel>
+                  ) : (
+                    '학년/반'
                   )}
                 </TableCell>
                 <TableCell>
@@ -401,10 +423,10 @@ const AccessesTable = props => {
                       onClick={() => {
                         createSortHandler('stb_location');
                       }}>
-                      단말 위치
+                      단말<br/>위치
                     </TableSortLabel>
                   ) : (
-                    ['단말',<br/>,'위치']
+                    '단말 위치'
                   )}
                 </TableCell>
                 <TableCell>
@@ -415,10 +437,10 @@ const AccessesTable = props => {
                       onClick={() => {
                         createSortHandler('stb_name');
                       }}>
-                      단말기 이름
+                      단말명
                     </TableSortLabel>
                   ) : (
-                    ['단말기',<br/>,'이름']
+                    '단말명'
                   )}
                 </TableCell>
                 <TableCell>
@@ -429,10 +451,10 @@ const AccessesTable = props => {
                       onClick={() => {
                         createSortHandler('stb_name');
                       }}>
-                      단말기 시리얼
+                      단말기<br/>시리얼
                     </TableSortLabel>
                   ) : (
-                    ['단말기',<br/>,'시리얼']
+                    '단말기 시리얼'
                   )}
                 </TableCell>
                 {/* <TableCell>
@@ -483,10 +505,10 @@ const AccessesTable = props => {
                       onClick={() => {
                         createSortHandler(''); //#####################
                       }}>
-                      미세먼지(ug/m3)
+                      미세먼지<br/>(ug/m3)
                     </TableSortLabel>
                   ) : (
-                    ['미세먼지',<br/>,'(ug/m3)']
+                    '미세먼지(ug/m3)'
                   )}
                 </TableCell>
                 <TableCell>
@@ -497,10 +519,10 @@ const AccessesTable = props => {
                       onClick={() => {
                         createSortHandler(''); //#####################
                       }}>
-                      CO2(ppm)
+                      CO2<br/>(ppm)
                     </TableSortLabel>
                   ) : (
-                    ['CO2',<br/>,'(ppm)']
+                    'CO2(ppm)'
                   )}
                 </TableCell>
                 <TableCell>
@@ -511,10 +533,10 @@ const AccessesTable = props => {
                       onClick={() => {
                         createSortHandler('access_time');
                       }}>
-                      등원시간
+                      시간
                     </TableSortLabel>
                   ) : (
-                    ['등원',<br/>,'시간']
+                    '시간'
                   )}
                 </TableCell>
                 <TableCell>
@@ -525,25 +547,27 @@ const AccessesTable = props => {
                       onClick={() => {
                         createSortHandler(''); //#####################
                       }}>
-                      기상 데이터
+                      기상<br/>데이터
                     </TableSortLabel>
                   ) : (
-                    ['기상',<br/>,'데이터']
+                    '기상 데이터'
                   )}
                 </TableCell>
-                <TableCell>알람</TableCell>
+                {/* <TableCell style={{width:110}}>알람</TableCell> */}
+                {/* <TableCell>동작</TableCell> */}
               </TableRow>
             </TableHead>
             {
               <TableBody>
                 {props.accesses
                   .map((access,index) => {
+                    console.log(JSON.stringify(access))
                     const isItemSelected = isSelected(access._id);
-                    if (access.avatar_temperature >= tempLimit) {
-                      //출입 기록 37.5도 이상일때
+                    if (access.alarm_type == 5){
+                      //비상 버튼일 때
                       return (
                         <TableRow
-                          className={classes.highTempRow}
+                          className={classes.emergencyRow}
                           key={access._id}>
                           <TableCell>
                           <Checkbox
@@ -559,20 +583,34 @@ const AccessesTable = props => {
                                 height="90px"
                                 width="70px"
                                 className={classes.hightTempAvatar}
-                                src={isOut ? access.avatar_file_url.replace('172.16.33.130','211.204.122.90') : access.avatar_file_url}></img>
+                                src={isOut ? access.avatar_file_url.replace('172.16.41.114','211.204.122.90') : access.avatar_file_url}></img>
                             </div>
                           </TableCell>
                           <TableCell className={classes.redFont}>
-                            {access.name!=='unknown' ? access.name : ''}
+                            {access.name !== 'unknown'? access.name : ''}
                           </TableCell>
                           <TableCell className={classes.redFont}>
-                            {access.avatar_type === 1
-                              ? '사원'
-                              : access.avatar_type === 2
-                              ? '방문자'
-                              : access.avatar_type === 4
-                              ? '블랙리스트'
-                              : '미등록자'}
+                            
+                          </TableCell>
+                          <TableCell className={classes.redFont}>
+                          {access.alarm_type === 1
+                          ? '승차'
+                          : access.alarm_type === 2
+                          ? '하차'
+                          : access.alarm_type === 3
+                          ? '등원'
+                          : access.alarm_type === 4
+                          ? '하원'
+                          : '비상'}
+                          </TableCell>
+                          <TableCell className={classes.redFont}>
+                            {access.employee_id}
+                          </TableCell>
+                          <TableCell className={classes.redFont}>
+                            {access.location}
+                          </TableCell>
+                          <TableCell className={classes.redFont}>
+                            {access.position}
                           </TableCell>
                           <TableCell className={classes.redFont}>
                             {access.stb_location ? access.stb_location : ''}
@@ -583,112 +621,39 @@ const AccessesTable = props => {
                           <TableCell className={classes.redFont}>
                             {access.stb_sn}
                           </TableCell>
-                          <TableCell className={classes.redFont}>
-                            {access.avatar_distance
-                              ? String(access.avatar_distance).substr(0, 3)
-                              : 0}
-                            M
-                          </TableCell>
-                          <TableCell className={classes.redFont}>
-                            {tempType === 1
-                              ? String(access.avatar_temperature).substring(
-                                  0,
-                                  4
-                                )
-                              : '비정상 체온'}
+                          <TableCell  className={classes.redFont}>
+                            
                           </TableCell>
                           {/* <TableCell className={classes.redFont}>
                             {access.distance ? String(access.distance).substr(0,4) : 0}%
                           </TableCell> */}
                           <TableCell className={classes.redFont}>
-                            {access.access_time.split(' ')[0]}
+                            {access.sensor_dust
+                            ? access.sensor_dust+'ug/m3'
+                            : ''}
                           </TableCell>
-                          <TableCell>
-                            {
-                              access.distance <= 57.5 && access.name !== 'unknown' ? <Button variant="contained" color="primary" onClick={() => {handleEdit(access)}}>수정</Button>:
-                              access.avatar_type === 3 ?
-                              <RouterLink
-                                style={{ textDecoration: 'none' }}
-                                to={{
-                                  pathname: '/users/stranger/add',
-                                  userObject: {
-                                    avatar_file_url: access.avatar_file_url,
-                                    avatar_file: access.avatar_file,
-                                    _id: access.avatar_file_url
-                                  }
-                                }}>
-                                <Button variant="contained" color="primary">
-                                  등록
-                                </Button>
-                              </RouterLink> : null
-                            }
+                          <TableCell className={classes.redFont}>
+                            {access.sensor_CO2
+                            ? access.sensor_CO2+'ppm'
+                            : ''}
                           </TableCell>
-                        </TableRow>
-                      );
-                    } else if (access.distance <= 57.5 && access.name !== "unknown") {
-                      return (
-                        <TableRow
-                          className={classes.lowPerRow}
-                          key={access._id}>
-                          <TableCell>
-                          <Checkbox
-                              onChange={event => handleClick(event, access, index)}
-                              checked={isItemSelected}
-                            />
+                          <TableCell className={classes.redFont} style={{"white-space": "pre-wrap"}}>
+                            {access.access_time.split(' ')[0]+"\n"+
+                            access.access_time.split(' ')[1]}
                           </TableCell>
-                          <TableCell>
-                            <div className={classes.nameContainer}>
-                              <img
-                                style={{cursor: 'pointer'}} onClick={()=>{clickImage(access.avatar_file_url)}}
-                                alt="screenShot"
-                                height="90px"
-                                width="70px"
-                                className={classes.hightTempAvatar}
-                                src={isOut ? access.avatar_file_url.replace('172.16.33.130','211.204.122.90') : access.avatar_file_url}></img>
-                            </div>
+                          <TableCell className={classes.redFont} style={{"white-space": "pre-wrap"}}>
+                              {access.weather_temperature
+                              ?"온도: "+access.weather_temperature+"°C "+"\n"+
+                              "강수: "+access.weather_rain+"\n"+
+                              " 습도: "+access.weather_humidity+"% "+"\n"+
+                              "풍속: "+access.weather_windSpeed+"m/s"
+                              : ''}
                           </TableCell>
-                          <TableCell className={classes.orangeFont}>
-                            {access.name!=='unknown' ? access.name : ''}
-                          </TableCell>
-                          <TableCell className={classes.orangeFont}>
-                            {access.avatar_type === 1
-                              ? '사원'
-                              : access.avatar_type === 2
-                              ? '방문자'
-                              : access.avatar_type === 4
-                              ? '블랙리스트'
-                              : '미등록자'}
-                          </TableCell>
-                          <TableCell className={classes.orangeFont}>
-                            {access.stb_location ? access.stb_location : ''}
-                          </TableCell>
-                          <TableCell className={classes.orangeFont}>
-                            {access.stb_name}
-                          </TableCell>
-                          <TableCell className={classes.orangeFont}>
-                            {access.stb_sn}
-                          </TableCell>
-                          <TableCell className={classes.orangeFont}>
-                            {access.avatar_distance
-                              ? String(access.avatar_distance).substr(0, 3)
-                              : 0}
-                            M
-                          </TableCell>
-                          <TableCell className={classes.orangeFont}>
-                            {tempType === 1
-                              ? String(access.avatar_temperature).substring(
-                                  0,
-                                  4
-                                )
-                              : '비정상 체온'}
-                          </TableCell>
-                          {/* <TableCell className={classes.orangeFont}>
-                            {access.distance ? String(access.distance).substr(0,4) : 0}%
+                          {/* <TableCell className={classes.redFont}>
+                          {access.access_time.split(' ')[0]+"\n"+
+                            access.access_time.split(' ')[1]}
                           </TableCell> */}
-                          <TableCell className={classes.orangeFont}>
-                            {access.access_time.split(' ')[0]}
-                          </TableCell>
-                          <TableCell>
+                          {/* <TableCell className={classes.redFont}>
                             {
                               access.distance <= 57.5 && access.name !== 'unknown' ? <Button variant="contained" color="primary" onClick={() => {handleEdit(access)}}>수정</Button>:
                               access.avatar_type === 3 ?
@@ -707,90 +672,484 @@ const AccessesTable = props => {
                                 </Button>
                               </RouterLink> : null
                             }
-                          </TableCell>
-                        </TableRow>
-                      );
-                    } else {
-                      return (
-                        <TableRow className={classes.tableRow} key={access._id}>
-                          <TableCell>
-                          <Checkbox
-                              onChange={event => handleClick(event, access, index)}
-                              checked={isItemSelected}
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <div className={classes.nameContainer}>
-                              <img
-                                style={{cursor: 'pointer'}} onClick={()=>{clickImage(access.avatar_file_url)}}
-                                alt="screenShot"
-                                height="90px"
-                                width="70px"
-                                className={classes.avatar}
-                                src={isOut ? access.avatar_file_url.replace('172.16.33.130','211.204.122.90') : access.avatar_file_url}></img>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            {access.name !== 'unknown'? access.name : ''}
-                          </TableCell>
-                          <TableCell>
-                            {access.avatar_type === 1
-                              ? '사원'
-                              : access.avatar_type === 2
-                              ? '방문자'
-                              : access.avatar_type === 4
-                              ? '블랙리스트'
-                              : '미등록자'}
-                          </TableCell>
-                          <TableCell>
-                            {access.stb_location ? access.stb_location : ''}
-                          </TableCell>
-                          <TableCell>
-                            {access.stb_name}
-                          </TableCell>
-                          <TableCell>
-                            {access.stb_sn}
-                          </TableCell>
-                          <TableCell>
-                            {access.avatar_distance
-                              ? String(access.avatar_distance).substr(0, 3)
-                              : 0}
-                            M
-                          </TableCell>
-                          <TableCell>
-                            {tempType === 1
-                              ? String(access.avatar_temperature).substring(
-                                  0,
-                                  4
-                                )
-                              : '정상 체온'}
-                          </TableCell>
-                          {/* <TableCell>
-                            {access.distance ? String(access.distance).substr(0,4) : 0}%
                           </TableCell> */}
-                          <TableCell>{access.access_time.split(' ')[0]}</TableCell>
-                          <TableCell>
-                            {
-                              access.distance <= 57.5 && access.name !== 'unknown' ? <Button variant="contained" color="primary" onClick={() => {handleEdit(access)}}>수정</Button>:
-                              access.avatar_type === 3 ?
-                              <RouterLink
-                                style={{ textDecoration: 'none' }}
-                                to={{
-                                  pathname: '/users/stranger/add',
-                                  userObject: {
-                                    avatar_file_url: access.avatar_file_url,
-                                    avatar_file: access.avatar_file,
-                                    _id: access.avatar_file_url
-                                  }
-                                }}>
-                                <Button variant="contained" color="primary">
-                                  등록
-                                </Button>
-                              </RouterLink> : null
-                            }
-                          </TableCell>
                         </TableRow>
                       );
+                    }
+                    else {
+                      if(access.avatar_type == 4){
+                        return (
+                          <TableRow className={classes.blacklistRow} key={access._id}>
+                            <TableCell>
+                            <Checkbox
+                                onChange={event => handleClick(event, access, index)}
+                                checked={isItemSelected}
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <div className={classes.nameContainer}>
+                                <img
+                                  style={{cursor: 'pointer'}} onClick={()=>{clickImage(access.avatar_file_url)}}
+                                  alt="screenShot"
+                                  height="90px"
+                                  width="70px"
+                                  className={classes.avatar}
+                                  src={isOut ? access.avatar_file_url.replace('172.16.41.114','211.204.122.90') : access.avatar_file_url}></img>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              {access.name !== 'unknown'? access.name : ''}
+                            </TableCell>
+                            <TableCell>
+                              {access.name !== 'unknown'? access.gender == 1 ? '남자' : '여자' : ''}
+                            </TableCell>
+                            <TableCell>
+                            {access.alarm_type === 1
+                            ? '승차'
+                            : access.alarm_type === 2
+                            ? '하차'
+                            : access.alarm_type === 3
+                            ? '등원'
+                            : access.alarm_type === 4
+                            ? '하원'
+                            : '비상'}
+                            </TableCell>
+                            <TableCell>
+                              {access.employee_id == 0 ? '' : ''}
+                            </TableCell>
+                            <TableCell>
+                              {access.name !== 'unknown'? access.location : ''}
+                            </TableCell>
+                            <TableCell>
+                              {access.name !== 'unknown'? access.position : ''}
+                            </TableCell>
+                            <TableCell>
+                              {access.stb_location ? access.stb_location : ''}
+                            </TableCell>
+                            <TableCell>
+                              {access.stb_name}
+                            </TableCell>
+                            <TableCell>
+                              {access.stb_sn}
+                            </TableCell>
+                            <TableCell>
+                              {tempType === 1
+                                ? String(access.avatar_temperature).substring(
+                                    0,
+                                    4
+                                  )
+                                : '정상 체온'}
+                            </TableCell>
+                            {/* <TableCell>
+                              {access.distance ? String(access.distance).substr(0,4) : 0}%
+                            </TableCell> */}
+                            <TableCell>
+                              {access.sensor_dust
+                              ? access.sensor_dust+'ug/m3'
+                              : ''}
+                            </TableCell>
+                            <TableCell>
+                              {access.sensor_CO2
+                              ? access.sensor_CO2+'ppm'
+                              : ''}
+                            </TableCell>
+                            <TableCell style={{"white-space": "pre-wrap"}}>
+                            {access.access_time.split(' ')[0]+"\n"+
+                              access.access_time.split(' ')[1]}
+                            </TableCell>
+                            <TableCell style={{"white-space": "pre-wrap"}}>
+                                {access.weather_temperature
+                                ?"온도: "+access.weather_temperature+"°C "+"\n"+
+                                "강수: "+access.weather_rain+"\n"+
+                                " 습도: "+access.weather_humidity+"% "+"\n"+
+                                "풍속: "+access.weather_windSpeed+"m/s"
+                                : ''}
+                            </TableCell>
+                            {/* <TableCell>
+                              {access.alarm_type === 5 
+                                ? access.access_time.split(' ')[0]+"\n"+
+                                access.access_time.split(' ')[1]
+                                : ''}
+                            </TableCell> */}
+                            {/* <TableCell>
+                              {
+                                access.distance <= 57.5 && access.name !== 'unknown' ? <Button variant="contained" color="primary" onClick={() => {handleEdit(access)}}>수정</Button>:
+                                access.avatar_type === 3 ?
+                                <RouterLink
+                                  style={{ textDecoration: 'none' }}
+                                  to={{
+                                    pathname: '/users/stranger/add',
+                                    userObject: {
+                                      avatar_file_url: access.avatar_file_url,
+                                      avatar_file: access.avatar_file,
+                                      _id: access.avatar_file_url
+                                    }
+                                  }}>
+                                  <Button variant="contained" color="primary">
+                                    등록
+                                  </Button>
+                                </RouterLink> : null
+                              }
+                            </TableCell> */}
+                          </TableRow>
+                        );
+                      }
+                      else{
+                        if (access.avatar_temperature >= tempLimit) {
+                          //출입 기록 37.5도 이상일때
+                          return (
+                            <TableRow
+                              className={classes.highTempRow}
+                              key={access._id}>
+                              <TableCell>
+                              <Checkbox
+                                  onChange={event => handleClick(event, access, index)}
+                                  checked={isItemSelected}
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <div className={classes.nameContainer}>
+                                  <img
+                                    style={{cursor: 'pointer'}} onClick={()=>{clickImage(access.avatar_file_url)}}
+                                    alt="screenShot"
+                                    height="90px"
+                                    width="70px"
+                                    className={classes.hightTempAvatar}
+                                    src={isOut ? access.avatar_file_url.replace('172.16.41.114','211.204.122.90') : access.avatar_file_url}></img>
+                                </div>
+                              </TableCell>
+                              <TableCell className={classes.redFont}>
+                                {access.name !== 'unknown'? access.name : ''}
+                              </TableCell>
+                              <TableCell className={classes.redFont}>
+                                {access.gender == 1 ? '남자' : '여자'}
+                              </TableCell>
+                              <TableCell className={classes.redFont}>
+                              {access.alarm_type === 1
+                              ? '승차'
+                              : access.alarm_type === 2
+                              ? '하차'
+                              : access.alarm_type === 3
+                              ? '등원'
+                              : access.alarm_type === 4
+                              ? '하원'
+                              : '비상'}
+                              </TableCell>
+                              <TableCell className={classes.redFont}>
+                                {access.employee_id}
+                              </TableCell>
+                              <TableCell className={classes.redFont}>
+                                {access.location}
+                              </TableCell>
+                              <TableCell className={classes.redFont}>
+                                {access.position}
+                              </TableCell>
+                              <TableCell className={classes.redFont}>
+                                {access.stb_location ? access.stb_location : ''}
+                              </TableCell>
+                              <TableCell className={classes.redFont}>
+                                {access.stb_name}
+                              </TableCell>
+                              <TableCell className={classes.redFont}>
+                                {access.stb_sn}
+                              </TableCell>
+                              <TableCell className={classes.redFont}>
+                                {tempType === 1
+                                  ? String(access.avatar_temperature).substring(
+                                      0,
+                                      4
+                                    )
+                                  : '정상 체온'}
+                              </TableCell>
+                              {/* <TableCell className={classes.redFont}>
+                                {access.distance ? String(access.distance).substr(0,4) : 0}%
+                              </TableCell> */}
+                              <TableCell className={classes.redFont}>
+                                {access.sensor_dust
+                                ? access.sensor_dust+'ug/m3'
+                                : ''}
+                              </TableCell>
+                              <TableCell className={classes.redFont}>
+                                {access.sensor_CO2
+                                ? access.sensor_CO2+'ppm'
+                                : ''}
+                              </TableCell>
+                              <TableCell className={classes.redFont} style={{"white-space": "pre-wrap"}}>
+                                {access.access_time.split(' ')[0]+"\n"+
+                                access.access_time.split(' ')[1]}
+                              </TableCell>
+                              <TableCell className={classes.redFont} style={{"white-space": "pre-wrap"}}>
+                                  {access.weather_temperature
+                                  ?"온도: "+access.weather_temperature+"°C "+"\n"+
+                                  "강수: "+access.weather_rain+"\n"+
+                                  " 습도: "+access.weather_humidity+"% "+"\n"+
+                                  "풍속: "+access.weather_windSpeed+"m/s"
+                                  : ''}
+                              </TableCell>
+                              {/* <TableCell className={classes.redFont}>
+                              {access.alarm_type === 5 
+                                  ? access.access_time.split(' ')[0]+"\n"+
+                                  access.access_time.split(' ')[1]
+                                  : ''}
+                              </TableCell> */}
+                              {/* <TableCell className={classes.redFont}>
+                                {
+                                  access.distance <= 57.5 && access.name !== 'unknown' ? <Button variant="contained" color="primary" onClick={() => {handleEdit(access)}}>수정</Button>:
+                                  access.avatar_type === 3 ?
+                                  <RouterLink
+                                    style={{ textDecoration: 'none' }}
+                                    to={{
+                                      pathname: '/users/stranger/add',
+                                      userObject: {
+                                        avatar_file_url: access.avatar_file_url,
+                                        avatar_file: access.avatar_file,
+                                        _id: access.avatar_file_url
+                                      }
+                                    }}>
+                                    <Button variant="contained" color="primary">
+                                      등록
+                                    </Button>
+                                  </RouterLink> : null
+                                }
+                              </TableCell> */}
+                            </TableRow>
+                          );
+                        } else if (access.distance <= 57.5 && access.name !== "unknown") {
+                          return (
+                            <TableRow
+                              className={classes.lowPerRow}
+                              key={access._id}>
+                              <TableCell>
+                              <Checkbox
+                                  onChange={event => handleClick(event, access, index)}
+                                  checked={isItemSelected}
+                                />
+                              </TableCell>
+                              <TableCell className={classes.orangeFont}>
+                                <div className={classes.nameContainer}>
+                                  <img
+                                    style={{cursor: 'pointer'}} onClick={()=>{clickImage(access.avatar_file_url)}}
+                                    alt="screenShot"
+                                    height="90px"
+                                    width="70px"
+                                    className={classes.avatar}
+                                    src={isOut ? access.avatar_file_url.replace('172.16.41.114','211.204.122.90') : access.avatar_file_url}></img>
+                                </div>
+                              </TableCell>
+                              <TableCell className={classes.orangeFont}>
+                                {access.name !== 'unknown'? access.name : ''}
+                              </TableCell>
+                              <TableCell className={classes.orangeFont}>
+                                {access.gender == 1 ? '남자' : '여자'}
+                              </TableCell>
+                              <TableCell className={classes.orangeFont}>
+                              {access.alarm_type === 1
+                              ? '승차'
+                              : access.alarm_type === 2
+                              ? '하차'
+                              : access.alarm_type === 3
+                              ? '등원'
+                              : access.alarm_type === 4
+                              ? '하원'
+                              : '비상'}
+                              </TableCell>
+                              <TableCell className={classes.orangeFont}>
+                                {access.employee_id}
+                              </TableCell>
+                              <TableCell className={classes.orangeFont}>
+                                {access.location}
+                              </TableCell>
+                              <TableCell className={classes.orangeFont}>
+                                {access.position}
+                              </TableCell>
+                              <TableCell className={classes.orangeFont}>
+                                {access.stb_location ? access.stb_location : ''}
+                              </TableCell>
+                              <TableCell className={classes.orangeFont}>
+                                {access.stb_name}
+                              </TableCell>
+                              <TableCell className={classes.orangeFont}>
+                                {access.stb_sn}
+                              </TableCell>
+                              <TableCell className={classes.orangeFont}>
+                                {tempType === 1
+                                  ? String(access.avatar_temperature).substring(
+                                      0,
+                                      4
+                                    )
+                                  : '정상 체온'}
+                              </TableCell>
+                              {/* <TableCell className={classes.orangeFont}>
+                                {access.distance ? String(access.distance).substr(0,4) : 0}%
+                              </TableCell> */}
+                              <TableCell className={classes.orangeFont}>
+                                {access.sensor_dust
+                                ? access.sensor_dust+'ug/m3'
+                                : ''}
+                              </TableCell>
+                              <TableCell className={classes.orangeFont}>
+                                {access.sensor_CO2
+                                ? access.sensor_CO2+'ppm'
+                                : ''}
+                              </TableCell>
+                              <TableCell className={classes.orangeFont} style={{"white-space": "pre-wrap"}}>
+                              {access.access_time.split(' ')[0]+"\n"+
+                                access.access_time.split(' ')[1]}
+                              </TableCell>
+                              <TableCell className={classes.orangeFont} style={{"white-space": "pre-wrap"}}>
+                                  {access.weather_temperature
+                                  ?"온도: "+access.weather_temperature+"°C "+"\n"+
+                                  "강수: "+access.weather_rain+"\n"+
+                                  " 습도: "+access.weather_humidity+"% "+"\n"+
+                                  "풍속: "+access.weather_windSpeed+"m/s"
+                                  : ''}
+                              </TableCell>
+                              {/* <TableCell className={classes.orangeFont}>
+                              {access.alarm_type === 5 
+                                  ? access.access_time.split(' ')[0]+"\n"+
+                                  access.access_time.split(' ')[1]
+                                  : ''}
+                              </TableCell> */}
+                              {/* <TableCell className={classes.orangeFont}>
+                                {
+                                  access.distance <= 57.5 && access.name !== 'unknown' ? <Button variant="contained" color="primary" onClick={() => {handleEdit(access)}}>수정</Button>:
+                                  access.avatar_type === 3 ?
+                                  <RouterLink
+                                    style={{ textDecoration: 'none' }}
+                                    to={{
+                                      pathname: '/users/stranger/add',
+                                      userObject: {
+                                        avatar_file_url: access.avatar_file_url,
+                                        avatar_file: access.avatar_file,
+                                        _id: access.avatar_file_url
+                                      }
+                                    }}>
+                                    <Button variant="contained" color="primary">
+                                      등록
+                                    </Button>
+                                  </RouterLink> : null
+                                }
+                              </TableCell> */}
+                            </TableRow>
+                          );
+                        } else {
+                          return (
+                            <TableRow className={classes.tableRow} key={access._id}>
+                              <TableCell>
+                              <Checkbox
+                                  onChange={event => handleClick(event, access, index)}
+                                  checked={isItemSelected}
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <div className={classes.nameContainer}>
+                                  <img
+                                    style={{cursor: 'pointer'}} onClick={()=>{clickImage(access.avatar_file_url)}}
+                                    alt="screenShot"
+                                    height="90px"
+                                    width="70px"
+                                    className={classes.avatar}
+                                    src={isOut ? access.avatar_file_url.replace('172.16.41.114','211.204.122.90') : access.avatar_file_url}></img>
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                {access.name !== 'unknown'? access.name : ''}
+                              </TableCell>
+                              <TableCell>
+                                {access.name !== 'unknown'? access.gender == 1 ? '남자' : '여자' : ''}
+                              </TableCell>
+                              <TableCell>
+                              {access.alarm_type === 1
+                              ? '승차'
+                              : access.alarm_type === 2
+                              ? '하차'
+                              : access.alarm_type === 3
+                              ? '등원'
+                              : access.alarm_type === 4
+                              ? '하원'
+                              : '비상'}
+                              </TableCell>
+                              <TableCell>
+                                {access.employee_id}
+                              </TableCell>
+                              <TableCell>
+                                {access.name !== 'unknown'? access.location : ''}
+                              </TableCell>
+                              <TableCell>
+                                {access.name !== 'unknown'? access.position : ''}
+                              </TableCell>
+                              <TableCell>
+                                {access.stb_location ? access.stb_location : ''}
+                              </TableCell>
+                              <TableCell>
+                                {access.stb_name}
+                              </TableCell>
+                              <TableCell>
+                                {access.stb_sn}
+                              </TableCell>
+                              <TableCell>
+                                {tempType === 1
+                                  ? String(access.avatar_temperature).substring(
+                                      0,
+                                      4
+                                    )
+                                  : '정상 체온'}
+                              </TableCell>
+                              {/* <TableCell>
+                                {access.distance ? String(access.distance).substr(0,4) : 0}%
+                              </TableCell> */}
+                              <TableCell>
+                                {access.sensor_dust
+                                ? access.sensor_dust+'ug/m3'
+                                : ''}
+                              </TableCell>
+                              <TableCell>
+                                {access.sensor_CO2
+                                ? access.sensor_CO2+'ppm'
+                                : ''}
+                              </TableCell>
+                              <TableCell style={{"white-space": "pre-wrap"}}>
+                              {access.access_time.split(' ')[0]+"\n"+
+                                access.access_time.split(' ')[1]}
+                              </TableCell>
+                              <TableCell style={{"white-space": "pre-wrap"}}>
+                                  {access.weather_temperature
+                                  ?"온도: "+access.weather_temperature+"°C "+"\n"+
+                                  "강수: "+access.weather_rain+"\n"+
+                                  " 습도: "+access.weather_humidity+"% "+"\n"+
+                                  "풍속: "+access.weather_windSpeed+"m/s"
+                                  : ''}
+                              </TableCell>
+                              {/* <TableCell>
+                                {access.alarm_type === 5 
+                                  ? access.access_time.split(' ')[0]+"\n"+
+                                  access.access_time.split(' ')[1]
+                                  : ''}
+                              </TableCell> */}
+                              {/* <TableCell>
+                                {
+                                  access.distance <= 57.5 && access.name !== 'unknown' ? <Button variant="contained" color="primary" onClick={() => {handleEdit(access)}}>수정</Button>:
+                                  access.avatar_type === 3 ?
+                                  <RouterLink
+                                    style={{ textDecoration: 'none' }}
+                                    to={{
+                                      pathname: '/users/stranger/add',
+                                      userObject: {
+                                        avatar_file_url: access.avatar_file_url,
+                                        avatar_file: access.avatar_file,
+                                        _id: access.avatar_file_url
+                                      }
+                                    }}>
+                                    <Button variant="contained" color="primary">
+                                      등록
+                                    </Button>
+                                  </RouterLink> : null
+                                }
+                              </TableCell> */}
+                            </TableRow>
+                          );
+                        }
+                      }
                     }
                   })}
               </TableBody>

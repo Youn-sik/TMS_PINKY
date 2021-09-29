@@ -371,7 +371,8 @@ const AddBlack = props => {
                   style={{ width: '100%' }}
                   required
                   id="standard-required"
-                  label="장소"
+                  label="소속 학교/원"
+                  placeholder="ex)가산초등학교/유치원"
                   onChange={handleChange}
                 />
               </div>
@@ -383,7 +384,7 @@ const AddBlack = props => {
                   required
                   id="standard-required"
                   onChange={handleChange}
-                  label="사유"
+                  label="학년/반"
                 />
               </div>
               <div style={{ width: '100%' }}>
