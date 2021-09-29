@@ -12,7 +12,9 @@ to:'dZq8djW-SPC88u7Pm1VJuv:APA91bE1I4EykLhK1hctGmnSIsaT9gGzZRTyVdjdGBYpv2qY9mjud
     data: { //you can send only notification or only data(or include both)
         title: 'ok cdfsdsdfsd',
         body: '{"name" : "okg ooggle ogrlrl","product_id" : "123","final_price" : "0.00035"}'
-    }
+    },
+
+    priority: 'high'
 
 };
 

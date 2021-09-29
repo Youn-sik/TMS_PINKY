@@ -104,6 +104,8 @@ function Popup() {
         if(result[0].name != 'unknown'){
           var fcmMessage = {
             to:'dZq8djW-SPC88u7Pm1VJuv:APA91bE1I4EykLhK1hctGmnSIsaT9gGzZRTyVdjdGBYpv2qY9mjudsLXJJBI973D-TuvuRr8Y0l5ZwTNAq6zu7nYy3pEUS4g9oyA522S24mc3U-77rhHLr8CTXArlU8zG9UjDKc6PZEK',
+            //둘 이상의 멀티캐스트 메시지를 전송하려면 registration_ids 사용하기(to 대신) - 매개변수는 메세지를 보낼 등록 토큰의 배열이여야 한다. 최대 1~1,000개
+            //registration_ids : regTokens,
                 notification: {
                     title: 'PINKY',
                     body: result[0].name+' 학생이 '+alarm+'했습니다', 
@@ -111,7 +113,8 @@ function Popup() {
             data: { 
                 title: 'title',
                 body: '{"key" : "value","key" : "value","key" : "value"}'
-            }
+            },
+            priority: 'high'
           };
           
           fcm.send(fcmMessage, function(err, response) {
