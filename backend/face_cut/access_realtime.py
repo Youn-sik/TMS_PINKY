@@ -31,6 +31,7 @@ camera_collection = db['cameras']
 user_collection = db['users']
 stat_collection = db['statistics']
 group_collection = db['groups']
+fcm_collection = db['fcms']
 
 os.environ['TZ'] = 'Asia/Seoul'
 time.tzset()
@@ -196,7 +197,8 @@ def on_message(client, userdata, msg):
                     weather_temperature=''
                     weather_rain = ''
                     weather_humidity = ''
-                    weather_windSpeed = ''
+                    weather_windSpeed = ''      
+ 
             ###
             
 
@@ -222,6 +224,8 @@ def on_message(client, userdata, msg):
             else :
                 recog_result,max_sim,max_name,max_type,max_gender,max_employee_id,max_group_id,max_position,max_location,max_mobile = recog_face(users,auth)
 
+                mobile = max_mobile
+
                 if(max_group_id != '') :
                     cursor = group_collection.find({"_id":ObjectId(max_group_id)})
                     for group in cursor :
@@ -235,8 +239,10 @@ def on_message(client, userdata, msg):
                     black += 1
                 elif(avatar_type == 1):
                     employee += 1
+                mobile = max_mobile
             else :
                 stranger += 1
+                mobile = ''
 
 
             # os.remove(file_path+file_name)
@@ -344,10 +350,32 @@ def on_message(client, userdata, msg):
                     'stranger' : stranger
                 })
 
+        device_token = []
+        device_tokens = []
+        fcm_results = fcm_collection.find({"mobile": mobile}, {"_id": False, "fcm_token":True})
+        if str(type(fcm_results)) == "<class 'pymongo.cursor.Cursor'>" :
+            for fcm_result in fcm_results : 
+                device_tokens.append(fcm_result)
+        
+        # print(fcm_result)
+        # fcm_result = ''
+
+        # fcm_result = fcm_collection.find_one({"mobile": mobile}, {"_id": False, "fcm_token":True})
+        # print(fcm_result)
+
+        if len(device_tokens) >= 1 :
+            for fcm in device_tokens :
+                device_token.append(fcm['fcm_token'])
+
+        print(device_token)
+
         send_data = {
             'stb_sn': access_json['stb_sn'],
-            'values': insert_array
+            'values': insert_array,
+            'device_token': device_token,
         }
+
+        # print(send_data)
 
         if(auto == 0) : 
             print('auto: ' + str(auto))

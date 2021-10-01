@@ -96,27 +96,36 @@ function Popup() {
           enqueueSnackbar(`${result[0].stb_location}에서 비상알림이 호출 되었습니다.|${imgSrc}`,{ variant: 'error',autoHideDuration:null});
         }
         //
+        let device_token = JSON.parse(message.toString()).device_token
         var alarm = '';
         if(result[0].alarm_type == 1) alarm = '승차';
         else if(result[0].alarm_type == 2) alarm = '하차';
         else if(result[0].alarm_type == 3) alarm = '등원';
         else if(result[0].alarm_type == 4) alarm = '하원';
         if(result[0].name != 'unknown'){
+          var regTokens = [
+            ...device_token
+          ]
           var fcmMessage = {
-            to:'dZq8djW-SPC88u7Pm1VJuv:APA91bE1I4EykLhK1hctGmnSIsaT9gGzZRTyVdjdGBYpv2qY9mjudsLXJJBI973D-TuvuRr8Y0l5ZwTNAq6zu7nYy3pEUS4g9oyA522S24mc3U-77rhHLr8CTXArlU8zG9UjDKc6PZEK',
+            
             //둘 이상의 멀티캐스트 메시지를 전송하려면 registration_ids 사용하기(to 대신) - 매개변수는 메세지를 보낼 등록 토큰의 배열이여야 한다. 최대 1~1,000개
-            //registration_ids : regTokens,
-                notification: {
-                    title: 'PINKY',
-                    body: result[0].name+' 학생이 '+alarm+'했습니다', 
-            },
+            // to: device_token,
+            registration_ids : regTokens,
+            //포그라운드와 백그라운드 동시 처리를 위해 notification 제외
+            // notification: {
+            //         title: 'PINKY',
+            //         body: result[0].name+' 학생이 '+alarm+'했습니다', 
+            // },
             data: { 
+                title: 'PINKY',
+                body: result[0].name+' 학생이 '+alarm+'했습니다', 
                 name: result[0].name,
                 user_birth: result[0].user_birth,
                 mobile: result[0].mobile,
             },
             priority: 'high'
           };
+          //포그라운드 백그라운드 모두 컨트롤 하려면 노티피케이션을 지우고 데이터에 모든 값을 보낸 후 앱에서 처리하면 됨
           
           fcm.send(fcmMessage, function(err, response) {
             if (err) {
