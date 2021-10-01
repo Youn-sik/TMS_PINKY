@@ -31,7 +31,6 @@ camera_collection = db['cameras']
 user_collection = db['users']
 stat_collection = db['statistics']
 group_collection = db['groups']
-fcm_collection = db['fcms']
 
 os.environ['TZ'] = 'Asia/Seoul'
 time.tzset()
@@ -352,20 +351,19 @@ def on_message(client, userdata, msg):
 
         device_token = []
         device_tokens = []
-        fcm_results = fcm_collection.find({"mobile": mobile}, {"_id": False, "fcm_token":True})
+        fcm_results = user_collection.find({"name": name}, {"_id": False, "device_token":True})
         if str(type(fcm_results)) == "<class 'pymongo.cursor.Cursor'>" :
             for fcm_result in fcm_results : 
                 device_tokens.append(fcm_result)
-        
         # print(fcm_result)
         # fcm_result = ''
 
-        # fcm_result = fcm_collection.find_one({"mobile": mobile}, {"_id": False, "fcm_token":True})
+        # fcm_result = fcm_collection.find_one({"mobile": mobile}, {"_id": False, "device_token":True})
         # print(fcm_result)
 
         if len(device_tokens) >= 1 :
             for fcm in device_tokens :
-                device_token.append(fcm['fcm_token'])
+                device_token.append(fcm['device_token'])
 
         print(device_token)
 
@@ -419,10 +417,15 @@ def on_message(client, userdata, msg):
             user_json['face_detection'] = face_detection
             user_json['avatar_file_url'] = ''
             user_json['avatar_file'] = ''
-
             
             user_collection.insert_one(user_json)
             user_objectid = str(user_json['_id'])
+
+            # fcm_json = {
+            #     "mobile": user_json['mobile'],
+            #     "device_token": user_json['device_token']
+            # }
+            # fcm_collection.insert(fcm_json)
 
             file_name = user_objectid+"profile.jpg"
 

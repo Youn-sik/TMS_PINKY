@@ -34,7 +34,8 @@ const api_v1_person_user_Schema = new mongoose.Schema({
     update_at : { type: String },
     update_ut : { type: String },
     face_detection : {type: String},
-    rfid : {type: String}
+    rfid : {type: String},
+    fcm_token : { type: String},
 });
 mongoose.set('useCreateIndex', true)
 api_v1_person_user_Schema.index({type: 1 });

@@ -221,7 +221,8 @@ const EditEmployee = props => {
     position: '',
     mobile: '',
     mail: '',
-    gender: 1
+    gender: 1,
+    device_token: ''
   });
 
   useEffect(() => {
@@ -240,6 +241,7 @@ const EditEmployee = props => {
         gender: user.gender,
         entered: user.entered,
         user_id : user.user_id,
+        device_token : user.device_token,
       };
 
       setUserInfo(editedUser);
@@ -393,7 +395,7 @@ const EditEmployee = props => {
                 <MenuItem value={1}>남자</MenuItem>
                 <MenuItem value={0}>여자</MenuItem>
               </Select>
-              <br/>
+              <br/><br/>
               <div style={{ width: '100%' }}>
                 <TextField
                   name="name"
@@ -454,6 +456,16 @@ const EditEmployee = props => {
                   }}
                 />
               </div>
+              <br/>
+              <div style={{ width: '100%' }}>
+                <TextField
+                  name="device_token"
+                  value={userInfo.device_token}
+                  style={{ width: '100%' }}
+                  label="기기 토큰 값"
+                  onChange={handleChange}
+                />
+              </div>
               {/* <div style={{ width: '100%' }}>
                 <TextField
                   name="mail"
@@ -465,7 +477,7 @@ const EditEmployee = props => {
                     inputComponent: emailMaskCustom
                   }}
                 />
-              </div> */}
+              </div> */}<br/>
               <div style={{ width: '100%' }}>
                 <p style={{ marginTop:'15px' }}>입학일</p>
                 <DatePicker

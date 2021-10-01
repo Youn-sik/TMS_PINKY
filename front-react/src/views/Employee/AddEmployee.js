@@ -242,7 +242,8 @@ const AddEmployee = props => {
     user_id : '',
     entered : moment().format('YYYY-MM-DD'),
     create_at : moment().format('YYYY-MM-DD HH:MM:SS'),
-    gender: 1
+    gender: 1,
+    device_token: ''
   });
 
   const handleChange = event => {
@@ -461,6 +462,16 @@ const AddEmployee = props => {
                   }}
                 />
               </div>
+              <div style={{ width: '100%' }}>
+                <TextField
+                  name="device_token"
+                  value={userInfo.device_token}
+                  style={{ width: '100%' }}
+                  id="standard-required"
+                  label="기기 토큰 값"
+                  onChange={handleChange}
+                />
+              </div><br/>
               {/* <div style={{ width: '100%' }}>
                 <TextField
                   name="mail"
