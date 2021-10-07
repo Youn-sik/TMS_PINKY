@@ -222,7 +222,7 @@ const EditEmployee = props => {
     mobile: '',
     mail: '',
     gender: 1,
-    device_token: ''
+    // device_token: ''
   });
 
   useEffect(() => {
@@ -241,7 +241,7 @@ const EditEmployee = props => {
         gender: user.gender,
         entered: user.entered,
         user_id : user.user_id,
-        device_token : user.device_token,
+        // device_token : user.device_token,
       };
 
       setUserInfo(editedUser);
@@ -456,7 +456,7 @@ const EditEmployee = props => {
                   }}
                 />
               </div>
-              <br/>
+              {/* <br/>
               <div style={{ width: '100%' }}>
                 <TextField
                   name="device_token"
@@ -465,7 +465,7 @@ const EditEmployee = props => {
                   label="기기 토큰 값"
                   onChange={handleChange}
                 />
-              </div>
+              </div> */}
               {/* <div style={{ width: '100%' }}>
                 <TextField
                   name="mail"

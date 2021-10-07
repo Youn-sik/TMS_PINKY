@@ -268,6 +268,7 @@ module.exports = {
                             if(camera.config_data.capture_status === "Y"){
                                 send_data = {
                                     stb_sn: camera.serial_number,
+                                    stb_location : camera.location,
                                     message: "login",
                                     result: "ok",
                                     stb_id: camera.name,
@@ -288,6 +289,7 @@ module.exports = {
                             }else{
                                 send_data = {
                                     stb_sn: camera.serial_number,
+                                    stb_location : camera.location,
                                     lat: camera.lat,
                                     lng: camera.lng ,
                                     x: camera.x ,
