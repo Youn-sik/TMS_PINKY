@@ -4,6 +4,7 @@ const ObjectId = mongoose.Schema.Types.ObjectId
 
 const fcmSchema = new mongoose.Schema({
     device_token : { type: String},
+    name : { type: String},
     mobile : { type: String },
     create_at : { type: String, default: moment().format('YYYY-MM-DD HH:mm:ss') },
     create_ut : { type: String, default: Date.now },
