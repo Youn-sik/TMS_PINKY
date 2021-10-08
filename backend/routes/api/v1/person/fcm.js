@@ -23,6 +23,21 @@ router.get('/',async function(req, res) { //리스트 json 리턴
     }
 });
 
+router.get('/:name',async function(req, res) { //해당 이름의 번호와 device_token 리턴
+    try {
+        console.log("GET: /:name");
+
+        let get_data = {}
+        let name = req.params === undefined ? req.name : req.params.name;
+        
+        get_data = await api_v1_person_fcm.find({"name" : name},{"_id" : false, "name" : true, "mobile" : true, "device_token" : true});
+        res.send(get_data);
+
+    } catch (err) {
+        res.status(400).send({err:"잘못된 형식 입니다."})
+    }
+});
+
 router.get('/:name/:mobile',async function(req, res) { //해당 학생 번호의 device_token 리턴
     try {
         console.log("GET: /fcm/:mobile");
