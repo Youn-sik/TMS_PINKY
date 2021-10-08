@@ -417,11 +417,11 @@ def on_message(client, userdata, msg):
             user_collection.insert_one(user_json)
             user_objectid = str(user_json['_id'])
 
-            fcm_json = {
-                "mobile": user_json['mobile'],
-                "device_token": user_json['device_token']
-            }
-            fcm_collection.insert(fcm_json)
+            # fcm_json = {
+            #     "mobile": user_json['mobile'],
+            #     "device_token": user_json['device_token']
+            # }
+            # fcm_collection.insert(fcm_json)
 
             file_name = user_objectid+"profile.jpg"
 

@@ -420,7 +420,7 @@ const AddEmployee = props => {
                   required
                   id="standard-required"
                   label="생년월일"
-                  placeholder="ex)2021/01/01"
+                  placeholder="ex)2021-01-01"
                   onChange={handleChange}
                 />
               </div>

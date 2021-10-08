@@ -206,6 +206,7 @@ const UsersTable = props => {
               onClick={() => {
                 deleteUsers(selectedObject);
                 setSelectedObject([]);
+                setSelected([]);
               }}>
               삭제
             </Button>

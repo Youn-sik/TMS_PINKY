@@ -23,6 +23,7 @@ const Access = require('./models/api/v1/person/access')
 
 //router
 const usersRouter = require('./routes/api/v1/person/user');
+const pinkyAppsRouter = require('./routes/api/v1/person/pinkyApp');
 const fcmsRouter = require('./routes/api/v1/person/fcm');
 const accessRouter = require('./routes/api/v1/person/access');
 const groupRouter = require('./routes/api/v1/group/group');
@@ -65,6 +66,7 @@ app.use(function (req, res, next) {
 
 //router
 app.use('/user',usersRouter);
+app.use('/pinkyApp', pinkyAppsRouter);
 app.use('/fcm', fcmsRouter);
 app.use('/account',accountRouter);
 app.use('/access',accessRouter);
