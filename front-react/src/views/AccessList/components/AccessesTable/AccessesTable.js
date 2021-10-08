@@ -449,7 +449,7 @@ const AccessesTable = props => {
                       active={activeType === 'stb_sn'}
                       direction={sort}
                       onClick={() => {
-                        createSortHandler('stb_name');
+                        createSortHandler('stb_sn');
                       }}>
                       단말기<br/>시리얼
                     </TableSortLabel>
@@ -500,10 +500,10 @@ const AccessesTable = props => {
                 <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel
-                      active={activeType === ''} //#####################
+                      active={activeType === 'sensor_dust'} //#####################
                       direction={sort}
                       onClick={() => {
-                        createSortHandler(''); //#####################
+                        createSortHandler('sensor_dust'); //#####################
                       }}>
                       미세먼지<br/>(ug/m3)
                     </TableSortLabel>
@@ -514,10 +514,10 @@ const AccessesTable = props => {
                 <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel
-                      active={activeType === ''} //#####################
+                      active={activeType === 'sensor_CO2'} //#####################
                       direction={sort}
                       onClick={() => {
-                        createSortHandler(''); //#####################
+                        createSortHandler('sensor_CO2'); //#####################
                       }}>
                       CO2<br/>(ppm)
                     </TableSortLabel>
@@ -540,18 +540,7 @@ const AccessesTable = props => {
                   )}
                 </TableCell>
                 <TableCell>
-                  {accesses.length > 0 ? (
-                    <TableSortLabel
-                      active={activeType === ''} //#####################
-                      direction={sort}
-                      onClick={() => {
-                        createSortHandler(''); //#####################
-                      }}>
-                      기상<br/>데이터
-                    </TableSortLabel>
-                  ) : (
-                    '기상 데이터'
-                  )}
+                  기상<br/>데이터
                 </TableCell>
                 {/* <TableCell style={{width:110}}>알람</TableCell> */}
                 {/* <TableCell>동작</TableCell> */}

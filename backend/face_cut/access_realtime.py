@@ -361,7 +361,7 @@ def on_message(client, userdata, msg):
             for fcm in device_tokens :
                 device_token.append(fcm['device_token'])
 
-        print(device_token)
+        # print(insert_array)
 
         send_data = {
             'stb_sn': access_json['stb_sn'],
