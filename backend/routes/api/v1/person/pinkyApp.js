@@ -37,7 +37,7 @@ router.get('/:what/:thing',async function(req, res) {
 
         let get_data = {}
 
-        if(req.params.what == 'id'){
+        if(req.params.what == '_id'){
             const id = req.params === undefined ? req.thing : req.params.thing
             get_data.data = await api_v1_person_user.findById(id)
             get_data.camera = await api_v3_device_camera.find({},{"name" : true, "location" : true, "serial_number" : true, "status" : true})

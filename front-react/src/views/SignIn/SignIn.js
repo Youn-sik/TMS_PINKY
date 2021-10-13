@@ -155,6 +155,8 @@ const SignIn = props => {
   const handleSliderChange = (newValue, event) => {
     if (event.type === 'mousemove') {
       setValue(newValue);
+    } else if (event.type === 'touchmove') {
+      setValue(newValue);
     }
   };
 
