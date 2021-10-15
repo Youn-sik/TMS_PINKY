@@ -280,8 +280,8 @@ const AccountsTable = props => {
                         account.authority.split('-')[1] === 'user'
                           ? '사용자'
                           : account.authority === 'admin'
-                          ? '관리자'
-                          : '매니저'}
+                          ? '최고관리자'
+                          : '학교관리자'}
                       </TableCell>
                       <TableCell>{account.user_name}</TableCell>
                       <TableCell>{account.user_lang}</TableCell>

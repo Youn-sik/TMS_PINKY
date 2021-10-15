@@ -23,7 +23,7 @@ import {
   EditVisitor as EditVisitorView,
   Stranger as StrangerView,
   AddStranger as AddStrangerView,
-  Device as DeviceView,
+  Device as DeviceView, 
   AddDevice as AddDeviceView,
   EditDevice as EditDeviceView,
   DeviceError as DeviceErrorView,
@@ -35,7 +35,8 @@ import {
   Operation as OperationView,
   FaceDetection as FaceDetectionView,
   AccessStat as AccessStatsView,
-  Settings as SettingsView
+  Settings as SettingsView,
+
 } from './views';
 
 const Routes = props => {

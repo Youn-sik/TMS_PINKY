@@ -95,8 +95,8 @@ const AddAccount = props => {
   const addAccount = async () => {
     if (accountInfo.user_name === '') alert('이름을 입력해주세요');
     else if (accountInfo.user_id === '') alert('아이디를 입력해주세요');
-    else if (accountInfo.user_pw === '') alert('부서를 입력해주세요');
-    else if (accountInfo.pw_chk === '') alert('직급을 입력해주세요');
+    else if (accountInfo.user_pw === '') alert('비밀번호를 입력해주세요');
+    else if (accountInfo.pw_chk === '') alert('비밀번호 확인란을 입력해주세요');
     else if (accountInfo.user_pw !== accountInfo.pw_chk)
       alert('비밀번호가 다릅니다');
     else {
@@ -210,12 +210,12 @@ const AddAccount = props => {
                 style={{ width: '100%', marginTop: 15 }}
                 onChange={handleChange}>
                 {props.authority === 'admin' ? (
-                  <MenuItem value={'admin'}>관리자</MenuItem>
+                  <MenuItem value={'admin'}>최고관리자</MenuItem>
                 ) : null}
                 {props.authority.split('-')[0] === 'manager' ||
                 props.authority === 'admin' ? (
                   <MenuItem value={'manager'}>
-                    매니저
+                    학교관리자
                   </MenuItem>
                 ) : null}
                 <MenuItem

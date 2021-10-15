@@ -201,12 +201,12 @@ const EditAccount = props => {
                 style={{ width: '100%', marginTop: 15 }}
                 onChange={handleChange}>
                 {props.authority === 'admin' ? (
-                  <MenuItem value="admin">관리자</MenuItem>
+                  <MenuItem value="admin">최고관리자</MenuItem>
                 ) : null}
                 {props.authority.split('-')[0] === 'manager' ||
                 props.authority === 'admin' ? (
                   <MenuItem value="manager">
-                    매니저
+                    학교관리자
                   </MenuItem>
                 ) : null}
                 <MenuItem

@@ -76,7 +76,7 @@ const SidebarNav = props => {
       setOpen(title);
     }
   };
-
+  
   // useEffect(() => {
   //   console.log(open)
   // },[open])
@@ -91,7 +91,11 @@ const SidebarNav = props => {
                 activeClassName={classes.active}
                 className={classes.button}
                 component={CustomRouterLink}
-                to={page.href}>
+                onClick = {() => {
+                  if(page.title == '통학버스') window.location.href = "http://jeju.specialschoolbus.com/school/login.html"
+                }}
+                to={page.href}
+                >
                 <div className={classes.icon}>{page.icon}</div>
                 {page.title}
               </Button>

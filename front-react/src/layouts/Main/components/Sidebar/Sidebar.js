@@ -8,6 +8,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import SyncAltIcon from '@material-ui/icons/SyncAlt';
 import DnsIcon from '@material-ui/icons/Dns';
 import InsertChartIcon from '@material-ui/icons/InsertChart';
+import DirectionsBusIcon from '@material-ui/icons/DirectionsBus';
 
 import { SidebarNav } from './components';
 
@@ -46,7 +47,7 @@ const Sidebar = props => {
       icon: <DashboardIcon />
     },
     {
-      title: '현황 관리',
+      title: '현황관리',
       // href: '/access',
       href: '/access/records',
       icon: <SyncAltIcon />,
@@ -58,22 +59,27 @@ const Sidebar = props => {
       // ]
     },
     {
-      title: '학생관리',
+      title: '계정관리',
       href: '/users',
       children: [
         {
-          title: '학생관리 세부',
+          title: '사용자관리',
           href: '/users/employee'
         },
-        {
-          title: '블랙리스트 관리',
-          href: '/users/black'
-        }
+        // {
+        //   title: '블랙리스트 관리',
+        //   href: '/users/black'
+        // }
       ],
       icon: <PeopleIcon />
     },
     {
-      title: '단말 관리',
+      title: '통학버스',
+      href: window.location.href,
+      icon: <DirectionsBusIcon/>,
+    },
+    {
+      title: '단말관리',
       href: '/device/list',
       // children: [
       //   {

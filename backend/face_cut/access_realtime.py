@@ -206,6 +206,12 @@ def on_message(client, userdata, msg):
                 f.write(imgdata)
 
             result = detect_face(file_path+file_name)
+
+            max__id = ''
+            max_location = ''
+            max_position = ''
+            max_mobile = ''
+
             if result is None :
                 name = 'unknown'
                 avatar_type = 3
@@ -222,7 +228,7 @@ def on_message(client, userdata, msg):
                     max_mobile = ''
                 
             else :
-                recog_result,max_sim,max_name,max_type,max_gender,max_employee_id,max_group_id,max_position,max_location,max_mobile = recog_face(users,auth)
+                recog_result,max_sim,max_name,max_type,max_gender,max_employee_id,max_group_id,max_position,max_location,max_mobile, max__id = recog_face(users,auth)
 
                 mobile = max_mobile
 
@@ -286,6 +292,8 @@ def on_message(client, userdata, msg):
                 'authority': camera['authority'], #
                 "employee_id" : max_employee_id, #
             }
+
+            # print(insert_data)
 
             insert_array.append(insert_data)
 
@@ -366,6 +374,7 @@ def on_message(client, userdata, msg):
         send_data = {
             'stb_sn': access_json['stb_sn'],
             'values': insert_array,
+            '_id': max__id,
             'device_token': device_token,
         }
 
@@ -752,7 +761,7 @@ def recog_face(users,auth) :
     max_type = 3
     max_location = ''
     max_mobile = ''
-    max_gender_text = ''
+    max__id = ''
     start = time.time()
     for emb in users:
         # print(auth,emb['authority'])
@@ -778,6 +787,7 @@ def recog_face(users,auth) :
             max_gender = emb['gender']
             max_type = emb['type']
             max_position = emb['position']
+            max__id = str(emb['_id'])
             # if 'gender'==1 in emb:
             #     max_gender_text = '남자'
             # else:
@@ -786,7 +796,7 @@ def recog_face(users,auth) :
         # if(max_sim >= 0.625):
         #     break
     print("time :", time.time() - start)
-    return result,max_sim,max_name,max_type,max_gender,max_employee_id,max_group_id,max_position,max_location,max_mobile
+    return result,max_sim,max_name,max_type,max_gender,max_employee_id,max_group_id,max_position,max_location,max_mobile, max__id
 
 # def interval_db() :
 #     results=collection.find({"detected":{"$exists":False}})
