@@ -430,14 +430,15 @@ const SignIn = props => {
         alert('서버와의 연결이 끊겼습니다.')
       } else if(result.response && result.response.status === 400) {
         alert('존재하지 않는 계정입니다')
-      } else if (result.data && result.data.token) {
-        document.cookie = 'token=' + result.data.token+";path=/;expires="+new Date('2100-12-31T00:00:00');
-        let decoded = jwt(result.data.token);
-        let info = decoded.user_id+"|"+decoded.authority+"|"+decoded.tempType+"|"+decoded.tempLimit
-        info = info.toBase64();
-        document.cookie = 'ACTKINFO='+info+";path=/;expires="+new Date('2100-12-31T00:00:00');
+      } else if (result.data && result.data.token) { //데이터가 있는지(토큰)
+        document.cookie = 'token=' + result.data.token+";path=/;expires="+new Date('2100-12-31T00:00:00'); //변수에 토큰을 넣고
+        let decoded = jwt(result.data.token); //토큰을 디코딩 한다.
+        let info = decoded.user_id+"|"+decoded.authority+"|"+decoded.tempType+"|"+decoded.tempLimit //토큰에 존재하는 계정 정보를 변수에 저장
+        info = info.toBase64(); //Base64로 인코딩 한다.
+        document.cookie = 'ACTKINFO='+info+";path=/;expires="+new Date('2100-12-31T00:00:00'); //쿠키에 String 으로 전달
         localStorage.setItem('temperature',String(decoded.tempLimit));
         props.getAuth(decoded);
+        console.log("계정 토큰 값:"+result.data.token);
         history.push('/');
       } else if (result.data) {
         alert('존재하지 않는 계정 입니다');

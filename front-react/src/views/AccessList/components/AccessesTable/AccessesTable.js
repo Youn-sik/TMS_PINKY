@@ -593,7 +593,7 @@ const AccessesTable = props => {
                           : '비상'}
                           </TableCell>
                           <TableCell className={classes.redFont}>
-                            {access.employee_id}
+                          {access.name !== 'unknown' ? access.employee_id : ''}
                           </TableCell>
                           <TableCell className={classes.redFont}>
                             {access.location}
@@ -634,7 +634,7 @@ const AccessesTable = props => {
                               {access.weather_temperature
                               ?"온도: "+access.weather_temperature+"°C "+"\n"+
                               "강수: "+access.weather_rain+"\n"+
-                              " 습도: "+access.weather_humidity+"% "+"\n"+
+                              "습도: "+access.weather_humidity+"% "+"\n"+
                               "풍속: "+access.weather_windSpeed+"m/s"
                               : ''}
                           </TableCell>
@@ -750,7 +750,7 @@ const AccessesTable = props => {
                                 {access.weather_temperature
                                 ?"온도: "+access.weather_temperature+"°C "+"\n"+
                                 "강수: "+access.weather_rain+"\n"+
-                                " 습도: "+access.weather_humidity+"% "+"\n"+
+                                "습도: "+access.weather_humidity+"% "+"\n"+
                                 "풍속: "+access.weather_windSpeed+"m/s"
                                 : ''}
                             </TableCell>
@@ -825,7 +825,7 @@ const AccessesTable = props => {
                               : '비상'}
                               </TableCell>
                               <TableCell className={classes.redFont}>
-                                {access.employee_id}
+                              {access.name !== 'unknown' ? access.employee_id : ''}
                               </TableCell>
                               <TableCell className={classes.redFont}>
                                 {access.location}
@@ -871,7 +871,7 @@ const AccessesTable = props => {
                                   {access.weather_temperature
                                   ?"온도: "+access.weather_temperature+"°C "+"\n"+
                                   "강수: "+access.weather_rain+"\n"+
-                                  " 습도: "+access.weather_humidity+"% "+"\n"+
+                                  "습도: "+access.weather_humidity+"% "+"\n"+
                                   "풍속: "+access.weather_windSpeed+"m/s"
                                   : ''}
                               </TableCell>
@@ -943,7 +943,7 @@ const AccessesTable = props => {
                               : '비상'}
                               </TableCell>
                               <TableCell className={classes.orangeFont}>
-                                {access.employee_id}
+                              {access.name !== 'unknown' ? access.employee_id : ''}
                               </TableCell>
                               <TableCell className={classes.orangeFont}>
                                 {access.location}
@@ -989,7 +989,7 @@ const AccessesTable = props => {
                                   {access.weather_temperature
                                   ?"온도: "+access.weather_temperature+"°C "+"\n"+
                                   "강수: "+access.weather_rain+"\n"+
-                                  " 습도: "+access.weather_humidity+"% "+"\n"+
+                                  "습도: "+access.weather_humidity+"% "+"\n"+
                                   "풍속: "+access.weather_windSpeed+"m/s"
                                   : ''}
                               </TableCell>
@@ -1059,7 +1059,7 @@ const AccessesTable = props => {
                               : '비상'}
                               </TableCell>
                               <TableCell>
-                                {access.employee_id}
+                                {access.name !== 'unknown' ? access.employee_id : ''}
                               </TableCell>
                               <TableCell>
                                 {access.name !== 'unknown'? access.location : ''}
@@ -1105,7 +1105,7 @@ const AccessesTable = props => {
                                   {access.weather_temperature
                                   ?"온도: "+access.weather_temperature+"°C "+"\n"+
                                   "강수: "+access.weather_rain+"\n"+
-                                  " 습도: "+access.weather_humidity+"% "+"\n"+
+                                  "습도: "+access.weather_humidity+"% "+"\n"+
                                   "풍속: "+access.weather_windSpeed+"m/s"
                                   : ''}
                               </TableCell>

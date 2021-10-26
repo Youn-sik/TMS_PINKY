@@ -23,6 +23,7 @@ import paho.mqtt.client as mqtt
 import tracemalloc
 import ssl
 import re
+import requests
 from insightface.app import FaceAnalysis #모델 다운로드를 위한 import
 my_client = MongoClient("mongodb://localhost:27017/")
 db = my_client["cloud40"]
@@ -391,6 +392,10 @@ def on_message(client, userdata, msg):
             client.publish('/access/realtime/check/result/'+access_json['stb_sn'], json.dumps(send_data), 1)      
 
         client.publish('/access/realtime/result/'+access_json['stb_sn'], json.dumps(send_data), 1)
+        request_data = send_data
+        request_url = "http://211.202.11.148:8080/dataReceiver/inOutData.jsp"
+        response = requests.post(request_url, data=request_data)
+        print(response)
 
     elif(msg.topic.find("/user/add/") != -1) :
         print("/user/add/")
