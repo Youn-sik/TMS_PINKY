@@ -392,7 +392,7 @@ def on_message(client, userdata, msg):
             client.publish('/access/realtime/check/result/'+access_json['stb_sn'], json.dumps(send_data), 1)      
 
         client.publish('/access/realtime/result/'+access_json['stb_sn'], json.dumps(send_data), 1)
-        request_data = send_data
+        request_data = json.dumps(send_data)
         request_url = "http://211.202.11.148:8080/dataReceiver/inOutData.jsp"
         response = requests.post(request_url, data=request_data)
         print(response)

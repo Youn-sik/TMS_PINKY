@@ -24,7 +24,11 @@ router.get('/',async function(req, res) {
         get_data.data = await api_v1_person_user.find({})
         .select('-face_detection')
         get_data.camera = await api_v3_device_camera.find({},{"name" : true, "location" : true, "serial_number" : true, "status" : true, "lat" : true, "lng" : true})
-
+        
+        for(let i =0; i<get_data.data.length; i++){
+            get_data.data[i].avatar_file_url = get_data.data[i].avatar_file_url.replace('172.16.41.114:3000', '211.204.122.90:10891')
+        }
+        
         res.send(get_data);
     } catch (err) {
         res.status(400).send({err:"잘못된 형식 입니다."})
@@ -41,6 +45,9 @@ router.get('/:what/:thing',async function(req, res) {
             const id = req.params === undefined ? req.thing : req.params.thing
             get_data.data = await api_v1_person_user.findById(id)
             get_data.camera = await api_v3_device_camera.find({},{"name" : true, "location" : true, "serial_number" : true, "status" : true, "lat" : true, "lng" : true})
+            
+            get_data.data.avatar_file_url = get_data.data.avatar_file_url.replace('172.16.41.114:3000', '211.204.122.90:10891')
+            
             res.send(get_data)
         } else if(req.params.what == 'gender'){
             const gender_str = req.params === undefined ? req.thing : req.params.thing
@@ -48,42 +55,82 @@ router.get('/:what/:thing',async function(req, res) {
                 const gender = 1
                 get_data.data = await api_v1_person_user.find({"gender" : gender})
                 get_data.camera = await api_v3_device_camera.find({},{"name" : true, "location" : true, "serial_number" : true, "status" : true, "lat" : true, "lng" : true})
+                
+                for(let i =0; i<get_data.data.length; i++){
+                    get_data.data[i].avatar_file_url = get_data.data[i].avatar_file_url.replace('172.16.41.114:3000', '211.204.122.90:10891')
+                }
+                
                 res.send(get_data)
             } else if(gender_str == '여자') {
                 const gender = 0
                 get_data.data = await api_v1_person_user.find({"gender" : gender})
                 get_data.camera = await api_v3_device_camera.find({},{"name" : true, "location" : true, "serial_number" : true, "status" : true, "lat" : true, "lng" : true})
+                
+                for(let i =0; i<get_data.data.length; i++){
+                    get_data.data[i].avatar_file_url = get_data.data[i].avatar_file_url.replace('172.16.41.114:3000', '211.204.122.90:10891')
+                }
+                
                 res.send(get_data)
             }
         } else if(req.params.what == 'name'){
             const name = req.params === undefined ? req.thing : req.params.thing
             get_data.data = await api_v1_person_user.find({"name" : name})
             get_data.camera = await api_v3_device_camera.find({},{"name" : true, "location" : true, "serial_number" : true, "status" : true, "lat" : true, "lng" : true})
+            
+            for(let i =0; i<get_data.data.length; i++){
+                get_data.data[i].avatar_file_url = get_data.data[i].avatar_file_url.replace('172.16.41.114:3000', '211.204.122.90:10891')
+            }
+            
             res.send(get_data)
         } else if(req.params.what == 'user_id'){
             const user_id = req.params === undefined ? req.thing : req.params.thing
             get_data.data = await api_v1_person_user.find({"user_id" : user_id})
             get_data.camera = await api_v3_device_camera.find({},{"name" : true, "location" : true, "serial_number" : true, "status" : true, "lat" : true, "lng" : true})
+            
+            for(let i =0; i<get_data.data.length; i++){
+                get_data.data[i].avatar_file_url = get_data.data[i].avatar_file_url.replace('172.16.41.114:3000', '211.204.122.90:10891')
+            }
+            
             res.send(get_data)
         } else if(req.params.what == 'location'){
             const location = req.params === undefined ? req.thing : req.params.thing
             get_data.data = await api_v1_person_user.find({"location" : location})
             get_data.camera = await api_v3_device_camera.find({},{"name" : true, "location" : true, "serial_number" : true, "status" : true, "lat" : true, "lng" : true})
+            
+            for(let i =0; i<get_data.data.length; i++){
+                get_data.data[i].avatar_file_url = get_data.data[i].avatar_file_url.replace('172.16.41.114:3000', '211.204.122.90:10891')
+            }
+            
             res.send(get_data)
         } else if(req.params.what == 'position'){
             const position = req.params === undefined ? req.thing : req.params.thing
             get_data.data = await api_v1_person_user.find({"position" : position})
             get_data.camera = await api_v3_device_camera.find({},{"name" : true, "location" : true, "serial_number" : true, "status" : true, "lat" : true, "lng" : true})
+            
+            for(let i =0; i<get_data.data.length; i++){
+                get_data.data[i].avatar_file_url = get_data.data[i].avatar_file_url.replace('172.16.41.114:3000', '211.204.122.90:10891')
+            }
+            
             res.send(get_data)
         } else if(req.params.what == 'mobile'){
             const mobile = req.params === undefined ? req.thing : req.params.thing
             get_data.data = await api_v1_person_user.find({"mobile" : mobile})
             get_data.camera = await api_v3_device_camera.find({},{"name" : true, "location" : true, "serial_number" : true, "status" : true, "lat" : true, "lng" : true})
+            
+            for(let i =0; i<get_data.data.length; i++){
+                get_data.data[i].avatar_file_url = get_data.data[i].avatar_file_url.replace('172.16.41.114:3000', '211.204.122.90:10891')
+            }
+            
             res.send(get_data)
         } else if(req.params.what == 'entered'){
             const entered = req.params === undefined ? req.thing : req.params.thing
             get_data.data = await api_v1_person_user.find({"entered" : entered})
             get_data.camera = await api_v3_device_camera.find({},{"name" : true, "location" : true, "serial_number" : true, "status" : true, "lat" : true, "lng" : true})
+            
+            for(let i =0; i<get_data.data.length; i++){
+                get_data.data[i].avatar_file_url = get_data.data[i].avatar_file_url.replace('172.16.41.114:3000', '211.204.122.90:10891')
+            }
+            
             res.send(get_data)
         } else {
             res.status(400).send({err:"잘못된 형식 입니다."})

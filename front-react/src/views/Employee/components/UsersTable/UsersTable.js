@@ -29,10 +29,10 @@ import {
 
 let isOut = false
 let currentUrl = window.location.href
-// console.log(currentUrl.indexOf("172.16.33.130"))
-// if(currentUrl.indexOf('172.16.33.130') <= -1){
-//   isOut = true
-// }
+console.log(currentUrl.indexOf("172.16.41.114"))
+if(currentUrl.indexOf('172.16.41.114') <= -1){
+  isOut = true
+}
 
 Date.prototype.yyyymmdd = function() {
   var yyyy = this.getFullYear().toString();
@@ -484,7 +484,7 @@ const UsersTable = props => {
                             alt="프로필사진"
                             height="90px"
                             width="70px"
-                            src={isOut ? user.avatar_file_url.replace("172.16.41.114","211.204.122.90") : user.avatar_file_url}></img>
+                            src={isOut ? user.avatar_file_url.replace("172.16.41.114:3000","211.204.122.90:10891") : user.avatar_file_url}></img>
                         </div>
                       </TableCell>
                       <TableCell>{user.name}</TableCell>

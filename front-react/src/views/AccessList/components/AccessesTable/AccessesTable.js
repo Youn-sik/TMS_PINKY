@@ -36,11 +36,11 @@ import {
 let currentUrl = window.location.href
 let base_url = in_base_url
 let isOut = false
-// console.log(currentUrl.indexOf("172.16.33.130"))
-// if(currentUrl.indexOf("172.16.33.130") <= -1) {
-//   base_url = out_base_url
-//   isOut = true
-// }
+console.log(currentUrl.indexOf("172.16.41.114"))
+if(currentUrl.indexOf("172.16.41.114") <= -1) {
+  base_url = out_base_url
+  isOut = true
+}
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -243,7 +243,7 @@ const AccessesTable = props => {
         <img
         alt="screenShot"
         style={{maxWidth:'50vw'}}
-        src={isOut ? currentUrl.replace('172.16.41.114','211.204.122.90') : currentUrl}></img>
+        src={isOut ? currentUrl.replace('172.16.41.114:3000','211.204.122.90:10891') : currentUrl}></img>
       </Dialog>
       <Dialog onClose={handleClose} open={openEdit}>
         <Card >
@@ -290,7 +290,7 @@ const AccessesTable = props => {
                                 alt="프로필사진"
                                 height="90px"
                                 width="70px"
-                                src={isOut ? user.avatar_file_url.replace('172.16.41.114','211.204.122.90') : user.avatar_file_url}></img>
+                                src={isOut ? user.avatar_file_url.replace('172.16.41.114:3000','211.204.122.90:10891') : user.avatar_file_url}></img>
                             </div>
                           </TableCell>
                           <TableCell>{user.name}</TableCell>
@@ -550,7 +550,7 @@ const AccessesTable = props => {
               <TableBody>
                 {props.accesses
                   .map((access,index) => {
-                    console.log(JSON.stringify(access))
+                    // console.log(JSON.stringify(access))
                     const isItemSelected = isSelected(access._id);
                     if (access.alarm_type == 5){
                       //비상 버튼일 때
@@ -572,7 +572,7 @@ const AccessesTable = props => {
                                 height="90px"
                                 width="70px"
                                 className={classes.hightTempAvatar}
-                                src={isOut ? access.avatar_file_url.replace('172.16.41.114','211.204.122.90') : access.avatar_file_url}></img>
+                                src={isOut ? access.avatar_file_url.replace('172.16.41.114:3000','211.204.122.90:10891') : access.avatar_file_url}></img>
                             </div>
                           </TableCell>
                           <TableCell className={classes.redFont}>
@@ -683,7 +683,7 @@ const AccessesTable = props => {
                                   height="90px"
                                   width="70px"
                                   className={classes.avatar}
-                                  src={isOut ? access.avatar_file_url.replace('172.16.41.114','211.204.122.90') : access.avatar_file_url}></img>
+                                  src={isOut ? access.avatar_file_url.replace('172.16.41.114:3000','211.204.122.90:10891') : access.avatar_file_url}></img>
                               </div>
                             </TableCell>
                             <TableCell>
@@ -804,7 +804,7 @@ const AccessesTable = props => {
                                     height="90px"
                                     width="70px"
                                     className={classes.hightTempAvatar}
-                                    src={isOut ? access.avatar_file_url.replace('172.16.41.114','211.204.122.90') : access.avatar_file_url}></img>
+                                    src={isOut ? access.avatar_file_url.replace('172.16.41.114:3000','211.204.122.90:10891') : access.avatar_file_url}></img>
                                 </div>
                               </TableCell>
                               <TableCell className={classes.redFont}>
@@ -922,7 +922,7 @@ const AccessesTable = props => {
                                     height="90px"
                                     width="70px"
                                     className={classes.avatar}
-                                    src={isOut ? access.avatar_file_url.replace('172.16.41.114','211.204.122.90') : access.avatar_file_url}></img>
+                                    src={isOut ? access.avatar_file_url.replace('172.16.41.114:3000','211.204.122.90:10891') : access.avatar_file_url}></img>
                                 </div>
                               </TableCell>
                               <TableCell className={classes.orangeFont}>
@@ -1038,7 +1038,7 @@ const AccessesTable = props => {
                                     height="90px"
                                     width="70px"
                                     className={classes.avatar}
-                                    src={isOut ? access.avatar_file_url.replace('172.16.41.114','211.204.122.90') : access.avatar_file_url}></img>
+                                    src={isOut ? access.avatar_file_url.replace('172.16.41.114:3000','211.204.122.90:10891') : access.avatar_file_url}></img>
                                 </div>
                               </TableCell>
                               <TableCell>

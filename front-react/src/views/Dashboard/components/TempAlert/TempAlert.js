@@ -55,9 +55,9 @@ const useStyles = makeStyles(() => ({
 let currentUrl = window.location.href
 let isOut = false;
 // console.log(currentUrl.indexOf("172.16.33.130"))
-//
-//   isOut = true;
-// }
+if(currentUrl.indexOf("172.16.41.114") <= -1) {
+  isOut = true
+}
 
 const TempAlert = props => {
   const { temp, tempLimit, tempType, className, ...rest } = props;
@@ -105,7 +105,7 @@ const TempAlert = props => {
                         <img
                           alt="picture"
                           className={classes.image}
-                          src={isOut ? access.avatar_file_url.replace('172.16.41.114','211.204.122.90') : access.avatar_file_url}
+                          src={isOut ? access.avatar_file_url.replace('172.16.41.114:3000','211.204.122.90:10891') : access.avatar_file_url}
                         />
                       </TableCell>
                       <TableCell className={classes.redFont}>{access.name === 'unknown' ? null : access.name}</TableCell>
@@ -148,7 +148,7 @@ const TempAlert = props => {
                           <img
                             alt="Product"
                             className={classes.image}
-                            src={isOut ? access.avatar_file_url.replace('172.16.41.114','211.204.122.90') : access.avatar_file_url}
+                            src={isOut ? access.avatar_file_url.replace('172.16.41.114:3000','211.204.122.90:10891') : access.avatar_file_url}
                           />
                         </TableCell>
                         <TableCell>{access.name === 'unknown' ? null : access.name}</TableCell>
@@ -192,7 +192,7 @@ const TempAlert = props => {
                           <img
                             alt="picture"
                             className={classes.image}
-                            src={isOut ? access.avatar_file_url.replace('172.16.41.114','211.204.122.90') : access.avatar_file_url}
+                            src={isOut ? access.avatar_file_url.replace('172.16.41.114:3000','211.204.122.90:10891') : access.avatar_file_url}
                           />
                         </TableCell>
                         <TableCell className={classes.redFont}>{access.name === 'unknown' ? null : access.name}</TableCell>
@@ -234,7 +234,7 @@ const TempAlert = props => {
                           <img
                             alt="Product"
                             className={classes.image}
-                            src={isOut ? access.avatar_file_url.replace('172.16.41.114','211.204.122.90') : access.avatar_file_url}
+                            src={isOut ? access.avatar_file_url.replace('172.16.41.114:3000','211.204.122.90:10891') : access.avatar_file_url}
                           />
                         </TableCell>
                         <TableCell>{access.name === 'unknown' ? null : access.name}</TableCell>

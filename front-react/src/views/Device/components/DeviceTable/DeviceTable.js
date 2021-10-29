@@ -54,12 +54,12 @@ let currentUrl = window.location.href
 let base_url = in_base_url
 let base_mqtt_url = mqtt_url
 let port = "8083"
-// console.log(currentUrl.indexOf("172.16.33.130"))
-// if(currentUrl.indexOf("172.16.33.130") <= -1) {
-//   base_url = out_base_url
-//   base_mqtt_url = out_mqtt_url
-//   port = "18083"
-// }
+console.log(currentUrl.indexOf("172.16.41.114"))
+if(currentUrl.indexOf("172.16.41.114") <= -1) {
+  base_url = out_base_url
+  base_mqtt_url = out_mqtt_url
+  // port = "10891"
+}
 
 let client
 
