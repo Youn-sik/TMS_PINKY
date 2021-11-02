@@ -275,6 +275,8 @@ def on_message(client, userdata, msg):
                 "alarm_type" : alarm_type,
                 'stb_name' : camera['name'],
                 'stb_location' : camera['location'],
+                'stb_lat' : camera['lat'],
+                'stb_lng' : camera['lng'],
                 "sensor_dust" : sensor_dust,
                 "sensor_CO2" : sensor_CO2,
                 "sensor_humidity" : sensor_humidity,
@@ -293,6 +295,8 @@ def on_message(client, userdata, msg):
                 'authority': camera['authority'], #
                 "employee_id" : max_employee_id, #
             }
+
+            print(camera['lat'], camera['lng'])
 
             # print(insert_data)
 
@@ -393,6 +397,7 @@ def on_message(client, userdata, msg):
 
         client.publish('/access/realtime/result/'+access_json['stb_sn'], json.dumps(send_data), 1)
         request_data = json.dumps(send_data)
+        # print(request_data)
         request_url = "http://211.202.11.148:8080/dataReceiver/inOutData.jsp"
         response = requests.post(request_url, data=request_data)
         print(response)
