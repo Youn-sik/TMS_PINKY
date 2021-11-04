@@ -515,6 +515,20 @@ const AccessesTable = props => {
                 <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel
+                      active={activeType === 'sensor_humidity'} //#####################
+                      direction={sort}
+                      onClick={() => {
+                        createSortHandler('sensor_humidity'); //#####################
+                      }}>
+                      습도(%)
+                    </TableSortLabel>
+                  ) : (
+                    '습도(%)'
+                  )}
+                </TableCell>
+                <TableCell>
+                  {accesses.length > 0 ? (
+                    <TableSortLabel
                       active={activeType === 'sensor_CO2'} //#####################
                       direction={sort}
                       onClick={() => {
@@ -529,10 +543,10 @@ const AccessesTable = props => {
                 <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel
-                      active={activeType === 'sensor_CO2'} //#####################
+                      active={activeType === 'sensor_temperature'} //#####################
                       direction={sort}
                       onClick={() => {
-                        createSortHandler('sensor_CO2'); //#####################
+                        createSortHandler('sensor_temperature'); //#####################
                       }}>
                       센서<br/>온도
                     </TableSortLabel>
@@ -540,6 +554,7 @@ const AccessesTable = props => {
                     '센서 온도'
                   )}
                 </TableCell>
+                
                 <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel
@@ -560,6 +575,7 @@ const AccessesTable = props => {
                 {/* <TableCell style={{width:110}}>알람</TableCell> */}
                 {/* <TableCell>동작</TableCell> */}
               </TableRow>
+              
             </TableHead>
             {
               <TableBody>
@@ -632,19 +648,28 @@ const AccessesTable = props => {
                           {/* <TableCell className={classes.redFont}>
                             {access.distance ? String(access.distance).substr(0,4) : 0}%
                           </TableCell> */}
-                          <TableCell className={classes.redFont}>
-                            {access.sensor_dust
-                            ? access.sensor_dust
-                            : ''}
-                          </TableCell>
+                          <TableCell className={classes.redFont} style={{"white-space": "pre-wrap"}}>
+                              {access.sensor_dust
+                              ?"PM10: "+access.sensor_dust+"\n"+
+                              "PM2.5: "+access.sensor_pm25+"\n"+
+                              "PM1: "+access.sensor_pm1+" "
+                              : ''}
+                            </TableCell>
+                            <TableCell>
+                                  {access.sensor_humidity
+                                  ? access.sensor_humidity
+                                  : ''}
+                              </TableCell>
                           <TableCell className={classes.redFont}>
                             {access.sensor_CO2
                             ? access.sensor_CO2
                             : ''}
                           </TableCell>
                           <TableCell>
-                                {'23.0'}
-                              </TableCell>
+                            {access.sensor_temperature
+                            ? access.sensor_temperature
+                            : ''}
+                          </TableCell>
                           <TableCell className={classes.redFont} style={{"white-space": "pre-wrap"}}>
                             {access.access_time.split(' ')[0]+"\n"+
                             access.access_time.split(' ')[1]}
@@ -752,19 +777,28 @@ const AccessesTable = props => {
                             {/* <TableCell>
                               {access.distance ? String(access.distance).substr(0,4) : 0}%
                             </TableCell> */}
-                            <TableCell>
-                              {access.sensor_dust
-                              ? access.sensor_dust
-                              : ''}
-                            </TableCell>
+                            <TableCell style={{"white-space": "pre-wrap"}}>
+                                  {access.sensor_dust
+                                  ?"PM10: "+access.sensor_dust+"\n"+
+                                  "PM2.5: "+access.sensor_pm25+"\n"+
+                                  "PM1: "+access.sensor_pm1+" "
+                                  : ''}
+                              </TableCell>
+                              <TableCell>
+                                  {access.sensor_humidity
+                                  ? access.sensor_humidity
+                                  : ''}
+                              </TableCell>
                             <TableCell>
                               {access.sensor_CO2
                               ? access.sensor_CO2
                               : ''}
                             </TableCell>
                             <TableCell>
-                                {'23.0'}
-                              </TableCell>
+                              {access.sensor_temperature
+                              ? access.sensor_temperature
+                              : ''}
+                            </TableCell>
                             <TableCell style={{"white-space": "pre-wrap"}}>
                             {access.access_time.split(' ')[0]+"\n"+
                               access.access_time.split(' ')[1]}
@@ -882,13 +916,23 @@ const AccessesTable = props => {
                                 ? access.sensor_dust
                                 : ''}
                               </TableCell>
-                              <TableCell className={classes.redFont}>
-                                {access.sensor_CO2
-                                ? access.sensor_CO2
-                                : ''}
+                              
+                              <TableCell className={classes.redFont} style={{"white-space": "pre-wrap"}}>
+                                  {access.sensor_dust
+                                  ?"PM10: "+access.sensor_dust+"\n"+
+                                  "PM2.5: "+access.sensor_pm25+"\n"+
+                                  "PM1: "+access.sensor_pm1+" "
+                                  : ''}
                               </TableCell>
                               <TableCell>
-                                {'23.0'}
+                                  {access.sensor_humidity
+                                  ? access.sensor_humidity
+                                  : ''}
+                              </TableCell>
+                              <TableCell>
+                                {access.sensor_temperature
+                                ? access.sensor_temperature
+                                : ''}
                               </TableCell>
                               <TableCell className={classes.redFont} style={{"white-space": "pre-wrap"}}>
                                 {access.access_time.split(' ')[0]+"\n"+
@@ -999,10 +1043,18 @@ const AccessesTable = props => {
                               {/* <TableCell className={classes.orangeFont}>
                                 {access.distance ? String(access.distance).substr(0,4) : 0}%
                               </TableCell> */}
-                              <TableCell className={classes.orangeFont}>
-                                {access.sensor_dust
-                                ? access.sensor_dust
-                                : ''}
+                      
+                              <TableCell className={classes.orangeFont} style={{"white-space": "pre-wrap"}}>
+                                  {access.sensor_dust
+                                  ?"PM10: "+access.sensor_dust+"\n"+
+                                  "PM2.5: "+access.sensor_pm25+"\n"+
+                                  "PM1: "+access.sensor_pm1+" "
+                                  : ''}
+                              </TableCell>
+                              <TableCell>
+                                  {access.sensor_humidity
+                                  ? access.sensor_humidity
+                                  : ''}
                               </TableCell>
                               <TableCell className={classes.orangeFont}>
                                 {access.sensor_CO2
@@ -1010,7 +1062,9 @@ const AccessesTable = props => {
                                 : ''}
                               </TableCell>
                               <TableCell>
-                                {'23.0'}
+                                {access.sensor_temperature
+                                ? access.sensor_temperature
+                                : ''}
                               </TableCell>
                               <TableCell className={classes.orangeFont} style={{"white-space": "pre-wrap"}}>
                               {access.access_time.split(' ')[0]+"\n"+
@@ -1119,10 +1173,17 @@ const AccessesTable = props => {
                               {/* <TableCell>
                                 {access.distance ? String(access.distance).substr(0,4) : 0}%
                               </TableCell> */}
+                              <TableCell style={{"white-space": "pre-wrap"}}>
+                                  {access.sensor_dust
+                                  ?"PM10: "+access.sensor_dust+"\n"+
+                                  "PM2.5: "+access.sensor_pm25+"\n"+
+                                  "PM1: "+access.sensor_pm1+" "
+                                  : ''}
+                              </TableCell>
                               <TableCell>
-                                {access.sensor_dust
-                                ? access.sensor_dust
-                                : ''}
+                                  {access.sensor_humidity
+                                  ? access.sensor_humidity
+                                  : ''}
                               </TableCell>
                               <TableCell>
                                 {access.sensor_CO2
@@ -1130,7 +1191,9 @@ const AccessesTable = props => {
                                 : ''}
                               </TableCell>
                               <TableCell>
-                                {'23.0'}
+                                {access.sensor_temperature
+                                ? access.sensor_temperature
+                                : ''}
                               </TableCell>
                               <TableCell style={{"white-space": "pre-wrap"}}>
                               {access.access_time.split(' ')[0]+"\n"+

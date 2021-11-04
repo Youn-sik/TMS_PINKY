@@ -124,7 +124,7 @@ def on_message(client, userdata, msg):
         print("/access/realtime/")
     
         access_json = json.loads(msg.payload)
-        print(access_json)
+        # print(access_json)
         camera = camera_collection.find_one({"serial_number":access_json['stb_sn']})
         auth = camera["authority"]
         if(camera["authority"] == "admin") :
@@ -176,12 +176,21 @@ def on_message(client, userdata, msg):
             for sensor_values in value['sensor']:
                 if sensor_values['type'] == 'dust':
                     sensor_dust = sensor_values['value']
+                elif sensor_values['type'] == 'pm25':
+                    sensor_pm25 = sensor_values['value']
+                elif sensor_values['type'] == 'pm1':
+                    sensor_pm1 = sensor_values['value']
                 elif sensor_values['type'] == 'CO2':
                     sensor_CO2 = sensor_values['value']
                 elif sensor_values['type'] == 'humidity':
                     sensor_humidity = sensor_values['value']
+                elif sensor_values['type'] == 'temperature':
+                    sensor_temperature = sensor_values['value']
                 else :
                     sensor_dust=''
+                    sensor_pm25=''
+                    sensor_pm1=''
+                    sensor_temperature=''
                     sensor_CO2 = ''
                     sensor_humidity = ''
             
@@ -278,8 +287,11 @@ def on_message(client, userdata, msg):
                 'stb_lat' : camera['lat'],
                 'stb_lng' : camera['lng'],
                 "sensor_dust" : sensor_dust,
+                "sensor_pm25" : sensor_pm25,
+                "sensor_pm1" : sensor_pm1,
                 "sensor_CO2" : sensor_CO2,
                 "sensor_humidity" : sensor_humidity,
+                "sensor_temperature" : sensor_temperature,
                 "weather_temperature" : weather_temperature,
                 "weather_rain" : weather_rain,
                 "weather_humidity" : weather_humidity,
@@ -296,7 +308,7 @@ def on_message(client, userdata, msg):
                 "employee_id" : max_employee_id, #
             }
 
-            print(camera['lat'], camera['lng'])
+            # print(camera['lat'], camera['lng'])
 
             # print(insert_data)
 

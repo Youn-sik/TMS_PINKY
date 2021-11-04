@@ -387,7 +387,7 @@ const AccessList = props => {
 
     const ws = wb.addWorksheet("Info", {properties:{ defaultRowHeight: 50 }})
 
-    ws.addRow(['이름','성별', '타입','생년월일', '소속 학교/원','학년/반', '단말 위치','단말기 이름','단말기 시리얼','온도','미세먼지(ug/m3)', 'CO2(ppm)', '등원 시간', '기상 데이터', '알람'])
+    ws.addRow(['이름','성별', '타입','생년월일', '소속 학교/원','학년/반','온도', '단말 위치','단말기 이름','단말기 시리얼','미세먼지(ug/m3)', '습도(%)', 'CO2(ppm)', '센서 온도', '시간', '기상 데이터', '알람'])
     accesses.map((access,index) => {
       let temp = []
       temp.push(access['name'])
@@ -396,12 +396,18 @@ const AccessList = props => {
       temp.push(access['employee_id'])
       temp.push(access['location'])
       temp.push(access['position'])
+      temp.push(access['avatar_temperature'].length < 4 ? access['avatar_temperature'] : access['avatar_temperature'].substring(0,4));
       temp.push(access['stb_location'])
       temp.push(access['stb_name'])
       temp.push(access['stb_sn'])
-      temp.push(access['avatar_temperature'].length < 4 ? access['avatar_temperature'] : access['avatar_temperature'].substring(0,4));
-      temp.push(access['sensor_dust'])
+      let sensor_dust_tmp =[];
+      sensor_dust_tmp.push("pm10: "+access['sensor_dust'])
+      sensor_dust_tmp.push("pm2.5: "+access['sensor_pm25'])
+      sensor_dust_tmp.push("pm1: "+access['sensor_pm1'])
+      temp.push(sensor_dust_tmp)
+      temp.push(access['sensor_humidity'])
       temp.push(access['sensor_CO2'])
+      temp.push(access['sensor_temperature'] + "°C")    
       temp.push(access['access_time'])
       let weather_tmp = [];
       weather_tmp.push("온도: "+access['weather_temperature'] + "°C ")
