@@ -15,7 +15,7 @@ import ExcelJS from 'exceljs/dist/es5/exceljs.browser.js'
 
 let currentUrl = window.location.href
 let base_url = in_base_url
-console.log(currentUrl.indexOf("172.16.41.114"))
+// console.log(currentUrl.indexOf("172.16.41.114"))
 if(currentUrl.indexOf("172.16.41.114") <= -1) {
   base_url = out_base_url
 }

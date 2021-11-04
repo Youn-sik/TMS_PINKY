@@ -36,7 +36,7 @@ import {
 let currentUrl = window.location.href
 let base_url = in_base_url
 let isOut = false
-console.log(currentUrl.indexOf("172.16.41.114"))
+// console.log(currentUrl.indexOf("172.16.41.114"))
 if(currentUrl.indexOf("172.16.41.114") <= -1) {
   base_url = out_base_url
   isOut = true
@@ -642,6 +642,9 @@ const AccessesTable = props => {
                             ? access.sensor_CO2
                             : ''}
                           </TableCell>
+                          <TableCell>
+                                {'23.0'}
+                              </TableCell>
                           <TableCell className={classes.redFont} style={{"white-space": "pre-wrap"}}>
                             {access.access_time.split(' ')[0]+"\n"+
                             access.access_time.split(' ')[1]}
@@ -759,6 +762,9 @@ const AccessesTable = props => {
                               ? access.sensor_CO2
                               : ''}
                             </TableCell>
+                            <TableCell>
+                                {'23.0'}
+                              </TableCell>
                             <TableCell style={{"white-space": "pre-wrap"}}>
                             {access.access_time.split(' ')[0]+"\n"+
                               access.access_time.split(' ')[1]}
@@ -881,6 +887,9 @@ const AccessesTable = props => {
                                 ? access.sensor_CO2
                                 : ''}
                               </TableCell>
+                              <TableCell>
+                                {'23.0'}
+                              </TableCell>
                               <TableCell className={classes.redFont} style={{"white-space": "pre-wrap"}}>
                                 {access.access_time.split(' ')[0]+"\n"+
                                 access.access_time.split(' ')[1]}
@@ -999,6 +1008,9 @@ const AccessesTable = props => {
                                 {access.sensor_CO2
                                 ? access.sensor_CO2
                                 : ''}
+                              </TableCell>
+                              <TableCell>
+                                {'23.0'}
                               </TableCell>
                               <TableCell className={classes.orangeFont} style={{"white-space": "pre-wrap"}}>
                               {access.access_time.split(' ')[0]+"\n"+

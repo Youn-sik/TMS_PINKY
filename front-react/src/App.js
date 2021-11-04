@@ -25,7 +25,7 @@ let currentUrl = window.location.href
 let base_url = in_base_url
 let base_mqtt_url = mqtt_url
 let port = "8083"
-console.log(currentUrl.indexOf("172.16.41.114"))
+// console.log(currentUrl.indexOf("172.16.41.114"))
 if(currentUrl.indexOf("172.16.41.114") <= -1) {
   base_url = out_base_url
   base_mqtt_url = out_mqtt_url
@@ -89,10 +89,18 @@ function Popup() {
         let templimit = localStorage.getItem('temperature');
         if(matchRe && window.location.pathname !== '/sign-in' && result[0].avatar_temperature >= templimit){
           imgSrc = result[0].avatar_file_url
+          if(currentUrl.indexOf("172.16.41.114") <= -1) {
+            imgSrc = imgSrc.replace('172.16.41.114:3000','211.204.122.90:10891')
+          }
+          console.log(imgSrc);
           enqueueSnackbar(`${result[0].stb_location}에서 고발열자(${String(result[0].avatar_temperature).substring(0,4)}℃)가 탐지 되었습니다.|${imgSrc}`,{ variant: 'error',autoHideDuration:null});
         }
         else if(matchRe && window.location.pathname !== '/sign-in' && result[0].alarm_type == 5){
           imgSrc = result[0].avatar_file_url
+          if(currentUrl.indexOf("172.16.41.114") <= -1) {
+            imgSrc = imgSrc.replace('172.16.41.114:3000','211.204.122.90:10891')
+          }
+          // console.log(imgSrc);
           enqueueSnackbar(`${result[0].stb_location}에서 비상알림이 호출 되었습니다.|${imgSrc}`,{ variant: 'error',autoHideDuration:null});
         }
         //

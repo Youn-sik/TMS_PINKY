@@ -29,7 +29,7 @@ import {
 
 let isOut = false
 let currentUrl = window.location.href
-console.log(currentUrl.indexOf("172.16.41.114"))
+// console.log(currentUrl.indexOf("172.16.41.114"))
 if(currentUrl.indexOf('172.16.41.114') <= -1){
   isOut = true
 }
