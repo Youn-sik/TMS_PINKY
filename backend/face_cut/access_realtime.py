@@ -124,7 +124,7 @@ def on_message(client, userdata, msg):
         print("/access/realtime/")
     
         access_json = json.loads(msg.payload)
-        # print(access_json)
+        print(access_json)
         camera = camera_collection.find_one({"serial_number":access_json['stb_sn']})
         auth = camera["authority"]
         if(camera["authority"] == "admin") :

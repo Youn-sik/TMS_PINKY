@@ -40,7 +40,7 @@ console.log(currentUrl.indexOf("172.16.41.114"))
 if(currentUrl.indexOf("172.16.41.114") <= -1) {
   base_url = out_base_url
   base_mqtt_url = out_mqtt_url
-  // port = "10891"
+  port = "10892"
 }
 
 

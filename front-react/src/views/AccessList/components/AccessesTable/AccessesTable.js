@@ -418,6 +418,20 @@ const AccessesTable = props => {
                 <TableCell>
                   {accesses.length > 0 ? (
                     <TableSortLabel
+                      active={activeType === 'avatar_temperature'}
+                      direction={sort}
+                      onClick={() => {
+                        createSortHandler('avatar_temperature');
+                      }}>
+                      온도
+                    </TableSortLabel>
+                  ) : (
+                    '온도'
+                  )}
+                </TableCell>
+                <TableCell>
+                  {accesses.length > 0 ? (
+                    <TableSortLabel
                       active={activeType === 'stb_location'}
                       direction={sort}
                       onClick={() => {
@@ -471,20 +485,7 @@ const AccessesTable = props => {
                     '거리'
                   )}
                 </TableCell> */}
-                <TableCell>
-                  {accesses.length > 0 ? (
-                    <TableSortLabel
-                      active={activeType === 'avatar_temperature'}
-                      direction={sort}
-                      onClick={() => {
-                        createSortHandler('avatar_temperature');
-                      }}>
-                      온도
-                    </TableSortLabel>
-                  ) : (
-                    '온도'
-                  )}
-                </TableCell>
+                
                 {/* <TableCell>{accesses.length > 0 ? (
                     <TableSortLabel
                       active={activeType === 'distnace'}
@@ -523,6 +524,20 @@ const AccessesTable = props => {
                     </TableSortLabel>
                   ) : (
                     'CO2(ppm)'
+                  )}
+                </TableCell>
+                <TableCell>
+                  {accesses.length > 0 ? (
+                    <TableSortLabel
+                      active={activeType === 'sensor_CO2'} //#####################
+                      direction={sort}
+                      onClick={() => {
+                        createSortHandler('sensor_CO2'); //#####################
+                      }}>
+                      센서<br/>온도
+                    </TableSortLabel>
+                  ) : (
+                    '센서 온도'
                   )}
                 </TableCell>
                 <TableCell>
@@ -601,6 +616,9 @@ const AccessesTable = props => {
                           <TableCell className={classes.redFont}>
                             {access.position}
                           </TableCell>
+                          <TableCell  className={classes.redFont}>
+                            
+                          </TableCell>
                           <TableCell className={classes.redFont}>
                             {access.stb_location ? access.stb_location : ''}
                           </TableCell>
@@ -610,20 +628,18 @@ const AccessesTable = props => {
                           <TableCell className={classes.redFont}>
                             {access.stb_sn}
                           </TableCell>
-                          <TableCell  className={classes.redFont}>
-                            
-                          </TableCell>
+                          
                           {/* <TableCell className={classes.redFont}>
                             {access.distance ? String(access.distance).substr(0,4) : 0}%
                           </TableCell> */}
                           <TableCell className={classes.redFont}>
                             {access.sensor_dust
-                            ? access.sensor_dust+'ug/m3'
+                            ? access.sensor_dust
                             : ''}
                           </TableCell>
                           <TableCell className={classes.redFont}>
                             {access.sensor_CO2
-                            ? access.sensor_CO2+'ppm'
+                            ? access.sensor_CO2
                             : ''}
                           </TableCell>
                           <TableCell className={classes.redFont} style={{"white-space": "pre-wrap"}}>
@@ -711,6 +727,14 @@ const AccessesTable = props => {
                             </TableCell>
                             <TableCell>
                               {access.name !== 'unknown'? access.position : ''}
+                              <TableCell>
+                              {tempType === 1
+                                ? String(access.avatar_temperature).substring(
+                                    0,
+                                    4
+                                  )
+                                : '정상 체온'}
+                            </TableCell>
                             </TableCell>
                             <TableCell>
                               {access.stb_location ? access.stb_location : ''}
@@ -721,25 +745,18 @@ const AccessesTable = props => {
                             <TableCell>
                               {access.stb_sn}
                             </TableCell>
-                            <TableCell>
-                              {tempType === 1
-                                ? String(access.avatar_temperature).substring(
-                                    0,
-                                    4
-                                  )
-                                : '정상 체온'}
-                            </TableCell>
+                            
                             {/* <TableCell>
                               {access.distance ? String(access.distance).substr(0,4) : 0}%
                             </TableCell> */}
                             <TableCell>
                               {access.sensor_dust
-                              ? access.sensor_dust+'ug/m3'
+                              ? access.sensor_dust
                               : ''}
                             </TableCell>
                             <TableCell>
                               {access.sensor_CO2
-                              ? access.sensor_CO2+'ppm'
+                              ? access.sensor_CO2
                               : ''}
                             </TableCell>
                             <TableCell style={{"white-space": "pre-wrap"}}>
@@ -834,6 +851,14 @@ const AccessesTable = props => {
                                 {access.position}
                               </TableCell>
                               <TableCell className={classes.redFont}>
+                                {tempType === 1
+                                  ? String(access.avatar_temperature).substring(
+                                      0,
+                                      4
+                                    )
+                                  : '정상 체온'}
+                              </TableCell>
+                              <TableCell className={classes.redFont}>
                                 {access.stb_location ? access.stb_location : ''}
                               </TableCell>
                               <TableCell className={classes.redFont}>
@@ -842,25 +867,18 @@ const AccessesTable = props => {
                               <TableCell className={classes.redFont}>
                                 {access.stb_sn}
                               </TableCell>
-                              <TableCell className={classes.redFont}>
-                                {tempType === 1
-                                  ? String(access.avatar_temperature).substring(
-                                      0,
-                                      4
-                                    )
-                                  : '정상 체온'}
-                              </TableCell>
+                              
                               {/* <TableCell className={classes.redFont}>
                                 {access.distance ? String(access.distance).substr(0,4) : 0}%
                               </TableCell> */}
                               <TableCell className={classes.redFont}>
                                 {access.sensor_dust
-                                ? access.sensor_dust+'ug/m3'
+                                ? access.sensor_dust
                                 : ''}
                               </TableCell>
                               <TableCell className={classes.redFont}>
                                 {access.sensor_CO2
-                                ? access.sensor_CO2+'ppm'
+                                ? access.sensor_CO2
                                 : ''}
                               </TableCell>
                               <TableCell className={classes.redFont} style={{"white-space": "pre-wrap"}}>
@@ -952,6 +970,14 @@ const AccessesTable = props => {
                                 {access.position}
                               </TableCell>
                               <TableCell className={classes.orangeFont}>
+                                {tempType === 1
+                                  ? String(access.avatar_temperature).substring(
+                                      0,
+                                      4
+                                    )
+                                  : '정상 체온'}
+                              </TableCell>
+                              <TableCell className={classes.orangeFont}>
                                 {access.stb_location ? access.stb_location : ''}
                               </TableCell>
                               <TableCell className={classes.orangeFont}>
@@ -960,25 +986,18 @@ const AccessesTable = props => {
                               <TableCell className={classes.orangeFont}>
                                 {access.stb_sn}
                               </TableCell>
-                              <TableCell className={classes.orangeFont}>
-                                {tempType === 1
-                                  ? String(access.avatar_temperature).substring(
-                                      0,
-                                      4
-                                    )
-                                  : '정상 체온'}
-                              </TableCell>
+                              
                               {/* <TableCell className={classes.orangeFont}>
                                 {access.distance ? String(access.distance).substr(0,4) : 0}%
                               </TableCell> */}
                               <TableCell className={classes.orangeFont}>
                                 {access.sensor_dust
-                                ? access.sensor_dust+'ug/m3'
+                                ? access.sensor_dust
                                 : ''}
                               </TableCell>
                               <TableCell className={classes.orangeFont}>
                                 {access.sensor_CO2
-                                ? access.sensor_CO2+'ppm'
+                                ? access.sensor_CO2
                                 : ''}
                               </TableCell>
                               <TableCell className={classes.orangeFont} style={{"white-space": "pre-wrap"}}>
@@ -1068,6 +1087,14 @@ const AccessesTable = props => {
                                 {access.name !== 'unknown'? access.position : ''}
                               </TableCell>
                               <TableCell>
+                                {tempType === 1
+                                  ? String(access.avatar_temperature).substring(
+                                      0,
+                                      4
+                                    )
+                                  : '정상 체온'}
+                              </TableCell>
+                              <TableCell>
                                 {access.stb_location ? access.stb_location : ''}
                               </TableCell>
                               <TableCell>
@@ -1076,26 +1103,22 @@ const AccessesTable = props => {
                               <TableCell>
                                 {access.stb_sn}
                               </TableCell>
-                              <TableCell>
-                                {tempType === 1
-                                  ? String(access.avatar_temperature).substring(
-                                      0,
-                                      4
-                                    )
-                                  : '정상 체온'}
-                              </TableCell>
+                              
                               {/* <TableCell>
                                 {access.distance ? String(access.distance).substr(0,4) : 0}%
                               </TableCell> */}
                               <TableCell>
                                 {access.sensor_dust
-                                ? access.sensor_dust+'ug/m3'
+                                ? access.sensor_dust
                                 : ''}
                               </TableCell>
                               <TableCell>
                                 {access.sensor_CO2
-                                ? access.sensor_CO2+'ppm'
+                                ? access.sensor_CO2
                                 : ''}
+                              </TableCell>
+                              <TableCell>
+                                {'23.0'}
                               </TableCell>
                               <TableCell style={{"white-space": "pre-wrap"}}>
                               {access.access_time.split(' ')[0]+"\n"+
