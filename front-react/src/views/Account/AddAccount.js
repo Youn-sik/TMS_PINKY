@@ -213,7 +213,7 @@ const AddAccount = props => {
                   <MenuItem value={'admin'}>최고관리자</MenuItem>
                 ) : null}
                 {props.authority.split('-')[0] === 'manager' ||
-                props.authority === 'admin' ? (
+                props.authority === 'manager' ? (
                   <MenuItem value={'manager'}>
                     학교관리자
                   </MenuItem>

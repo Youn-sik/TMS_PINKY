@@ -269,6 +269,14 @@ def on_message(client, userdata, msg):
 
             upload_url = "http://" + server_ip + ":3000" + "/uploads/accesss/temp/" + time.strftime('%Y%m%d', time.localtime(time.time())) + "/" + access_json['stb_sn'] + "/" + file_name
 
+            if(camera['authority'] == 'admin'):
+                stb_auth = (camera['authority'])
+            elif(len(camera['authority'].split('-')) == 2):
+                stb_auth = (camera['authority'].split('-')[1][:-1])
+            elif(len(camera['authority'].split('-')) == 3):
+                stb_auth = (camera['authority'].split('-')[2])
+            else:
+                stb_auth = camera['authority'].split('-')[3]
 
             insert_data = {
                 "avatar_file" : value['avatar_file'],
@@ -283,6 +291,7 @@ def on_message(client, userdata, msg):
                 "mobile" : max_mobile, 
                 "alarm_type" : alarm_type,
                 'stb_name' : camera['name'],
+                'stb_auth' : stb_auth,
                 'stb_location' : camera['location'],
                 'stb_lat' : camera['lat'],
                 'stb_lng' : camera['lng'],
@@ -308,9 +317,8 @@ def on_message(client, userdata, msg):
                 "employee_id" : max_employee_id, #
             }
 
-            # print(camera['lat'], camera['lng'])
 
-            # print(insert_data)
+            print(insert_data)
 
             insert_array.append(insert_data)
 
@@ -394,6 +402,8 @@ def on_message(client, userdata, msg):
             '_id': max__id,
             'device_token': device_token,
         }
+        
+        
 
         # print(send_data)
 
