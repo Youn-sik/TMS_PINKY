@@ -557,7 +557,7 @@ const AccessesTable = props => {
                 
                 <TableCell>
                   {accesses.length > 0 ? (
-                    <TableSortLabel style={{width: '52px'}}
+                    <TableSortLabel style={{width: '72px'}}
                       active={activeType === 'access_time'}
                       direction={sort}
                       onClick={() => {
