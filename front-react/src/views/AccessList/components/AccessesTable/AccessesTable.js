@@ -321,10 +321,10 @@ const AccessesTable = props => {
       <CardContent className={classes.content}>
         {loading ? <LinearProgress style={{ width: '100%' }} /> : null}
         <TableContainer component={Paper}>
-          <Table className={classes.inner} size="small">
+          <Table className={classes.inner} size="small" style={{width: '100%'}}>
             <TableHead>
-              <TableRow>
-              <TableCell>
+              <TableRow style={{width: '100%'}}>
+              <TableCell style={{width: '40px'}}>
                   <Checkbox
                     checked={
                       selected.length === accesses.length && accesses.length !== 0
@@ -337,7 +337,7 @@ const AccessesTable = props => {
                 <TableCell style={{paddingLeft:"38px"}}>사진</TableCell>
                 <TableCell>
                   {accesses.length > 0 ? (
-                    <TableSortLabel
+                    <TableSortLabel style={{width: '52px'}}
                       active={activeType === 'name'}
                       direction={sort}
                       onClick={() => {
@@ -351,7 +351,7 @@ const AccessesTable = props => {
                 </TableCell>
                 <TableCell>
                   {accesses.length > 0 ? (
-                    <TableSortLabel
+                    <TableSortLabel style={{width: '52px'}}
                       active={activeType === 'gender'}
                       direction={sort}
                       onClick={() => {
@@ -364,7 +364,7 @@ const AccessesTable = props => {
                   )}
                 </TableCell>
                 <TableCell>{accesses.length > 0 ? (
-                    <TableSortLabel
+                    <TableSortLabel style={{width: '52px'}}
                       active={activeType === 'alarm_type'}
                       direction={sort}
                       onClick={() => {
@@ -376,7 +376,7 @@ const AccessesTable = props => {
                     '타입'
                   )}</TableCell>
                 <TableCell>{accesses.length > 0 ? (
-                    <TableSortLabel
+                    <TableSortLabel style={{width: '52px'}}
                       active={activeType === 'user_id'}
                       direction={sort}
                       onClick={() => {
@@ -389,7 +389,7 @@ const AccessesTable = props => {
                   )}</TableCell>
                   <TableCell>
                   {accesses.length > 0 ? (
-                    <TableSortLabel
+                    <TableSortLabel style={{width: '70px'}}
                       active={activeType === 'location'}
                       direction={sort}
                       onClick={() => {
@@ -403,7 +403,7 @@ const AccessesTable = props => {
                 </TableCell>
                 <TableCell>
                   {accesses.length > 0 ? (
-                    <TableSortLabel
+                    <TableSortLabel style={{width: '70px'}}
                       active={activeType === 'position'}
                       direction={sort}
                       onClick={() => {
@@ -417,7 +417,7 @@ const AccessesTable = props => {
                 </TableCell>
                 <TableCell>
                   {accesses.length > 0 ? (
-                    <TableSortLabel
+                    <TableSortLabel style={{width: '52px'}}
                       active={activeType === 'avatar_temperature'}
                       direction={sort}
                       onClick={() => {
@@ -431,7 +431,7 @@ const AccessesTable = props => {
                 </TableCell>
                 <TableCell>
                   {accesses.length > 0 ? (
-                    <TableSortLabel
+                    <TableSortLabel style={{width: '52px'}}
                       active={activeType === 'stb_location'}
                       direction={sort}
                       onClick={() => {
@@ -445,7 +445,7 @@ const AccessesTable = props => {
                 </TableCell>
                 <TableCell>
                   {accesses.length > 0 ? (
-                    <TableSortLabel
+                    <TableSortLabel style={{width: '65px'}}
                       active={activeType === 'stb_name'}
                       direction={sort}
                       onClick={() => {
@@ -459,7 +459,7 @@ const AccessesTable = props => {
                 </TableCell>
                 <TableCell>
                   {accesses.length > 0 ? (
-                    <TableSortLabel
+                    <TableSortLabel style={{width: '65px'}}
                       active={activeType === 'stb_sn'}
                       direction={sort}
                       onClick={() => {
@@ -500,7 +500,7 @@ const AccessesTable = props => {
                   )}</TableCell> */}
                 <TableCell>
                   {accesses.length > 0 ? (
-                    <TableSortLabel
+                    <TableSortLabel style={{width: '78px'}}
                       active={activeType === 'sensor_dust'} //#####################
                       direction={sort}
                       onClick={() => {
@@ -514,7 +514,7 @@ const AccessesTable = props => {
                 </TableCell>
                 <TableCell>
                   {accesses.length > 0 ? (
-                    <TableSortLabel
+                    <TableSortLabel style={{width: '72px'}}
                       active={activeType === 'sensor_humidity'} //#####################
                       direction={sort}
                       onClick={() => {
@@ -528,7 +528,7 @@ const AccessesTable = props => {
                 </TableCell>
                 <TableCell>
                   {accesses.length > 0 ? (
-                    <TableSortLabel
+                    <TableSortLabel style={{width: '65px'}}
                       active={activeType === 'sensor_CO2'} //#####################
                       direction={sort}
                       onClick={() => {
@@ -542,7 +542,7 @@ const AccessesTable = props => {
                 </TableCell>
                 <TableCell>
                   {accesses.length > 0 ? (
-                    <TableSortLabel
+                    <TableSortLabel style={{width: '52px'}}
                       active={activeType === 'sensor_temperature'} //#####################
                       direction={sort}
                       onClick={() => {
@@ -557,7 +557,7 @@ const AccessesTable = props => {
                 
                 <TableCell>
                   {accesses.length > 0 ? (
-                    <TableSortLabel
+                    <TableSortLabel style={{width: '52px'}}
                       active={activeType === 'access_time'}
                       direction={sort}
                       onClick={() => {
@@ -570,7 +570,13 @@ const AccessesTable = props => {
                   )}
                 </TableCell>
                 <TableCell>
-                  기상<br/>데이터
+                {accesses.length > 0 ? (
+                    <TableSortLabel style={{width: '70px'}}>
+                      기상<br/>데이터
+                    </TableSortLabel>
+                  ) : (
+                    '기상 데이터'
+                  )}
                 </TableCell>
                 {/* <TableCell style={{width:110}}>알람</TableCell> */}
                 {/* <TableCell>동작</TableCell> */}
