@@ -37,10 +37,12 @@ let id = '';
 let currentUrl = window.location.href
 let base_mqtt_url = mqtt_url
 let port = "8083"
+let isOut = false
 // console.log(currentUrl.indexOf("172.16.41.114"))
 if(currentUrl.indexOf("172.16.41.114") <= -1) {
   base_mqtt_url = out_mqtt_url
   port = "10892"
+  isOut = true
 }
 
 Date.prototype.yyyymmdd = function() {
@@ -383,7 +385,7 @@ const EditEmployee = props => {
                 }}>
                 <img
                   style={{ width: '100%', verticalAlign: 'middle' }}
-                  src={userObject ? userObject[0].avatar_file_url : null}></img>
+                  src={ userObject ? isOut ? userObject[0].avatar_file_url.replace('172.16.41.114:3000','211.204.122.90:10891') : userObject[0].avatar_file_url : null }></img>
               </div>
             ) : null}
             <CardContent style={{ width: '50%', margin: '0 auto' }}>

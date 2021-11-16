@@ -318,7 +318,7 @@ def on_message(client, userdata, msg):
             }
 
 
-            print(insert_data)
+            # print(insert_data)
 
             insert_array.append(insert_data)
 
@@ -421,8 +421,12 @@ def on_message(client, userdata, msg):
         request_data = json.dumps(send_data)
         # print(request_data)
         request_url = "http://211.202.11.148:8080/dataReceiver/inOutData.jsp"
-        response = requests.post(request_url, data=request_data)
-        print(response)
+        try:
+            response = requests.post(request_url, data=request_data)
+            print(response)
+        except:
+            print("request failed:", request_url)
+        
 
     elif(msg.topic.find("/user/add/") != -1) :
         print("/user/add/")
@@ -521,6 +525,7 @@ def on_message(client, userdata, msg):
     elif(msg.topic.find("/user/edit/") != -1) :
         print("/user/edit/")
         user_json = json.loads(msg.payload)
+        print(user_json)
         user_json['groups_obids'][0] = ObjectId(user_json['clicked_groups'][0])
         file_path = '/var/www/backend/image/'
         file_name = user_json['id']+"profile_updated_temp.jpg"
