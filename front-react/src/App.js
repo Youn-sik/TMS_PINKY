@@ -63,9 +63,11 @@ validate.validators = {
 };
 
 axios.interceptors.response.use(null, function (error) {
-  document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
+  if(error.code == 'ECONNABORTED'){}
+  else { document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
   document.cookie = 'ACTKINFO=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
   browserHistory.push('/sign-in');
+  }
   return error
 });
 
@@ -103,7 +105,19 @@ function Popup() {
           // console.log(imgSrc);
           enqueueSnackbar(`${result[0].stb_location}에서 비상알림이 호출 되었습니다.|${imgSrc}`,{ variant: 'error',autoHideDuration:null});
         }
-        //
+
+        //세이프 앱으로 json 전송
+        let request_url = "http://211.202.11.148:8080/dataReceiver/inOutData.jsp";
+        let config = { timeout: 3000 }
+
+        axios.post(request_url, JSON.parse(message), config)
+        .then(res=> {
+          console.log(res)
+        }).catch(err=> {
+          console.error(err);
+        });
+
+        //device token 전송
         let device_token = JSON.parse(message.toString()).device_token
         var alarm = '';
         if(result[0].alarm_type == 1) alarm = '승차';
