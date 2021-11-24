@@ -1,3 +1,4 @@
+const axios = require('axios');
 // Require the framework and instantiate it
 const app = require('./server.js')
 const cors = require('cors')
@@ -189,6 +190,20 @@ app.put('/schedule',(req,res) => {
     })
     term = parseInt(req.body.term)
     res.send({term:term})
+})
+
+
+app.post('/pinkyPost', async (req, res)=>{
+    let message = req.body
+    let config = { timeout: 10000 }
+    let request_url = "http://211.202.11.148:8080/dataReceiver/inOutData.jsp";
+    
+    axios.post(request_url, message, config)
+        .then(res=> {
+            res.send(res)
+        }).catch(err=> {
+            res.send(err);
+        });
 })
 
 

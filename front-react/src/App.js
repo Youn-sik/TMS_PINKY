@@ -64,9 +64,10 @@ validate.validators = {
 
 axios.interceptors.response.use(null, function (error) {
   if(error.code == 'ECONNABORTED'){}
-  else { document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
-  document.cookie = 'ACTKINFO=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
-  browserHistory.push('/sign-in');
+  else { 
+    document.cookie = 'token=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
+    document.cookie = 'ACTKINFO=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
+    browserHistory.push('/sign-in');
   }
   return error
 });
@@ -107,10 +108,8 @@ function Popup() {
         }
 
         //세이프 앱으로 json 전송
-        let request_url = "http://211.202.11.148:8080/dataReceiver/inOutData.jsp";
-        let config = { timeout: 3000 }
 
-        axios.post(request_url, JSON.parse(message), config)
+        axios.post(base_url+'/pinkyPost', JSON.parse(message))
         .then(res=> {
           console.log(res)
         }).catch(err=> {
