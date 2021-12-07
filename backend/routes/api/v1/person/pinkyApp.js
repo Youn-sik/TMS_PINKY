@@ -1,3 +1,14 @@
+const client = require('../../../../../docker/mqtt_load');
+let id = Math.random().toString(36).substr(2,11);
+
+client.on('connect', () => {
+  console.log('isConnected')
+  client.subscribe('/user/add/result/+');
+});
+
+
+
+
 var express = require('express');
 var router = express.Router();
 const boom = require('boom')
@@ -9,6 +20,7 @@ const History = require('../../../../models/api/v1/person/history')
 const Operation = require('../../../../models/api/v1/person/operation')
 const resizeImg = require('resize-img');
 const crypto = require('crypto');
+
 
 var fs = require('fs')
 var moment = require('moment');
@@ -50,8 +62,8 @@ router.get('/:what/:thing',async function(req, res) {
             
             res.send(get_data)
         } else if(req.params.what == 'gender'){
-            const gender_str = req.params === undefined ? req.thing : req.params.thing
-            if(gender_str == '남자') {
+            const gender_num = req.params === undefined ? req.thing : req.params.thing
+            if(gender_num == 1) {
                 const gender = 1
                 get_data.data = await api_v1_person_user.find({"gender" : gender})
                 get_data.camera = await api_v3_device_camera.find({},{"name" : true, "location" : true, "serial_number" : true, "status" : true, "lat" : true, "lng" : true})
@@ -61,7 +73,7 @@ router.get('/:what/:thing',async function(req, res) {
                 }
                 
                 res.send(get_data)
-            } else if(gender_str == '여자') {
+            } else if(gender_num == 0) {
                 const gender = 0
                 get_data.data = await api_v1_person_user.find({"gender" : gender})
                 get_data.camera = await api_v3_device_camera.find({},{"name" : true, "location" : true, "serial_number" : true, "status" : true, "lat" : true, "lng" : true})
@@ -139,5 +151,43 @@ router.get('/:what/:thing',async function(req, res) {
         res.status(400).send({err:"잘못된 형식 입니다."})
     }
 });
+
+router.post('/', async function(req, res){
+ 
+    let json = req.body
+    let authority = "admin";
+    let operation_auth = "admin";
+    let department_id = "";
+    let mail = "";
+    
+    console.log(json)
+
+    client.publish(
+        '/user/add/' + id,
+        JSON.stringify({
+          ...json,
+          "id": id,
+          "type": 1,
+          "authority": authority,
+          "operation_auth": operation_auth,
+          "department_id": department_id,
+          "mail": mail,
+          "account": "5f5f1b5e146373e6fee1afcc",
+          "groups_obids": ["615272b47071f710f34a839a"]
+        })
+    )
+
+    client.on('message', function(topic, message) {
+        if (topic.indexOf('/user/add/result/'+id) > -1) {
+          let result = JSON.parse(message.toString())
+      
+          if(result.result) {
+            res.send("등록 되었습니다.")
+          } else {
+            console.log(result.msg)
+          }
+        }
+      })
+})
 
 module.exports = router;

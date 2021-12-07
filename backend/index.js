@@ -122,12 +122,14 @@ app.post('/login', async function(req, res) {
                         subject:'userInfo'
                     }
                 )
+
                 res.send({
                     "token":token,
                     // authority : user.authority,
                     // tempLimit : user.tempLimit,
                     // tempType : user.tempType,
                 })
+
             } else {
                 res.status(400).send({err:"존재하지 않는 계정입니다"})
             }
@@ -193,18 +195,19 @@ app.put('/schedule',(req,res) => {
 })
 
 
-app.post('/pinkyPost', async (req, res)=>{
-    let message = req.body
-    let config = { timeout: 10000 }
-    let request_url = "http://211.202.11.148:8080/dataReceiver/inOutData.jsp";
-    
-    axios.post(request_url, message, config)
-        .then(res=> {
-            res.send(res)
-        }).catch(err=> {
-            res.send(err);
-        });
-})
+// app.post('/pinkyPost', async (req, res)=>{
+//     let message = req.body
+//     let config = { timeout: 10000 }
+//     let request_url = "http://211.108.168.14:8080/safePinky/dataReceiver/inOutData.jsp";
+//     axios.post(request_url, JSON.stringify(message), config)
+//         .then((result)=> {
+//             res.send(result)
+//             console.log(result)
+//         }).catch(err=> {
+//             res.send(err);
+//             console.log(err)
+//         });
+// })
 
 
 //메일

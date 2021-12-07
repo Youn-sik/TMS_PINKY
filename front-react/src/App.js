@@ -108,13 +108,12 @@ function Popup() {
         }
 
         //세이프 앱으로 json 전송
-
-        axios.post(base_url+'/pinkyPost', JSON.parse(message))
-        .then(res=> {
-          console.log(res)
-        }).catch(err=> {
-          console.error(err);
-        });
+        // axios.post(base_url+'/pinkyPost', JSON.parse(message))
+        // .then(res=> {
+        //   console.log(res)
+        // }).catch(err=> {
+        //   console.error(err);
+        // });
 
         //device token 전송
         let device_token = JSON.parse(message.toString()).device_token

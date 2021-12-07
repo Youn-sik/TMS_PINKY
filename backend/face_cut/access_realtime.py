@@ -24,6 +24,7 @@ import tracemalloc
 import ssl
 import re
 import requests
+import asyncio
 from insightface.app import FaceAnalysis #모델 다운로드를 위한 import
 my_client = MongoClient("mongodb://localhost:27017/")
 db = my_client["cloud40"]
@@ -73,6 +74,7 @@ def on_message(client, userdata, msg):
         insert_array = []
        
         for value in access_json['values'] :
+            # print(value)
             checkVal = int(value['check'])
 
             insert_data = {
@@ -418,21 +420,28 @@ def on_message(client, userdata, msg):
             client.publish('/access/realtime/check/result/'+access_json['stb_sn'], json.dumps(send_data), 1)      
 
         client.publish('/access/realtime/result/'+access_json['stb_sn'], json.dumps(send_data), 1)
-        # request_data = json.dumps(send_data)
+
+
+        #pinkyApp post
+        async def request(req_url, req_data) :
+            response = requests.post(url=req_url, data=req_data)
+            print(response)
+        
+        request_url = "http://211.108.168.14:8080/safePinky/dataReceiver/inOutData.jsp"
+        # request_url = "http://172.16.41.114:3000/"
+        request_data = json.dumps(send_data)
         # print(request_data)
-        # request_url = "http://211.202.11.148:8080/dataReceiver/inOutData.jsp"
-        # try:
-            # response = requests.post(request_url, data=request_data)
-            # print(response)
-        # except:
-            # print("request failed:", request_url)
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(request(request_url, request_data))
+        # loop.close()
+        
         
 
     elif(msg.topic.find("/user/add/") != -1) :
         print("/user/add/")
         user_json = json.loads(msg.payload)
         # print('----')
-        # print(user_json)
+        print(user_json)
         # print('----')
         user_json['groups_obids'][0] = ObjectId(user_json['groups_obids'][0])
         file_path = '/var/www/backend/image/'
