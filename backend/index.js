@@ -44,6 +44,11 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(cors())
 
+app.use(function(req, res, next){
+    res.header("Access-Control-Allow-Origin", "*");
+    next();
+});
+
 //auth middle-ware
 app.use(function (req, res, next) {
     if(req.path.indexOf('/api-docs') > -1 ){

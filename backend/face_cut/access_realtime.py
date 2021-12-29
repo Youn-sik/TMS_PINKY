@@ -422,18 +422,18 @@ def on_message(client, userdata, msg):
         client.publish('/access/realtime/result/'+access_json['stb_sn'], json.dumps(send_data), 1)
 
 
-        #pinkyApp post
-        async def request(req_url, req_data) :
-            response = requests.post(url=req_url, data=req_data)
-            print(response)
+        #pinkyApp post URL 주소가 달라져서 얼굴 인식에 딜레이가 걸리기 때문에 주석 처리를 하였다. 이 부분을 주석 해제하고 올바른 URL을 넣으면 된다.
+        # async def request(req_url, req_data) :
+        #     response = requests.post(url=req_url, data=req_data)
+        #     print(response)
         
-        request_url = "http://211.108.168.14:8080/safePinky/dataReceiver/inOutData.jsp"
-        # request_url = "http://172.16.41.114:3000/"
-        request_data = json.dumps(send_data)
-        # print(request_data)
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(request(request_url, request_data))
-        # loop.close()
+        # request_url = "http://211.108.168.14:8080/safePinky/dataReceiver/inOutData.jsp"
+        # # request_url = "http://172.16.41.114:3000/"
+        # request_data = json.dumps(send_data)
+        # # print(request_data)
+        # loop = asyncio.get_event_loop()
+        # loop.run_until_complete(request(request_url, request_data))
+        # # loop.close()
         
         
 
