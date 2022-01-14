@@ -579,7 +579,7 @@ const AccessesTable = props => {
                   )}
                 </TableCell>
                 {/* <TableCell style={{width:110}}>알람</TableCell> */}
-                {/* <TableCell>동작</TableCell> */}
+                <TableCell>동작</TableCell>
               </TableRow>
               
             </TableHead>
@@ -692,7 +692,7 @@ const AccessesTable = props => {
                           {access.access_time.split(' ')[0]+"\n"+
                             access.access_time.split(' ')[1]}
                           </TableCell> */}
-                          {/* <TableCell className={classes.redFont}>
+                          <TableCell className={classes.redFont}>
                             {
                               access.distance <= 57.5 && access.name !== 'unknown' ? <Button variant="contained" color="primary" onClick={() => {handleEdit(access)}}>수정</Button>:
                               access.avatar_type === 3 ?
@@ -711,7 +711,7 @@ const AccessesTable = props => {
                                 </Button>
                               </RouterLink> : null
                             }
-                          </TableCell> */}
+                          </TableCell>
                         </TableRow>
                       );
                     }
@@ -823,7 +823,7 @@ const AccessesTable = props => {
                                 access.access_time.split(' ')[1]
                                 : ''}
                             </TableCell> */}
-                            {/* <TableCell>
+                            <TableCell>
                               {
                                 access.distance <= 57.5 && access.name !== 'unknown' ? <Button variant="contained" color="primary" onClick={() => {handleEdit(access)}}>수정</Button>:
                                 access.avatar_type === 3 ?
@@ -842,7 +842,7 @@ const AccessesTable = props => {
                                   </Button>
                                 </RouterLink> : null
                               }
-                            </TableCell> */}
+                            </TableCell>
                           </TableRow>
                         );
                       }
@@ -874,7 +874,7 @@ const AccessesTable = props => {
                                 {access.name !== 'unknown'? access.name : ''}
                               </TableCell>
                               <TableCell className={classes.redFont}>
-                                {access.gender == 1 ? '남자' : '여자'}
+                                {access.name !== 'unknown' ? (access.gender == 1 ? '남자' : '여자') : ''}
                               </TableCell>
                               <TableCell className={classes.redFont}>
                               {access.alarm_type === 1
@@ -891,10 +891,10 @@ const AccessesTable = props => {
                               {access.name !== 'unknown' ? access.employee_id : ''}
                               </TableCell>
                               <TableCell className={classes.redFont}>
-                                {access.location}
+                                {access.name !== 'unknown' ? access.location : ''}
                               </TableCell>
                               <TableCell className={classes.redFont}>
-                                {access.position}
+                                {access.name !== 'unknown' ? access.position : ''}
                               </TableCell>
                               <TableCell className={classes.redFont}>
                                 {tempType === 1
@@ -958,7 +958,7 @@ const AccessesTable = props => {
                                   access.access_time.split(' ')[1]
                                   : ''}
                               </TableCell> */}
-                              {/* <TableCell className={classes.redFont}>
+                              <TableCell className={classes.redFont}>
                                 {
                                   access.distance <= 57.5 && access.name !== 'unknown' ? <Button variant="contained" color="primary" onClick={() => {handleEdit(access)}}>수정</Button>:
                                   access.avatar_type === 3 ?
@@ -977,7 +977,7 @@ const AccessesTable = props => {
                                     </Button>
                                   </RouterLink> : null
                                 }
-                              </TableCell> */}
+                              </TableCell>
                             </TableRow>
                           );
                         } else if (access.distance <= 57.5 && access.name !== "unknown") {
@@ -1090,7 +1090,7 @@ const AccessesTable = props => {
                                   access.access_time.split(' ')[1]
                                   : ''}
                               </TableCell> */}
-                              {/* <TableCell className={classes.orangeFont}>
+                              <TableCell className={classes.orangeFont}>
                                 {
                                   access.distance <= 57.5 && access.name !== 'unknown' ? <Button variant="contained" color="primary" onClick={() => {handleEdit(access)}}>수정</Button>:
                                   access.avatar_type === 3 ?
@@ -1109,7 +1109,7 @@ const AccessesTable = props => {
                                     </Button>
                                   </RouterLink> : null
                                 }
-                              </TableCell> */}
+                              </TableCell>
                             </TableRow>
                           );
                         } else {
@@ -1219,7 +1219,7 @@ const AccessesTable = props => {
                                   access.access_time.split(' ')[1]
                                   : ''}
                               </TableCell> */}
-                              {/* <TableCell>
+                              <TableCell>
                                 {
                                   access.distance <= 57.5 && access.name !== 'unknown' ? <Button variant="contained" color="primary" onClick={() => {handleEdit(access)}}>수정</Button>:
                                   access.avatar_type === 3 ?
@@ -1238,7 +1238,7 @@ const AccessesTable = props => {
                                     </Button>
                                   </RouterLink> : null
                                 }
-                              </TableCell> */}
+                              </TableCell>
                             </TableRow>
                           );
                         }

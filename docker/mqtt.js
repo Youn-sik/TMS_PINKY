@@ -70,6 +70,7 @@ client.on('message', async function(topic, message) {
         }
 
         if (topic === '/control/log/devices') {
+            console.log("QQQQQQ");
             if (json.stb_sn[0] != undefined) {
                 fn.log(json);
             }

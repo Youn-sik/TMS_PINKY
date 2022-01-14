@@ -1027,7 +1027,7 @@ const DeviceTable = props => {
                 variant="contained"
                 onClick={() => {
                   if(check){
-                    alert('로그 요청은 하나의 단말기만 선택 해주세요.')
+                    alert('로그 요청은 하나의 단말기만 선택 해주세요.');
                   } else {
                     mqttPubl('log')
                   }
@@ -1132,7 +1132,8 @@ const DeviceTable = props => {
               <Button
                 variant="contained"
                 onClick={() => {
-                  alert('로그 요청은 하나의 단말기만 선택 해주세요.')
+                  alert('로그 요청은 하나의 단말기만 선택 해주세요.');
+                  devicesMqttPubl('log');
                 }}
                 style={{ width: '181.58px' }}
                 color="primary">
