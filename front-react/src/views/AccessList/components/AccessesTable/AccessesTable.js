@@ -917,11 +917,6 @@ const AccessesTable = props => {
                               {/* <TableCell className={classes.redFont}>
                                 {access.distance ? String(access.distance).substr(0,4) : 0}%
                               </TableCell> */}
-                              <TableCell className={classes.redFont}>
-                                {access.sensor_dust
-                                ? access.sensor_dust
-                                : ''}
-                              </TableCell>
                               
                               <TableCell className={classes.redFont} style={{"white-space": "pre-wrap"}}>
                                   {access.sensor_dust
