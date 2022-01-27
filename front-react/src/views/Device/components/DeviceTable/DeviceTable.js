@@ -215,6 +215,7 @@ const DeviceTable = props => {
     device,
     ...rest
   } = props;
+
   // const history = props.history;
   const classes = useStyles();
 
@@ -1340,6 +1341,20 @@ const DeviceTable = props => {
                 <TableCell>
                   {props.device.length > 0 ? (
                     <TableSortLabel
+                      active={activeType === 'app_version'}
+                      direction={sort}
+                      onClick={() => {
+                        createSortHandler('app_version');
+                      }}>
+                      버전
+                    </TableSortLabel>
+                  ) : (
+                    '버전'
+                  )}
+                </TableCell>
+                <TableCell>
+                  {props.device.length > 0 ? (
+                    <TableSortLabel
                       active={activeType === 'ip'}
                       direction={sort}
                       onClick={() => {
@@ -1405,6 +1420,7 @@ const DeviceTable = props => {
                         device.authority.split('-').length === 3 ? device.authority.split('-')[2] : device.authority.split('-')[3]}
                       </TableCell>
                       <TableCell>{device.serial_number}</TableCell>
+                      <TableCell>{device.app_version}</TableCell>
                       <TableCell>{device.ip}</TableCell>
                       <TableCell>{device.location}</TableCell>
                       <TableCell style={{ padding: '0 0 0 30px' }}>
