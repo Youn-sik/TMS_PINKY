@@ -308,30 +308,48 @@ const AddEmployee = props => {
 
   const addUser = async () => {
     if (pictures.length === 0) alert('사진을 등록해주세요');
-    else if (userInfo.name === '') alert('이름을 입력해주세요');
-    else if (userInfo.location === '') alert('소속을 입력해주세요');
-    else if (userInfo.position === '') alert('학년을 입력해주세요');
-    else if (userInfo.mobile === '') alert('학부모 연락처를 입력해주세요');
+    // else if (userInfo.name === '') alert('이름을 입력해주세요');
+    // else if (userInfo.location === '') alert('소속을 입력해주세요');
+    // else if (userInfo.position === '') alert('학년을 입력해주세요');
+    // else if (userInfo.mobile === '') alert('학부모 연락처를 입력해주세요');
     else if(node._id) {
       setLoading(true);
-      let base64 = await toBase64(pictures[0][0]);
-      base64 = base64.replace('data:image/jpeg;base64,', '');
-      base64 = base64.replace('data:image/png;base64,', '');
-
-      console.log(userInfo);
-      client.publish(
-        '/user/add/' + id,
-        JSON.stringify({
-          ...userInfo,
-          groups_obids: [node._id ? node._id : undefined],
-          account: props.user_id,
-          type: 1,
-          authority : props.authority,
-          avatar_file: base64,
-          operation_auth: props.authority,
-          id
-        })
-      )
+      //pictures[0][i] 사진 개수마다 i 증가
+      //비동기 문제 발생(mqtt pub 이후에 배열 값이 들어가는듯 - 빈 배열 값이 출력 됨. 크롬 관리자 도구에 저런 현상은 비동기 문제가 대부분이다.)
+      new Promise((resolve, reject)=> {
+        let base64Arr = [];
+        pictures[0].forEach((element, index) => {
+          let base64 = "";
+          new Promise((resolve, reject)=> {
+            base64 = toBase64(element);
+            resolve(base64);
+          }).then((base64)=> {
+            base64 = base64.replace('data:image/jpeg;base64,', '');
+            base64 = base64.replace('data:image/png;base64,', '');
+            base64Arr.push(base64)
+          })
+        });
+        resolve(base64Arr);
+      }).then((base64Arr)=> {
+        console.log(base64Arr.length);
+        console.log(base64Arr);
+        console.log(userInfo);
+        client.publish(
+          '/user/add/' + id,
+          JSON.stringify({
+            ...userInfo,
+            groups_obids: [node._id ? node._id : undefined],
+            account: props.user_id,
+            type: 1,
+            authority : props.authority,
+            avatar_file: base64Arr,
+            operation_auth: props.authority,
+            id
+          })
+        )
+      }).catch(()=> {
+        alert("등록에 실패하였습니다.")
+      })
 
       // let result = await axios.post(base_url + '/user', {
       //   ...userInfo,
@@ -389,7 +407,7 @@ const AddEmployee = props => {
               fileTypeError="지원하지 않는 타입의 파일 입니다."
               buttonText="프로필 사진 업로드"
               maxFileSize={5242880}
-              singleImage={true}
+              singleImage={false}
               withPreview={true}
             />
             <CardContent style={{ width: '50%', margin: '0 auto' }}>

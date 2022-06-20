@@ -442,59 +442,61 @@ def on_message(client, userdata, msg):
         user_json = json.loads(msg.payload)
         # print('----')
         print(user_json)
+        print(user_json['avatar_file'])
         # print('----')
-        user_json['groups_obids'][0] = ObjectId(user_json['groups_obids'][0])
-        file_path = '/var/www/backend/image/'
-        file_name = 'temp_'+user_json['id']+".jpg"
-        imgdata = base64.b64decode(user_json['avatar_file'])
-        # print(file_path+file_name)
 
-        with open(file_path+file_name, 'wb') as f: 
-            f.write(imgdata)
+        # user_json['groups_obids'][0] = ObjectId(user_json['groups_obids'][0])
+        # file_path = '/var/www/backend/image/'
+        # file_name = 'temp_'+user_json['id']+".jpg"
+        # imgdata = base64.b64decode(user_json['avatar_file'])
+        # # print(file_path+file_name)
+
+        # with open(file_path+file_name, 'wb') as f: 
+        #     f.write(imgdata)
         
 
-        result = []
-        result = detect_face(file_path+file_name)
-        if result is None :
-            os.remove(file_path+file_name)
-            client.publish('/user/add/result/'+user_json['id'], json.dumps({"result":False,"msg":"인식할수 없는 사진 입니다."}), 1)
-        elif result is False :
-            client.publish('/user/add/result/'+user_json['id'], json.dumps({"result":False,"msg":"더 낮은 해상도의 사진을 사용해주세요."}), 1)
-        else :
-            os.remove(file_path+file_name)
+        # result = []
+        # result = detect_face(file_path+file_name)
+        # if result is None :
+        #     os.remove(file_path+file_name)
+        #     client.publish('/user/add/result/'+user_json['id'], json.dumps({"result":False,"msg":"인식할수 없는 사진 입니다."}), 1)
+        # elif result is False :
+        #     client.publish('/user/add/result/'+user_json['id'], json.dumps({"result":False,"msg":"더 낮은 해상도의 사진을 사용해주세요."}), 1)
+        # else :
+        #     os.remove(file_path+file_name)
 
-            face_detection = result.tolist()
-            user_json['face_detection'] = face_detection
-            user_json['avatar_file_url'] = ''
-            user_json['avatar_file'] = ''
+        #     face_detection = result.tolist()
+        #     user_json['face_detection'] = face_detection
+        #     user_json['avatar_file_url'] = ''
+        #     user_json['avatar_file'] = ''
             
-            user_collection.insert_one(user_json)
-            user_objectid = str(user_json['_id'])
+        #     user_collection.insert_one(user_json)
+        #     user_objectid = str(user_json['_id'])
 
-            # fcm_json = {
-            #     "mobile": user_json['mobile'],
-            #     "device_token": user_json['device_token']
-            # }
-            # fcm_collection.insert(fcm_json)
+        #     # fcm_json = {
+        #     #     "mobile": user_json['mobile'],
+        #     #     "device_token": user_json['device_token']
+        #     # }
+        #     # fcm_collection.insert(fcm_json)
 
-            file_name = user_objectid+"profile.jpg"
+        #     file_name = user_objectid+"profile.jpg"
 
-            avatar_file_url = upload_url = "http://" + server_ip + ":3000" + "/image/" + file_name
+        #     avatar_file_url = upload_url = "http://" + server_ip + ":3000" + "/image/" + file_name
 
-            print(avatar_file_url)
+        #     print(avatar_file_url)
 
-            user_collection.update_one({"_id":ObjectId(user_objectid)},{"$set":{"avatar_file_url":avatar_file_url}})
+        #     user_collection.update_one({"_id":ObjectId(user_objectid)},{"$set":{"avatar_file_url":avatar_file_url}})
 
-            with open(file_path+file_name, 'wb') as f:
-                f.write(imgdata)
+        #     with open(file_path+file_name, 'wb') as f:
+        #         f.write(imgdata)
 
-            client.publish('/user/add/result/'+user_json['id'], json.dumps({"result":True}), 1)
+        #     client.publish('/user/add/result/'+user_json['id'], json.dumps({"result":True}), 1)
 
-        users_cursor = user_collection.find({"authority":{"$regex":""}})
-        users = []
-        for user in users_cursor :
-            users.append(user)
-        random.shuffle(users)
+        # users_cursor = user_collection.find({"authority":{"$regex":""}})
+        # users = []
+        # for user in users_cursor :
+        #     users.append(user)
+        # random.shuffle(users)
 
     elif(msg.topic.find("/stranger/add/") != -1) :
         print("/stranger/add/")

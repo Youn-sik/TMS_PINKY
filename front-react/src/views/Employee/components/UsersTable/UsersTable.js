@@ -194,6 +194,8 @@ const UsersTable = props => {
 
   const isSelected = _id => selected.indexOf(_id) !== -1;
 
+  console.log(props.users)
+
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       {/* <CardHeader subheader={ */}
